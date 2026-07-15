@@ -1,0 +1,103 @@
+---
+import PortalLayout from '../layouts/PortalLayout.astro';
+import EssayCard from '../components/EssayCard.astro';
+import { getEssays, getFeaturedEssays } from '../lib/registry';
+
+const featured = await getFeaturedEssays();
+const all = await getEssays();
+const essayCount = all.length;
+const mapTotal = all.reduce((n, e) => n + (e.data.mapCount ?? 0), 0);
+---
+
+<PortalLayout title="Terra Chartarum">
+  <section class="hero">
+    <div class="shell hero-inner">
+      <p class="eyebrow">An interactive historical atlas</p>
+      <h1 class="hero-title">Terra Chartarum</h1>
+      <p class="hero-lede">
+        A gallery of cartographic visual essays. Read the world's maps against
+        the grain — where every gain in accuracy or control leaves a silence
+        behind — and cross them on one shared atlas of time, place, and power.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="/essays/">Enter the gallery</a>
+        <a class="btn" href="/atlas/">Open the atlas</a>
+      </div>
+      <dl class="hero-stats" aria-label="Portal at a glance">
+        <div><dt>Essays</dt><dd>{essayCount}</dd></div>
+        <div><dt>Maps read</dt><dd>{mapTotal}+</dd></div>
+        <div><dt>Span</dt><dd>8,000 yrs</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="shell featured">
+    <div class="section-head">
+      <h2>Featured essays</h2>
+      <a href="/essays/" class="see-all">All essays →</a>
+    </div>
+    <div class="grid">
+      {featured.map((essay) => <EssayCard essay={essay} />)}
+    </div>
+  </section>
+</PortalLayout>
+
+<style>
+  .hero {
+    border-bottom: 1px solid var(--line);
+    background:
+      radial-gradient(120% 80% at 80% -10%, color-mix(in srgb, var(--gold) 14%, transparent), transparent 60%),
+      var(--canvas);
+  }
+  .hero-inner { padding-block: clamp(3.5rem, 9vw, 7rem); max-width: 60ch; }
+  .hero-title {
+    font-size: var(--step-5);
+    margin: 0.4rem 0 1rem;
+    letter-spacing: 0.02em;
+  }
+  .hero-lede { font-size: var(--step-1); color: var(--ink-muted); margin: 0 0 2rem; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 0.85rem; }
+  .btn {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.7rem 1.35rem;
+    border: 1px solid var(--gold);
+    border-radius: var(--radius);
+    color: var(--gold);
+    transition: all var(--dur-fast) var(--ease-out);
+  }
+  .btn:hover { background: var(--gold); color: var(--canvas); }
+  .btn-primary { background: var(--gold); color: var(--canvas); }
+  .btn-primary:hover { background: transparent; color: var(--gold); }
+  .hero-stats {
+    display: flex;
+    gap: clamp(1.5rem, 5vw, 3.5rem);
+    margin: 2.75rem 0 0;
+  }
+  .hero-stats dt {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .hero-stats dd { margin: 0.2rem 0 0; font-family: var(--font-display); font-size: var(--step-3); }
+
+  .featured { padding-block: clamp(3rem, 7vw, 5rem); }
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1.75rem;
+  }
+  .section-head h2 { font-size: var(--step-3); margin: 0; }
+  .see-all { font-family: var(--font-mono); font-size: var(--step--1); letter-spacing: 0.1em; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+</style>

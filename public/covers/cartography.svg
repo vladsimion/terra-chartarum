@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="The Cartographic Sacrifice">
+  <defs>
+    <radialGradient id="g" cx="70%" cy="10%" r="90%">
+      <stop offset="0%" stop-color="#1a1408"/>
+      <stop offset="100%" stop-color="#0a0806"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#g)"/>
+  <g stroke="#d4b87a" stroke-width="1" fill="none" opacity="0.18">
+    <circle cx="400" cy="250" r="60"/><circle cx="400" cy="250" r="120"/>
+    <circle cx="400" cy="250" r="180"/><circle cx="400" cy="250" r="240"/>
+    <path d="M40 250 H760 M400 20 V480"/>
+    <path d="M120 120 L680 380 M680 120 L120 380"/>
+  </g>
+  <text x="60" y="230" fill="#c0ad88" font-family="monospace" font-size="18" letter-spacing="6">8,000 YEARS · SEVEN AXES</text>
+  <text x="58" y="290" fill="#e8dec5" font-family="Georgia, serif" font-size="52" font-weight="600">The Cartographic</text>
+  <text x="58" y="345" fill="#d4b87a" font-family="Georgia, serif" font-size="52" font-weight="600" font-style="italic">Sacrifice</text>
+</svg>

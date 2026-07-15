@@ -1,0 +1,55 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    <p class="footer-lede">
+      <strong>Terra Chartarum</strong> — an interactive historical atlas of
+      cartographic visual essays.
+    </p>
+    <nav aria-label="Footer">
+      <a href="/essays/">Essays</a>
+      <a href="/atlas/">Atlas</a>
+      <a href="/about/">About</a>
+      <a href="/colophon/">Colophon</a>
+    </nav>
+    <p class="footer-meta">
+      © {year} · Built with Astro · Essays preserved from their original sources.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--line);
+    background: var(--panel);
+    margin-top: 4rem;
+  }
+  .footer-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding-block: 2.5rem;
+  }
+  .footer-lede {
+    margin: 0;
+    max-width: var(--prose-max);
+    color: var(--ink-muted);
+  }
+  .footer-lede strong { color: var(--ink); font-family: var(--font-display); }
+  .site-footer nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .footer-meta {
+    margin: 0;
+    font-size: var(--step--1);
+    color: color-mix(in srgb, var(--ink-muted) 70%, transparent);
+  }
+</style>

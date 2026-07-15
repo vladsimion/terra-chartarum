@@ -1,0 +1,128 @@
+---
+import PortalLayout from '../layouts/PortalLayout.astro';
+import {
+  getEssays,
+  DIMENSION_META,
+  CROSSWALK,
+  type CanonicalDimension,
+} from '../lib/registry';
+import { CANONICAL_DIMENSIONS } from '../content/config';
+
+const essays = await getEssays();
+const dims = CANONICAL_DIMENSIONS as readonly CanonicalDimension[];
+
+// Group native axes by their source essay for the crosswalk table.
+const essayAxes = essays.map((e) => ({
+  title: e.data.title,
+  lenses: e.data.lenses,
+}));
+---
+
+<PortalLayout
+  title="Colophon"
+  description="The design system and the harmonized meta-lens: how four analytical vocabularies are mapped onto six canonical dimensions."
+>
+  <section class="shell prose">
+    <p class="eyebrow">Colophon · methodology</p>
+    <h1>How this atlas reads maps</h1>
+
+    <p>
+      Each essay keeps its own analytical vocabulary. To let them be compared and
+      discovered together, we add a single <em>meta-lens</em> of six canonical
+      dimensions — not imposed on the essays, but excavated from the J.B. Harley
+      critical-cartography spine they already share. It is one interpretive frame
+      among many, with its own silences; the crosswalk below is published in full
+      so you can see exactly what it keeps and what it flattens.
+    </p>
+
+    <h2>The six canonical dimensions</h2>
+    <dl class="dims">
+      {dims.map((d) => (
+        <div>
+          <dt>{DIMENSION_META[d].label}</dt>
+          <dd>{DIMENSION_META[d].blurb}</dd>
+        </div>
+      ))}
+    </dl>
+
+    <h2>Crosswalk — native axes → canonical dimensions</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Essay</th>
+            <th>Native axis</th>
+            <th>Canonical mapping</th>
+          </tr>
+        </thead>
+        <tbody>
+          {essayAxes.map((e) =>
+            e.lenses.map((axis, i) => {
+              const map = CROSSWALK[axis];
+              const mapped = map
+                ? Object.entries(map)
+                    .map(([k, w]) => `${DIMENSION_META[k as CanonicalDimension].label}${w !== 1 ? ` (${w})` : ''}`)
+                    .join(', ')
+                : '—';
+              return (
+                <tr>
+                  {i === 0 && <th scope="row" rowspan={e.lenses.length}>{e.title}</th>}
+                  <td><code>{axis}</code></td>
+                  <td>{mapped}</td>
+                </tr>
+              );
+            }),
+          )}
+        </tbody>
+      </table>
+    </div>
+
+    <p class="caveat">
+      Caveat: Dacia's <em>Sex Lectiones</em> (ordinatio, litterae, restitutio,
+      correctio, rasura, vacat) is a reading <em>method</em>, not a scoring set —
+      only <em>rasura</em> and <em>vacat</em> feed Silence. Native scales
+      (1–5, 0–8, categorical) are normalized to 0–1 for any cross-essay radar.
+    </p>
+
+    <h2>Design tokens</h2>
+    <p>
+      The shell is built on a shared token layer (palette, humanist typefaces,
+      motion). Legacy essays keep their bespoke interiors; cohesion lives in the
+      chrome, not in flattening the art.
+    </p>
+    <ul class="swatches">
+      <li style="--c:var(--canvas)"><span></span>--canvas</li>
+      <li style="--c:var(--panel)"><span></span>--panel</li>
+      <li style="--c:var(--ink)"><span></span>--ink</li>
+      <li style="--c:var(--ink-muted)"><span></span>--ink-muted</li>
+      <li style="--c:var(--gold)"><span></span>--gold</li>
+      <li style="--c:var(--gained)"><span></span>--gained</li>
+      <li style="--c:var(--sacrificed)"><span></span>--sacrificed</li>
+    </ul>
+  </section>
+</PortalLayout>
+
+<style>
+  .prose { max-width: 80ch; padding-block: clamp(2.5rem, 6vw, 4rem); }
+  .prose h1 { font-size: var(--step-4); margin: 0.3rem 0 1.25rem; }
+  .prose h2 { font-size: var(--step-2); margin: 2.5rem 0 1rem; }
+  .prose p { color: var(--ink); margin: 0 0 1.15rem; }
+  .prose em { color: var(--gold); font-style: italic; }
+
+  .dims { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 0; }
+  .dims div { border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem 1.1rem; background: var(--panel); }
+  .dims dt { font-family: var(--font-display); font-size: var(--step-1); color: var(--ink); }
+  .dims dd { margin: 0.3rem 0 0; color: var(--ink-muted); font-size: var(--step--1); }
+
+  .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); }
+  table { border-collapse: collapse; width: 100%; font-size: var(--step-0); }
+  th, td { text-align: left; padding: 0.55rem 0.9rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  thead th { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); }
+  tbody th[scope='row'] { font-family: var(--font-display); color: var(--ink); border-right: 1px solid var(--line); white-space: nowrap; }
+  code { font-family: var(--font-mono); color: var(--gold); font-size: 0.85em; }
+  .caveat { color: var(--ink-muted); font-size: var(--step--1); border-left: 2px solid var(--line); padding-left: 1rem; }
+
+  .swatches { list-style: none; display: flex; flex-wrap: wrap; gap: 0.75rem; padding: 0; }
+  .swatches li { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-muted); }
+  .swatches span { width: 1.4rem; height: 1.4rem; border-radius: 4px; border: 1px solid var(--line); background: var(--c); display: inline-block; }
+</style>

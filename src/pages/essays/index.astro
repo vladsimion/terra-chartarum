@@ -1,0 +1,173 @@
+---
+import PortalLayout from '../../layouts/PortalLayout.astro';
+import EssayCard from '../../components/EssayCard.astro';
+import { getEssays, getFacets, DIMENSION_META } from '../../lib/registry';
+
+const essays = await getEssays();
+const facets = await getFacets();
+---
+
+<PortalLayout
+  title="Essays"
+  description="Browse every cartographic visual essay by era, region, and analytical lens."
+>
+  <section class="shell gallery">
+    <header class="gallery-head">
+      <p class="eyebrow">The gallery</p>
+      <h1>Visual essays</h1>
+      <p class="lede">
+        {essays.length} essays across the history of cartography. Filter by era,
+        region, or the shared meta-lens — or search by title.
+      </p>
+    </header>
+
+    <div class="controls" role="search">
+      <input
+        id="q"
+        type="search"
+        placeholder="Search essays…"
+        aria-label="Search essays by title"
+        autocomplete="off"
+      />
+      <div class="facet">
+        <label for="era">Era</label>
+        <select id="era" data-facet="eras">
+          <option value="">All eras</option>
+          {facets.eras.map((e) => <option value={e}>{e}</option>)}
+        </select>
+      </div>
+      <div class="facet">
+        <label for="region">Region</label>
+        <select id="region" data-facet="regions">
+          <option value="">All regions</option>
+          {facets.regions.map((r) => <option value={r}>{r}</option>)}
+        </select>
+      </div>
+      <div class="facet">
+        <label for="dim">Meta-lens</label>
+        <select id="dim" data-facet="dims">
+          <option value="">All dimensions</option>
+          {facets.dimensions.map((d) => <option value={d}>{DIMENSION_META[d].label}</option>)}
+        </select>
+      </div>
+      <button id="reset" type="button">Reset</button>
+    </div>
+
+    <p id="count" class="count" aria-live="polite"></p>
+
+    <div class="grid" id="grid">
+      {essays.map((essay) => <EssayCard essay={essay} />)}
+    </div>
+    <p id="empty" class="empty" hidden>No essays match those filters.</p>
+  </section>
+</PortalLayout>
+
+<script>
+  // Client-side faceted filtering (ATLAS-203). No framework needed.
+  function initGallery() {
+    const grid = document.getElementById('grid');
+    if (!grid) return;
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>('.card'));
+    const q = document.getElementById('q') as HTMLInputElement;
+    const selects = Array.from(
+      document.querySelectorAll<HTMLSelectElement>('select[data-facet]'),
+    );
+    const reset = document.getElementById('reset');
+    const count = document.getElementById('count');
+    const empty = document.getElementById('empty');
+
+    function apply() {
+      const term = (q?.value ?? '').trim().toLowerCase();
+      let shown = 0;
+      for (const card of cards) {
+        let ok = true;
+        for (const sel of selects) {
+          if (!sel.value) continue;
+          const field = sel.dataset.facet!;
+          const values = (card.dataset[field] ?? '').split('|');
+          if (!values.includes(sel.value)) ok = false;
+        }
+        if (ok && term) ok = (card.dataset.title ?? '').includes(term);
+        card.hidden = !ok;
+        if (ok) shown++;
+      }
+      if (count) count.textContent = `${shown} of ${cards.length} essays`;
+      if (empty) empty.hidden = shown !== 0;
+    }
+
+    q?.addEventListener('input', apply);
+    selects.forEach((s) => s.addEventListener('change', apply));
+    reset?.addEventListener('click', () => {
+      if (q) q.value = '';
+      selects.forEach((s) => (s.value = ''));
+      apply();
+    });
+    apply();
+  }
+
+  initGallery();
+  // Re-init after Astro view transitions swap the DOM.
+  document.addEventListener('astro:page-load', initGallery);
+</script>
+
+<style>
+  .gallery { padding-block: clamp(2.5rem, 6vw, 4rem); }
+  .gallery-head { max-width: var(--prose-max); margin-bottom: 2rem; }
+  .gallery-head h1 { font-size: var(--step-4); margin: 0.3rem 0 0.75rem; }
+  .lede { color: var(--ink-muted); font-size: var(--step-1); margin: 0; }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 1rem;
+    padding: 1.1rem 1.25rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    margin-bottom: 1rem;
+  }
+  .controls input[type='search'] {
+    flex: 1 1 220px;
+    min-width: 180px;
+    background: var(--canvas);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--ink);
+    padding: 0.6rem 0.8rem;
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+  }
+  .facet { display: flex; flex-direction: column; gap: 0.3rem; }
+  .facet label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .controls select,
+  .controls button {
+    background: var(--canvas);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--ink);
+    padding: 0.55rem 0.7rem;
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    cursor: pointer;
+  }
+  .controls button:hover { border-color: var(--gold); color: var(--gold); }
+  .count {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+    margin: 0 0 1.5rem;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  .empty { color: var(--ink-muted); font-style: italic; padding: 2rem 0; }
+</style>

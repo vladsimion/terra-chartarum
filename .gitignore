@@ -1,0 +1,16 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+.npm-cache/
+
+# logs / env
+*.log
+.env
+.env.production
+.DS_Store
+
+# local editor / tool settings
+.claude/

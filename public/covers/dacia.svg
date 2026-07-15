@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Terra Sigillata">
+  <rect width="800" height="500" fill="#171109"/>
+  <rect y="250" width="800" height="250" fill="#241a10"/>
+  <g stroke="#cdc2ab" stroke-width="1" opacity="0.16">
+    <path d="M0 250 H800" stroke-width="2"/>
+    <path d="M0 310 H800 M0 370 H800 M0 430 H800"/>
+    <path d="M160 250 V500 M320 250 V500 M480 250 V500 M640 250 V500"/>
+  </g>
+  <g fill="#cdc2ab" opacity="0.7">
+    <rect x="120" y="150" width="70" height="100"/><rect x="360" y="110" width="70" height="140"/>
+    <rect x="600" y="180" width="70" height="70"/>
+  </g>
+  <text x="58" y="80" fill="#ddd5c4" font-family="monospace" font-size="16" letter-spacing="6">LAPIDARIVM DACICVM</text>
+  <text x="56" y="360" fill="#e8dec5" font-family="Georgia, serif" font-size="50" font-weight="600">Terra Sigillata</text>
+  <text x="58" y="410" fill="#cdc2ab" font-family="monospace" font-size="18" letter-spacing="3">THE TRENCH &amp; THE MUSEUM</text>
+</svg>

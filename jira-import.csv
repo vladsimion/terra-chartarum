@@ -1,0 +1,58 @@
+Issue Type,Issue Key,Epic Link,Summary,Description,Story Points,Priority,Labels,Milestone
+Epic,ATLAS-E1,,Foundations,Stand up the project skeleton tooling and shared design/content primitives.,,Highest,foundations,M1
+Story,ATLAS-101,ATLAS-E1,Scaffold Astro + TS + Tailwind app,"AC: static build succeeds; TS strict on; @astrojs/tailwind + @astrojs/mdx wired; View Transitions enabled; / renders placeholder; repo initialized.",5,Highest,scaffold;astro,M1
+Story,ATLAS-102,ATLAS-E1,Tooling & CI pipeline,"AC: ESLint+Prettier enforced; Vitest + Playwright run in CI; PR checks green; Lighthouse CI + axe wired with budgets.",5,High,tooling;ci,M1
+Story,ATLAS-103,ATLAS-E1,Unified design tokens & style guide,"AC: src/styles/tokens.css holds palette/type/motion tokens; /colophon renders them; fonts self-hosted/optimized.",5,High,design-system;tokens,M1
+Story,ATLAS-104,ATLAS-E1,Content model & essay registry,"AC: Essay type defined; Astro content collection with Zod schema in src/content/config.ts; lib/registry.ts returns typed list (legacy + new).",3,High,content-model,M1
+Task,ATLAS-105,ATLAS-E1,Import the four source repos into the project,"AC: each legacy index.html + assets preserved verbatim under public/embed/<slug>/; licenses/attribution captured.",2,High,legacy;import,M1
+Epic,ATLAS-E2,,Portal Shell & Atlas Landing,The unified front door and consistent chrome that makes everything one publication.,,Highest,portal-shell,M1
+Story,ATLAS-201,ATLAS-E2,Global shell: Header Footer Nav,"AC: persistent header (logotype atlas link menu); footer (about/colophon/credits); responsive; keyboard-navigable.",5,Highest,shell;nav,M1
+Story,ATLAS-202,ATLAS-E2,Atlas landing page,"AC: cinematic hero; featured essays; entry points to gallery/atlas/about; responsive; passes Lighthouse >=90.",8,Highest,landing,M1
+Story,ATLAS-203,ATLAS-E2,Essay gallery / index with facets,"AC: cards from registry; filter by era/region/lens; sort; empty/loading states; deep-linkable filter URLs.",8,High,gallery;facets,M1
+Story,ATLAS-204,ATLAS-E2,About + Colophon + Credits pages,"AC: project statement; methodology; typography/color credits; per-essay attribution.",3,Medium,content-pages,M1
+Story,ATLAS-205,ATLAS-E2,SEO OG images sitemap RSS,"AC: per-essay metadata + OG cards; sitemap.xml; robots.txt; optional RSS of essays. NOTE: sitemap integration deferred due to version-compat build crash; re-add with pinned compatible version.",5,Medium,seo;og;deferred,M1
+Story,ATLAS-206,ATLAS-E2,Motion system & view transitions,"AC: shared easing/duration tokens; atlas->essay transition; reduced-motion respected.",5,Medium,motion;transitions,M1
+Epic,ATLAS-E3,,Legacy Essay Integration,Host the four existing essays inside the portal isolated but framed by shared chrome.,,Highest,legacy-integration,M1
+Story,ATLAS-301,ATLAS-E3,Isolation boundary spike & decision,"AC: prototype scoped-container vs iframe for one essay in an .astro route; document any global-CSS/JS conflicts; choose default + per-essay fallback rule. RESOLVED: iframe chosen (essays are full self-contained HTML docs).",3,Highest,spike;isolation,M1
+Story,ATLAS-302,ATLAS-E3,Essay host route src/pages/essays/[slug].astro,"AC: renders legacy interior in chosen boundary; portal header overlay (return-to-atlas breadcrumbs prev/next); scroll progress synced (bridge only if iframed).",5,Highest,host-route,M1
+Story,ATLAS-303,ATLAS-E3,Integrate cartography,"AC: renders identically to source; chrome works; no console errors; a11y smoke pass.",5,High,essay;cartography,M1
+Story,ATLAS-304,ATLAS-E3,Integrate Dacia,"AC: as above; IntersectionObserver scroll-spy intact.",5,High,essay;dacia,M1
+Story,ATLAS-305,ATLAS-E3,Integrate Speculum,"AC: as above; cartometry bench functional.",5,High,essay;speculum,M1
+Story,ATLAS-306,ATLAS-E3,Integrate Venice-vs-Sicily,"AC: as above; pointermove/clip-path slider intact.",5,High,essay;venice-sicily,M1
+Story,ATLAS-307,ATLAS-E3,Retrofit legacy shared header/footer tokens,"AC: each legacy essay references shared brand header/footer only; interiors untouched.",3,Medium,legacy;tokens,M1
+Story,ATLAS-308,ATLAS-E3,Per-essay metadata + covers,"AC: registry entries complete for all 4 (eras/regions/lenses/covers/counts); gallery cards correct.",3,High,metadata;covers,M1
+Epic,ATLAS-E4,,Shared Component Library + Essay Starter,Turn recurring patterns into reusable parts so new essays are fast and consistent.,,High,component-library,M2
+Story,ATLAS-401,ATLAS-E4,Extract RadarChart island,"AC: framework-agnostic island (client:visible); configurable axes/scale; overlay/compare mode; reused-token colors; tested; documented in colophon.",5,High,island;radar,M2
+Story,ATLAS-402,ATLAS-E4,Extract AdaptiveTimeline component,"AC: non-linear compression for ancient eras; responsive SVG; keyboard/focus support.",5,High,timeline,M2
+Story,ATLAS-403,ATLAS-E4,Extract CompareSlider (overlay) component,"AC: pointer + touch + keyboard; clip-path reveal; a11y labels.",3,Medium,slider,M2
+Story,ATLAS-404,ATLAS-E4,Extract Scrollytelling scaffolding,"AC: IntersectionObserver-based step/scroll-spy hook; reduced-motion aware; reusable.",5,Medium,scrollytelling,M2
+Story,ATLAS-405,ATLAS-E4,MDX authoring pipeline (Astro collection),"AC: MDX essays render with shared islands available; content-collection schema validates frontmatter; one sample native essay builds.",3,High,mdx;authoring,M2
+Story,ATLAS-406,ATLAS-E4,Essay Starter Kit + docs,"AC: starter/ template + step-by-step authoring guide; create-essay script scaffolds a new slug end-to-end.",5,Medium,starter;docs,M2
+Epic,ATLAS-E5,,Interactive Atlas Meta-Layer,The cross-essay map+timeline that makes this a platform not a list.,,High,atlas-meta,M3
+Story,ATLAS-501,ATLAS-E5,Corpus data model across essays,"AC: unified schema for individual historical maps (title year region coords source essay); populated for >=2 essays.",5,High,corpus,M3
+Story,ATLAS-502,ATLAS-E5,Map view (MapLibre GL + open tiles),"AC: base map; pins/regions link to essays/maps; performant; graceful no-WebGL fallback.",8,High,maplibre;map,M3
+Story,ATLAS-503,ATLAS-E5,Unified corpus timeline,"AC: spans all essays; compressed ancient eras; click -> essay/map; synced with facets.",5,Medium,timeline;corpus,M3
+Story,ATLAS-504,ATLAS-E5,Faceted discovery + client search,"AC: filter corpus by era/region + canonical meta-lens dimension (ATLAS-EL); full-text search over metadata; deep-linkable state.",5,High,facets;search,M3
+Epic,ATLAS-EG,,Geo-Data Tier (GIS / Historical GIS),Serverless cloud-native geo layers underpinning the atlas map. Framework-agnostic; escalation to a spatial backend deferred until a real trigger.,,Medium,gis,M3
+Story,ATLAS-EG1,ATLAS-EG,Geo-data architecture & format standards,"AC: PMTiles/COG/FlatGeobuf standards documented; CDN/versioning strategy; Regime-B (PostGIS + Martin/TiTiler) escalation triggers written down.",3,Medium,gis;architecture,M3
+Story,ATLAS-EG2,ATLAS-EG,GeoLayer registry + metadata schema,"AC: typed registry with source/license/CRS/temporal extent/attribution; Zod-validated; >=2 sample layers registered.",5,Medium,gis;registry,M3
+Story,ATLAS-EG3,ATLAS-EG,MapLibre layer pipeline (vector + raster tiles),"AC: PMTiles vector + COG raster render on the atlas map; toggle on/off; performant range-request loading; graceful no-WebGL fallback.",8,Medium,gis;maplibre,M3
+Story,ATLAS-EG4,ATLAS-EG,Temporal filtering / time-slider,"AC: shared time-slider filters layers by yearFrom/yearTo; synced with the atlas timeline (ATLAS-503); reduced-motion aware.",5,Medium,gis;time-slider,M3
+Story,ATLAS-EG5,ATLAS-EG,Gazetteer linking (optional),"AC: places link to WHG/Pleiades/Pelagios via Linked Places Format; deferrable.",3,Low,gis;gazetteer;deferred,M3
+Story,ATLAS-EG6,ATLAS-EG,Georeferenced historical-map overlays (OPTIONAL),"AC: warp/overlay scanned essay maps via Allmaps/IIIF; OpenLayers used where projections require it; opacity/compare controls.",8,Low,gis;georeferencing;optional,M3
+Epic,ATLAS-EL,,Harmonized Meta-Lens,The additive 6-dimension lens + crosswalk that connects all essays.,,High,meta-lens,M1
+Story,ATLAS-EL1,ATLAS-EL,Define canonical dimensions & crosswalk table,"AC: 6 dimensions (Measure Witness Use Cosmos Power Silence) documented; machine-readable crosswalk maps every native axis of all 4 essays -> canonical; Sex-Lectiones-as-method caveat encoded; reviewed/signed off.",5,High,meta-lens;crosswalk,M1
+Story,ATLAS-EL2,ATLAS-EL,Meta-lens data + normalization utilities,"AC: metaScores schema wired into registry; normalizer converts 1-5 / 0-8 / categorical native scores -> 0-1; unit-tested; caveat metadata attached.",5,Medium,meta-lens;normalization,M1
+Story,ATLAS-EL3,ATLAS-EL,Colophon: transparent methodology page,"AC: /colophon renders the crosswalk + dimension glossary + one interpretive frame / its own silences statement; per-essay native lens also shown.",3,Medium,meta-lens;colophon,M1
+Story,ATLAS-EL4,ATLAS-EL,Unified cross-essay radar (optional/deferred),"AC: normalized radar plots essays/maps on the 6 canonical axes with visible commensurability caveat; toggle between native lens <-> meta-lens.",5,Low,meta-lens;radar;deferred,M3
+Epic,ATLAS-E6,,Polish A11y Perf & Launch,Make it production-grade and ship it.,,High,launch,M4
+Story,ATLAS-601,ATLAS-E6,Accessibility pass (WCAG 2.1 AA),"AC: axe clean on all routes; keyboard nav; focus management across transitions; reduced-motion.",5,High,a11y,M4
+Story,ATLAS-602,ATLAS-E6,Performance budgets & optimization,"AC: Lighthouse >=90 all categories on key routes; image/font optimization; code-split legacy essays.",5,High,perf,M4
+Story,ATLAS-603,ATLAS-E6,Cross-browser / responsive QA,"AC: verified on latest Chrome/Firefox/Safari + mobile; Playwright E2E of core flows green.",3,Medium,qa,M4
+Story,ATLAS-604,ATLAS-E6,Analytics & privacy,"AC: privacy-respecting analytics (e.g. Plausible) optional; cookie/consent note if needed.",2,Low,analytics,M4
+Story,ATLAS-605,ATLAS-E6,Deployment & domain,"AC: host chosen; CI deploys static output; preview deploys on PR; custom domain + HTTPS.",3,High,deploy,M4
+Story,ATLAS-606,ATLAS-E6,Launch checklist & 404/error pages,"AC: 404/500 pages branded; redirects for old repo URLs if needed; launch runbook.",2,Medium,launch;404,M4
+Epic,ATLAS-E7,,Authoring Workflow & Growth,Keep publishing essays without regressing cohesion.,,Medium,authoring,M4
+Story,ATLAS-701,ATLAS-E7,Contributor & authoring documentation,"AC: end-to-end how to add an essay guide; design/token reference; review checklist.",3,Medium,docs,M4
+Story,ATLAS-702,ATLAS-E7,Essay content-review & QA template,"AC: PR template with a11y/perf/metadata checklist; definition-of-done for a new essay.",2,Low,qa;template,M4
+Story,ATLAS-703,ATLAS-E7,Roadmap & backlog for future essays,"AC: prioritized list of next essay topics; issue templates; per-essay epics generated from starter.",2,Low,roadmap,M4

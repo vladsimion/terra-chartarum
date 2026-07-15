@@ -1,0 +1,102 @@
+---
+import PortalLayout from '../../layouts/PortalLayout.astro';
+import { getEssays } from '../../lib/registry';
+
+export async function getStaticPaths() {
+  const essays = await getEssays();
+  return essays.map((essay, i) => ({
+    params: { slug: essay.slug },
+    props: {
+      essay,
+      prev: essays[(i - 1 + essays.length) % essays.length],
+      next: essays[(i + 1) % essays.length],
+    },
+  }));
+}
+
+const { essay, prev, next } = Astro.props;
+const { data } = essay;
+const accent = data.accent ?? 'var(--gold)';
+
+// ATLAS-301 decision: legacy essays are full self-contained HTML documents
+// (own <head>, fonts, global body styles), so the isolation boundary is an
+// <iframe> sourced from public/essays/<slug>/. This guarantees zero style/JS
+// leakage against the portal chrome. Native (MDX) essays render inline instead.
+const isLegacy = data.status === 'legacy' && data.embedPath;
+const { Content } = await essay.render();
+---
+
+<PortalLayout
+  title={data.title}
+  description={data.summary}
+  ogImage={data.cover}
+>
+  <div class="essay-bar" style={`--accent:${accent}`}>
+    <div class="shell bar-inner">
+      <a class="back" href="/essays/">← Atlas of essays</a>
+      <span class="crumb" aria-hidden="true">/</span>
+      <span class="crumb-title">{data.title}</span>
+      <nav class="pager" aria-label="Essay navigation">
+        <a href={`/essays/${prev.slug}/`} title={prev.data.title}>‹ Prev</a>
+        <a href={`/essays/${next.slug}/`} title={next.data.title}>Next ›</a>
+      </nav>
+    </div>
+  </div>
+
+  {
+    isLegacy ? (
+      <iframe
+        class="essay-frame"
+        src={data.embedPath}
+        title={`${data.title} — ${data.subtitle}`}
+        loading="lazy"
+      />
+    ) : (
+      <article class="shell native-essay">
+        <Content />
+      </article>
+    )
+  }
+</PortalLayout>
+
+<style>
+  .essay-bar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: color-mix(in srgb, var(--canvas) 92%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    border-top: 1px solid transparent;
+  }
+  .bar-inner {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding-block: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.06em;
+  }
+  .back { color: var(--accent); white-space: nowrap; }
+  .crumb { color: var(--ink-muted); }
+  .crumb-title {
+    color: var(--ink-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .pager { margin-left: auto; display: flex; gap: 1rem; white-space: nowrap; }
+  .pager a { color: var(--ink-muted); }
+  .pager a:hover { color: var(--ink); }
+
+  .essay-frame {
+    display: block;
+    width: 100%;
+    /* Fill the viewport below the sticky essay bar; the essay scrolls inside. */
+    height: calc(100dvh - 3rem);
+    border: 0;
+    background: var(--canvas);
+  }
+  .native-essay { padding-block: 3rem; max-width: var(--prose-max); }
+</style>

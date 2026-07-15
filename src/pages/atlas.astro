@@ -1,0 +1,123 @@
+---
+import PortalLayout from '../layouts/PortalLayout.astro';
+import { getEssays, formatYear } from '../lib/registry';
+
+const essays = await getEssays();
+
+// Shared, ancient-compressed time scale (seed for E5/EG; MapLibre map view lands
+// in ATLAS-502). Square-root compression gives recent centuries more room.
+const NOW = 2024;
+const OLDEST = Math.min(...essays.map((e) => e.data.yearFrom));
+const ageMax = NOW - OLDEST;
+const pos = (year: number) => (1 - Math.sqrt((NOW - year) / ageMax)) * 100;
+
+const ticks = [OLDEST, -600, 150, 1150, 1500, 1750, NOW];
+const bars = essays.map((e) => {
+  const x1 = pos(e.data.yearFrom);
+  const x2 = pos(e.data.yearTo);
+  return { essay: e, left: x1, width: Math.max(x2 - x1, 1.5) };
+});
+---
+
+<PortalLayout
+  title="Atlas"
+  description="A cross-essay meta-layer: every essay plotted on one shared, ancient-compressed timeline of cartographic history."
+>
+  <section class="shell atlas">
+    <header class="atlas-head">
+      <p class="eyebrow">The atlas · meta-layer</p>
+      <h1>One timeline, every essay</h1>
+      <p class="lede">
+        Each essay charted on a shared timeline (ancient centuries compressed).
+        An interactive map view with historical GIS layers is on the roadmap —
+        this is the temporal spine it will hang from.
+      </p>
+    </header>
+
+    <div class="timeline" role="img" aria-label="Timeline of essays across cartographic history">
+      <div class="axis">
+        {ticks.map((t) => (
+          <span class="tick" style={`left:${pos(t)}%`}>
+            <span class="tick-label">{formatYear(t)}</span>
+          </span>
+        ))}
+      </div>
+      <div class="tracks">
+        {bars.map(({ essay, left, width }) => (
+          <a
+            class="track"
+            href={`/essays/${essay.slug}/`}
+            style={`left:${left}%; width:${width}%; --accent:${essay.data.accent ?? 'var(--gold)'}`}
+            title={`${essay.data.title} (${formatYear(essay.data.yearFrom)} – ${formatYear(essay.data.yearTo)})`}
+          >
+            <span class="track-label">{essay.data.title}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <p class="note">
+      Note: the scale is deliberately non-linear — a critical atlas measures time
+      the way its maps measured space, with its own compressions and silences.
+    </p>
+  </section>
+</PortalLayout>
+
+<style>
+  .atlas { padding-block: clamp(2.5rem, 6vw, 4rem); }
+  .atlas-head { max-width: var(--prose-max); margin-bottom: 2.5rem; }
+  .atlas-head h1 { font-size: var(--step-4); margin: 0.3rem 0 0.75rem; }
+  .lede { color: var(--ink-muted); font-size: var(--step-1); margin: 0; }
+
+  .timeline {
+    position: relative;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    padding: 3.25rem 1.5rem 1.5rem;
+    overflow: hidden;
+  }
+  .axis { position: relative; height: 0; }
+  .tick {
+    position: absolute;
+    top: -2.5rem;
+    transform: translateX(-50%);
+    border-left: 1px dashed var(--line);
+    height: calc(100% + 8rem);
+    padding-top: 0;
+  }
+  .tick-label {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    color: var(--ink-muted);
+    position: absolute;
+    top: -1.1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+  .tracks { position: relative; display: flex; flex-direction: column; gap: 0.75rem; }
+  .track {
+    position: relative;
+    height: 2.4rem;
+    min-width: 2.4rem;
+    background: color-mix(in srgb, var(--accent) 22%, var(--panel-2));
+    border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--line));
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    padding-inline: 0.9rem;
+    transition: background var(--dur-fast) var(--ease-out);
+  }
+  .track:hover { background: color-mix(in srgb, var(--accent) 40%, var(--panel-2)); }
+  .track-label {
+    font-family: var(--font-display);
+    font-size: var(--step-0);
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .note { color: var(--ink-muted); font-style: italic; margin-top: 1.5rem; max-width: var(--prose-max); }
+</style>

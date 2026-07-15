@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speculum Chartarum - A Map of Maps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#181208;
+  --ink-soft:#241b0e;
+  --linen:#EADFC4;
+  --linen-dim:rgba(234,223,196,.62);
+  --linen-faint:rgba(234,223,196,.18);
+  --parchment:#D9C79C;
+  --verdigris:#4E7A66;
+  --verdigris-bright:#6FA188;
+  --cinnabar:#AE4226;
+  --cinnabar-bright:#C9603F;
+  --ochre:#9A7838;
+  --ochre-bright:#B98F45;
+  --rule:rgba(24,18,8,.55);
+  --serif:'EB Garamond',Georgia,serif;
+  --fell:'IM Fell English',Georgia,serif;
+  --fellsc:'IM Fell English SC',Georgia,serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{transition:none!important;animation:none!important}}
+body{
+  background:var(--parchment);
+  background-image:
+    radial-gradient(ellipse 120% 80% at 20% 0%, rgba(255,248,225,.5), transparent 55%),
+    radial-gradient(ellipse 100% 90% at 85% 100%, rgba(120,90,40,.18), transparent 60%);
+  color:var(--ink);
+  font-family:var(--serif);
+  font-size:18px;
+  line-height:1.55;
+}
+a{color:inherit}
+.frame{max-width:1080px;margin:0 auto;padding:0 22px}
+
+.eyebrow{font-family:var(--fellsc);font-size:.78rem;letter-spacing:.32em;text-transform:uppercase}
+
+/* ---------- HERO ---------- */
+.hero{background:var(--ink);color:var(--linen);position:relative;overflow:hidden;border-bottom:3px double var(--ochre-bright)}
+.hero .frame{position:relative;padding:84px 22px 72px;text-align:center;z-index:2}
+.hero-rose{position:absolute;inset:0;width:100%;height:100%;z-index:1;opacity:.5}
+.hero h1{font-family:var(--fell);font-weight:400;font-size:clamp(2.6rem,7vw,4.6rem);letter-spacing:.04em;line-height:1.05;margin:18px 0 6px}
+.hero h1 em{font-style:italic;color:var(--verdigris-bright)}
+.hero .sub{font-family:var(--fell);font-style:italic;font-size:clamp(1.05rem,2.4vw,1.3rem);color:var(--linen-dim);max-width:580px;margin:14px auto 0}
+.hero .eyebrow{color:var(--ochre-bright)}
+.hero-neatline{position:absolute;inset:14px;border:1px solid var(--linen-faint);outline:1px solid var(--linen-faint);outline-offset:4px;pointer-events:none;z-index:3}
+.legend-strip{display:flex;justify-content:center;gap:28px;flex-wrap:wrap;margin-top:34px;font-family:var(--fellsc);font-size:.72rem;letter-spacing:.18em;color:var(--linen-dim)}
+.legend-strip i{display:inline-block;width:26px;height:0;border-top:2px solid;vertical-align:middle;margin-right:8px}
+.legend-strip .lw{border-color:var(--linen)}
+.legend-strip .lg{border-color:var(--verdigris-bright);border-top-style:dashed}
+.legend-strip .lr{border-color:var(--cinnabar-bright);border-top-style:dotted}
+
+/* ---------- SECTION shells ---------- */
+section{padding:72px 0}
+.sect-head{text-align:center;max-width:660px;margin:0 auto 44px}
+.sect-head h2{font-family:var(--fell);font-weight:400;font-size:clamp(1.8rem,4vw,2.5rem);letter-spacing:.03em;margin-top:10px}
+.sect-head p{margin-top:12px;font-size:1.02rem;color:rgba(24,18,8,.85)}
+
+/* ---------- BEARINGS ---------- */
+.bearings{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rule);border-left:1px solid var(--rule)}
+.bearing{border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:26px 24px 28px}
+.bearing .glyph{font-family:var(--fell);font-style:italic;font-size:.85rem;color:var(--cinnabar);letter-spacing:.1em}
+.bearing h3{font-family:var(--fellsc);font-weight:400;font-size:1.25rem;letter-spacing:.12em;margin:6px 0 8px}
+.bearing p{font-size:.93rem;line-height:1.5;color:rgba(24,18,8,.85)}
+.bearing .scale{margin-top:14px;font-family:var(--fellsc);font-size:.68rem;letter-spacing:.14em;color:var(--ochre);display:flex;justify-content:space-between}
+@media(max-width:780px){.bearings{grid-template-columns:1fr 1fr}}
+@media(max-width:540px){.bearings{grid-template-columns:1fr}}
+
+/* ---------- CHART ROOM ---------- */
+.chartroom{background:var(--ink);color:var(--linen);border-top:3px double var(--ochre-bright);border-bottom:3px double var(--ochre-bright)}
+.chartroom .sect-head p{color:var(--linen-dim)}
+.chartroom .eyebrow{color:var(--ochre-bright)}
+.axis-row{display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 18px}
+.axis-row .axcap{font-family:var(--fellsc);font-size:.72rem;letter-spacing:.22em;color:var(--linen-dim);margin-right:6px}
+.axbtn{font-family:var(--fellsc);font-size:.76rem;letter-spacing:.16em;background:none;border:1px solid var(--linen-faint);color:var(--linen-dim);padding:6px 13px;cursor:pointer;transition:all .15s ease}
+.axbtn:hover{border-color:var(--linen-dim);color:var(--linen)}
+.axbtn:focus-visible{outline:2px solid var(--cinnabar-bright);outline-offset:2px}
+.axbtn.on{border-color:var(--cinnabar-bright);color:var(--cinnabar-bright)}
+.chart-wrap{border:1px solid var(--linen-faint);outline:1px solid var(--linen-faint);outline-offset:5px;padding:8px;overflow-x:auto;background:var(--ink-soft)}
+.chart-wrap svg{display:block;min-width:780px;width:100%;height:auto}
+.chart-note{margin-top:24px;font-family:var(--fell);font-style:italic;text-align:center;color:var(--linen-dim);font-size:1rem;max-width:680px;margin-left:auto;margin-right:auto}
+.cpoint{cursor:pointer}
+.cpoint .star{transition:fill .18s ease}
+.cpoint:hover .star,.cpoint:focus .star{fill:var(--cinnabar-bright)}
+.cpoint:focus{outline:none}
+.cpoint:focus-visible .halo{stroke:var(--cinnabar-bright);stroke-width:1.5}
+.cpoint.is-a .star{fill:var(--cinnabar-bright)}
+.cpoint.is-b .star{fill:var(--verdigris-bright)}
+svg.touring .cpoint:not(.on-tour){opacity:.18}
+svg.touring .cpoint.on-tour .star{stroke:var(--ochre-bright);stroke-width:1}
+.clabel{font-family:var(--fellsc);font-size:11.5px;letter-spacing:.06em;fill:var(--linen-dim);pointer-events:none}
+.cyear{font-family:var(--serif);font-style:italic;font-size:10.5px;fill:rgba(234,223,196,.45);pointer-events:none}
+.axlab{font-family:var(--fellsc);font-size:11px;letter-spacing:.2em;fill:rgba(234,223,196,.55)}
+
+/* ---------- TOURS ---------- */
+.tour-row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:30px}
+.tour-row .axcap{flex-basis:100%;text-align:center;font-family:var(--fellsc);font-size:.72rem;letter-spacing:.22em;color:var(--ochre-bright);margin-bottom:2px}
+.tourbtn{font-family:var(--fell);font-style:italic;font-size:.95rem;background:none;border:1px solid var(--linen-faint);color:var(--linen-dim);padding:8px 18px;cursor:pointer;transition:all .15s ease}
+.tourbtn:hover{border-color:var(--ochre-bright);color:var(--linen)}
+.tourbtn:focus-visible{outline:2px solid var(--ochre-bright);outline-offset:2px}
+.tourbtn.on{border-color:var(--ochre-bright);color:var(--ochre-bright)}
+.tour-card{display:none;margin:24px auto 0;max-width:640px;border:1px solid var(--linen-faint);outline:1px solid var(--linen-faint);outline-offset:4px;padding:22px 26px;text-align:center}
+.tour-card.open{display:block}
+.tour-card .tc-title{font-family:var(--fellsc);font-size:.85rem;letter-spacing:.2em;color:var(--ochre-bright)}
+.tour-card .tc-map{font-family:var(--fell);font-size:1.3rem;margin:8px 0 2px}
+.tour-card .tc-note{font-family:var(--fell);font-style:italic;color:var(--linen-dim);font-size:1rem}
+.tour-card .tc-nav{margin-top:16px;display:flex;justify-content:center;align-items:center;gap:14px}
+.tc-nav button{font-family:var(--fellsc);font-size:.74rem;letter-spacing:.16em;background:none;border:1px solid var(--linen-faint);color:var(--linen-dim);padding:6px 14px;cursor:pointer}
+.tc-nav button:hover:not(:disabled){border-color:var(--linen-dim);color:var(--linen)}
+.tc-nav button:disabled{opacity:.3;cursor:default}
+.tc-nav .steplab{font-family:var(--serif);font-style:italic;font-size:.85rem;color:var(--linen-dim)}
+
+/* ---------- DOSSIER ---------- */
+.dossier-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:start}
+@media(max-width:860px){.dossier-grid{grid-template-columns:1fr}}
+.dossier-card{border:1px solid var(--rule);outline:1px solid var(--rule);outline-offset:5px;padding:30px 30px 34px;background:rgba(255,248,225,.28)}
+.dossier-card .eyebrow{color:var(--cinnabar)}
+.dossier-card h3{font-family:var(--fell);font-weight:400;font-size:1.9rem;line-height:1.1;margin:8px 0 2px}
+.dossier-card .meta{font-family:var(--fell);font-style:italic;color:var(--ochre);margin-bottom:16px}
+.dossier-card p.body{font-size:1rem}
+.factline{display:flex;gap:10px;margin-top:14px;font-size:.92rem}
+.factline b{font-family:var(--fellsc);font-weight:400;letter-spacing:.12em;font-size:.78rem;color:var(--cinnabar);min-width:104px;padding-top:2px}
+.rose-panel{text-align:center}
+.rose-panel svg{width:100%;max-width:400px;height:auto}
+.compare-row{margin-top:18px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.compare-row label{font-family:var(--fellsc);font-size:.78rem;letter-spacing:.18em}
+select{font-family:var(--serif);font-size:.95rem;color:var(--ink);background:var(--linen);border:1px solid var(--rule);padding:7px 10px}
+select:focus-visible{outline:2px solid var(--cinnabar);outline-offset:2px}
+.rlab{font-family:var(--fellsc);font-size:11px;letter-spacing:.12em;fill:var(--ink)}
+.rring{fill:none;stroke:rgba(24,18,8,.3)}
+.rval{font-family:var(--serif);font-style:italic;font-size:9.5px;fill:rgba(24,18,8,.55)}
+.ledger{margin-top:26px;border-top:1px solid var(--rule)}
+.ledger-row{display:grid;grid-template-columns:100px 1fr 1fr;gap:12px;align-items:center;border-bottom:1px solid rgba(24,18,8,.25);padding:8px 0}
+.ledger-row.head{font-family:var(--fellsc);font-size:.72rem;letter-spacing:.12em}
+.ledger-row.head .vA{color:var(--cinnabar)} .ledger-row.head .vB{color:var(--verdigris)}
+.ledger-row .bname{font-family:var(--fellsc);font-size:.82rem;letter-spacing:.12em}
+.barcell{display:flex;align-items:center;gap:8px;font-size:.85rem;font-style:italic}
+.bar{height:7px;background:repeating-linear-gradient(90deg,currentColor 0 3px,transparent 3px 5px)}
+.vA{color:var(--cinnabar)} .vB{color:var(--verdigris)}
+.export-line{margin-top:18px;text-align:center}
+.export-line button{font-family:var(--fellsc);font-size:.74rem;letter-spacing:.16em;background:none;border:none;color:var(--ochre);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.export-line button:hover{color:var(--cinnabar)}
+
+/* ---------- CARTOMETRY BENCH ---------- */
+.benchroom{border-top:none;padding-top:0}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:18px}
+.chip-row .axcap{flex-basis:100%;text-align:center;font-family:var(--fellsc);font-size:.72rem;letter-spacing:.22em;color:var(--linen-dim);margin-bottom:2px}
+.chip{font-family:var(--fellsc);font-size:.74rem;letter-spacing:.14em;background:none;border:1px solid var(--linen-faint);color:rgba(234,223,196,.4);padding:5px 12px;cursor:pointer;transition:all .15s ease}
+.chip:hover{color:var(--linen)}
+.chip:focus-visible{outline:2px solid var(--cinnabar-bright);outline-offset:2px}
+.chip.on{border-color:rgba(201,96,63,.6);color:var(--cinnabar-bright)}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:22px}
+@media(max-width:680px){.stat-row{grid-template-columns:1fr 1fr}}
+.stat{border:1px solid var(--linen-faint);padding:14px 10px;text-align:center}
+.stat .k{font-family:var(--fellsc);font-size:.68rem;letter-spacing:.2em;color:var(--ochre-bright)}
+.stat .v{font-family:var(--fell);font-size:1.45rem;margin-top:4px}
+.stat .s{font-family:var(--serif);font-style:italic;font-size:.78rem;color:var(--linen-dim);margin-top:2px}
+.bench-vec{stroke:var(--cinnabar-bright);stroke-width:1.1;opacity:.85}
+.bench-true{fill:none;stroke:var(--linen);stroke-width:1}
+.bench-fit{fill:var(--cinnabar-bright)}
+.bench-lab{font-family:var(--fellsc);font-size:10.5px;letter-spacing:.06em;fill:var(--linen-dim)}
+
+/* ---------- DOSSIER BIBLIOGRAPHY ---------- */
+.bib{margin-top:20px;border-top:1px solid rgba(24,18,8,.3);padding-top:12px}
+.bib h4{font-family:var(--fellsc);font-weight:400;font-size:.8rem;letter-spacing:.18em;color:var(--cinnabar);margin-bottom:6px}
+.bib ul{list-style:none}
+.bib li{font-size:.88rem;line-height:1.45;padding-left:16px;text-indent:-16px;margin-top:4px;color:rgba(24,18,8,.88)}
+.bib li::before{content:"- "}
+.bib a{color:var(--cinnabar);text-decoration:none;border-bottom:1px solid rgba(174,66,38,.35)}
+.bib a:hover{border-bottom-color:var(--cinnabar)}
+
+/* ---------- MEASURABILITY ---------- */
+.mv{font-family:var(--fellsc);letter-spacing:.1em;font-size:.8rem;color:var(--ochre)}
+.docket-title{font-family:var(--fellsc);font-weight:400;font-size:.9rem;letter-spacing:.26em;color:var(--ochre-bright);text-align:center;margin-top:48px;text-transform:uppercase}
+.docket{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
+@media(max-width:840px){.docket{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.docket{grid-template-columns:1fr}}
+.dcard{border:1px solid var(--linen-faint);padding:16px 16px 18px}
+.dcard .tag{font-family:var(--fellsc);font-size:.64rem;letter-spacing:.18em;padding:3px 9px;border:1px solid;display:inline-block;text-transform:uppercase}
+.dcard .tag.full{color:var(--verdigris-bright);border-color:rgba(111,161,136,.5)}
+.dcard .tag.piece{color:var(--ochre-bright);border-color:rgba(185,143,69,.5)}
+.dcard h4{font-family:var(--fell);font-weight:400;font-size:1.18rem;margin:10px 0 1px;color:var(--linen)}
+.dcard .dyr{font-family:var(--serif);font-style:italic;font-size:.8rem;color:rgba(234,223,196,.45)}
+.dcard p{font-family:var(--serif);font-style:italic;font-size:.87rem;color:var(--linen-dim);line-height:1.5;margin-top:8px}
+
+/* ---------- FIELD SURVEY ---------- */
+.survey{max-width:780px;margin:0 auto 22px;border:1px solid var(--linen-faint);outline:1px solid var(--linen-faint);outline-offset:4px;padding:18px}
+.survey-hint{font-family:var(--serif);font-style:italic;font-size:.9rem;color:var(--linen-dim);line-height:1.5}
+.survey-hint code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-style:normal;font-size:.8rem;color:var(--ochre-bright)}
+.survey-hint a{color:var(--ochre-bright);text-decoration:underline;text-underline-offset:3px}
+.survey textarea{width:100%;background:#0d0903;color:var(--linen);border:1px solid var(--linen-faint);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82rem;line-height:1.6;padding:10px;margin-top:12px;resize:vertical}
+.survey textarea:focus-visible{outline:2px solid var(--cinnabar-bright);outline-offset:2px}
+.survey-ctl{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:12px;font-family:var(--serif);font-size:.85rem;color:var(--linen-dim)}
+.survey-ctl label{display:flex;align-items:center;gap:7px;font-style:italic;cursor:pointer}
+.survey-ctl input[type=checkbox]{accent-color:#AE4226}
+.survey-status{font-family:var(--fell);font-style:italic;color:var(--ochre-bright)}
+
+footer{background:var(--ink);color:var(--linen-dim);border-top:3px double var(--ochre-bright);text-align:center;padding:44px 22px 52px;font-family:var(--fell);font-style:italic}
+footer .eyebrow{color:var(--ochre-bright);font-style:normal;display:block;margin-bottom:12px}
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <svg class="hero-rose" viewBox="0 0 1200 460" preserveAspectRatio="xMidYMid slice" aria-hidden="true" id="heroRose"></svg>
+  <div class="hero-neatline" aria-hidden="true"></div>
+  <div class="frame">
+    <div class="eyebrow">Speculum Chartarum</div>
+    <h1>A Map <em>of</em> Maps</h1>
+    <p class="sub">Fifteen attempts to draw the world, from a Babylonian clay tablet to the triangulated survey of France - laid on one chart, measured by six bearings, and walked by three tours.</p>
+    <div class="legend-strip">
+      <span><i class="lw"></i>Principal winds</span>
+      <span><i class="lg"></i>Half winds</span>
+      <span><i class="lr"></i>Quarter winds</span>
+    </div>
+  </div>
+</header>
+
+<!-- ============ THE SIX BEARINGS ============ -->
+<section id="bearings">
+  <div class="frame">
+    <div class="sect-head">
+      <div class="eyebrow" style="color:var(--cinnabar)">The Framework</div>
+      <h2>The Six Bearings</h2>
+      <p>Old maps fail badly when judged by one yardstick. A mappa mundi is not a broken road map; a portolan is not a failed cosmology. Each chart here is taken on six independent bearings, scored from 0 to 8 points - one for each principal wind of the compass.</p>
+    </div>
+    <div class="bearings">
+      <div class="bearing">
+        <div class="glyph">i.</div><h3>Geodesy</h3>
+        <p>Mathematical fidelity to the shape of the earth: projection, coordinates, scale, the discipline of where things actually are.</p>
+        <div class="scale"><span>diagram</span><span>survey</span></div>
+      </div>
+      <div class="bearing">
+        <div class="glyph">ii.</div><h3>Witness</h3>
+        <p>How directly the map rests on observation - soundings, itineraries, astronomical sights - rather than inherited authority and rumour.</p>
+        <div class="scale"><span>hearsay</span><span>measurement</span></div>
+      </div>
+      <div class="bearing">
+        <div class="glyph">iii.</div><h3>Cosmos</h3>
+        <p>The weight of symbolic order: theology, ideology, the centre of the world placed where doctrine, not geography, demands it.</p>
+        <div class="scale"><span>mute</span><span>doctrinal</span></div>
+      </div>
+      <div class="bearing">
+        <div class="glyph">iv.</div><h3>Fitness</h3>
+        <p>How well the map served the task it was actually made for - sailing, taxing, preaching, governing. Accuracy and usefulness are not the same bearing.</p>
+        <div class="scale"><span>ornament</span><span>instrument</span></div>
+      </div>
+      <div class="bearing">
+        <div class="glyph">v.</div><h3>Reach</h3>
+        <p>The span of world the map dares to hold - from one sea or one kingdom to the whole inhabited earth, the ecumene.</p>
+        <div class="scale"><span>local</span><span>ecumenical</span></div>
+      </div>
+      <div class="bearing">
+        <div class="glyph">vi.</div><h3>Hand</h3>
+        <p>Craft: the quality of drafting, pigment, lettering and engraving - the labour that made the map worth keeping for centuries.</p>
+        <div class="scale"><span>sketch</span><span>masterwork</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CHART OF CHARTS ============ -->
+<section class="chartroom" id="chart">
+  <div class="frame">
+    <div class="sect-head">
+      <div class="eyebrow">The Signature Plate</div>
+      <h2>The Chart of Charts</h2>
+      <p>Every map plotted as a position: its age along the horizontal, any chosen bearing on the vertical. Change the bearing to re-sound the whole corpus; select any star to open its dossier.</p>
+    </div>
+    <div class="axis-row" id="axisRow" role="group" aria-label="Choose the vertical bearing"><span class="axcap">Sound by -</span></div>
+    <div class="chart-wrap"><svg id="metaChart" viewBox="0 0 1000 560" role="img" aria-label="Scatter chart of fifteen historical maps by year and chosen bearing"></svg></div>
+    <p class="chart-note" id="chartNote">Note the sawtooth around 1300: the Hereford mappa mundi and the Carte Pisane were drawn within a decade of each other, one near the floor of Witness and one near its ceiling. Accuracy did not simply decline and recover - traditions with different purposes ran in parallel. The ochre dashes trailing to a hollow ring mark transmission: where the surviving artifact is centuries younger than its content, the timeline of what was drawn is not the timeline of what survives.</p>
+
+    <div class="tour-row" id="tourRow" role="group" aria-label="Thematic tours">
+      <span class="axcap">Or follow a tour through the corpus -</span>
+    </div>
+    <div class="tour-card" id="tourCard" aria-live="polite">
+      <div class="tc-title" id="tcTitle"></div>
+      <div class="tc-map" id="tcMap"></div>
+      <p class="tc-note" id="tcNote"></p>
+      <div class="tc-nav">
+        <button id="tcPrev">← Prev</button>
+        <span class="steplab" id="tcStep"></span>
+        <button id="tcNext">Next →</button>
+        <button id="tcExit">Exit</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DOSSIER ============ -->
+<section id="dossier">
+  <div class="frame">
+    <div class="sect-head">
+      <div class="eyebrow" style="color:var(--cinnabar)">The Dossiers</div>
+      <h2>Taken on All Six Bearings</h2>
+      <p>The selected chart, its wind-rose of scores, a second chart laid over it - and the sources each score must answer to. The <em>History of Cartography</em> volumes cited below are <a href="https://press.uchicago.edu/books/HOC/index.html" target="_blank" rel="noopener" style="color:var(--cinnabar)">free in full from Chicago</a>.</p>
+    </div>
+    <div class="dossier-grid">
+      <div class="dossier-card" id="dossierCard"></div>
+      <div class="rose-panel">
+        <svg id="roseChart" viewBox="0 0 400 400" role="img" aria-label="Six-bearing wind rose of scores"></svg>
+        <div class="compare-row">
+          <label for="cmpSel">Lay over -</label>
+          <select id="cmpSel"></select>
+        </div>
+        <div class="ledger" id="ledger"></div>
+        <div class="export-line"><button id="exportBtn">Export the scored dataset (JSON)</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CARTOMETRY BENCH ============ -->
+<section class="chartroom" id="bench">
+  <div class="frame">
+    <div class="sect-head">
+      <div class="eyebrow">The Instruments</div>
+      <h2>The Cartometry Bench</h2>
+      <p>One chart on this site can be measured without ever seeing it: Ptolemy's, because his coordinates survive as text. For the other nine candidates on the docket the coordinates live on the artifact, not in text - so the bench takes field surveys: pick control points on any digitization, paste them below, and the same least-squares Helmert fit runs, with displacement vectors and a measurable figure.</p>
+    </div>
+    <div class="axis-row" id="dsRow" role="group" aria-label="Choose a dataset"><span class="axcap">Dataset -</span></div>
+    <div class="survey" id="surveyPanel" hidden>
+      <p class="survey-hint">One control point per line: <code>name, mapX, mapY, trueLon, trueLat</code> - or paste a complete Allmaps georeference annotation (JSON) made at <a href="https://editor.allmaps.org" target="_blank" rel="noopener">editor.allmaps.org</a> against any digitization linked in the dossiers. Mind each docket caveat below: a projected map wants its own projection inverted before a single global fit means much.</p>
+      <textarea id="surveyText" rows="7" spellcheck="false" placeholder="Genoa, 1240, 612, 8.93, 44.41&#10;Alexandria, 3920, 1480, 29.92, 31.20&#10;Carthage, 2110, 1395, 10.32, 36.85&#10;…"></textarea>
+      <div class="survey-ctl">
+        <label><input type="checkbox" id="flipY" checked> source coordinates are image pixels (vertical axis runs downward)</label>
+        <button class="axbtn" id="runSurvey">Run the fit</button>
+        <span class="survey-status" id="surveyStatus"></span>
+      </div>
+    </div>
+    <div class="chip-row" id="chipRow" role="group" aria-label="Toggle control points">
+      <span class="axcap">Control points - strike a city to remove it from the fit</span>
+    </div>
+    <div class="chart-wrap"><svg id="benchPlot" viewBox="0 0 1000 520" role="img" aria-label="Displacement vectors between Ptolemy's fitted coordinates and true positions"></svg></div>
+    <div class="stat-row" id="statRow"></div>
+    <p class="chart-note">On the Ptolemy dataset - twenty-two positions after the Geographia tradition, rounded, with manuscript families disagreeing by fractions of a degree - the fit recovers the famous diagnosis in one number: Ptolemy's east–west frame runs roughly half again too long, so the whole inhabited world must be shrunk to sit on the ground. Strike Babylon and the Atlantic ports and watch the Mediterranean core tighten - the error is not noise, it is structure, accumulated along his longest itineraries. Longitude was the unsolved problem; latitude, fixed by the sun, behaves far better.</p>
+    <p class="chart-note">For every other map here, the same measurement needs control points picked on the artifact itself - MapAnalyst and Allmaps exist for exactly that. The literature's verdicts: portolan charts fit astonishingly tightly but sit rotated some 8–10° anticlockwise, the fossil of uncorrected magnetic declination; the mappae mundi resist the fit altogether, which is not their failure but their genre.</p>
+
+    <h3 class="docket-title">The Docket - Candidates for the Control-Point Bench</h3>
+    <p class="chart-note" style="margin-top:12px">Ten charts admit measurement on the artifact itself: seven take a single global fit, three only piecewise. Each carries the caveat that keeps its number honest.</p>
+    <div class="docket" id="docket"></div>
+  </div>
+</section>
+
+
+<footer>
+  <span class="eyebrow">Finis Chartae</span>
+  Here the engraver rests his burin. Beyond this line, unsounded water.
+</footer>
+
+<script>
+/* ================= DATA ================= */
+const BEARINGS = ["Geodesy","Witness","Cosmos","Fitness","Reach","Hand"];
+const MAPS = [
+ {id:"imago", name:"Imago Mundi", short:"Imago Mundi", year:-600, yearLabel:"c. 600 BC", origin:"Babylon", tradition:"Mesopotamian",
+  orient:"Cosmic - no compass direction governs it",
+  purpose:"A cosmological statement in clay",
+  held:"British Museum, London",
+  s:[1,1.5,8,6,2,4],
+  text:"A clay tablet smaller than a hand, with Babylon set on the Euphrates at the centre of a disc of land, ringed by the Bitter River and fringed with triangular nagû - regions of legend. Nothing on it would get a traveller anywhere, and it was never meant to: it is a diagram of how the world is ordered, with the mapmaker's city at the hinge of it. Judged on Geodesy it scores almost nothing; judged on Fitness for its actual task - asserting a cosmos - it is remarkably complete."},
+ {id:"ptolemy", name:"Ptolemy, Geographia", short:"Ptolemy", year:150, yearLabel:"c. AD 150", origin:"Alexandria", tradition:"Greco-Roman",
+  orient:"North-up, on a mathematical graticule",
+  purpose:"A coordinate system for the inhabited world",
+  held:"Earliest Byzantine copies: Vatican Library; Topkapı, Istanbul",
+  view:"https://digi.vatlib.it/view/MSS_Urb.gr.82",
+  s:[7,7,1,5,6,6],
+  text:"Less a map than a method: some eight thousand places fixed by latitude and longitude, with instructions for projecting a curved earth onto a flat sheet. The surviving maps are Byzantine reconstructions, but the apparatus is Ptolemy's own. Its errors - a Mediterranean stretched too long, an enclosed Indian Ocean - would mislead readers for thirteen centuries precisely because the framework was so authoritative. The high-water mark of ancient Witness, not equalled again in Europe until the Renaissance reprinted him."},
+ {id:"peutinger", name:"Tabula Peutingeriana", short:"Peutinger", year:350, yearLabel:"4th c. (13th-c. copy)", origin:"Roman Empire", tradition:"Roman itinerary",
+  orient:"A scroll - the world flattened into a ribbon",
+  purpose:"Road distances for the cursus publicus",
+  held:"Austrian National Library, Vienna",
+  view:"https://onb.digital/result/10002029",
+  s:[2,6,2,8,6,5],
+  text:"Nearly seven metres long and a third of a metre tall, the empire squeezed into a ribbon: shapes are sacrificed wholesale, but the road network, way-stations and distances are kept with bureaucratic care - including the roads of Dacia running up to Sarmizegetusa. It is the topological map a thousand years before the term: useless for shape, superb for sequence, the direct ancestor of every transit diagram. The lowest Geodesy and nearly the highest Fitness on this chart, in a single document."},
+ {id:"madaba", name:"Madaba Mosaic Map", short:"Madaba", year:560, yearLabel:"c. 560", origin:"Madaba, Byzantine Palestine", tradition:"Byzantine Christian",
+  orient:"East-up, toward the apse and the rising sun",
+  purpose:"A pilgrim's Holy Land set in a church floor",
+  held:"In situ - Church of St George, Madaba, Jordan",
+  s:[3,4,6,7,3,8],
+  text:"A floor once of some two million tesserae in a Byzantine church, of which a fragment survives: the Holy Land oriented to the east, sites labelled in Greek, and Jerusalem rendered as a walled oval so detailed that its colonnaded cardo guided modern excavators to the real street beneath the modern city. A devotional object with passages of genuinely reliable topography - proof that Cosmos and Witness can share one pavement."},
+ {id:"idrisi", name:"al-Idrīsī, Tabula Rogeriana", short:"al-Idrīsī", year:1154, yearLabel:"1154", origin:"Palermo", tradition:"Islamic geographic",
+  orient:"South-up, after Islamic convention",
+  purpose:"A geography for a Norman king",
+  held:"Bodleian Library, Oxford (1553 copy), among others",
+  s:[5,6,2,4,7,7],
+  text:"Commissioned by Roger II of Sicily and compiled over fifteen years from Ptolemaic inheritance, Arab travel accounts, and interviews with merchants and pilgrims passing through Palermo. The world is cut into seventy sectional sheets, south at the top, with a sobriety of content rare for its century. It is the strongest evidence that the so-called cartographic dark age was a Latin affair, not a human one."},
+ {id:"ebstorf", name:"Ebstorf Mappa Mundi", short:"Ebstorf", year:1234, yearLabel:"c. 1234", origin:"Lower Saxony", tradition:"Latin Christian",
+  orient:"East-up - the world borne on the body of Christ",
+  purpose:"A theological summa the size of a wall",
+  held:"Destroyed 1943; survives in photographs and four facsimiles",
+  s:[1,2,8,7,6,8],
+  text:"The largest mappa mundi ever made - over three and a half metres of stitched parchment - and the most explicit about what such maps were for: Christ's head crowns the east, his hands cup the world's edges, his feet anchor the west. The world is not merely created but inhabited by its creator; geography becomes anatomy. Destroyed in the bombing of Hanover in 1943, it survives only in photographs and facsimiles - a reminder that the corpus we compare is itself a survivor's sample."},
+ {id:"pisane", name:"Carte Pisane", short:"Carte Pisane", year:1290, yearLabel:"c. 1290", origin:"Genoa (probably)", tradition:"Portolan",
+  orient:"Governed by the compass rose, not a cardinal edge",
+  purpose:"Coastal navigation by compass and dead reckoning",
+  held:"Bibliothèque nationale de France, Paris",
+  view:"https://gallica.bnf.fr/ark:/12148/btv1b52503226n",
+  s:[6,7,1,8,3,4],
+  text:"The oldest surviving portolan chart, and it appears almost without ancestors: a Mediterranean coastline of startling accuracy, webbed with rhumb lines in the conventional black, green and red of the wind hierarchy. It carries no theology, no interior, no decoration to speak of - only what a helmsman needs. Pure Witness and pure Fitness, with Reach deliberately abandoned."},
+ {id:"hereford", name:"Hereford Mappa Mundi", short:"Hereford", year:1300, yearLabel:"c. 1300", origin:"Hereford, England", tradition:"Latin Christian",
+  orient:"East-up - Eden at the top, Jerusalem at the centre",
+  purpose:"A sermon in vellum",
+  held:"Hereford Cathedral",
+  s:[1,2,8,7,6,7],
+  text:"A single calfskin bearing the largest surviving medieval world map: Jerusalem at the centre, Paradise at the top, the Last Judgment above the frame, and the geography arranged as a stage for scripture and marvels. To call it inaccurate is to misread its genre - it is a compressed encyclopaedia of sacred history that happens to be map-shaped. On Cosmos it touches the ceiling; and on Fitness, judged as the teaching object it was, it scores far higher than its empty bearing of Witness suggests."},
+ {id:"kangnido", name:"Kangnido", short:"Kangnido", year:1402, yearLabel:"1402", origin:"Joseon Korea", tradition:"East Asian synthesis",
+  orient:"North-up, China vast at the centre",
+  purpose:"A world picture for a new dynasty",
+  held:"Ryūkoku University, Kyoto (early copy)",
+  s:[3,5,4,6,8,7],
+  text:"Made by Korean scholars from Chinese and Islamic-derived sources within a decade of the Joseon founding, it shows Europe, a roundable Africa and the Arabian peninsula - half a world that no European map of 1402 could match. Scale bends to hierarchy: China and Korea swell, the far west shrinks to a margin. The widest Reach of its century, carried by a cosmology of its own."},
+ {id:"framauro", name:"Fra Mauro", short:"Fra Mauro", year:1450, yearLabel:"c. 1450", origin:"Venice", tradition:"Late medieval Venetian",
+  orient:"South-up, after his Arab sources",
+  purpose:"A critical encyclopaedia of the knowable world",
+  held:"Biblioteca Nazionale Marciana, Venice",
+  s:[4,6.5,3,7,7,8],
+  text:"A monk on Murano, working from Marco Polo, Niccolò de' Conti and sailors' reports, who wrote his doubts directly onto the map - politely declining Ptolemy where the evidence ran against him, and showing the Indian Ocean open to sail around Africa decades before Dias proved it. Some three thousand inscriptions weigh their sources like a scholar's footnotes. The medieval mappa mundi form, turned at last into an instrument of criticism."},
+ {id:"waldseemuller", name:"Waldseemüller", short:"Waldseemüller", year:1507, yearLabel:"1507", origin:"Saint-Dié, Lorraine", tradition:"Renaissance Ptolemaic",
+  orient:"North-up, on a modified Ptolemaic projection",
+  purpose:"To fit the new discoveries into the old frame",
+  held:"Library of Congress, Washington (sole surviving copy)",
+  view:"https://www.loc.gov/item/2003626426/",
+  s:[5,6,2,6,8,7], ldx:-26,
+  text:"Twelve printed sheets attempting to reconcile Ptolemy with the voyages of the previous fifteen years - and, on the strength of Vespucci's accounts, baptising the new continent America, a name the mapmaker himself later tried to retract. It shows the western lands as a separate landmass with an ocean beyond, years before any European had sighted the Pacific. The moment the ancient frame visibly cracks under new Witness."},
+ {id:"ribeiro", name:"Ribeiro, Padrón Real", short:"Ribeiro", year:1529, yearLabel:"1529", origin:"Seville, Casa de Contratación", tradition:"Iberian state chart",
+  orient:"North-up, graduated in observed latitudes",
+  purpose:"Spain's master chart - and its legal brief",
+  held:"Vatican Apostolic Library",
+  s:[6.5,7.5,1,8,8,7], ldx:-34,
+  text:"The official padrón real of Spain in the years just after the world had first been circled: the logs of Magellan's survivors folded into a state master-chart, latitudes fixed by observation, and the true breadth of the Pacific drawn for the first time. It was also a state secret and a legal instrument, made to argue Spain's claim to the Moluccas under the Tordesillas line. Witness in the service of empire, and guarded accordingly."},
+ {id:"mercator", name:"Mercator", short:"Mercator", year:1569, yearLabel:"1569", origin:"Duisburg", tradition:"Scientific cartography",
+  orient:"North-up, on the projection that bears his name",
+  purpose:"Straight rhumb lines for ocean navigation",
+  held:"University Library, Basel; BnF, Paris (two of three survivors)",
+  view:"https://gallica.bnf.fr/ark:/12148/btv1b7200344k",
+  s:[7.5,7,1,8,8,7], ldx:14,
+  text:"A projection built backwards from a navigator's need: stretch the parallels so that a constant compass bearing draws as a straight line, and accept that Greenland will swell into a continent as the price. It is the most honest map on this chart about what every map must do - choose which truth to keep and which to spend. Geodesy and Fitness in deliberate, calculated tension."},
+ {id:"ortelius", name:"Ortelius, Theatrum", short:"Ortelius", year:1570, yearLabel:"1570", origin:"Antwerp", tradition:"Atlas publishing",
+  orient:"North-up, uniform across fifty-three plates",
+  purpose:"The world, standardised and sourced, for a buying public",
+  held:"First editions in major collections worldwide",
+  s:[6,6,1,7,8,8], ldx:40,
+  text:"Not one map but the first modern atlas: fifty-three sheets at a uniform size, revised edition after edition - and, decisively for this site's purpose, prefaced by the Catalogus Auctorum, a list of the cartographers whose work he compiled. Ortelius cited his sources. With that, map-making acquired a bibliography, and comparison between maps became a method rather than an accident."},
+ {id:"cassini", name:"Cassini, Carte de France", short:"Cassini", year:1744, yearLabel:"1744–1793", origin:"France", tradition:"State survey",
+  orient:"North-up, on a national triangulation",
+  purpose:"To measure a kingdom, hilltop by hilltop",
+  held:"Bibliothèque nationale de France",
+  s:[8,8,1,8,4,7],
+  text:"Four generations of one family chaining triangles across France until the entire kingdom stood measured at one scale - the first time any country was mapped from survey rather than compiled from report. Reach contracts to a single nation, and that is the point: the ecumenical ambition of the mappa mundi traded away for ground truth. The state, not the cosmos, now sat at the centre of the map."}
+];
+
+const TOURS = [
+ {title:"The Centre of the World",
+  steps:[
+   {id:"imago", note:"The first centre is the mapmaker's own city: Babylon at the hinge of the cosmos, the rest of the world arranged as periphery."},
+   {id:"hereford", note:"Jerusalem fixed at the navel of the earth - not because measurement put it there, but because Ezekiel did."},
+   {id:"ebstorf", note:"The centre becomes a body: the world drawn onto Christ himself, head at the east, feet at the west. Theology made anatomy."},
+   {id:"kangnido", note:"The Middle Kingdom swells to fill the frame. The centre is no longer sacred but political - gravity measured in tribute."},
+   {id:"cassini", note:"And finally: no centre at all. Only the neutral grid of triangulation, with the state everywhere and nowhere on it."}]},
+ {title:"The Price of Truth",
+  steps:[
+   {id:"peutinger", note:"Every map spends one truth to keep another. The Peutinger table spends shape wholesale to keep sequence and distance."},
+   {id:"pisane", note:"The portolan spends the whole interior world to keep one perfect coastline."},
+   {id:"mercator", note:"Mercator spends area - Greenland swollen into a continent - to keep bearing straight. The trade-off is now a calculation."},
+   {id:"cassini", note:"Cassini spends Reach itself: the ecumene abandoned for one kingdom, perfectly measured. Truth bought by narrowing the question."}]},
+ {title:"Witness Recovered",
+  steps:[
+   {id:"ptolemy", note:"The ancient ceiling: eight thousand coordinates. What follows is not one decline but several channels carrying the inheritance."},
+   {id:"idrisi", note:"In Palermo the channel runs through Arabic: Ptolemy corrected by travellers interviewed at a Norman court."},
+   {id:"framauro", note:"In Venice, Witness returns as criticism - a monk weighing Marco Polo against Ptolemy and writing his verdicts on the map."},
+   {id:"ribeiro", note:"In Seville, Witness becomes state procedure: pilots legally required to report observations to the master chart."},
+   {id:"ortelius", note:"In Antwerp, Witness becomes scholarship: the first atlas to cite its sources. Comparison itself is now a method."}]}
+];
+
+const C = {
+  linen:'#EADFC4', verd:'#6FA188', cinn:'#C9603F', ochre:'#B98F45'
+};
+
+/* ================= helpers ================= */
+const svgNS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, parent){
+  const n = document.createElementNS(svgNS, tag);
+  for(const k in attrs) n.setAttribute(k, attrs[k]);
+  if(parent) parent.appendChild(n);
+  return n;
+}
+function starPath(cx, cy, rOut, rIn, points=8){
+  let d="";
+  for(let i=0;i<points*2;i++){
+    const r = i%2===0 ? rOut : rIn;
+    const a = -Math.PI/2 + i*Math.PI/points;
+    d += (i===0?"M":"L") + (cx+r*Math.cos(a)).toFixed(2) + " " + (cy+r*Math.sin(a)).toFixed(2);
+  }
+  return d+"Z";
+}
+function rhumbs(parent, cx, cy, R, n, stroke, dash, op, a0=0){
+  for(let i=0;i<n;i++){
+    const a = a0 + i*2*Math.PI/n;
+    el("line",{x1:cx,y1:cy,x2:cx+R*Math.cos(a),y2:cy+R*Math.sin(a),
+      stroke:stroke,"stroke-width":.6,"stroke-dasharray":dash,opacity:op},parent);
+  }
+}
+
+/* ================= HERO compass rose ================= */
+(function(){
+  const svg = document.getElementById("heroRose");
+  const cx=600, cy=230;
+  rhumbs(svg,cx,cy,900,8,C.linen,"",.14);
+  rhumbs(svg,cx,cy,900,8,C.verd,"7 5",.14,Math.PI/8);
+  rhumbs(svg,cx,cy,900,16,C.cinn,"2 6",.13,Math.PI/16);
+  el("circle",{cx,cy,r:120,fill:"none",stroke:C.linen,"stroke-width":.7,opacity:.2},svg);
+  el("circle",{cx,cy,r:126,fill:"none",stroke:C.linen,"stroke-width":.5,opacity:.14},svg);
+  el("path",{d:starPath(cx,cy,110,38,8),fill:"none",stroke:C.linen,"stroke-width":.8,opacity:.22},svg);
+  el("path",{d:starPath(cx,cy,60,20,8),fill:"none",stroke:C.cinn,"stroke-width":.7,opacity:.25,transform:`rotate(22.5 ${cx} ${cy})`},svg);
+})();
+
+/* ================= STATE ================= */
+let selA = MAPS.find(m=>m.id==="hereford");
+let selB = MAPS.find(m=>m.id==="pisane");
+let axisIdx = 1;                  // Witness
+let tour = null, tourStep = 0;    // active tour
+
+/* ================= CHART OF CHARTS ================= */
+function buildChart(){
+  const svg = document.getElementById("metaChart");
+  svg.innerHTML = "";
+  const W=1000,H=560,L=78,R=36,T=42,B=78;
+  const x = yr => L + (yr - (-700)) / (1850 - (-700)) * (W-L-R);
+  const y = v  => H-B - v/8*(H-T-B);
+
+  const bg = el("g",{},svg);
+  rhumbs(bg, x(450), y(4), 1300, 16, C.linen, "", .05);
+  rhumbs(bg, x(1600), y(6.5), 900, 16, C.verd, "6 5", .05);
+
+  for(let v=0;v<=8;v+=2){
+    el("line",{x1:L,y1:y(v),x2:W-R,y2:y(v),stroke:C.linen,opacity:.13,"stroke-width":v===0?1:.6},svg);
+    el("text",{x:L-12,y:y(v)+4,"text-anchor":"end",class:"axlab"},svg).textContent = v;
+  }
+  [-600,-300,1,300,600,900,1200,1500,1800].forEach(yr=>{
+    el("line",{x1:x(yr),y1:y(0),x2:x(yr),y2:y(0)+8,stroke:C.linen,opacity:.4,"stroke-width":.8},svg);
+    el("line",{x1:x(yr),y1:T,x2:x(yr),y2:y(0),stroke:C.linen,opacity:.06,"stroke-width":.6},svg);
+    const t = el("text",{x:x(yr),y:y(0)+26,"text-anchor":"middle",class:"axlab"},svg);
+    t.textContent = yr<0 ? Math.abs(yr)+" BC" : (yr===1?"AD 1":yr);
+  });
+  el("text",{x:(L+W-R)/2,y:H-14,"text-anchor":"middle",class:"axlab"},svg).textContent="- THE COURSE OF YEARS -";
+  const yt = el("text",{x:24,y:(T+H-B)/2,"text-anchor":"middle",class:"axlab",transform:`rotate(-90 24 ${(T+H-B)/2})`},svg);
+  yt.textContent="BEARING OF "+BEARINGS[axisIdx].toUpperCase()+" · POINTS";
+
+  const sorted=[...MAPS].sort((a,b)=>a.year-b.year);
+  let d="";
+  sorted.forEach((m,i)=>{ d += (i===0?"M":"L")+x(m.year)+" "+y(m.s[axisIdx]); });
+  el("path",{d,fill:"none",stroke:C.ochre,"stroke-width":1,"stroke-dasharray":"1 5",opacity:.55},svg);
+
+  // transmission: content date -> surviving artifact date
+  MAPS.forEach(m=>{
+    const tr=TRANSMIT[m.id];
+    if(!tr) return;
+    const py=y(m.s[axisIdx]);
+    const x1=x(m.year), x2=x(Math.min(tr.to,1850));
+    el("line",{x1:x1,y1:py,x2:x2,y2:py,stroke:C.ochre,"stroke-width":.9,"stroke-dasharray":"4 4",opacity:.5},svg);
+    el("circle",{cx:x2,cy:py,r:3.5,fill:"none",stroke:C.ochre,"stroke-width":1,opacity:.8},svg);
+  });
+
+  sorted.forEach((m,i)=>{
+    const px=x(m.year), py=y(m.s[axisIdx]);
+    const g = el("g",{class:"cpoint",tabindex:0,role:"button","aria-label":m.name+", "+m.yearLabel,"data-id":m.id},svg);
+    el("circle",{class:"halo",cx:px,cy:py,r:13,fill:"transparent",stroke:"transparent"},g);
+    el("path",{class:"star",d:starPath(px,py,8,3,8),fill:C.linen,stroke:"#181208","stroke-width":.6},g);
+    const above = i%2===0;
+    const lx = px + (m.ldx||0);
+    const lbl = el("text",{x:lx,y:py+(above?-20:26),"text-anchor":"middle",class:"clabel"},g);
+    lbl.textContent = m.short;
+    const yr = el("text",{x:lx,y:py+(above?-34:40),"text-anchor":"middle",class:"cyear"},g);
+    yr.textContent = m.yearLabel;
+    const pick=()=>{ exitTour(); if(m.id===selB.id){selB=selA;} selA=m; render(); document.getElementById("dossier").scrollIntoView({behavior:"smooth",block:"start"}); };
+    g.addEventListener("click",pick);
+    g.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();pick();} });
+  });
+  markChart();
+}
+
+/* ================= AXIS SWITCHER ================= */
+(function(){
+  const row=document.getElementById("axisRow");
+  BEARINGS.forEach((b,i)=>{
+    const btn=document.createElement("button");
+    btn.className="axbtn"+(i===axisIdx?" on":"");
+    btn.textContent=b;
+    btn.addEventListener("click",()=>{
+      axisIdx=i;
+      row.querySelectorAll(".axbtn").forEach((x,j)=>x.classList.toggle("on",j===i));
+      buildChart(); applyTourClasses();
+    });
+    row.appendChild(btn);
+  });
+})();
+
+/* ================= TOURS ================= */
+const tourCard=document.getElementById("tourCard");
+function applyTourClasses(){
+  const svg=document.getElementById("metaChart");
+  svg.classList.toggle("touring", !!tour);
+  const ids = tour ? new Set(tour.steps.map(s=>s.id)) : null;
+  svg.querySelectorAll(".cpoint").forEach(g=>{
+    g.classList.toggle("on-tour", !!tour && ids.has(g.dataset.id));
+  });
+}
+function showTourStep(){
+  const st=tour.steps[tourStep];
+  const m=MAPS.find(x=>x.id===st.id);
+  document.getElementById("tcTitle").textContent=tour.title;
+  document.getElementById("tcMap").textContent=m.name+" · "+m.yearLabel;
+  document.getElementById("tcNote").textContent=st.note;
+  document.getElementById("tcStep").textContent=(tourStep+1)+" of "+tour.steps.length;
+  document.getElementById("tcPrev").disabled = tourStep===0;
+  document.getElementById("tcNext").disabled = tourStep===tour.steps.length-1;
+  if(m.id===selB.id) selB=selA;
+  selA=m;
+  drawDossier(); drawRose(); drawLedger(); drawSelect(); markChart();
+  applyTourClasses();
+}
+function startTour(t, btn){
+  tour=t; tourStep=0;
+  document.querySelectorAll(".tourbtn").forEach(b=>b.classList.toggle("on",b===btn));
+  tourCard.classList.add("open");
+  showTourStep();
+}
+function exitTour(){
+  if(!tour) return;
+  tour=null;
+  tourCard.classList.remove("open");
+  document.querySelectorAll(".tourbtn").forEach(b=>b.classList.remove("on"));
+  applyTourClasses();
+}
+(function(){
+  const row=document.getElementById("tourRow");
+  TOURS.forEach(t=>{
+    const btn=document.createElement("button");
+    btn.className="tourbtn";
+    btn.textContent=t.title;
+    btn.addEventListener("click",()=>{ if(tour===t){exitTour();} else {startTour(t,btn);} });
+    row.appendChild(btn);
+  });
+  document.getElementById("tcPrev").addEventListener("click",()=>{ if(tourStep>0){tourStep--; showTourStep();} });
+  document.getElementById("tcNext").addEventListener("click",()=>{ if(tourStep<tour.steps.length-1){tourStep++; showTourStep();} });
+  document.getElementById("tcExit").addEventListener("click",exitTour);
+})();
+
+/* ================= ROSE + DOSSIER ================= */
+function drawRose(){
+  const svg=document.getElementById("roseChart");
+  svg.innerHTML="";
+  const cx=200, cy=192, R=124;
+  const ang=i=>-Math.PI/2 + i*Math.PI/3;
+  const pt=(i,v)=>[cx+R*(v/8)*Math.cos(ang(i)), cy+R*(v/8)*Math.sin(ang(i))];
+
+  for(let v=2;v<=8;v+=2){
+    let d="";
+    for(let i=0;i<6;i++){ const p=pt(i,v); d+=(i===0?"M":"L")+p[0].toFixed(1)+" "+p[1].toFixed(1); }
+    el("path",{d:d+"Z",class:"rring","stroke-width":v===8?1.1:.6,"stroke-dasharray":v===8?"":"2 3"},svg);
+    el("text",{x:cx+4,y:cy-R*(v/8)-3,class:"rval"},svg).textContent=v;
+  }
+  for(let i=0;i<6;i++){
+    const p=pt(i,8);
+    el("line",{x1:cx,y1:cy,x2:p[0],y2:p[1],stroke:"rgba(24,18,8,.35)","stroke-width":.6},svg);
+    const lx=cx+(R+24)*Math.cos(ang(i)), ly=cy+(R+24)*Math.sin(ang(i));
+    const t=el("text",{x:lx,y:ly+4,"text-anchor":"middle",class:"rlab"},svg);
+    t.textContent=BEARINGS[i];
+  }
+  const poly=(m,stroke,fill)=>{
+    let d="";
+    for(let i=0;i<6;i++){const p=pt(i,m.s[i]); d+=(i===0?"M":"L")+p[0].toFixed(1)+" "+p[1].toFixed(1);}
+    el("path",{d:d+"Z",fill:fill,stroke:stroke,"stroke-width":1.6,"stroke-linejoin":"round"},svg);
+    for(let i=0;i<6;i++){const p=pt(i,m.s[i]); el("circle",{cx:p[0],cy:p[1],r:2.6,fill:stroke},svg);}
+  };
+  poly(selB,"#4E7A66","rgba(78,122,102,.16)");
+  poly(selA,"#AE4226","rgba(174,66,38,.16)");
+  const key=el("text",{x:cx,y:382,"text-anchor":"middle",class:"rval","font-size":"11"},svg);
+  key.textContent = "red · "+selA.short+"    green · "+selB.short;
+}
+
+function drawDossier(){
+  const m=selA;
+  const tr=TRANSMIT[m.id];
+  const bib=(BIB[m.id]||[]).slice();
+  if(m.view) bib.push({t:"Digitization at the holder", u:m.view});
+  const bibHtml = bib.length ? `<div class="bib"><h4>Sources</h4><ul>${
+    bib.map(b=>b.u?`<li><a href="${b.u}" target="_blank" rel="noopener">${b.t}</a></li>`:`<li>${b.t}</li>`).join("")
+  }</ul></div>` : "";
+  document.getElementById("dossierCard").innerHTML = `
+    <div class="eyebrow">${m.tradition} · ${m.yearLabel}</div>
+    <h3>${m.name}</h3>
+    <div class="meta">${m.origin}</div>
+    <p class="body">${m.text}</p>
+    <div class="factline"><b>Orientation</b><span>${m.orient}</span></div>
+    <div class="factline"><b>Made for</b><span>${m.purpose}</span></div>
+    <div class="factline"><b>Held at</b><span>${m.held}</span></div>
+    ${MEAS[m.id]?`<div class="factline"><b>Measurability</b><span><span class="mv">${MEAS[m.id].v}</span> - ${MEAS[m.id].note}</span></div>`:""}
+    ${tr?`<div class="factline"><b>Transmission</b><span>${tr.label}</span></div>`:""}
+    ${bibHtml}`;
+}
+
+function drawLedger(){
+  const led=document.getElementById("ledger");
+  let html = `<div class="ledger-row head"><div></div><div class="vA">${selA.short}</div><div class="vB">${selB.short}</div></div>`;
+  BEARINGS.forEach((b,i)=>{
+    const a=selA.s[i], c=selB.s[i];
+    html += `<div class="ledger-row">
+      <div class="bname">${b}</div>
+      <div class="barcell vA"><span class="bar" style="width:${a/8*100}%"></span>${a}</div>
+      <div class="barcell vB"><span class="bar" style="width:${c/8*100}%"></span>${c}</div>
+    </div>`;
+  });
+  led.innerHTML=html;
+}
+
+function drawSelect(){
+  const sel=document.getElementById("cmpSel");
+  sel.innerHTML = MAPS.filter(m=>m.id!==selA.id)
+    .map(m=>`<option value="${m.id}" ${m.id===selB.id?"selected":""}>${m.name} · ${m.yearLabel}</option>`).join("");
+}
+
+function markChart(){
+  document.querySelectorAll("#metaChart .cpoint").forEach(g=>{
+    g.classList.toggle("is-a", g.dataset.id===selA.id);
+    g.classList.toggle("is-b", g.dataset.id===selB.id);
+  });
+}
+
+function render(){
+  if(selB.id===selA.id) selB = MAPS.find(m=>m.id!==selA.id);
+  drawDossier(); drawRose(); drawLedger(); drawSelect(); markChart();
+}
+
+document.getElementById("cmpSel").addEventListener("change",e=>{
+  selB = MAPS.find(m=>m.id===e.target.value); render();
+});
+
+document.getElementById("exportBtn").addEventListener("click",()=>{
+  const data = MAPS.map(m=>({id:m.id,name:m.name,year:m.year,date:m.yearLabel,origin:m.origin,
+    tradition:m.tradition,orientation:m.orient,purpose:m.purpose,held:m.held,
+    artifact_year: TRANSMIT[m.id]?TRANSMIT[m.id].to:m.year,
+    transmission: TRANSMIT[m.id]?TRANSMIT[m.id].label:null,
+    measurability: MEAS[m.id]?MEAS[m.id].v:null,
+    scores:Object.fromEntries(BEARINGS.map((b,i)=>[b.toLowerCase(),m.s[i]]))}));
+  const blob=new Blob([JSON.stringify({framework:"Six Bearings (0–8 points)",bearings:BEARINGS,maps:data},null,2)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="speculum-chartarum-dataset.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+/* ================= PROVENANCE: CONTENT vs ARTIFACT ================= */
+const TRANSMIT = {
+ ptolemy:{to:1300, label:"The treatise is 2nd-century; the maps survive only through Byzantine reconstruction, the earliest codices c. 1300 (Urb.gr.82 and kin), redrawn from his coordinate lists."},
+ peutinger:{to:1200, label:"A copy of c. 1200 (Codex Vindobonensis 324) of a Late Antique original of c. 350–400 - itself perhaps a descendant of Agrippa's wall map in Rome."},
+ idrisi:{to:1553, label:"Roger's engraved silver planisphere of 1154 is lost; the work survives in later manuscripts, the Bodleian's copy dated 1553."},
+ kangnido:{to:1470, label:"The 1402 original is lost; the Ryūkoku copy of c. 1470–1560 transmits it, with Japanese place-names quietly updated."},
+ ebstorf:{to:1943, label:"Made c. 1234, destroyed in the bombing of Hanover in 1943; known through photographs taken from 1891 and four facsimiles - the line runs off this chart."}
+};
+
+/* ================= MEASURABILITY ================= */
+const MEAS = {
+ imago:{v:"Resists fitting", note:"It asserts cosmology, not position; a forced fit returns numbers that mean nothing."},
+ ptolemy:{v:"Fit from text", note:"His coordinates survive as numbers - the one chart measurable without its image. The bench below runs on exactly this."},
+ peutinger:{v:"Network metric", note:"A positional fit fails by design. Measure its road distances against the real itineraries instead - the right error model is the network's, not the plane's."},
+ madaba:{v:"Piecewise only", note:"The Jerusalem and Jordan-valley core fits locally with real precision; the wider frame is devotional topology."},
+ idrisi:{v:"Piecewise only", note:"The Mediterranean sections fit; the periphery is compiled report - and only later copies survive, so every number includes the copyists."},
+ ebstorf:{v:"Resists fitting", note:"A theology with coastlines - and destroyed besides: a forced fit would be measuring the photographs of 1891."},
+ pisane:{v:"Fit with control points", note:"The classic case: a tight regional fit, rotated some 9° anticlockwise by uncorrected magnetic declination. The Atlantic edge degrades fast."},
+ hereford:{v:"Resists fitting", note:"It can be warped onto modern coordinates, but the choice of control points dominates the answer. The residuals are the genre."},
+ kangnido:{v:"Piecewise only", note:"East Asia is genuinely measurable; Europe and Africa are transmitted rumor at collapsing scale. One global RMSE would average a survey with a hearsay."},
+ framauro:{v:"Fit with control points", note:"Fits surprisingly well once turned south-up. Expect the Indian Ocean to drift - it is report, not sounding."},
+ waldseemuller:{v:"Fit with control points", note:"Fit the Old World and the New separately: they obey different authorities - Ptolemy's frame on one side, the pilots' charts on the other."},
+ ribeiro:{v:"Fit with control points", note:"Latitudes observed, longitudes dead-reckoned: the error runs east–west - and the Pacific absorbs what Spain's treaty argument required."},
+ mercator:{v:"Fit with control points", note:"Only against his own projection inverted; a naive latitude–longitude fit scores the projection itself as error."},
+ ortelius:{v:"Fit with control points", note:"A compilation: each plate inherits its source's errors, so measure per plate. The Catalogus Auctorum tells you whom you are really measuring."},
+ cassini:{v:"Fit with control points", note:"This is the control survey itself: residuals shrink toward the width of the engraved line. The benchmark against which the rest are judged."}
+};
+
+/* ================= BIBLIOGRAPHY ================= */
+const HOC="https://press.uchicago.edu/books/HOC/index.html";
+const BIB = {
+ imago:[{t:'A. R. Millard, "Cartography in the Ancient Near East," The History of Cartography, vol. I', u:HOC},
+        {t:'W. Horowitz, Mesopotamian Cosmic Geography (1998)'}],
+ ptolemy:[{t:'O. A. W. Dilke, "The Culmination of Greek Cartography in Ptolemy," HoC I, ch. 11', u:HOC},
+        {t:'J. L. Berggren & A. Jones, Ptolemy\'s Geography: An Annotated Translation (2000)'}],
+ peutinger:[{t:'R. J. A. Talbert, Rome\'s World: The Peutinger Map Reconsidered (2010)'},
+        {t:'O. A. W. Dilke on Roman itineraries, The History of Cartography, vol. I', u:HOC}],
+ madaba:[{t:'H. Donner, The Mosaic Map of Madaba (1992)'},
+        {t:'O. A. W. Dilke, "Cartography in the Byzantine Empire," HoC I', u:HOC}],
+ idrisi:[{t:'S. Maqbul Ahmad, "Cartography of al-Sharīf al-Idrīsī," HoC II.1', u:HOC},
+        {t:'J.-C. Ducène, L\'Europe et les géographes arabes du Moyen Âge (2018)'}],
+ ebstorf:[{t:'D. Woodward, "Medieval Mappaemundi," HoC I, ch. 18', u:HOC},
+        {t:'H. Kugler (ed.), Die Ebstorfer Weltkarte, 2 vols. (2007)'}],
+ pisane:[{t:'T. Campbell, "Portolan Charts from the Late Thirteenth Century to 1500," HoC I, ch. 19', u:HOC},
+        {t:'R. J. Pujades i Bataller, Les cartes portolanes (2007)'}],
+ hereford:[{t:'D. Woodward, "Medieval Mappaemundi," HoC I, ch. 18', u:HOC},
+        {t:'S. D. Westrem, The Hereford Map (2001)'}],
+ kangnido:[{t:'G. Ledyard, "Cartography in Korea," HoC II.2', u:HOC},
+        {t:'K. R. Robinson, "Chosŏn Korea in the Ryūkoku Kangnido," Imago Mundi 59 (2007)'}],
+ framauro:[{t:'P. Falchetta, Fra Mauro\'s World Map (2006)'},
+        {t:'A. Cattaneo, Fra Mauro\'s Mappa Mundi and Fifteenth-Century Venice (2011)'}],
+ waldseemuller:[{t:'J. W. Hessler, The Naming of America: Martin Waldseemüller\'s 1507 World Map (2008)'},
+        {t:'Renaissance chapters, The History of Cartography, vol. III', u:HOC}],
+ ribeiro:[{t:'A. Sandman, "Spanish Nautical Cartography in the Renaissance," HoC III', u:HOC},
+        {t:'J. Brotton, A History of the World in Twelve Maps (2012), ch. on Ribeiro'}],
+ mercator:[{t:'N. Crane, Mercator: The Man Who Mapped the Planet (2002)'},
+        {t:'M. Monmonier, Rhumb Lines and Map Wars: A Social History of the Mercator Projection (2004)'}],
+ ortelius:[{t:'M. van den Broecke, Ortelius Atlas Maps (1996)'},
+        {t:'"Cartography in the Low Countries," The History of Cartography, vol. III', u:HOC}],
+ cassini:[{t:'J. W. Konvitz, Cartography in France 1660–1848 (1987)'},
+        {t:'M. Pelletier, Les cartes des Cassini: la science au service de l\'État (2002)'}]
+};
+
+/* ================= CARTOMETRY BENCH ================= */
+/* Ptolemaic coordinates after the Geographia tradition (rounded; manuscript variants exist).
+   Longitudes east of the Fortunate Isles. True values: modern WGS84. */
+const PTOL_PTS = [
+ {n:"Gades",          p:[ 5.17,36.17], t:[ -6.29,36.53], on:true},
+ {n:"Tarraco",        p:[16.33,40.67], t:[  1.25,41.12], on:true},
+ {n:"Eboracum",       p:[20.00,57.00], t:[ -1.08,53.96], on:true},
+ {n:"Londinium",      p:[20.00,54.00], t:[ -0.13,51.51], on:true},
+ {n:"Lutetia",        p:[23.50,48.00], t:[  2.35,48.86], on:true},
+ {n:"Massalia",       p:[24.50,43.08], t:[  5.37,43.30], on:true},
+ {n:"Carthage",       p:[34.83,32.67], t:[ 10.32,36.85], on:true},
+ {n:"Rome",           p:[36.67,41.67], t:[ 12.48,41.89], on:true},
+ {n:"Syracuse",       p:[39.50,37.00], t:[ 15.29,37.07], on:true},
+ {n:"Zarmizegethusa", p:[47.83,45.25], t:[ 23.31,45.62], on:true},
+ {n:"Athens",         p:[52.75,37.25], t:[ 23.73,37.98], on:true},
+ {n:"Byzantium",      p:[56.00,43.08], t:[ 28.97,41.01], on:true},
+ {n:"Alexandria",     p:[60.50,31.00], t:[ 29.92,31.20], on:true},
+ {n:"Meroe",          p:[61.50,16.42], t:[ 33.72,16.93], on:true},
+ {n:"Memphis",        p:[61.83,29.83], t:[ 31.25,29.85], on:true},
+ {n:"Syene",          p:[62.00,23.83], t:[ 32.90,24.09], on:true},
+ {n:"Jerusalem",      p:[66.00,31.67], t:[ 35.23,31.78], on:true},
+ {n:"Antioch",        p:[69.00,35.50], t:[ 36.16,36.20], on:true},
+ {n:"Trapezus",       p:[70.50,43.08], t:[ 39.72,41.00], on:true},
+ {n:"Babylon",        p:[79.00,35.00], t:[ 44.42,32.54], on:true},
+ {n:"Ecbatana",       p:[88.00,37.75], t:[ 48.52,34.80], on:true},
+ {n:"Persepolis",     p:[91.00,33.33], t:[ 52.89,29.94], on:true}
+];
+
+const DATASETS = [
+ {id:"ptolemy", label:"Ptolemy · from text", pixel:false, pts:PTOL_PTS},
+ {id:"survey",  label:"Field survey · paste your own", pixel:true, pts:[]}
+];
+let activeDS = DATASETS[0];
+
+function helmert(pairs){
+  const n=pairs.length;
+  let sxm=0,sym=0,txm=0,tym=0;
+  pairs.forEach(p=>{sxm+=p.sx;sym+=p.sy;txm+=p.tx;tym+=p.ty});
+  sxm/=n;sym/=n;txm/=n;tym/=n;
+  let n1=0,n2=0,den=0;
+  pairs.forEach(p=>{const x=p.sx-sxm,y=p.sy-sym,X=p.tx-txm,Y=p.ty-tym;
+    n1+=x*X+y*Y; n2+=x*Y-y*X; den+=x*x+y*y;});
+  const a=n1/den, b=n2/den;
+  return {
+    apply:(sx,sy)=>[a*(sx-sxm)-b*(sy-sym)+txm, b*(sx-sxm)+a*(sy-sym)+tym],
+    scale:Math.hypot(a,b),
+    rot:Math.atan2(b,a)*180/Math.PI
+  };
+}
+
+function runBench(){
+  const svg=document.getElementById("benchPlot");
+  svg.innerHTML="";
+  const statRow=document.getElementById("statRow");
+  const pts=activeDS.pts;
+  const act=pts.filter(c=>c.on);
+  if(act.length<3){
+    statRow.innerHTML=`<div class="stat" style="grid-column:1/-1"><div class="v" style="font-style:italic">${pts.length?"Three control points at least, navigator.":"No points on the bench - paste a survey above and run the fit."}</div></div>`;
+    return;
+  }
+  // planar fit in equirectangular space; pixel sources have their vertical axis flipped
+  const yi = activeDS.pixel ? -1 : 1;
+  const mlat=act.reduce((s,c)=>s+c.t[1],0)/act.length;
+  const k=Math.cos(mlat*Math.PI/180);
+  const sk = activeDS.pixel ? 1 : k;   // lon-like sources get the cos scaling; pixels are already planar
+  const fit=helmert(act.map(c=>({sx:c.p[0]*sk, sy:c.p[1]*yi, tx:c.t[0]*k, ty:c.t[1]})));
+  let sse=0;
+  const placed=pts.map(c=>{
+    const f=fit.apply(c.p[0]*sk, c.p[1]*yi);
+    const lonF=f[0]/k, latF=f[1];
+    if(c.on){
+      const dx=(lonF-c.t[0])*k, dy=latF-c.t[1];
+      sse+=dx*dx+dy*dy;
+    }
+    return {...c, f:[lonF,latF]};
+  });
+  const rmseKm=Math.sqrt(sse/act.length)*111.2;
+
+  const W=1000,H=520,L=64,R=30,T=30,B=56;
+  let lons=[],lats=[];
+  placed.forEach(c=>{lons.push(c.t[0],c.f[0]);lats.push(c.t[1],c.f[1]);});
+  const lo0=Math.floor(Math.min(...lons)/10)*10-2, lo1=Math.ceil(Math.max(...lons)/10)*10+2;
+  const la0=Math.floor(Math.min(...lats)/10)*10-1, la1=Math.ceil(Math.max(...lats)/10)*10+1;
+  const loStep=Math.max(10, Math.ceil((lo1-lo0)/12/10)*10);
+  const laStep=Math.max(10, Math.ceil((la1-la0)/10/10)*10);
+  const X=lo=>L+(lo-lo0)/(lo1-lo0)*(W-L-R);
+  const Y=la=>H-B-(la-la0)/(la1-la0)*(H-T-B);
+  for(let lo=Math.ceil(lo0/loStep)*loStep;lo<=lo1;lo+=loStep){
+    el("line",{x1:X(lo),y1:T,x2:X(lo),y2:H-B,stroke:C.linen,opacity:.08},svg);
+    el("text",{x:X(lo),y:H-B+22,"text-anchor":"middle",class:"axlab"},svg).textContent=(lo<0?Math.abs(lo)+"°W":lo+"°E");
+  }
+  for(let la=Math.ceil(la0/laStep)*laStep;la<=la1;la+=laStep){
+    el("line",{x1:L,y1:Y(la),x2:W-R,y2:Y(la),stroke:C.linen,opacity:.08},svg);
+    el("text",{x:L-10,y:Y(la)+4,"text-anchor":"end",class:"axlab"},svg).textContent=(la<0?Math.abs(la)+"°S":la+"°N");
+  }
+  el("text",{x:(L+W-R)/2,y:H-10,"text-anchor":"middle",class:"axlab"},svg).textContent="- TRUE GRATICULE · THE OLD MAP FITTED AND RELEASED ONTO IT -";
+
+  placed.forEach(c=>{
+    const tx=X(c.t[0]), ty=Y(c.t[1]);
+    if(!c.on){
+      el("circle",{cx:tx,cy:ty,r:3,class:"bench-true",opacity:.25},svg);
+      const t=el("text",{x:tx,y:ty-10,"text-anchor":"middle",class:"bench-lab",opacity:.3},svg);
+      t.textContent=c.n;
+      return;
+    }
+    const fx=X(c.f[0]), fy=Y(c.f[1]);
+    el("line",{x1:fx,y1:fy,x2:tx,y2:ty,class:"bench-vec"},svg);
+    el("circle",{cx:tx,cy:ty,r:4,class:"bench-true"},svg);
+    el("path",{d:starPath(fx,fy,6,2.2,8),class:"bench-fit",stroke:"#181208","stroke-width":.5},svg);
+    const above = fy<=ty;
+    const t=el("text",{x:tx,y:ty+(above?16:-10),"text-anchor":"middle",class:"bench-lab"},svg);
+    t.textContent=c.n;
+  });
+
+  let scaleCell;
+  if(activeDS.pixel){
+    const degPerKpx = (fit.scale*1000/k);
+    scaleCell = `<div class="stat"><div class="k">Scale of fit</div><div class="v">${degPerKpx.toFixed(2)}°</div><div class="s">of longitude per 1,000 source units</div></div>`;
+  } else {
+    const stretch=1/fit.scale;
+    scaleCell = `<div class="stat"><div class="k">Scale of fit</div><div class="v">×${fit.scale.toFixed(2)}</div><div class="s">the frame shrunk to fit - its longitudes run ×${stretch.toFixed(2)} long</div></div>`;
+  }
+  statRow.innerHTML = scaleCell + `
+    <div class="stat"><div class="k">Rotation</div><div class="v">${fit.rot>=0?"+":""}${fit.rot.toFixed(1)}°</div><div class="s">twist of the map's frame against true north</div></div>
+    <div class="stat"><div class="k">RMSE</div><div class="v">${Math.round(rmseKm)} km</div><div class="s">root-mean-square displacement</div></div>
+    <div class="stat"><div class="k">Control points</div><div class="v">${act.length} / ${pts.length}</div><div class="s">linen rings true · cinnabar stars fitted</div></div>`;
+}
+
+function buildChips(){
+  const row=document.getElementById("chipRow");
+  row.innerHTML='<span class="axcap">Control points - strike one to remove it from the fit</span>';
+  activeDS.pts.forEach(c=>{
+    const b=document.createElement("button");
+    b.className="chip"+(c.on?" on":"");
+    b.textContent=c.n;
+    b.setAttribute("aria-pressed",String(c.on));
+    b.addEventListener("click",()=>{
+      c.on=!c.on;
+      b.classList.toggle("on",c.on);
+      b.setAttribute("aria-pressed",String(c.on));
+      runBench();
+    });
+    row.appendChild(b);
+  });
+}
+
+/* parse a field survey: CSV lines or an Allmaps georeference annotation */
+function parseSurvey(text){
+  const t=text.trim();
+  if(!t) throw "Nothing to fit.";
+  const out=[];
+  if(t[0]==="{"||t[0]==="["){
+    let j; try{ j=JSON.parse(t); }catch(e){ throw "That JSON did not parse."; }
+    (function collect(o){
+      if(Array.isArray(o)){ o.forEach(collect); return; }
+      if(o && typeof o==="object"){
+        const rc=o.properties&&o.properties.resourceCoords, g=o.geometry&&o.geometry.coordinates;
+        if(rc&&g&&rc.length>=2&&g.length>=2){
+          out.push({n:(o.properties.label||o.properties.name||"P"+(out.length+1)),
+                    p:[+rc[0],+rc[1]], t:[+g[0],+g[1]], on:true});
+        }
+        Object.values(o).forEach(collect);
+      }
+    })(j);
+    if(!out.length) throw "No ground control points found in that annotation.";
+  } else {
+    t.split(/\r?\n/).forEach(line=>{
+      const L=line.trim();
+      if(!L||L[0]==="#") return;
+      const f=L.split(/[,;\t]+/).map(x=>x.trim());
+      let n,vals;
+      if(f.length>=5){ n=f[0]; vals=f.slice(1,5).map(Number); }
+      else if(f.length===4){ n="P"+(out.length+1); vals=f.map(Number); }
+      else throw "Each line needs: name, mapX, mapY, trueLon, trueLat - this one has "+f.length+" fields.";
+      if(vals.some(v=>!isFinite(v))) throw "Could not read the numbers on: \u201C"+L+"\u201D";
+      out.push({n, p:[vals[0],vals[1]], t:[vals[2],vals[3]], on:true});
+    });
+  }
+  if(out.length<3) throw "Three control points at least, navigator.";
+  if(out.some(c=>Math.abs(c.t[0])>180||Math.abs(c.t[1])>90)) throw "True coordinates must be longitude (\u00B1180) and latitude (\u00B190).";
+  return out;
+}
+
+function setDataset(ds){
+  activeDS=ds;
+  document.querySelectorAll("#dsRow .axbtn").forEach(b=>b.classList.toggle("on",b.dataset.ds===ds.id));
+  document.getElementById("surveyPanel").hidden = ds.id!=="survey";
+  buildChips();
+  runBench();
+}
+
+function initCartometry(){
+  const dsRow=document.getElementById("dsRow");
+  DATASETS.forEach(ds=>{
+    const b=document.createElement("button");
+    b.className="axbtn"+(ds===activeDS?" on":"");
+    b.dataset.ds=ds.id;
+    b.textContent=ds.label;
+    b.addEventListener("click",()=>setDataset(ds));
+    dsRow.appendChild(b);
+  });
+  const status=document.getElementById("surveyStatus");
+  document.getElementById("runSurvey").addEventListener("click",()=>{
+    try{
+      const pts=parseSurvey(document.getElementById("surveyText").value);
+      DATASETS[1].pts=pts;
+      DATASETS[1].pixel=document.getElementById("flipY").checked;
+      status.textContent=pts.length+" points taken aboard.";
+      setDataset(DATASETS[1]);
+    }catch(err){
+      status.textContent=String(err);
+    }
+  });
+  buildChips();
+  runBench();
+}
+
+function renderDocket(){
+  const dock=document.getElementById("docket");
+  if(!dock) return;
+  const order=[...MAPS].sort((a,b)=>a.year-b.year);
+  dock.innerHTML = order
+    .filter(m=>MEAS[m.id] && (MEAS[m.id].v==="Fit with control points" || MEAS[m.id].v==="Piecewise only"))
+    .map(m=>{
+      const ms=MEAS[m.id];
+      const full = ms.v==="Fit with control points";
+      return `<div class="dcard">
+        <span class="tag ${full?"full":"piece"}">${full?"Global fit":"Piecewise only"}</span>
+        <h4>${m.short}</h4>
+        <div class="dyr">${m.yearLabel} · ${m.tradition}</div>
+        <p>${ms.note}</p>
+      </div>`;
+    }).join("");
+}
+
+buildChart();
+render();
+initCartometry();
+renderDocket();
+
+</script>
+</body>
+</html>

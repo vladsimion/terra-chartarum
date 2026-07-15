@@ -1,0 +1,55 @@
+/*
+ * Unified design tokens (ATLAS-103)
+ * Extracted from the four source essays' shared scholarly DNA.
+ * The shell uses these everywhere; legacy essay interiors keep their own CSS,
+ * but the shared chrome (header/footer) references these for family cohesion.
+ */
+:root {
+  /* Canvas / ink */
+  --canvas: #0a0806;
+  --panel: #0e0c08;
+  --panel-2: #141008;
+  --ink: #e8dec5;
+  --ink-muted: #c0ad88;
+  --gold: #d4b87a;
+  --line: rgba(212, 184, 122, 0.18);
+
+  /* Semantic (reused by radar / delta viz) */
+  --gained: #96cc84;
+  --sacrificed: #d98860;
+
+  /* Typography */
+  --font-display: 'Cinzel', 'IM Fell English', Georgia, serif;
+  --font-body: 'Crimson Pro', 'EB Garamond', Georgia, serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Fluid modular type scale */
+  --step--1: clamp(0.83rem, 0.79rem + 0.2vw, 0.94rem);
+  --step-0: clamp(1rem, 0.95rem + 0.25vw, 1.15rem);
+  --step-1: clamp(1.2rem, 1.1rem + 0.5vw, 1.5rem);
+  --step-2: clamp(1.44rem, 1.28rem + 0.8vw, 2rem);
+  --step-3: clamp(1.73rem, 1.48rem + 1.25vw, 2.66rem);
+  --step-4: clamp(2.07rem, 1.7rem + 1.85vw, 3.55rem);
+  --step-5: clamp(2.49rem, 1.94rem + 2.75vw, 4.74rem);
+
+  /* Spacing / layout */
+  --shell-max: 1200px;
+  --prose-max: 68ch;
+  --radius: 4px;
+
+  /* Motion tokens (shared across page + view transitions) */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 180ms;
+  --dur: 320ms;
+  --dur-slow: 620ms;
+}
+
+/* Per-essay accent hint, surfaced on cards and essay chrome so each piece keeps
+ * a distinct identity within the shared family. Overridden per essay slug. */
+:root {
+  --accent-cartography: #d4b87a;
+  --accent-dacia: #cdc2ab;
+  --accent-speculum: #b9c7d6;
+  --accent-venice-sicily: #c9a24b;
+}

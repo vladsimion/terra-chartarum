@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="La Rotta e il Catasto">
+  <rect width="400" height="500" fill="#0b1d24"/>
+  <rect x="400" width="400" height="500" fill="#ede3cc"/>
+  <g stroke="#c9a24b" stroke-width="1" fill="none" opacity="0.5">
+    <path d="M60 120 L180 200 L120 320 L260 260 L200 400"/>
+    <circle cx="60" cy="120" r="3"/><circle cx="180" cy="200" r="3"/>
+    <circle cx="120" cy="320" r="3"/><circle cx="260" cy="260" r="3"/>
+  </g>
+  <g stroke="#3a2f1c" stroke-width="1.5" fill="none" opacity="0.55">
+    <path d="M460 120 H740 M460 200 H740 M460 280 H740 M460 360 H740"/>
+    <path d="M520 100 V400 M600 100 V400 M680 100 V400"/>
+  </g>
+  <text x="40" y="70" fill="#c9a24b" font-family="monospace" font-size="15" letter-spacing="4">LA ROTTA</text>
+  <text x="560" y="70" fill="#3a2f1c" font-family="monospace" font-size="15" letter-spacing="4">IL CATASTO</text>
+  <text x="40" y="470" fill="#e8dec5" font-family="Georgia, serif" font-size="30" font-style="italic">Venice</text>
+  <text x="600" y="470" fill="#3a2f1c" font-family="Georgia, serif" font-size="30" font-style="italic">Sicily</text>
+</svg>

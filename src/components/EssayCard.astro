@@ -1,0 +1,99 @@
+---
+import type { Essay } from '../lib/registry';
+import { yearRange } from '../lib/registry';
+
+interface Props {
+  essay: Essay;
+}
+const { essay } = Astro.props;
+const { data, slug } = essay;
+const accent = data.accent ?? 'var(--gold)';
+// Data attributes power the gallery's client-side facet filtering.
+const eras = data.eras.join('|');
+const regions = data.regions.join('|');
+const dims = Object.keys(data.metaScores ?? {}).join('|');
+---
+
+<article
+  class="card"
+  style={`--accent:${accent}`}
+  data-eras={eras}
+  data-regions={regions}
+  data-dims={dims}
+  data-title={data.title.toLowerCase()}
+>
+  <a href={`/essays/${slug}/`} class="card-link">
+    <div class="card-media">
+      <img src={data.cover} alt="" loading="lazy" decoding="async" />
+    </div>
+    <div class="card-body">
+      <p class="eyebrow">{yearRange(data.yearFrom, data.yearTo)}</p>
+      <h3 class="card-title">{data.title}</h3>
+      <p class="card-sub">{data.subtitle}</p>
+      <p class="card-summary">{data.summary}</p>
+      <ul class="card-tags" aria-label="Regions">
+        {data.regions.slice(0, 3).map((r) => <li>{r}</li>)}
+        {data.mapCount && <li class="count">{data.mapCount} maps</li>}
+      </ul>
+    </div>
+  </a>
+</article>
+
+<style>
+  .card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    overflow: hidden;
+    transition:
+      transform var(--dur) var(--ease-out),
+      border-color var(--dur) var(--ease-out);
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+  }
+  .card-link { color: inherit; display: block; height: 100%; }
+  .card-media {
+    aspect-ratio: 16 / 10;
+    background: var(--panel-2);
+    border-bottom: 1px solid var(--line);
+  }
+  .card-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .card-body { padding: 1.25rem 1.35rem 1.5rem; }
+  .card-title {
+    font-size: var(--step-2);
+    margin: 0.35rem 0 0.1rem;
+    color: var(--ink);
+  }
+  .card-sub {
+    margin: 0 0 0.75rem;
+    color: var(--accent);
+    font-style: italic;
+    font-size: var(--step-0);
+  }
+  .card-summary {
+    margin: 0 0 1rem;
+    color: var(--ink-muted);
+    font-size: var(--step-0);
+  }
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .card-tags li {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.2rem 0.6rem;
+  }
+  .card-tags .count { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
+</style>

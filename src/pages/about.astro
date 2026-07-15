@@ -1,0 +1,59 @@
+---
+import PortalLayout from '../layouts/PortalLayout.astro';
+import { getEssays } from '../lib/registry';
+const essays = await getEssays();
+---
+
+<PortalLayout
+  title="About"
+  description="What Terra Chartarum is: a portal and platform for interactive historical cartography essays."
+>
+  <section class="shell prose">
+    <p class="eyebrow">About</p>
+    <h1>A portal for reading maps critically</h1>
+    <p>
+      <strong>Terra Chartarum</strong> gathers a growing family of interactive
+      visual essays about the history and politics of cartography. Each essay is
+      an immersive, self-contained piece with its own art direction; the portal
+      gives them a shared front door, a common navigation, and a cross-essay
+      atlas — so four experiments read as one publication rather than four tabs.
+    </p>
+    <p>
+      The guiding idea, drawn from J.B. Harley, is that maps are never neutral:
+      every choice to measure, name, or bound the world also erases something.
+      The essays make those trade-offs visible; the
+      <a href="/colophon/">colophon</a> documents the shared meta-lens that lets
+      them be compared.
+    </p>
+
+    <h2>The essays so far</h2>
+    <ul class="list">
+      {essays.map((e) => (
+        <li>
+          <a href={`/essays/${e.slug}/`}>{e.data.title}</a>
+          <span> — {e.data.subtitle}</span>
+        </li>
+      ))}
+    </ul>
+
+    <h2>A platform, not a one-off</h2>
+    <p>
+      The portal is built to grow: new essays are added through a documented
+      starter kit and a shared component library (radar charts, timelines,
+      comparison sliders), and the atlas is designed to host historical GIS
+      layers. If you would like to contribute an essay, start with the
+      <a href="/colophon/">colophon</a> and the authoring guide.
+    </p>
+  </section>
+</PortalLayout>
+
+<style>
+  .prose { max-width: 72ch; padding-block: clamp(2.5rem, 6vw, 4rem); }
+  .prose h1 { font-size: var(--step-4); margin: 0.3rem 0 1.25rem; }
+  .prose h2 { font-size: var(--step-2); margin: 2.5rem 0 1rem; }
+  .prose p { margin: 0 0 1.15rem; }
+  .prose strong { font-family: var(--font-display); color: var(--ink); }
+  .list { list-style: none; padding: 0; margin: 0; }
+  .list li { padding: 0.5rem 0; border-bottom: 1px solid var(--line); color: var(--ink-muted); }
+  .list a { font-family: var(--font-display); font-size: var(--step-1); }
+</style>

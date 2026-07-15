@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Speculum Chartarum">
+  <rect width="800" height="500" fill="#0b0e12"/>
+  <g stroke="#b9c7d6" stroke-width="1" fill="none" opacity="0.2">
+    <path d="M400 60 L560 250 L400 440 L240 250 Z"/>
+    <path d="M400 130 L500 250 L400 370 L300 250 Z"/>
+    <path d="M400 60 V440 M240 250 H560"/>
+  </g>
+  <g fill="#b9c7d6">
+    <circle cx="400" cy="130" r="4"/><circle cx="500" cy="250" r="4"/>
+    <circle cx="400" cy="370" r="4"/><circle cx="300" cy="250" r="4"/>
+    <circle cx="560" cy="250" r="4"/><circle cx="240" cy="250" r="4"/>
+  </g>
+  <text x="58" y="80" fill="#8ea3b8" font-family="monospace" font-size="16" letter-spacing="6">SIX BEARINGS · 15 MAPS</text>
+  <text x="56" y="290" fill="#e8dec5" font-family="Georgia, serif" font-size="52" font-weight="600">Speculum</text>
+  <text x="58" y="345" fill="#b9c7d6" font-family="Georgia, serif" font-size="52" font-weight="600" font-style="italic">Chartarum</text>
+</svg>

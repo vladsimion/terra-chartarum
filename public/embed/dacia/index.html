@@ -1,0 +1,1855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TERRA SIGILLATA · LAPIDARIVM DACICVM — The Trench &amp; the Museum of Dacian Cartography</title>
+<meta name="description" content="Nineteen centuries of maps of Dacia and Romania — displayed as inscriptions in a lapidarium, excavated as strata in a trench. Two wings, one building.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TERRA SIGILLATA · LAPIDARIVM DACICVM
+   One building, two wings: the museum above, the trench below.
+   ============================================================ */
+:root{
+  /* shared type */
+  --disp:'Cinzel',serif;
+  --body:'EB Garamond',serif;
+  --mono:'IBM Plex Mono',monospace;
+
+  /* LIGHT WING — the lapidarium */
+  --plaster:#cdc2ab;          /* wall behind the slabs */
+  --trav:#ddd5c4;             /* travertine slab */
+  --trav-2:#e0d2b8;           /* sandstone slab */
+  --trav-3:#e3ddd0;           /* marble slab */
+  --ink:#2a2218;              /* umber-black */
+  --ink-soft:#4d4233;
+  --minium:#9e3b2b;           /* red lead — numerals, links */
+  --patina:#5e7a6a;           /* bronze-green — controls */
+
+  /* DARK WING — the excavation */
+  --carbon:#171109;           /* excavated earth */
+  --umber:#241a10;            /* panel */
+  --umber-2:#2c2114;
+  --bone:#e6dcc8;             /* text */
+  --bone-dim:#b3a78d;
+  --ochre:#c9962e;            /* MENSVRA */
+  --sigillata:#b4502e;        /* AVCTORITAS */
+  --verdigris:#6f9e8a;        /* NOMINA */
+  --limest:#cfc4a8;           /* LIMES */
+  --leadash:#7d8b99;          /* SILENTIVM */
+
+  /* strata band colours, surface → bedrock */
+  --st0:#7a7350; --st1:#7c6a4a; --st2:#776242; --st3:#715a3c;
+  --st4:#6a5337; --st5:#634d33; --st6:#5c472f; --st7:#55412b;
+  --st8:#4e3b28; --st9:#4a4534; --st10:#403b2c; --st11:#3a3024; --st12:#312a20;
+
+  --maxw:1020px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);font-size:18.5px;line-height:1.62;color:var(--ink);background:var(--plaster);-webkit-font-smoothing:antialiased}
+img,svg{max-width:100%;height:auto;display:block}
+a{color:var(--minium);text-decoration:none;border-bottom:1px solid rgba(158,59,43,.4)}
+a:hover{border-bottom-color:var(--minium)}
+:focus-visible{outline:2px solid var(--minium);outline-offset:3px}
+.wing-dark :focus-visible{outline-color:var(--ochre)}
+::selection{background:rgba(158,59,43,.25)}
+.wing-dark ::selection{background:rgba(201,150,46,.3)}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 26px}
+.mono{font-family:var(--mono)}
+.sc{font-variant:small-caps;letter-spacing:.04em}
+
+/* ---------- carved / incised type ---------- */
+.carved{font-family:var(--disp);letter-spacing:.14em;color:var(--ink);
+  text-shadow:0 1px 0 rgba(255,255,255,.55),0 -1px 1px rgba(42,34,24,.45)}
+.incised{font-family:var(--disp);letter-spacing:.14em;color:var(--bone);
+  text-shadow:0 -1px 0 rgba(0,0,0,.8),0 1px 1px rgba(230,220,200,.14)}
+
+/* ---------- hairline rule with diamond ---------- */
+.rule{display:flex;align-items:center;gap:14px;margin:54px 0;color:inherit}
+.rule::before,.rule::after{content:"";flex:1;height:1px;background:currentColor;opacity:.28}
+.rule span{font-size:11px;letter-spacing:.32em;font-family:var(--mono);opacity:.6}
+
+/* ============================================================
+   HERO — the section drawing of the whole building
+   ============================================================ */
+.hero{min-height:100vh;display:flex;flex-direction:column}
+.hero-top{flex:1.06;background:
+  radial-gradient(1100px 480px at 50% 118%, rgba(255,255,255,.34), transparent 60%),
+  linear-gradient(var(--plaster),#c2b59c);
+  display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;
+  padding:54px 22px 30px}
+.hero-kicker{font-family:var(--mono);font-size:11px;letter-spacing:.34em;color:var(--ink-soft);margin-bottom:26px}
+.hero-kicker b{color:var(--minium);font-weight:500}
+.hero-title-l{font-size:clamp(28px,5.4vw,58px);font-weight:600;line-height:1.12}
+.hero-sub-l{font-family:var(--mono);font-size:12px;letter-spacing:.26em;color:var(--ink-soft);margin-top:14px}
+.hero-enter{margin-top:26px;display:flex;gap:30px;flex-wrap:wrap;justify-content:center}
+.hero-enter a{font-family:var(--mono);font-size:12px;letter-spacing:.2em;border:none;padding:9px 0;color:var(--ink)}
+.hero-enter a b{color:var(--minium);font-weight:500}
+.hero-enter a:hover b{border-bottom:1px solid var(--minium)}
+
+/* the ground line itself */
+.groundline{height:64px;position:relative;background:linear-gradient(#a89b7e, #5d5138 30%, #3c3322 100%);overflow:hidden}
+.groundline svg{position:absolute;inset:0;width:100%;height:100%}
+.gl-label{position:absolute;right:26px;top:50%;transform:translateY(-50%);
+  font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:#e9e2cf;opacity:.85}
+
+.hero-bottom{flex:1;background:
+  linear-gradient(180deg,#352c1e 0%, var(--carbon) 64%);
+  display:flex;flex-direction:column;justify-content:flex-start;align-items:center;text-align:center;
+  padding:34px 22px 58px;position:relative}
+.hero-strata{position:absolute;inset:0;opacity:.5;pointer-events:none;
+  background:linear-gradient(180deg,
+    #4a4030 0 14%, #443a2a 14% 30%, #3e3526 30% 48%, #383023 48% 68%, #322a1f 68% 86%, #2a2318 86% 100%)}
+.hero-bottom>*{position:relative}
+.hero-title-d{font-size:clamp(26px,5vw,52px);font-weight:600;line-height:1.12;margin-top:8px}
+.hero-sub-d{font-family:var(--mono);font-size:12px;letter-spacing:.26em;color:var(--bone-dim);margin-top:14px}
+.hero-claim{max-width:600px;margin:24px auto 0;color:var(--bone-dim);font-size:17px;font-style:italic}
+.hero-scroll{margin-top:30px;font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:var(--bone-dim);animation:bob 2.6s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+
+/* ============================================================
+   LIGHT WING — shared section chrome
+   ============================================================ */
+.wing-light{background:var(--plaster);color:var(--ink)}
+.section{padding:84px 0}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.34em;color:var(--minium);margin-bottom:16px}
+.wing-dark .eyebrow{color:var(--ochre)}
+h2.sect{font-family:var(--disp);font-weight:600;font-size:clamp(24px,3.4vw,36px);letter-spacing:.12em;line-height:1.2}
+.lede{font-size:21px;font-style:italic;color:var(--ink-soft);max-width:46ch;margin-top:18px}
+.wing-dark .lede{color:var(--bone-dim)}
+
+/* intro essay */
+.essay{max-width:66ch;margin-top:34px}
+.essay p{margin:0 0 1.2em}
+.essay p:first-of-type::first-letter{font-family:var(--disp);font-size:3.55em;float:left;line-height:.86;
+  padding:4px 12px 0 0;color:var(--minium)}
+.essay em{color:var(--ink-soft)}
+
+/* the two instruments */
+.instruments{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:46px}
+.inst{padding:28px 26px 24px;border:1px solid rgba(42,34,24,.32)}
+.inst.dig{background:var(--umber);border-color:rgba(230,220,200,.18);color:var(--bone)}
+.inst h3{font-family:var(--disp);font-size:17px;letter-spacing:.18em;font-weight:600;margin-bottom:4px}
+.inst .where{font-family:var(--mono);font-size:10px;letter-spacing:.26em;opacity:.62;margin-bottom:16px}
+.inst ul{list-style:none}
+.inst li{display:flex;gap:12px;align-items:baseline;padding:7px 0;border-top:1px dashed rgba(120,108,86,.4);font-size:16.5px}
+.inst li:first-child{border-top:none}
+.inst .sig{font-family:var(--mono);font-size:12px;min-width:46px;color:var(--minium)}
+.inst.dig .sig{color:var(--ochre)}
+.inst .nm{font-family:var(--disp);font-size:12.5px;letter-spacing:.14em;min-width:118px}
+.inst .ds{opacity:.82;font-style:italic;font-size:15.5px}
+
+/* ---------- timeline wall ---------- */
+.tl{margin-top:48px;position:relative;border:1px solid rgba(42,34,24,.3);background:linear-gradient(180deg,var(--trav-3),var(--trav));padding:30px 18px 44px;overflow:hidden}
+.tl-axis{position:absolute;left:18px;right:18px;bottom:30px;height:1px;background:rgba(42,34,24,.45)}
+.tl-era{position:absolute;top:0;bottom:0;background:rgba(94,122,106,.10)}
+.tl-stone{position:absolute;bottom:30px;transform:translateX(-50%);border:none;cursor:pointer;background:transparent;padding:0}
+.tl-stone .blk{width:15px;height:34px;background:var(--ink);margin:0 auto;
+  clip-path:polygon(8% 0,100% 4%,94% 100%,0 96%);transition:background .2s, height .2s}
+.tl-stone:hover .blk,.tl-stone:focus-visible .blk{background:var(--minium);height:42px}
+.tl-stone .yr{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:var(--ink-soft);
+  position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:6px;white-space:nowrap}
+.tl-stone .nm{position:absolute;bottom:100%;left:50%;transform:translateX(-50%) rotate(-90deg);transform-origin:bottom center;
+  font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--ink-soft);white-space:nowrap;margin-bottom:46px;opacity:0;transition:opacity .2s}
+.tl-stone:hover .nm,.tl-stone:focus-visible .nm{opacity:1}
+.tl-cap{font-family:var(--mono);font-size:10px;letter-spacing:.26em;color:var(--ink-soft);margin-top:8px}
+
+/* ---------- museum hall frieze ---------- */
+.hall{margin-top:96px}
+.hall-frieze{border-top:3px double rgba(42,34,24,.55);border-bottom:1px solid rgba(42,34,24,.35);
+  padding:18px 2px;display:flex;justify-content:space-between;align-items:baseline;gap:18px;flex-wrap:wrap}
+.hall-frieze h3{font-family:var(--disp);font-weight:600;font-size:clamp(17px,2.4vw,23px);letter-spacing:.2em}
+.hall-frieze .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.26em;color:var(--ink-soft)}
+.hall-intro{max-width:64ch;margin:22px 0 8px;font-size:17.5px;color:var(--ink-soft);font-style:italic}
+
+/* ---------- stela slabs ---------- */
+.stela{position:relative;margin:54px 0;padding:40px 38px 34px;
+  background:
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2"/><feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .05 0"/></filter><rect width="220" height="220" filter="url(%23n)"/></svg>'),
+    var(--trav);
+  border:1px solid rgba(42,34,24,.34);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.35), 0 14px 30px -18px rgba(42,34,24,.55);
+  clip-path:polygon(0 1.1%, 2.2% 0, 97.6% .4%, 100% 1.8%, 99.7% 98.4%, 97.2% 100%, 1.6% 99.6%, 0 97.9%)}
+.stela:nth-of-type(odd){transform:rotate(.35deg)}
+.stela:nth-of-type(even){transform:rotate(-.3deg);background-color:var(--trav-2)}
+.stela:nth-of-type(3n){background-color:var(--trav-3)}
+.stela-head{display:flex;justify-content:space-between;gap:16px;align-items:baseline;flex-wrap:wrap;margin-bottom:8px}
+.stela-num{font-family:var(--mono);font-size:11px;letter-spacing:.3em;color:var(--minium)}
+.stela h4{font-family:var(--disp);font-weight:600;font-size:clamp(19px,2.6vw,26px);letter-spacing:.12em;line-height:1.25;margin:2px 0 4px}
+.stela .sub{font-style:italic;color:var(--ink-soft);font-size:17px}
+.stela-grid{display:grid;grid-template-columns:340px 1fr;gap:34px;margin-top:26px;align-items:start}
+.stela:nth-of-type(even) .stela-grid{grid-template-columns:1fr 340px}
+.stela:nth-of-type(even) .vigcol{order:2}
+.vignette{border:1px solid rgba(42,34,24,.4);background:#efe9da;padding:10px;
+  box-shadow:inset 0 0 18px rgba(42,34,24,.12)}
+.vignette svg{width:100%;transition:filter .45s}
+body.squeeze .vignette svg{filter:invert(.92) hue-rotate(180deg) saturate(.55) contrast(1.04)}
+.vig-cap{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;color:var(--ink-soft);margin-top:9px;text-align:center}
+.facts{margin-top:16px;width:100%;border-collapse:collapse;font-size:14.5px}
+.facts td{padding:5px 0;border-top:1px dashed rgba(42,34,24,.3);vertical-align:top}
+.facts td:first-child{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--ink-soft);width:96px;padding-right:10px;padding-top:8px}
+.stela-body p{margin:0 0 1em;font-size:17.5px}
+.readings{margin-top:18px;border-top:3px double rgba(42,34,24,.45);padding-top:6px}
+.readings-cap{font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:var(--ink-soft);padding:8px 0 4px}
+.rd{display:grid;grid-template-columns:138px 96px 1fr;gap:12px;align-items:baseline;padding:7px 0;border-top:1px dashed rgba(42,34,24,.28)}
+.rd .nm{font-family:var(--disp);font-size:11.5px;letter-spacing:.16em}
+.rd .nm .sig{font-family:var(--mono);font-size:10px;color:var(--minium);margin-left:6px}
+.rd .verdict{font-style:italic;font-size:15px;color:var(--ink-soft)}
+.ticks{display:flex;gap:4px;align-items:center}
+.tick{width:9px;height:15px;border:1px solid rgba(42,34,24,.55);transform:skewX(-14deg);position:relative;overflow:hidden}
+.tick.full{background:var(--ink)}
+.tick.half::after{content:"";position:absolute;inset:0;width:50%;background:var(--ink)}
+.nota{margin-top:18px;border-left:3px solid var(--patina);padding:6px 0 6px 16px;font-size:15.5px;color:var(--ink-soft)}
+.nota b{font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.26em;color:var(--patina);display:block;margin-bottom:3px}
+.insitu{display:inline-block;margin-top:18px;font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;border:1px solid rgba(158,59,43,.5);padding:7px 12px}
+.insitu:hover{background:rgba(158,59,43,.08)}
+
+/* the uncarved slab */
+.stela.blank{min-height:300px;display:flex;flex-direction:column;justify-content:center;text-align:center}
+.stela.blank .ghost{font-family:var(--disp);letter-spacing:.3em;font-size:15px;color:rgba(42,34,24,.34)}
+
+/* ---------- squeeze toggle / visitor notice ---------- */
+.notice{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;
+  border:1px solid rgba(42,34,24,.32);background:var(--trav-3);padding:14px 18px;margin-top:40px}
+.notice .txt{font-size:15.5px;font-style:italic;color:var(--ink-soft);max-width:58ch}
+.btn{font-family:var(--mono);font-size:11px;letter-spacing:.22em;background:transparent;color:var(--ink);
+  border:1px solid var(--patina);padding:9px 16px;cursor:pointer;transition:background .2s}
+.btn:hover{background:rgba(94,122,106,.14)}
+.btn[aria-pressed="true"]{background:var(--patina);color:#f3efe2}
+
+/* ---------- name-drift interlude ---------- */
+.drift{margin:46px 0 8px;border:1px solid rgba(42,34,24,.32);background:var(--trav-3);padding:22px}
+.drift-cap{font-family:var(--mono);font-size:10px;letter-spacing:.28em;color:var(--ink-soft);margin-top:12px;text-align:center}
+.drift .dacia-word{font-family:var(--disp);font-size:21px;letter-spacing:4px;fill:var(--minium);
+  animation:drift-move 14s ease-in-out infinite}
+.drift .d-date{font-family:var(--mono);font-size:11px;fill:#4d4233;opacity:0}
+.drift .d1{animation:dfade 14s infinite}
+.drift .d2{animation:dfade 14s infinite 4.66s}
+.drift .d3{animation:dfade 14s infinite 9.33s}
+@keyframes drift-move{
+  0%,26%{transform:translate(470px,232px)}
+  38%,60%{transform:translate(318px,64px)}
+  72%,94%{transform:translate(470px,232px)}
+  100%{transform:translate(470px,232px)}}
+@keyframes dfade{0%{opacity:0}4%,26%{opacity:1}33%,100%{opacity:0}}
+
+/* ---------- collatio desk ---------- */
+.collatio{margin-top:60px;border:1px solid rgba(42,34,24,.4);background:linear-gradient(180deg,var(--trav-3),var(--trav));padding:34px 30px}
+.coll-controls{display:flex;gap:18px;flex-wrap:wrap;margin:24px 0 8px;align-items:center}
+.coll-controls .vs{font-family:var(--disp);letter-spacing:.2em;font-size:13px;color:var(--minium)}
+select{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--ink);background:var(--trav);
+  border:1px solid rgba(42,34,24,.5);padding:9px 12px;cursor:pointer;max-width:100%}
+.coll-head{display:grid;grid-template-columns:1fr 150px 1fr;gap:10px;margin-top:22px;align-items:baseline}
+.coll-head .a,.coll-head .b{font-family:var(--disp);font-size:14px;letter-spacing:.14em}
+.coll-head .a{text-align:right}
+.coll-row{display:grid;grid-template-columns:1fr 150px 1fr;gap:10px;align-items:center;padding:9px 0;border-top:1px dashed rgba(42,34,24,.3)}
+.coll-row .mid{text-align:center;font-family:var(--disp);font-size:11px;letter-spacing:.14em}
+.coll-row .mid .sig{display:block;font-family:var(--mono);font-size:9.5px;color:var(--minium);margin-top:2px}
+.coll-row .ta{display:flex;justify-content:flex-end}
+.coll-verdicts{display:grid;grid-template-columns:1fr 150px 1fr;gap:10px;padding:2px 0 10px;font-size:13.5px;font-style:italic;color:var(--ink-soft)}
+.coll-verdicts .va{text-align:right}
+.coll-div{margin-top:20px;border-top:3px double rgba(42,34,24,.5);padding-top:14px;font-size:16px}
+.coll-div b{font-family:var(--mono);font-size:10.5px;letter-spacing:.26em;color:var(--minium);font-weight:500}
+
+/* ============================================================
+   GROUND TRANSITION — leaving the museum, entering the earth
+   ============================================================ */
+.descent{position:relative;height:72vh;min-height:430px;
+  background:linear-gradient(180deg,var(--plaster) 0%, #b1a489 13%, #79684a 32%, #51432e 55%, #32291b 78%, var(--carbon) 100%);
+  display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden}
+.descent::before{content:"";position:absolute;left:0;right:0;top:13%;height:3px;background:#2f2818;box-shadow:0 -3px 0 rgba(122,115,80,.8)}
+.descent .inner{position:relative;color:var(--bone)}
+.descent .lvl{font-family:var(--mono);font-size:10.5px;letter-spacing:.32em;color:#d8cfb6;opacity:.85}
+.descent h2{font-family:var(--disp);font-weight:600;letter-spacing:.18em;font-size:clamp(20px,3.4vw,32px);margin:16px 0 14px;color:var(--bone);text-shadow:0 -1px 0 rgba(0,0,0,.7)}
+.descent p{max-width:52ch;margin:0 auto;font-style:italic;color:#cfc4a8;font-size:17px}
+.descent .ladder{position:absolute;left:8%;top:6%;bottom:6%;width:26px;opacity:.5}
+.descent .ladder span{display:block;height:1px;background:#d8cfb6;margin:26px 0}
+.descent .ladder::before,.descent .ladder::after{content:"";position:absolute;top:0;bottom:0;width:1px;background:#d8cfb6}
+.descent .ladder::after{right:0}
+
+/* ============================================================
+   DARK WING — the excavation
+   ============================================================ */
+.wing-dark{background:var(--carbon);color:var(--bone)}
+.wing-dark h2.sect{color:var(--bone)}
+.trench-layout{display:grid;grid-template-columns:86px 1fr;gap:40px;max-width:var(--maxw);margin:0 auto;padding:0 26px}
+
+/* core-sample navigator */
+.core{position:sticky;top:46px;align-self:start;padding-bottom:30px}
+.core-cap{font-family:var(--mono);font-size:9px;letter-spacing:.24em;color:var(--bone-dim);margin-bottom:10px;text-align:center}
+.core-col{position:relative;border:1px solid rgba(230,220,200,.25);background:#0f0b06;padding:3px;width:58px;margin:0 auto}
+.core-band{display:block;width:100%;border:none;cursor:pointer;position:relative;margin:0 0 3px;padding:0;transition:transform .15s, box-shadow .15s}
+.core-band:last-child{margin-bottom:0}
+.core-band:hover,.core-band:focus-visible{transform:translateX(3px)}
+.core-band.active{box-shadow:0 0 0 2px var(--ochre);z-index:2}
+.core-band .lab{position:absolute;left:calc(100% + 9px);top:50%;transform:translateY(-50%);
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;color:var(--bone-dim);white-space:nowrap;opacity:0;transition:opacity .15s;pointer-events:none}
+.core-band:hover .lab,.core-band:focus-visible .lab,.core-band.active .lab{opacity:1}
+.core-band.hiatus-band{background:repeating-linear-gradient(45deg,#2c2618 0 5px,#1a1610 5px 10px);cursor:default}
+.core-band.hiatus-band:hover{transform:none}
+.core-band.lensb{width:72%;margin-left:auto;margin-right:auto}
+.core-scale{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;color:var(--bone-dim);text-align:center;margin-top:9px}
+
+/* depth HUD */
+.hud{position:fixed;right:18px;bottom:18px;z-index:60;background:#0f0b06;border:1px solid rgba(201,150,46,.55);
+  color:var(--bone);font-family:var(--mono);font-size:11px;letter-spacing:.12em;padding:10px 14px;
+  opacity:0;transform:translateY(8px);transition:opacity .3s,transform .3s;pointer-events:none}
+.hud.on{opacity:1;transform:none}
+.hud .d{color:var(--ochre)}
+
+/* stratum sections */
+.stratum{padding:74px 0 30px;border-top:1px solid rgba(230,220,200,.12);position:relative}
+.stratum:first-of-type{border-top:none;padding-top:30px}
+.str-head{display:flex;justify-content:space-between;align-items:baseline;gap:14px;flex-wrap:wrap}
+.str-tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.3em;color:var(--ochre)}
+.str-depth{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;color:var(--bone-dim)}
+.stratum h3{font-family:var(--disp);font-weight:600;font-size:clamp(19px,2.8vw,27px);letter-spacing:.13em;margin:12px 0 4px;color:var(--bone);text-shadow:0 -1px 0 rgba(0,0,0,.75)}
+.stratum .sub{font-style:italic;color:var(--bone-dim);font-size:16.5px}
+.str-band{height:7px;margin:20px 0 26px;background:var(--bc,#5c472f);box-shadow:inset 0 1px 0 rgba(255,255,255,.12), inset 0 -2px 4px rgba(0,0,0,.5)}
+.str-grid{display:grid;grid-template-columns:300px 1fr;gap:36px;align-items:start}
+.context{border:1px solid rgba(230,220,200,.2);background:var(--umber);padding:18px 18px 14px}
+.context-cap{font-family:var(--mono);font-size:9.5px;letter-spacing:.28em;color:var(--ochre);margin-bottom:8px}
+.context table{width:100%;border-collapse:collapse;font-size:14px}
+.context td{padding:5px 0;border-top:1px dashed rgba(230,220,200,.18);vertical-align:top;color:var(--bone)}
+.context td:first-child{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;color:var(--bone-dim);width:88px;padding-right:10px;padding-top:7px}
+.str-body p{margin:0 0 1em;font-size:17px;color:var(--bone)}
+.find{margin:20px 0 4px;background:#efe9da;color:var(--ink);padding:16px 18px 13px;max-width:480px;
+  box-shadow:3px 4px 0 rgba(0,0,0,.45);transform:rotate(-.4deg)}
+.find b{display:block;font-family:var(--mono);font-weight:500;font-size:9px;letter-spacing:.3em;color:var(--minium);margin-bottom:5px}
+.find .q{font-size:16.5px;font-style:italic;line-height:1.45;color:var(--ink)}
+.inmus{display:inline-block;margin-top:16px;font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;border:1px solid rgba(201,150,46,.5);padding:7px 12px;color:var(--ochre)}
+.inmus:hover{background:rgba(201,150,46,.1)}
+
+/* five seals gauges */
+.seals{margin-top:20px;border-top:3px double rgba(230,220,200,.3);padding-top:8px}
+.seals-cap{font-family:var(--mono);font-size:9.5px;letter-spacing:.3em;color:var(--bone-dim);padding:6px 0}
+.seal{display:grid;grid-template-columns:110px 1fr 34px;gap:12px;align-items:center;padding:7px 0;border-top:1px dashed rgba(230,220,200,.14)}
+.seal .nm{font-family:var(--disp);font-size:11px;letter-spacing:.18em;color:var(--bone)}
+.seal .track{height:9px;background:#0f0b06;border:1px solid rgba(230,220,200,.2);position:relative}
+.seal .fill{position:absolute;inset:1px auto 1px 1px;width:0;background:var(--sc,#c9962e);transition:width 1.1s cubic-bezier(.2,.7,.2,1)}
+.seal .val{font-family:var(--mono);font-size:11px;color:var(--bone-dim);text-align:right}
+.seal-line{grid-column:1/-1;font-size:13.5px;font-style:italic;color:var(--bone-dim);margin:-3px 0 2px}
+
+/* hiatus / sterile layer with lenses */
+.hiatus{margin:80px 0;border:1px dashed rgba(230,220,200,.3);position:relative;
+  background:repeating-linear-gradient(45deg,rgba(230,220,200,.05) 0 9px, transparent 9px 18px);padding:40px 30px}
+.hiatus-tag{position:absolute;top:-11px;left:24px;background:var(--carbon);padding:0 12px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:var(--bone-dim)}
+.hiatus>p{max-width:62ch;font-size:16.5px;color:var(--bone-dim);font-style:italic;margin-bottom:10px}
+.lens{margin:34px 0 0;border:1px solid rgba(230,220,200,.22);background:var(--umber);padding:28px 26px 24px;position:relative}
+.lens::before{content:"LENS DEPOSIT";position:absolute;top:-9px;left:18px;background:var(--umber);padding:0 10px;
+  font-family:var(--mono);font-size:9px;letter-spacing:.3em;color:var(--verdigris)}
+
+/* sectio — radar comparison */
+.sectio{margin-top:90px;border:1px solid rgba(230,220,200,.22);background:var(--umber);padding:36px 30px}
+.wing-dark select{background:var(--umber-2);color:var(--bone);border-color:rgba(230,220,200,.35)}
+.sectio-grid{display:grid;grid-template-columns:minmax(280px,420px) 1fr;gap:36px;margin-top:24px;align-items:start}
+.radar-box svg{width:100%}
+.deltas{font-size:16px}
+.delta{padding:10px 0;border-top:1px dashed rgba(230,220,200,.16);display:flex;gap:14px;align-items:baseline}
+.delta .dlab{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;min-width:142px}
+.delta .dtxt{font-style:italic;color:var(--bone-dim)}
+.legend{display:flex;gap:22px;margin-top:10px;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--bone-dim);flex-wrap:wrap}
+.legend .sw{display:inline-block;width:12px;height:12px;margin-right:7px;vertical-align:-1px;border:1px solid rgba(230,220,200,.4)}
+
+/* sondaje — test pits */
+.sondaje{margin-top:90px}
+.pit-btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.pitb{font-family:var(--disp);font-size:12px;letter-spacing:.18em;background:transparent;color:var(--bone);
+  border:1px solid rgba(230,220,200,.35);padding:11px 18px;cursor:pointer;transition:all .2s}
+.pitb:hover{border-color:var(--ochre)}
+.pitb.on{background:var(--ochre);color:#171109;border-color:var(--ochre)}
+.pit-note{margin-top:20px;font-style:italic;color:var(--bone-dim);max-width:64ch;font-size:16.5px}
+.pit-col{margin-top:26px;border-left:3px solid rgba(230,220,200,.25);max-width:620px}
+.pit-cell{display:grid;grid-template-columns:96px 1fr;gap:16px;padding:13px 0 13px 20px;border-bottom:1px dashed rgba(230,220,200,.14);position:relative}
+.pit-cell::before{content:"";position:absolute;left:-3px;top:0;bottom:0;width:3px;background:var(--bc,#5c472f)}
+.pit-str{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:var(--bone-dim);padding-top:3px;line-height:1.5}
+.pit-name{font-size:17px}
+.pit-name .toponym{font-weight:500}
+.pit-name .pn{display:block;font-size:13.5px;font-style:italic;color:var(--bone-dim);margin-top:2px}
+.pit-cell.is-abs .pit-name .toponym{color:var(--bone-dim);font-style:italic;font-weight:400}
+.chip{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.1em;padding:2px 7px 1px;margin-left:8px;
+  border:1px solid;vertical-align:2px}
+.chip.dac{color:#b7a386;border-color:#b7a386}
+.chip.el{color:#7fa6c9;border-color:#7fa6c9}
+.chip.la{color:#d3674a;border-color:#d3674a}
+.chip.de{color:#9aa7b5;border-color:#9aa7b5}
+.chip.hu{color:#8fae6f;border-color:#8fae6f}
+.chip.sl{color:#b07fae;border-color:#b07fae}
+.chip.ru{color:#c95b5b;border-color:#c95b5b}
+.chip.ro{color:#d9b14b;border-color:#d9b14b}
+.chip.none{color:var(--bone-dim);border-color:rgba(230,220,200,.3);border-style:dashed}
+
+/* ---------- colophon ---------- */
+.colophon{border-top:1px solid rgba(230,220,200,.16);margin-top:100px;padding:70px 0 90px;background:#120d07}
+.colo-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:36px}
+.colo-block h4{font-family:var(--disp);font-size:13px;letter-spacing:.22em;font-weight:600;color:var(--bone);margin-bottom:14px}
+.colo-block p,.colo-block li{font-size:15.5px;color:var(--bone-dim)}
+.colo-block ul{list-style:none}
+.colo-block li{padding:6px 0;border-top:1px dashed rgba(230,220,200,.14)}
+.anchor-row{display:grid;grid-template-columns:108px 1fr 1fr;gap:10px;font-size:14px;padding:6px 0;border-top:1px dashed rgba(230,220,200,.14);color:var(--bone-dim)}
+.anchor-row .a0::before{content:"0 — ";font-family:var(--mono);font-size:10px;color:var(--bone-dim)}
+.anchor-row .a5::before{content:"5 — ";font-family:var(--mono);font-size:10px;color:var(--ochre)}
+.anchor-row .anm{font-family:var(--disp);font-size:11px;letter-spacing:.16em;color:var(--bone)}
+.sign{margin-top:60px;text-align:center;font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:var(--bone-dim);line-height:2.2}
+
+/* ---------- reveal animation ---------- */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease, transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ---------- responsive ---------- */
+@media (max-width:1180px){
+  .core-band .lab{display:none}
+}
+@media (max-width:980px){
+  .trench-layout{grid-template-columns:1fr;gap:0}
+  .core{position:sticky;top:0;z-index:50;background:rgba(23,17,9,.96);padding:10px 0 12px;margin:0 -26px;width:auto}
+  .core-cap{display:none}
+  .core-col{display:flex;width:auto;max-width:520px;height:30px;padding:2px;margin:0 26px}
+  .core-band{height:auto;margin:0 2px 0 0;flex:1}
+  .core-band.lensb{width:auto;flex:.6}
+  .core-scale{display:none}
+  .stela-grid,.stela:nth-of-type(even) .stela-grid{grid-template-columns:1fr}
+  .stela:nth-of-type(even) .vigcol{order:0}
+  .str-grid{grid-template-columns:1fr}
+  .sectio-grid{grid-template-columns:1fr}
+  .instruments{grid-template-columns:1fr}
+  .colo-grid{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  body{font-size:17px}
+  .section{padding:60px 0}
+  .stela{padding:28px 20px;margin:40px 0}
+  .rd{grid-template-columns:118px 86px;grid-template-rows:auto auto}
+  .rd .verdict{grid-column:1/-1}
+  .coll-head,.coll-row,.coll-verdicts{grid-template-columns:1fr 86px 1fr}
+  .hud{right:10px;bottom:10px;font-size:10px;padding:8px 10px}
+  .seal{grid-template-columns:92px 1fr 30px}
+  .pit-cell{grid-template-columns:74px 1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001s !important;animation-iteration-count:1 !important;transition-duration:.001s !important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= HERO : the section drawing ================= -->
+<header class="hero">
+  <div class="hero-top">
+    <p class="hero-kicker">CAMPAIGN MMXXVI · SITE: DACIA · <b>TWO WINGS, ONE BVILDING</b></p>
+    <h1 class="hero-title-l carved">LAPIDARIVM·DACICVM</h1>
+    <p class="hero-sub-l">THE MVSEVM — MAPS DISPLAYED AS INSCRIPTIONS</p>
+    <nav class="hero-enter" aria-label="Wing entrances">
+      <a href="#museum"><b>ENTER THE LAPIDARIUM</b> →</a>
+      <a href="#trench"><b>DESCEND TO THE TRENCH</b> ↓</a>
+    </nav>
+  </div>
+  <div class="groundline" aria-hidden="true">
+    <svg viewBox="0 0 1200 64" preserveAspectRatio="none">
+      <line x1="0" y1="13" x2="1200" y2="13" stroke="#efe9da" stroke-width="2"/>
+      <g stroke="#efe9da" stroke-width="1" opacity=".85">
+        <line x1="40" y1="13" x2="36" y2="4"/><line x1="46" y1="13" x2="44" y2="3"/><line x1="52" y1="13" x2="54" y2="5"/>
+        <line x1="300" y1="13" x2="296" y2="4"/><line x1="306" y1="13" x2="304" y2="3"/><line x1="312" y1="13" x2="314" y2="5"/>
+        <line x1="620" y1="13" x2="616" y2="4"/><line x1="626" y1="13" x2="624" y2="3"/><line x1="632" y1="13" x2="634" y2="5"/>
+        <line x1="940" y1="13" x2="936" y2="4"/><line x1="946" y1="13" x2="944" y2="3"/><line x1="952" y1="13" x2="954" y2="5"/>
+      </g>
+      <g font-family="IBM Plex Mono,monospace" font-size="9" fill="#e9e2cf" opacity=".9" letter-spacing="2">
+        <text x="70" y="36">±0.00 m — NIVEAVS SOLI</text>
+      </g>
+      <g stroke="#0e0b06" stroke-width="1" opacity=".5">
+        <line x1="0" y1="34" x2="1200" y2="34"/><line x1="0" y1="50" x2="1200" y2="50"/>
+      </g>
+    </svg>
+    <span class="gl-label">GROVND LINE</span>
+  </div>
+  <div class="hero-bottom">
+    <div class="hero-strata" aria-hidden="true"></div>
+    <h1 class="hero-title-d incised">TERRA·SIGILLATA</h1>
+    <p class="hero-sub-d">THE TRENCH — MAPS EXCAVATED AS STRATA</p>
+    <p class="hero-claim">Nineteen centuries of maps of Dacia &amp; Romania. Above the ground line they are read as inscriptions; below it, they are dug as layers. One year of history equals one millimetre of earth.</p>
+    <div class="hero-scroll" aria-hidden="true">SCROLL TO EXCAVATE ▼</div>
+  </div>
+</header>
+
+<!-- ================= LIGHT WING : THE LAPIDARIUM ================= -->
+<div class="wing-light">
+
+  <!-- intro essay -->
+  <section class="section" id="brief">
+    <div class="wrap">
+      <p class="eyebrow">MVSAEVM ET FOSSA · SITE BRIEF</p>
+      <h2 class="sect carved">THE CHVRCH THAT IS BOTH</h2>
+      <div class="essay">
+        <p>At Densuș, in Hațeg country, stands a small church built almost entirely of older stones. Roman altars hold up its tower; a funerary inscription — a wife&rsquo;s farewell to her husband, cut seventeen centuries ago — serves as a wall block. Walk around it and you are in a museum; dig beneath it and you are in a trench. The lapidarium and the excavation are the same building.</p>
+        <p>Maps of this land work the same way. Ptolemy&rsquo;s coordinates are reused by Renaissance engravers; Austrian military sheets become the skeleton of the Romanian state map; a name carved by a Greek geographer resurfaces, after eighteen centuries, on a city-limit sign outside Cluj. Every map of Dacia is built from the <em>spolia</em> of earlier maps — and every map buries the one before it.</p>
+        <p>So this site has two wings. In the <strong>Lapidarium</strong>, each map is displayed as a carved stela and read the way an epigrapher reads stone — with the Six Readings, adapted from the Leiden conventions. In the <strong>Trench</strong>, the same maps are excavated as strata, each at its proper depth, and assessed in the field with the Five Seals. Visit the museum first. Then take the ladder down.</p>
+      </div>
+
+      <div class="rule" aria-hidden="true"><span>INSTRVMENTA</span></div>
+
+      <p class="eyebrow">TWO INSTRVMENTS, ONE COLLECTION</p>
+      <div class="instruments">
+        <div class="inst">
+          <h3 class="carved">SEX·LECTIONES</h3>
+          <p class="where">THE SIX READINGS · LABORATORY PROTOCOL · USED IN THE MVSEVM</p>
+          <ul>
+            <li><span class="sig">‖</span><span class="nm">ORDINATIO</span><span class="ds">the geometric armature — projection, graticule, scale</span></li>
+            <li><span class="sig">A·B</span><span class="nm">LITTERAE</span><span class="ds">letterforms and toponymy — who names the land, in what tongue</span></li>
+            <li><span class="sig">[ ]</span><span class="nm">RESTITVTIO</span><span class="ds">restored or inherited content — the copying chain</span></li>
+            <li><span class="sig">⟨ ⟩</span><span class="nm">CORRECTIO</span><span class="ds">instrumental correction — what was measured, verified, improved</span></li>
+            <li><span class="sig">⟦ ⟧</span><span class="nm">RASVRA</span><span class="ds">erasure — what was struck out, censored, classified</span></li>
+            <li><span class="sig">vac.</span><span class="nm">VACAT</span><span class="ds">deliberate blank — terra incognita, voids, omission</span></li>
+          </ul>
+        </div>
+        <div class="inst dig">
+          <h3 class="incised">QVINQVE·SIGILLA</h3>
+          <p class="where">THE FIVE SEALS · FIELD PROTOCOL · USED IN THE TRENCH</p>
+          <ul>
+            <li><span class="sig">M</span><span class="nm">MENSVRA</span><span class="ds">measurement — from symbolic space to geodetic survey</span></li>
+            <li><span class="sig">A</span><span class="nm">AVCTORITAS</span><span class="ds">authority — how much central power stands behind the map</span></li>
+            <li><span class="sig">N</span><span class="nm">NOMINA</span><span class="ds">names — toponymic density and linguistic layering</span></li>
+            <li><span class="sig">L</span><span class="nm">LIMES</span><span class="ds">boundaries — frontier zones, river lines, treaty demarcations</span></li>
+            <li><span class="sig">S</span><span class="nm">SILENTIVM</span><span class="ds">silence — what is withheld, by choice or by limit</span></li>
+          </ul>
+        </div>
+      </div>
+      <p class="hall-intro" style="margin-top:26px">Both score 0–5, in half-points. The marks record depths of a quality, not grades of merit — an epigrapher&rsquo;s provisional verdicts: systematic, subjective, revisable.</p>
+    </div>
+  </section>
+
+  <!-- museum proper -->
+  <main class="section" id="museum" style="padding-top:30px">
+    <div class="wrap">
+      <p class="eyebrow">PARS PRIMA · ABOVE THE GROVND LINE</p>
+      <h2 class="sect carved">THE LAPIDARIVM</h2>
+      <p class="lede">Thirteen stones on a wall, one for each map. Read them as you would read inscriptions.</p>
+
+      <div class="notice">
+        <p class="txt">Epigraphers press damp paper into carved letters to take a <em>squeeze</em> — in Romanian, an <em>estampaj</em> or <em>calc</em>: the stone&rsquo;s negative. Toggle it to study every vignette in relief.</p>
+        <button class="btn" id="squeezeBtn" aria-pressed="false">CALC · SQUEEZE VIEW</button>
+      </div>
+
+      <div class="tl" id="timeline" aria-label="Timeline of the collection. Select a stone to jump to it.">
+        <div id="tlInner" style="position:relative;height:150px"></div>
+        <p class="tl-cap">THE WALL IN TIME · A.D. 100 — 2026 · SQUARE-ROOT SCALE · SELECT A STONE TO VISIT IT</p>
+      </div>
+
+      <div id="halls"><!-- stelae rendered here --></div>
+
+      <!-- collatio desk -->
+      <section class="collatio" id="collatio">
+        <p class="eyebrow">INSTRVMENTVM I</p>
+        <h2 class="sect carved" style="font-size:clamp(20px,2.8vw,28px)">COLLATIO · THE COMPARISON DESK</h2>
+        <p class="hall-intro">Place any two stones side by side and collate their Six Readings, as an editor collates manuscripts.</p>
+        <div class="coll-controls">
+          <select id="collA" aria-label="First stone to collate"></select>
+          <span class="vs">·CONTRA·</span>
+          <select id="collB" aria-label="Second stone to collate"></select>
+        </div>
+        <div id="collOut"></div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- ================= THE DESCENT ================= -->
+<div class="descent" id="descent" role="presentation">
+  <div class="ladder" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="inner">
+    <p class="lvl">±0.00 m · LEAVING THE MVSEVM FLOOR</p>
+    <h2>BELOW THE WALL, THE TRENCH</h2>
+    <p>The stones above were lifted from the layers below. Depth is time: one millimetre of earth for every year before the present. Ptolemy waits 1.87&nbsp;metres down.</p>
+  </div>
+</div>
+
+<!-- ================= DARK WING : THE EXCAVATION ================= -->
+<div class="wing-dark" id="trench">
+  <section class="section" style="padding-bottom:20px">
+    <div class="wrap">
+      <p class="eyebrow">PARS SECVNDA · BELOW THE GROVND LINE</p>
+      <h2 class="sect incised">TERRA SIGILLATA · THE TRENCH</h2>
+      <p class="lede">The same thirteen maps, in situ. Read the section from the topsoil downward; the deeper you scroll, the older the layer. A sterile band of twelve centuries lies between the woodcuts and the road-maps of Rome.</p>
+    </div>
+  </section>
+
+  <div class="trench-layout">
+    <nav class="core" id="coreNav" aria-label="Core sample — stratum navigator">
+      <p class="core-cap">CORE</p>
+      <div class="core-col" id="coreCol"></div>
+      <p class="core-scale">0 → 188 cm</p>
+    </nav>
+    <div class="trench-main">
+      <div id="strata"><!-- strata rendered here --></div>
+
+      <!-- sectio : radar comparison -->
+      <section class="sectio" id="sectio">
+        <p class="eyebrow">INSTRVMENTVM II</p>
+        <h2 class="sect incised" style="font-size:clamp(20px,2.8vw,28px)">SECTIO · SECTION COMPARISON</h2>
+        <p class="hall-intro" style="color:var(--bone-dim)">Overlay the Five-Seal profiles of any two strata and read the deltas, as one reads two faces of a cut.</p>
+        <div class="coll-controls">
+          <select id="secA" aria-label="First stratum to compare"></select>
+          <span class="vs" style="color:var(--ochre)">·SVPER·</span>
+          <select id="secB" aria-label="Second stratum to compare"></select>
+        </div>
+        <div class="sectio-grid">
+          <div class="radar-box"><div id="radar"></div><div class="legend" id="radLegend"></div></div>
+          <div class="deltas" id="deltas"></div>
+        </div>
+      </section>
+
+      <!-- sondaje : test pits -->
+      <section class="sondaje" id="sondaje">
+        <p class="eyebrow">INSTRVMENTVM III</p>
+        <h2 class="sect incised" style="font-size:clamp(20px,2.8vw,28px)">SONDAJE · THE TEST PITS</h2>
+        <p class="hall-intro" style="color:var(--bone-dim)">Sink a pit on a single place and watch its name change as you pass through the layers — an artifact traced through every stratum it survives.</p>
+        <div class="pit-btns" id="pitBtns" role="tablist" aria-label="Choose a test-pit site"></div>
+        <p class="pit-note" id="pitNote"></p>
+        <div class="pit-col" id="pitCol"></div>
+      </section>
+    </div>
+  </div>
+
+  <!-- colophon -->
+  <footer class="colophon">
+    <div class="wrap">
+      <p class="eyebrow">COLOPHON · METHOD &amp; SOVRCES</p>
+      <h2 class="sect incised" style="font-size:clamp(19px,2.6vw,26px)">FINDS SHED</h2>
+      <div class="colo-grid">
+        <div class="colo-block">
+          <h4>SCALE ANCHORS · THE FIVE SEALS</h4>
+          <div class="anchor-row"><span class="anm">MENSVRA</span><span class="a0">symbolic, unmeasured space</span><span class="a5">geodetic triangulation &amp; projection</span></div>
+          <div class="anchor-row"><span class="anm">AVCTORITAS</span><span class="a0">private scholar&rsquo;s hand</span><span class="a5">the state&rsquo;s full military apparatus</span></div>
+          <div class="anchor-row"><span class="anm">NOMINA</span><span class="a0">sparse, monolingual</span><span class="a5">dense, five or more language layers</span></div>
+          <div class="anchor-row"><span class="anm">LIMES</span><span class="a0">no edges conceived</span><span class="a5">surveyed treaty lines</span></div>
+          <div class="anchor-row"><span class="anm">SILENTIVM</span><span class="a0">little withheld</span><span class="a5">structural or strategic silence throughout</span></div>
+        </div>
+        <div class="colo-block">
+          <h4>SCALE ANCHORS · THE SIX READINGS</h4>
+          <div class="anchor-row"><span class="anm">ORDINATIO</span><span class="a0">topological, ungridded</span><span class="a5">full geodetic armature</span></div>
+          <div class="anchor-row"><span class="anm">LITTERAE</span><span class="a0">few names, one tongue</span><span class="a5">dense, multi-scripted naming</span></div>
+          <div class="anchor-row"><span class="anm">RESTITVTIO</span><span class="a0">drawn from observation</span><span class="a5">wholly inherited from older sheets</span></div>
+          <div class="anchor-row"><span class="anm">CORRECTIO</span><span class="a0">never verified</span><span class="a5">instrumentally corrected, iteratively</span></div>
+          <div class="anchor-row"><span class="anm">RASVRA</span><span class="a0">nothing suppressed</span><span class="a5">classified, censored, falsified</span></div>
+          <div class="anchor-row"><span class="anm">VACAT</span><span class="a0">no blank space</span><span class="a5">void dominates the sheet</span></div>
+        </div>
+        <div class="colo-block">
+          <h4>REPOSITORIES OF THE ORIGINALS</h4>
+          <ul>
+            <li>Tabula Peutingeriana — ÖNB Vienna, Cod. 324 · UNESCO Memory of the World, 2007</li>
+            <li>Hereford mappa mundi — Hereford Cathedral</li>
+            <li>Honterus, <i>Chorographia Transylvaniae</i> — a single known print, likely Budapest</li>
+            <li>Cantacuzino&rsquo;s Wallachia — a handful of copies; one at the BnF, Paris</li>
+            <li>Josephine Survey of Transylvania — Kriegsarchiv, Vienna</li>
+            <li>Planurile directoare de tragere — georeferenced by geo-spatial.org</li>
+          </ul>
+        </div>
+        <div class="colo-block">
+          <h4>SITE NOTES</h4>
+          <p>Verdicts are interpretive, not metric: an epigrapher&rsquo;s readings, offered to be argued with. Dates of medieval artifacts follow their content where the copy is later (the Peutinger roll is dated here by its 4th-century matter, not its c.&nbsp;1200 parchment). Claims that resist verification — Honterus&rsquo;s orientation, Drobeta in Ptolemy&rsquo;s catalogue, the exact site of Vicina — are marked uncertain rather than asserted.</p>
+          <p style="margin-top:12px">This site is a cousin of <i>Speculum Chartarum</i> and its Six Bearings — same family, different instruments. The Five Seals and Six Readings were cut for Dacia alone.</p>
+        </div>
+      </div>
+      <p class="sign">TERRA·SIGILLATA · LAPIDARIVM·DACICVM<br>EXCAVATED &amp; DISPLAYED IN A SINGLE FILE · CAMPAIGN MMXXVI<br>SPACE ON THE WALL IS RESERVED FOR THE NEXT SVRVEY</p>
+    </div>
+  </footer>
+</div>
+
+<div class="hud" id="hud" aria-hidden="true"><span class="d" id="hudDepth">−0.0 cm</span> · <span id="hudDate"></span> · <span id="hudStr"></span></div>
+
+<script>
+'use strict';
+/* ============================================================
+   THE CORPUS — thirteen stones, each both stela and stratum.
+   stela n  <->  stratum (13 - n).  depth: 1 mm per year.
+   ============================================================ */
+const STONES=[
+{
+ id:'ptolemy', stela:'I', stratum:'XII', n:12, hall:0,
+ short:'PTOLEMAEVS', name:'PTOLEMY · GEOGRAPHIA III.8 · DACIA',
+ sub:'Dacia enters geometry: forty-four towns hung on coordinates',
+ year:150, yLab:'c. A.D. 150', dateLabel:'c. A.D. 150',
+ when:'content c. A.D. 150 · recovered c. 1295 · first printed with maps 1477',
+ maker:'Klaudios Ptolemaios, Alexandria',
+ medium:'coordinate catalogue; every drawing of it a later restoration',
+ modus:'graticule of latitude & longitude; conic-style frame',
+ repo:'manuscript tradition; editio princeps with maps, Bologna 1477',
+ survival:'as numbers, perfectly; as original drawings, not at all',
+ depth:187.6, lens:false,
+ seals:{M:3,A:2,N:3,L:2,S:4},
+ sealLines:{
+  M:'longitudes from travel-times — measured, but by the clock of caravans',
+  A:'imperial archives read by a private scholar in Alexandria',
+  N:'Dacian names in Greek dress: forty-four poleis, fifteen tribes',
+  L:'rivers stand in for borders — Tisia, Danube, Hierasus',
+  S:'beyond the catalogued towns, the interior goes quiet'},
+ reads:{ORD:4,LIT:3.5,RES:3.5,COR:3,RAS:0.5,VAC:3.5},
+ verdicts:{
+  ORD:'the graticule precedes the ground; places hang from coordinates',
+  LIT:'Dacian -dava endings survive inside Greek transliteration',
+  RES:'itineraries and Marinus, edited; the maps are later restorations',
+  COR:'he audits Marinus, then goes unaudited for a millennium',
+  RAS:'nothing struck out — there was nothing yet to strike',
+  VAC:'north of the Carpathians the catalogue thins to hearsay'},
+ find:'Dacia first becomes a set of numbers: every town a latitude, every error a coordinate.',
+ nota:'Ptolemy&rsquo;s &ldquo;map&rdquo; of Dacia is a table. Every drawing of it &mdash; Byzantine, Renaissance, modern &mdash; is a reconstruction from the numbers, which is why the numbers outlived every sheet.',
+ mus:`<p>Book III, chapter 8 of the <em>Geographia</em> fixes Dacia between the Tisia, the Danube and the Hierasus and then lists its contents: some forty-four towns with latitude and longitude, fifteen tribes, and a royal seat &mdash; <em>Zarmizegethousa basileion</em>. Many of the names carry the native <em>-dava</em> ending, &ldquo;settlement,&rdquo; in Greek dress: Piroboridava, Ziridava, Sucidava. The land has been converted into a coordinate system.</p>
+ <p>The work survived as text. Recovered for the West around 1295 &mdash; Planudes may have re-drawn the maps from the numbers alone &mdash; and printed with maps at Bologna in 1477, it handed the Renaissance a Dacia that was pure data, waiting to be plotted. The first stone in the wall is not a picture at all.</p>`,
+ tr:`<p>Deepest cultural layer of the trench, immediately above sterile soil. The deposit is not a drawn artifact but a dense scatter of coordinate pairs &mdash; the residue of itineraries, army reports from Trajan&rsquo;s wars, and Marinus of Tyre&rsquo;s earlier compilation, audited once by an Alexandrian and then by no one for a thousand years.</p>
+ <p>Field note: the find is in suspiciously good condition. Numbers do not fade the way parchment does; the error pattern (longitudes stretched by caravan-time) is itself diagnostic of the survey method.</p>`,
+ vig:`<svg viewBox="0 0 320 240" role="img" aria-label="Reconstruction of Ptolemy's Dacia: trapezoid graticule, rivers, towns with coordinates">
+ <rect x="8" y="8" width="304" height="224" fill="none" stroke="#2a2218" stroke-width="1.4"/>
+ <g stroke="#2a2218" stroke-width=".6" opacity=".55">
+  <path d="M60 16 L48 232" fill="none"/><path d="M120 14 L114 232" fill="none"/><path d="M180 13 L180 232" fill="none"/><path d="M240 14 L246 232" fill="none"/><path d="M300 16 L310 230" fill="none"/>
+  <path d="M14 60 Q160 50 306 60" fill="none"/><path d="M12 110 Q160 102 308 110" fill="none"/><path d="M12 160 Q160 154 308 160" fill="none"/><path d="M12 205 Q160 200 308 205" fill="none"/>
+ </g>
+ <g font-family="IBM Plex Mono,monospace" font-size="7" fill="#4d4233">
+  <text x="44" y="24">45°</text><text x="110" y="24">47°30'</text><text x="176" y="24">50°</text><text x="238" y="24">52°30'</text>
+  <text x="14" y="57">48°</text><text x="14" y="107">47°</text><text x="14" y="157">46°</text><text x="14" y="202">45°</text>
+ </g>
+ <path d="M20 214 Q90 222 160 216 Q240 210 308 220" fill="none" stroke="#5e7a6a" stroke-width="2.4"/>
+ <text x="226" y="232" font-family="EB Garamond,serif" font-size="9" font-style="italic" fill="#5e7a6a">Danubius / Istros</text>
+ <path d="M52 20 Q66 90 58 212" fill="none" stroke="#5e7a6a" stroke-width="1.6"/>
+ <text x="36" y="86" font-family="EB Garamond,serif" font-size="8" font-style="italic" fill="#5e7a6a" transform="rotate(-80 36 86)">Tisia</text>
+ <path d="M268 22 Q284 120 296 214" fill="none" stroke="#5e7a6a" stroke-width="1.6"/>
+ <text x="298" y="120" font-family="EB Garamond,serif" font-size="8" font-style="italic" fill="#5e7a6a" transform="rotate(82 298 120)">Hierasus</text>
+ <g stroke="#2a2218" stroke-width="1" opacity=".8"><path d="M96 120 l16 -10 16 10 16 -9 16 9 16 -8 16 8 16 -8 16 8" fill="none"/></g>
+ <text x="152" y="44" font-family="Cinzel,serif" font-size="17" letter-spacing="6" fill="#2a2218" text-anchor="middle">ΔΑΚΙΑ</text>
+ <g fill="#9e3b2b"><circle cx="128" cy="142" r="3.2"/><circle cx="96" cy="168" r="2.2"/><circle cx="170" cy="160" r="2.2"/><circle cx="206" cy="138" r="2.2"/><circle cx="148" cy="186" r="2.2"/><circle cx="232" cy="178" r="2.2"/><circle cx="84" cy="132" r="2.2"/></g>
+ <g font-family="EB Garamond,serif" font-size="8.5" font-style="italic" fill="#2a2218">
+  <text x="134" y="139">Zarmizegethousa</text><text x="134" y="148" font-size="7" fill="#9e3b2b">βασίλειον</text>
+  <text x="74" y="178">Drubetai?</text><text x="176" y="170">Apoulon</text><text x="212" y="132">Napouka</text><text x="154" y="196">Sucidava</text><text x="238" y="188">Ziridava</text>
+ </g>
+ <g font-family="IBM Plex Mono,monospace" font-size="6.5" fill="#4d4233" opacity=".85">
+  <text x="134" y="158">47°50' · 45°15'</text><text x="212" y="124">49° · 46°50'</text>
+ </g>
+ <text x="64" y="70" font-family="EB Garamond,serif" font-size="9" font-style="italic" fill="#4d4233">Anarti</text>
+ <text x="240" y="64" font-family="EB Garamond,serif" font-size="9" font-style="italic" fill="#4d4233">Costoboci</text>
+</svg>`
+},
+{
+ id:'peutinger', stela:'II', stratum:'XI', n:11, hall:0,
+ short:'PEVTINGERIANA', name:'TABVLA PEVTINGERIANA · SEGM. VII–VIII',
+ sub:'A province four fingers tall: the roads survive the map',
+ year:350, yLab:'c. A.D. 350', dateLabel:'content c. A.D. 350',
+ when:'content c. 4th cent. · surviving copy c. 1200',
+ maker:'unknown imperial compilers; medieval copyist',
+ medium:'parchment roll, 11 segments, c. 6.75 m × 34 cm',
+ modus:'topological strip-diagram of the cursus publicus',
+ repo:'ÖNB Vienna, Cod. 324 · UNESCO Memory of the World 2007',
+ survival:'a copy of a copy; one segment lost from the west end',
+ depth:167.6, lens:false,
+ seals:{M:1,A:4,N:2,L:1,S:5},
+ sealLines:{
+  M:'distances true in miles, false in every direction',
+  A:'the cursus publicus — logistics as worldview',
+  N:'stations in clerk&rsquo;s Latin: Drubetis, Apula, Porolisso',
+  L:'no frontier drawn; the road is the edge of attention',
+  S:'everything off-route is silence'},
+ reads:{ORD:1,LIT:3,RES:5,COR:1,RAS:1,VAC:4.5},
+ verdicts:{
+  ORD:'geometry surrenders to parchment — a province four fingers tall',
+  LIT:'road-Latin with vulgar spellings; the grammar of travel survives',
+  RES:'a copy of a copy of imperial files',
+  COR:'miles checked, shapes never',
+  RAS:'little erased; much simply off the road',
+  VAC:'away from the cursus publicus, nothing earns drawing'},
+ find:'The map remembers what the empire forgot: Dacia&rsquo;s roads outlive Dacia by a century of parchment.',
+ nota:'Pompeii (destroyed A.D. 79) and Constantinople (founded 330) share the same roll &mdash; a palimpsest of centuries that copying flattened into one sheet.',
+ mus:`<p>Nearly seven metres long and only thirty-four centimetres tall, the Peutinger roll squeezes the known world into a ribbon. Geometry is sacrificed wholesale to connection: it is a transit diagram, not a portrait. Across segments VII&ndash;VIII the Dacian roads climb north of the Danube &mdash; Lederata to Tibiscum, on to Sarmategte, Apula, Napoca, Porolisso &mdash; each station with its mileage, in the brisk Latin of a road-book.</p>
+ <p>Aurelian abandoned the province around 271&ndash;275; the roll&rsquo;s 4th-century content keeps the roads anyway, and a scribe around 1200 copied them again, checking distances but never shapes. The archive outlived the territory it described.</p>`,
+ tr:`<p>Thick, compressed layer directly over the Ptolemaic scatter. The deposit is linear: road-gravel in section, stations at measured intervals, almost no material between routes. Off the alignments the soil is clean &mdash; not erased, simply never deposited.</p>
+ <p>Field note: the layer is chronologically disturbed. Material from the 1st century (Pompeii) lies beside material from the 4th (Constantinople); the medieval re-deposition c. 1200 flattened three centuries into one horizon. Treat dates within the layer with suspicion; trust the mileages.</p>`,
+ vig:`<svg viewBox="0 0 320 240" role="img" aria-label="Peutinger Table style ribbon: parallel roads with stations across a narrow strip">
+ <rect x="6" y="60" width="308" height="120" fill="none" stroke="#2a2218" stroke-width="1.4"/>
+ <g stroke="#2a2218" stroke-width=".5" opacity=".4"><line x1="6" y1="60" x2="314" y2="60"/><line x1="6" y1="180" x2="314" y2="180"/></g>
+ <path d="M6 170 q40 6 80 2 q60 -6 120 0 q60 5 108 -2" fill="none" stroke="#5e7a6a" stroke-width="5" opacity=".8"/>
+ <text x="16" y="164" font-family="EB Garamond,serif" font-size="9" font-style="italic" fill="#5e7a6a">FL. DANVVIVS</text>
+ <g stroke="#9e3b2b" stroke-width="1.7" fill="none">
+  <path d="M22 150 l26 0 l8 -12 l30 0 l8 -12 l34 0 l10 -12 l40 0 l10 -10 l46 0 l10 -10 l50 0"/>
+  <path d="M60 150 l14 -26 l30 0 l12 -16"/>
+  <path d="M150 114 l24 14 l40 0"/>
+ </g>
+ <g stroke="#2a2218" stroke-width="1">
+  <line x1="48" y1="146" x2="48" y2="154"/><line x1="86" y1="134" x2="86" y2="142"/><line x1="128" y1="122" x2="128" y2="130"/><line x1="182" y1="110" x2="182" y2="118"/><line x1="238" y1="100" x2="238" y2="108"/>
+ </g>
+ <g font-family="EB Garamond,serif" font-size="8.5" fill="#2a2218">
+  <text x="14" y="142">Lederata</text><text x="52" y="130">Tivisco</text><text x="92" y="118">Sarmategte</text><text x="146" y="106">Apula</text><text x="196" y="96">Napoca</text><text x="252" y="86">Porolisso</text>
+  <text x="100" y="160" fill="#9e3b2b" font-size="7.5">XII</text><text x="158" y="148" fill="#9e3b2b" font-size="7.5">XXIIII</text><text x="214" y="132" fill="#9e3b2b" font-size="7.5">XVI</text>
+ </g>
+ <g transform="translate(122,84)"><rect x="0" y="2" width="7" height="9" fill="#9e3b2b"/><rect x="9" y="2" width="7" height="9" fill="#9e3b2b"/><path d="M0 2 l3.5 -4 l3.5 4 M9 2 l3.5 -4 l3.5 4" fill="none" stroke="#9e3b2b" stroke-width="1"/></g>
+ <text x="160" y="50" font-family="Cinzel,serif" font-size="12" letter-spacing="4" fill="#2a2218" text-anchor="middle">SEGMENTVM VII·VIII</text>
+ <text x="160" y="200" font-family="IBM Plex Mono,monospace" font-size="7.5" letter-spacing="2" fill="#4d4233" text-anchor="middle">6.75 M × 34 CM · THE WORLD AS A RIBBON</text>
+ <g stroke="#2a2218" stroke-width=".7" opacity=".5"><path d="M6 60 q-4 60 0 120 M314 60 q4 60 0 120" fill="none"/></g>
+</svg>`
+},
+{
+ id:'hereford', stela:'III', stratum:'X', n:10, hall:1,
+ short:'HEREFORDIA', name:'HEREFORD MAPPA MVNDI · DACIA IN EXILE',
+ sub:'The name leaves for Denmark; the land is filed under ghosts',
+ year:1300, yLab:'c. 1300', dateLabel:'c. A.D. 1300',
+ when:'c. 1300',
+ maker:'circle of Richard of Haldingham (attrib.)',
+ medium:'single calf-skin, c. 1.58 × 1.33 m; east at top',
+ modus:'theological order: T-O scheme, Jerusalem centred',
+ repo:'Hereford Cathedral',
+ survival:'intact, on its original wall more or less ever since',
+ depth:72.6, lens:true,
+ seals:{M:0,A:3,N:1.5,L:0.5,S:5},
+ sealLines:{
+  M:'no measure at all; the world as a diagram of salvation',
+  A:'the Church&rsquo;s authority, textual and total',
+  N:'DACIA has left for Denmark; Gothia and Scythia squat in its house',
+  L:'no edges conceived below the level of the world itself',
+  S:'the land persists; the map has stopped looking'},
+ reads:{ORD:0.5,LIT:2,RES:5,COR:0,RAS:1,VAC:5},
+ verdicts:{
+  ORD:'ordered by theology: east up, Jerusalem centred',
+  LIT:'names as pure signifiers, loosed from the ground',
+  RES:'wholly inherited; correction unthinkable where the source is scripture',
+  COR:'nothing verified — verification is not the genre',
+  RAS:'no erasure; accumulation is the method',
+  VAC:'the lower Danube dissolves into rumour at the rim'},
+ find:'The word DACIA migrates to Denmark; the land it named drops out of cartography&rsquo;s vocabulary.',
+ nota:'The Dominicans&rsquo; <i>Provincia Daciae</i> (1228) covered Scandinavia &mdash; so in chancery Latin &ldquo;Dacia&rdquo; meant Denmark for centuries, while papal files called the real country the Diocese of Cumania (1227/28) and <i>terra Blacorum</i>.',
+ mus:`<p>On the great skin at Hereford the label DACIA sits in Scandinavia. This is not a blunder but usage: by the thirteenth century chancery Latin used <em>Dacia</em> for Denmark, and the Dominican province of that name (1228) fixed the habit. The Carpathian&ndash;Danubian country, meanwhile, is dressed in inherited ghosts &mdash; Moesia, Gothia, Scythia &mdash; with crusade-era names crowding in from the documents: Cumania, <em>terra Blacorum</em>.</p>
+ <p>The map is ordered by theology, east at the top, Jerusalem at the centre. Authority and inherited text supply everything; observation supplies nothing. The people of the land persist in the charters even as the cartographers misplace its name by two thousand kilometres.</p>`,
+ tr:`<p>Thin lens within the sterile band &mdash; not a layer of the local sequence at all, but wind-blown material from another deposit entirely. In section it reads as imported fill: theological matrix, no measurable inclusions, the toponym DACIA found displaced far to the north of its source.</p>
+ <p>Field note: absence of local material is the find. Twelve centuries of this country produced no surviving map of itself; what blew in instead was other people&rsquo;s memory of it.</p>`,
+ vig:`<svg viewBox="0 0 320 240" role="img" aria-label="T-O world map, east at top, with DACIA written in Scandinavia">
+ <circle cx="160" cy="120" r="106" fill="none" stroke="#2a2218" stroke-width="2"/>
+ <circle cx="160" cy="120" r="98" fill="none" stroke="#2a2218" stroke-width=".8"/>
+ <path d="M62 120 L258 120" stroke="#5e7a6a" stroke-width="4" opacity=".75"/>
+ <path d="M160 120 L160 218" stroke="#5e7a6a" stroke-width="4" opacity=".75"/>
+ <g font-family="Cinzel,serif" fill="#2a2218">
+  <text x="160" y="80" font-size="13" letter-spacing="3" text-anchor="middle">ASIA</text>
+  <text x="106" y="170" font-size="11" letter-spacing="2" text-anchor="middle">EVROPA</text>
+  <text x="216" y="170" font-size="11" letter-spacing="2" text-anchor="middle">AFRICA</text>
+ </g>
+ <g transform="translate(160,120)"><circle r="7" fill="none" stroke="#9e3b2b" stroke-width="1.4"/><circle r="2.4" fill="#9e3b2b"/><g stroke="#9e3b2b" stroke-width="1"><line x1="0" y1="-11" x2="0" y2="-7"/><line x1="0" y1="7" x2="0" y2="11"/><line x1="-11" y1="0" x2="-7" y2="0"/><line x1="7" y1="0" x2="11" y2="0"/></g></g>
+ <text x="160" y="108" font-family="EB Garamond,serif" font-size="7.5" font-style="italic" fill="#9e3b2b" text-anchor="middle">Ierusalem</text>
+ <text x="160" y="26" font-family="IBM Plex Mono,monospace" font-size="7" letter-spacing="2" fill="#4d4233" text-anchor="middle">ORIENS</text>
+ <text x="160" y="230" font-family="IBM Plex Mono,monospace" font-size="7" letter-spacing="2" fill="#4d4233" text-anchor="middle">OCCIDENS</text>
+ <g transform="rotate(-18 110 188)"><text x="86" y="192" font-family="Cinzel,serif" font-size="11" letter-spacing="2" fill="#9e3b2b">DACIA</text></g>
+ <text x="84" y="204" font-family="EB Garamond,serif" font-size="7" font-style="italic" fill="#4d4233">(Dania)</text>
+ <g font-family="EB Garamond,serif" font-size="8" font-style="italic" fill="#4d4233">
+  <text x="118" y="138">Gothia</text><text x="138" y="152">Scithia</text><text x="112" y="124">Cumania</text>
+ </g>
+ <path d="M96 144 q22 8 44 2" fill="none" stroke="#5e7a6a" stroke-width="1.6" opacity=".7"/>
+ <g stroke="#2a2218" stroke-width=".6" opacity=".5">
+  <path d="M84 92 q10 -8 20 0 q10 8 20 0" fill="none"/><path d="M214 92 q10 -8 20 0" fill="none"/>
+ </g>
+ <g font-family="EB Garamond,serif" font-size="6.5" fill="#4d4233" opacity=".8"><text x="206" y="60">paradisus</text><text x="74" y="64">gens mirab.</text></g>
+ <path d="M54 120 a106 106 0 0 1 212 0" fill="none" stroke="#2a2218" stroke-width=".5" opacity=".35" stroke-dasharray="2 3"/>
+</svg>`
+},
+{
+ id:'vesconte', stela:'IV', stratum:'IX', n:9, hall:2,
+ short:'VESCONTE', name:'PIETRO VESCONTE · PORTOLAN OF THE BLACK SEA',
+ sub:'A centimetre-true coastline around a perfect void',
+ year:1311, yLab:'1311', dateLabel:'A.D. 1311',
+ when:'signed chart 1311; tradition from the Carte Pisane, c. 1290',
+ maker:'Pietro Vesconte, Genoese, working in Venice',
+ medium:'ink on vellum; rhumb network from hidden circles',
+ modus:'compass bearings & estimated distance — no graticule',
+ repo:'his 1311 chart in Florence; kin in Venice, Paris (Dulcert 1339, Catalan Atlas 1375)',
+ survival:'the genre survives in dozens of hands; the coast barely changes between them',
+ depth:71.5, lens:true,
+ seals:{M:3,A:1.5,N:2.5,L:1,S:4.5},
+ sealLines:{
+  M:'compass-true at the waterline, unmeasured one league inland',
+  A:'merchant money and pilot knowledge, no crown behind them',
+  N:'counting-house names: Licostomo, Moncastro, Costanza',
+  L:'the coast is the only line that matters',
+  S:'the interior is not hidden — it is simply not asked about'},
+ reads:{ORD:2.5,LIT:3,RES:1,COR:5,RAS:0.5,VAC:5},
+ verdicts:{
+  ORD:'no graticule — the web of bearings is its own geometry',
+  LIT:'Genoese exonyms pinned perpendicular to a foreign shore',
+  RES:'pilots&rsquo; charts, not scholars&rsquo; copies',
+  COR:'every voyage a proofreading; the coast converges on truth',
+  RAS:'nothing struck; inland was never written',
+  VAC:'precision at the rim, blank parchment behind it'},
+ find:'The sea taught Europe to measure before the land did.',
+ nota:'Moncastro and Cetatea Albă are one fortress in two ledgers &mdash; Genoese and Moldavian names for the same white castle on the Dniester liman. Vicina, richest port of the lower Danube, is still missing: its exact site remains debated.',
+ mus:`<p>After the Treaty of Nymphaeum (1261) opened the straits, Genoese and Venetian pilots worked the Black Sea hard &mdash; and their charts show it. Vesconte&rsquo;s coastline runs with startling precision: the Danube&rsquo;s arms, then the ports written perpendicular to the shore in red and black &mdash; <em>Licostomo</em> (Chilia), <em>Moncastro</em> (Cetatea Albă), <em>Vicina</em> somewhere on the lower river, <em>Costanza</em>.</p>
+ <p>There is no graticule; the web of compass bearings is the geometry. Each crossing corrected the last &mdash; iterative proofreading by keel. One league inland, the parchment goes silent: the chart answers only the questions a pilot asks.</p>`,
+ tr:`<p>Second lens within the sterile band, water-laid: a bright, sharply sorted strip of coastal material against the section&rsquo;s east face, fading to nothing within a hand&rsquo;s breadth of the shoreline. The sorting is diagnostic &mdash; deposited by repeated tides of traffic, each voyage reworking the last.</p>
+ <p>Field note: where the Hereford lens is all matrix and no measurements, this one is all measurement and no matrix. The two lenses together bracket the hiatus: faith without survey above, survey without hinterland below.</p>`,
+ vig:`<svg viewBox="0 0 320 240" role="img" aria-label="Portolan chart: compass rose, rhumb lines, Black Sea coast with perpendicular port names">
+ <g stroke="#9e3b2b" stroke-width=".45" opacity=".5">
+  <line x1="84" y1="120" x2="320" y2="120"/><line x1="84" y1="120" x2="300" y2="0"/><line x1="84" y1="120" x2="300" y2="240"/>
+  <line x1="84" y1="120" x2="200" y2="0"/><line x1="84" y1="120" x2="200" y2="240"/><line x1="84" y1="120" x2="84" y2="0"/><line x1="84" y1="120" x2="84" y2="240"/>
+  <line x1="84" y1="120" x2="0" y2="60"/><line x1="84" y1="120" x2="0" y2="180"/>
+ </g>
+ <g stroke="#5e7a6a" stroke-width=".45" opacity=".45">
+  <line x1="252" y1="40" x2="60" y2="240"/><line x1="252" y1="40" x2="0" y2="130"/><line x1="252" y1="40" x2="120" y2="0"/><line x1="252" y1="40" x2="320" y2="160"/>
+ </g>
+ <g transform="translate(84,120)">
+  <circle r="17" fill="#efe9da" stroke="#2a2218" stroke-width="1.2"/>
+  <g stroke="#2a2218" stroke-width="1"><line y1="-14" y2="14"/><line x1="-14" x2="14"/><line x1="-10" y1="-10" x2="10" y2="10"/><line x1="-10" y1="10" x2="10" y2="-10"/></g>
+  <path d="M0 -17 l4 10 l-4 -3 l-4 3 z" fill="#9e3b2b"/>
+ </g>
+ <path d="M236 0 q-8 36 -24 56 q-22 26 -18 44 q4 16 -8 30 q-16 18 -12 44 q3 22 -6 66" fill="none" stroke="#2a2218" stroke-width="2"/>
+ <g stroke="#5e7a6a" stroke-width="1.4" fill="none"><path d="M212 56 q14 4 26 -2"/><path d="M210 66 q15 6 28 0"/><path d="M208 76 q16 8 30 2"/></g>
+ <text x="246" y="64" font-family="EB Garamond,serif" font-size="7" font-style="italic" fill="#5e7a6a">ostia Danubii</text>
+ <g font-family="EB Garamond,serif" font-size="8.5">
+  <text x="226" y="36" fill="#9e3b2b" transform="rotate(76 226 36)">licostomo</text>
+  <text x="196" y="104" fill="#2a2218" transform="rotate(82 196 104)">vicina?</text>
+  <text x="186" y="142" fill="#9e3b2b" transform="rotate(84 186 142)">costanza</text>
+  <text x="176" y="186" fill="#2a2218" transform="rotate(86 176 186)">moncastro</text>
+ </g>
+ <g fill="#2a2218"><circle cx="222" cy="42" r="1.8"/><circle cx="200" cy="98" r="1.8"/><circle cx="190" cy="138" r="1.8"/><circle cx="180" cy="182" r="1.8"/></g>
+ <text x="276" y="150" font-family="Cinzel,serif" font-size="11" letter-spacing="2" fill="#2a2218" transform="rotate(-90 276 150)">MARE MAIVS</text>
+ <text x="36" y="34" font-family="IBM Plex Mono,monospace" font-size="7" letter-spacing="1.5" fill="#4d4233">SINE GRADIBVS</text>
+ <text x="30" y="216" font-family="EB Garamond,serif" font-size="8.5" font-style="italic" fill="#4d4233" opacity=".75">terra — vacat</text>
+</svg>`
+},
+{
+ id:'honterus', stela:'V', stratum:'VIII', n:8, hall:3,
+ short:'HONTERVS', name:'HONTERVS · CHOROGRAPHIA TRANSYLVANIAE',
+ sub:'A native woodcut: the country as a walled garden seen from above',
+ year:1532, yLab:'1532', dateLabel:'A.D. 1532',
+ when:'Basel, 1532 · reworked into the Rudimenta Cosmographica, Brașov 1542',
+ maker:'Johannes Honterus, Saxon humanist of Kronstadt (Brașov)',
+ medium:'woodcut, printed',
+ modus:'pictorial chorography; no graticule',
+ repo:'a single known print, likely Budapest',
+ survival:'one impression; the 1542 Rudimenta carried the matter onward',
+ depth:49.4, lens:false,
+ seals:{M:2,A:1,N:4,L:2,S:1},
+ sealLines:{
+  M:'paced and remembered, never triangulated',
+  A:'a humanist&rsquo;s press, no chancery behind it',
+  N:'German over Hungarian over Romanian — the Saxon order of speech',
+  L:'the Carpathian ring is frame, wall and border at once',
+  S:'little withheld; this is a portrait, not a dossier'},
+ reads:{ORD:2,LIT:4.5,RES:2,COR:3,RAS:1,VAC:0.5},
+ verdicts:{
+  ORD:'chorography, not geodesy — a walled garden from above',
+  LIT:'three peoples&rsquo; names on one woodcut; Saxon first',
+  RES:'some Lazarus in the bones; mostly his own valleys',
+  COR:'corrected by eyewitness, not by instrument',
+  RAS:'nothing suppressed inside the ring',
+  VAC:'inside the mountains, hardly room for emptiness'},
+ find:'The first map of Transylvania drawn by someone who had slept in its towns.',
+ nota:'Lazarus&rsquo;s <i>Tabula Hungariae</i> (1528) showed the region first; Honterus gave Transylvania its own sheet. A single print of 1532 is known to survive &mdash; and the claim that he set south at the top is repeated more often than it is proven.',
+ mus:`<p>In Basel in 1532 a Saxon humanist of Kronstadt cut his homeland in wood: the first separate printed map of Transylvania, made from inside it. The Carpathians stand as molehill ranges around the rim; within the ring, towers and trees crowd a country he had walked &mdash; hundreds of names, German foremost, with Hungarian and Romanian beneath.</p>
+ <p>This is chorography rather than geodesy &mdash; the land as a portrait, dense to the edges, with hardly a blank to decorate. A decade later he folded the matter into his <em>Rudimenta Cosmographica</em> (Brașov, 1542), and the schoolbooks of half of Europe carried his Transylvania for a century.</p>`,
+ tr:`<p>First substantial layer above the sterile band: a true local deposit at last, after twelve barren centuries. The matrix is dense and domestic &mdash; settlement debris evenly spread to the mountain ring, trilingual inclusions throughout, German consistently uppermost in the sorting.</p>
+ <p>Field note: the layer survives in a single fragile fragment. Its stratigraphic importance is out of all proportion to its size: this is where the sequence restarts, and everything above it is, in some measure, redeposited Honterus.</p>`,
+ vig:`<svg viewBox="0 0 320 240" role="img" aria-label="Woodcut style map of Transylvania: molehill mountains in a ring, towers and trees, banner title">
+ <rect x="6" y="6" width="308" height="228" fill="none" stroke="#2a2218" stroke-width="2"/>
+ <rect x="60" y="12" width="200" height="22" fill="#efe9da" stroke="#2a2218" stroke-width="1.2"/>
+ <text x="160" y="27" font-family="Cinzel,serif" font-size="10" letter-spacing="2" fill="#2a2218" text-anchor="middle">CHOROGRAPHIA TRANSYLVANIAE</text>
+ <g fill="none" stroke="#2a2218" stroke-width="1.1">
+  <path d="M26 70 q9 -16 18 0 M44 64 q9 -16 18 0 M62 70 q9 -16 18 0 M84 60 q9 -16 18 0 M106 66 q9 -16 18 0 M132 58 q9 -16 18 0 M158 64 q9 -16 18 0 M184 58 q9 -16 18 0 M210 64 q9 -16 18 0 M236 60 q9 -16 18 0 M260 68 q9 -16 18 0 M282 76 q9 -16 18 0"/>
+  <path d="M26 96 q9 -16 18 0 M288 104 q9 -16 18 0 M24 130 q9 -16 18 0 M290 136 q9 -16 18 0 M26 164 q9 -16 18 0 M288 168 q9 -16 18 0 M40 196 q9 -16 18 0 M70 206 q9 -16 18 0 M104 212 q9 -16 18 0 M140 214 q9 -16 18 0 M178 214 q9 -16 18 0 M214 210 q9 -16 18 0 M248 202 q9 -16 18 0"/>
+ </g>
+ <g stroke="#2a2218" stroke-width=".8" fill="#efe9da">
+  <g transform="translate(96,104)"><rect x="-4" y="-8" width="8" height="12"/><path d="M-5 -8 l5 -6 l5 6 z"/></g>
+  <g transform="translate(168,92)"><rect x="-4" y="-8" width="8" height="12"/><path d="M-5 -8 l5 -6 l5 6 z"/></g>
+  <g transform="translate(226,118)"><rect x="-4" y="-8" width="8" height="12"/><path d="M-5 -8 l5 -6 l5 6 z"/></g>
+  <g transform="translate(132,154)"><rect x="-4" y="-8" width="8" height="12"/><path d="M-5 -8 l5 -6 l5 6 z"/></g>
+  <g transform="translate(206,170)"><rect x="-4" y="-8" width="8" height="12"/><path d="M-5 -8 l5 -6 l5 6 z"/></g>
+ </g>
+ <g font-family="EB Garamond,serif" font-size="8" fill="#2a2218">
+  <text x="104" y="100">Clausenburg</text><text x="176" y="88">Weissenburg</text><text x="234" y="114">Schesburg</text><text x="140" y="150">Hermanstat</text><text x="214" y="166">Cronstadt</text>
+ </g>
+ <g stroke="#5e7a6a" stroke-width="1" fill="none"><path d="M70 120 q40 18 90 12 q60 -8 110 14"/><path d="M120 70 q10 40 4 70"/></g>
+ <g fill="none" stroke="#2a2218" stroke-width=".9">
+  <g transform="translate(64,142)"><line y2="-9"/><path d="M0 -9 q-5 7 0 9 q5 -2 0 -9" fill="#efe9da"/></g>
+  <g transform="translate(252,86)"><line y2="-9"/><path d="M0 -9 q-5 7 0 9 q5 -2 0 -9" fill="#efe9da"/></g>
+  <g transform="translate(168,196)"><line y2="-9"/><path d="M0 -9 q-5 7 0 9 q5 -2 0 -9" fill="#efe9da"/></g>
+ </g>
+ <g stroke="#2a2218" stroke-width=".45" opacity=".5"><line x1="10" y1="226" x2="64" y2="190"/><line x1="18" y1="230" x2="74" y2="194"/><line x1="252" y1="228" x2="306" y2="196"/></g>
+</svg>`
+},
+{
+ id:'ortelius', stela:'VI', stratum:'VII', n:7, hall:3,
+ short:'ORTELIVS', name:'ORTELIVS · DACIARVM MOESIARVMQVE VETVS DESCRIPTIO',
+ sub:'A modern graticule lent to a vanished province',
+ year:1595, yLab:'1595', dateLabel:'A.D. 1595',
+ when:'Parergon, Antwerp, 1595 (first state)',
+ maker:'Abraham Ortelius, his own compilation',
+ medium:'copper engraving, in the atlas of antiquity',
+ modus:'current coastline geometry; 2nd-century content',
+ repo:'in the Parergon, widely held',
+ survival:'plentiful; the Parergon was reprinted long after his death',
+ depth:43.1, lens:false,
+ seals:{M:2.5,A:1,N:3,L:2.5,S:4},
+ sealLines:{
+  M:'Renaissance frame, Ptolemaic furniture',
+  A:'a scholar&rsquo;s web of correspondents, not a state',
+  N:'Latin names at Trajan&rsquo;s high-water mark',
+  L:'provincial boundaries restored from the authors',
+  S:'the sixteenth century is the one thing not shown'},
+ reads:{ORD:3.5,LIT:4,RES:5,COR:2,RAS:4,VAC:1.5},
+ verdicts:{
+  ORD:'a modern trapezoid graticule lent to a vanished province',
+  LIT:'toponymy frozen fourteen centuries before the coastline',
+  RES:'maximal — every town a citation; the map is its own apparatus',
+  COR:'geometry current, content deliberately stale',
+  RAS:'the Ottoman present struck from the frame',
+  VAC:'little blank; antiquity fills what the present vacated'},
+ find:'Dacia comes home through philology — by way of Denmark.',
+ nota:'Ortelius died in 1598 with the expanded Peutinger plates literally in press; they appeared that December. The Parergon&rsquo;s title says it plainly: <i>vetus descriptio</i> &mdash; the old description, the present declined.',
+ mus:`<p>For the humanists, Dacia lived more vividly in Tacitus than in the Ottoman-vassal principalities of their own day. In the <em>Parergon</em> &mdash; his atlas of antiquity &mdash; Ortelius drew it back: Ptolemy&rsquo;s towns, the legions&rsquo; stations, <em>Pons Traiani</em> across the Danube, all laid on a respectably modern coastline and graticule. Every name is a citation; the map carries its own apparatus.</p>
+ <p>The title declares the method: <em>vetus descriptio</em>, the old description. The sixteenth century &mdash; Wallachia, Moldavia, the Porte &mdash; is deliberately absent. A province dead for thirteen centuries returns to print before the living country does.</p>`,
+ tr:`<p>A strange, inverted layer: modern matrix, ancient inclusions. The frame and coastline date the deposit to the late 16th century, but every artifact within it is 2nd-century material, re-set with antiquarian care &mdash; spolia by design rather than by thrift.</p>
+ <p>Field note: the layer&rsquo;s most informative feature is what is missing. Contemporary material was screened out before deposition; the excavator finds Trajan&rsquo;s bridge but not a single Ottoman sherd. Erasure of the present, executed as scholarship.</p>`,
+ vig:`<svg viewBox="0 0 320 240" role="img" aria-label="Ortelius-style antiquarian map: graticule, legion pennants, Trajan's bridge, cartouche">
+ <rect x="8" y="8" width="304" height="224" fill="none" stroke="#2a2218" stroke-width="1.6"/>
+ <g stroke="#2a2218" stroke-width=".5" opacity=".5">
+  <path d="M64 10 L56 230 M124 9 L120 231 M184 9 L186 231 M244 10 L252 230" fill="none"/>
+  <path d="M10 66 Q160 58 310 66 M10 124 Q160 118 310 124 M10 182 Q160 178 310 182" fill="none"/>
+ </g>
+ <text x="150" y="52" font-family="Cinzel,serif" font-size="20" letter-spacing="8" fill="#2a2218" text-anchor="middle">DACIA</text>
+ <path d="M14 196 Q90 206 160 200 Q240 194 308 204" fill="none" stroke="#5e7a6a" stroke-width="2.6"/>
+ <text x="40" y="192" font-family="EB Garamond,serif" font-size="9" font-style="italic" fill="#5e7a6a">Danubius fl.</text>
+ <g transform="translate(150,200)">
+  <g stroke="#2a2218" stroke-width="1.3" fill="none"><path d="M-30 0 A10 8 0 0 1 -10 0 A10 8 0 0 1 10 0 A10 8 0 0 1 30 0"/><line x1="-30" y1="0" x2="-30" y2="8"/><line x1="-10" y1="0" x2="-10" y2="8"/><line x1="10" y1="0" x2="10" y2="8"/><line x1="30" y1="0" x2="30" y2="8"/><line x1="-34" y1="-2" x2="34" y2="-2"/></g>
+ </g>
+ <text x="150" y="222" font-family="EB Garamond,serif" font-size="8" font-style="italic" fill="#2a2218" text-anchor="middle">Pons Traiani</text>
+ <g stroke="#9e3b2b" stroke-width="1.1" fill="#9e3b2b">
+  <g transform="translate(96,120)"><line y2="-16" stroke-width="1.2"/><path d="M0 -16 l14 4 l-14 4 z"/></g>
+  <g transform="translate(208,104)"><line y2="-16" stroke-width="1.2"/><path d="M0 -16 l14 4 l-14 4 z"/></g>
+ </g>
+ <g font-family="EB Garamond,serif" font-size="7.5" fill="#2a2218">
+  <text x="84" y="134">Zarmizegethusa</text><text x="84" y="143" fill="#9e3b2b">LEG·XIII·GEM</text>
+  <text x="200" y="118">Apulum</text><text x="236" y="142">Napoca</text><text x="120" y="170">Drubetis</text>
+ </g>
+ <g font-family="EB Garamond,serif" font-size="8" font-style="italic" fill="#4d4233"><text x="56" y="92">Anarti</text><text x="232" y="84">Buri</text></g>
+ <g transform="translate(236,196)">
+  <rect x="0" y="0" width="68" height="30" fill="#efe9da" stroke="#2a2218" stroke-width="1"/>
+  <path d="M0 0 q-5 8 0 15 q-5 8 0 15 M68 0 q5 8 0 15 q5 8 0 15" fill="none" stroke="#2a2218" stroke-width=".8"/>
+  <text x="34" y="12" font-family="Cinzel,serif" font-size="6" letter-spacing="1" fill="#2a2218" text-anchor="middle">DACIARVM·MOES.</text>
+  <text x="34" y="22" font-family="EB Garamond,serif" font-size="6.5" font-style="italic" fill="#9e3b2b" text-anchor="middle">vetus descriptio</text>
+ </g>
+ <g font-family="IBM Plex Mono,monospace" font-size="6.5" fill="#4d4233"><text x="58" y="20">44</text><text x="118" y="20">46</text><text x="180" y="20">48</text><text x="240" y="20">50</text></g>
+</svg>`
+}
+];
+STONES.push(
+{
+ id:'cantacuzino', stela:'VII', stratum:'VI', n:6, hall:4,
+ short:'CANTACVZINO', name:'CANTACVZINO · WALLACHIA IN GREEK',
+ sub:'A country drafting itself in someone else&rsquo;s alphabet',
+ year:1700, yLab:'1700', dateLabel:'A.D. 1700',
+ when:'Padua, 1700 · reduced copy in Del Chiaro, 1718',
+ maker:'Constantin Cantacuzino, stolnic; printed by Chrysanthos Notaras',
+ medium:'copper engraving, four sheets, Greek',
+ modus:'loose graticule; 500+ toponyms from administration',
+ repo:'a handful of copies; one at the BnF, Paris',
+ survival:'nearly lost; known partly through the 1718 reduction',
+ depth:32.6, lens:false,
+ seals:{M:2,A:3,N:4,L:3,S:1.5},
+ sealLines:{
+  M:'local knowledge in loose geometry',
+  A:'a stolnic&rsquo;s scholarship under a prince&rsquo;s seal',
+  N:'five hundred toponyms, Greek dress over Romanian speech',
+  L:'county bounds dotted in — the state rehearsing its outline',
+  S:'little silence; the point was to show everything'},
+ reads:{ORD:2.5,LIT:4.5,RES:2,COR:2.5,RAS:0.5,VAC:1},
+ verdicts:{
+  ORD:'the graticule is posited more than imposed',
+  LIT:'Romanian places wrapped in Greek letters — a transliteration veil',
+  RES:'the frame from Venice; the content from tithe-rolls',
+  COR:'checked against administration, not instruments',
+  RAS:'nothing struck out',
+  VAC:'dense to the mountain line'},
+ find:'A country drafting itself into existence in someone else&rsquo;s alphabet.',
+ nota:'Seen through the press by Chrysanthos Notaras &mdash; Cantacuzino&rsquo;s disciple, later Patriarch of Jerusalem &mdash; and likely dedicated to Constantin Brâncoveanu. The villages were set down by the men who collected their tithes.',
+ mus:`<p>In 1700 a Padua-trained stolnic had his country engraved &mdash; in Greek, on four sheets, at Padua, the first map of Wallachia by a native. Counties, monasteries, salt-works: over five hundred places, written by the administration that knew them, each Romanian name wearing a Greek transliteration like a borrowed coat.</p>
+ <p>The frame and conventions are Venetian; the knowledge is local. The graticule sits lightly, more proposed than enforced. It survives in a handful of copies and in Del Chiaro&rsquo;s 1718 reduction &mdash; a sovereignty rehearsed on paper a century and a half before it could be declared.</p>`,
+ tr:`<p>Dense occupation layer south of the mountain line. The matrix is administrative &mdash; tithe-rolls, county bounds, monastic foundations &mdash; deposited by the very offices that governed the ground. Inclusions are bilingual in a peculiar way: Romanian content, Greek casing.</p>
+ <p>Field note: deposition was nearly a total loss. The layer survives as a few sealed pockets and one reduced re-deposit of 1718; handle as unique.</p>`,
+ vig:`<svg viewBox="0 0 320 240" role="img" aria-label="Greek-lettered map of Wallachia: Carpathian ridge, Danube, monastery crosses, dotted county bounds">
+ <rect x="8" y="8" width="304" height="224" fill="none" stroke="#2a2218" stroke-width="1.6"/>
+ <text x="160" y="32" font-family="Cinzel,serif" font-size="11" letter-spacing="3" fill="#2a2218" text-anchor="middle">ΠΙΝΑΞ ΤΗΣ ΟΥΓΓΡΟΒΛΑΧΙΑΣ</text>
+ <g fill="none" stroke="#2a2218" stroke-width="1.1">
+  <path d="M16 70 q9 -15 18 0 M38 62 q9 -15 18 0 M62 56 q9 -15 18 0 M88 52 q9 -15 18 0 M116 50 q9 -15 18 0 M144 50 q9 -15 18 0 M172 52 q9 -15 18 0 M200 56 q9 -15 18 0 M228 62 q9 -15 18 0 M256 70 q9 -15 18 0 M280 82 q9 -15 18 0"/>
+ </g>
+ <path d="M14 206 Q90 214 170 208 Q250 202 308 212" fill="none" stroke="#5e7a6a" stroke-width="2.6"/>
+ <text x="34" y="202" font-family="EB Garamond,serif" font-size="9" font-style="italic" fill="#5e7a6a">Δούναβις</text>
+ <g stroke="#5e7a6a" stroke-width="1.1" fill="none"><path d="M84 64 q6 60 -2 132"/><path d="M170 60 q8 64 2 142"/><path d="M244 70 q10 60 8 132"/></g>
+ <g stroke="#2a2218" stroke-width=".9" stroke-dasharray="3 3" fill="none"><path d="M120 62 q-4 70 4 140"/><path d="M210 64 q6 70 0 140"/></g>
+ <g stroke="#9e3b2b" stroke-width="1.2"><g transform="translate(104,118)"><line y1="-6" y2="6"/><line x1="-4" y1="-2" x2="4" y2="-2"/></g><g transform="translate(192,102)"><line y1="-6" y2="6"/><line x1="-4" y1="-2" x2="4" y2="-2"/></g><g transform="translate(252,142)"><line y1="-6" y2="6"/><line x1="-4" y1="-2" x2="4" y2="-2"/></g></g>
+ <g fill="#2a2218"><circle cx="150" cy="150" r="3"/><circle cx="64" cy="150" r="2"/><circle cx="220" cy="170" r="2"/><circle cx="118" cy="176" r="2"/><circle cx="266" cy="118" r="2"/></g>
+ <g font-family="EB Garamond,serif" font-size="8" fill="#2a2218">
+  <text x="156" y="148">Μπουκουρέστι</text><text x="42" y="146">Κραϊόβα</text><text x="224" y="166">Μπράιλα</text><text x="100" y="188">Πιτέστι</text><text x="108" y="114" font-size="7" fill="#9e3b2b">μοναστήρι</text>
+ </g>
+ <text x="262" y="226" font-family="IBM Plex Mono,monospace" font-size="6.5" fill="#4d4233">PATAVII · 1700</text>
+ <g font-family="EB Garamond,serif" font-size="7" font-style="italic" fill="#4d4233"><text x="130" y="84">Καρπάθη όρη</text></g>
+</svg>`
+},
+{
+ id:'cantemir', stela:'VIII', stratum:'V', n:5, hall:4,
+ short:'CANTEMIR', name:'CANTEMIR · PRINCIPATVS MOLDAVIAE',
+ sub:'A prince&rsquo;s memory of his country, printed in exile',
+ year:1716, yLab:'1716/1737', dateLabel:'drawn c. 1716 · printed 1737',
+ when:'drawn c. 1716 for the Descriptio Moldaviae · engraved Amsterdam 1737',
+ maker:'Dimitrie Cantemir, Prince of Moldavia, member of the Berlin Academy',
+ medium:'manuscript; posthumous copper engraving',
+ modus:'ordered frame; interior from memory — ~800 names',
+ repo:'the 1737 Amsterdam engraving, widely reproduced',
+ survival:'the manuscript wandered to Russia; the print carried the content',
+ depth:28.9, lens:false,
+ seals:{M:2,A:3.5,N:4.5,L:3.5,S:1.5},
+ sealLines:{
+  M:'drawn from a prince&rsquo;s memory, not a plane table',
+  A:'the author is the sovereign — and the exile',
+  N:'the densest naming yet: counties, rivers, eight hundred places',
+  L:'ținut bounds drawn as if administration were geometry',
+  S:'exile hides nothing; it remembers everything'},
+ reads:{ORD:2.5,LIT:4.5,RES:1,COR:1.5,RAS:0.5,VAC:1},
+ verdicts:{
+  ORD:'scale and frame ordered; the interior bends to memory',
+  LIT:'eight hundred Moldavian names dressed in Latin for Berlin',
+  RES:'borrowed little; the prince was his own archive',
+  COR:'richer than any predecessor, confirmed by no instrument',
+  RAS:'nothing suppressed',
+  VAC:'scarcely a blank ținut'},
+ find:'A prince&rsquo;s memory of his country, printed in exile, fourteen years after his death.',
+ nota:'Drawn c. 1716 to accompany the <i>Descriptio Moldaviae</i> written for the Berlin Academy; engraved at Amsterdam in 1737, his son Antioh &mdash; Russia&rsquo;s ambassador &mdash; seeing it through the press.',
+ mus:`<p>Deposed in 1711, Dimitrie Cantemir mapped Moldavia from exile: roughly eight hundred names, the <em>ținuturi</em> drawn out like a ledger, rivers from the Carpathians to the Dniester &mdash; the first detailed map of the principality from native knowledge, made to accompany the <em>Descriptio Moldaviae</em> he wrote for the Berlin Academy.</p>
+ <p>No instrument confirms it; the interior bends to memory, and is denser than anything an instrument had yet produced. He died in 1723. The map appeared at Amsterdam in 1737 &mdash; <em>Principatus Moldaviae nova &amp; accurata descriptio</em> &mdash; a country remembered more thoroughly than it had ever been measured.</p>`,
+ tr:`<p>Rich occupation layer between the Carpathian scarp and the Dniester. Astonishing find-density &mdash; some eight hundred named inclusions &mdash; but the spatial relationships drift, as in material redeposited from memory rather than laid down in place.</p>
+ <p>Field note: primary deposition occurred abroad; the layer reached this trench only in 1737, fourteen years after its maker&rsquo;s death. The richest pre-instrumental layer in the entire section.</p>`,
+ vig:`<svg viewBox="0 0 320 240" role="img" aria-label="Cantemir-style Moldavia: banner title, dense towns between mountain ridge and Dniester">
+ <rect x="8" y="8" width="304" height="224" fill="none" stroke="#2a2218" stroke-width="1.6"/>
+ <rect x="64" y="14" width="192" height="20" fill="#efe9da" stroke="#2a2218" stroke-width="1"/>
+ <text x="160" y="28" font-family="Cinzel,serif" font-size="8.5" letter-spacing="1.5" fill="#2a2218" text-anchor="middle">PRINCIPATVS MOLDAVIAE</text>
+ <g fill="none" stroke="#2a2218" stroke-width="1.1">
+  <path d="M20 64 q9 -15 18 0 M30 92 q9 -15 18 0 M22 122 q9 -15 18 0 M32 152 q9 -15 18 0 M24 182 q9 -15 18 0 M36 206 q9 -15 18 0"/>
+ </g>
+ <path d="M286 40 q10 80 -2 184" fill="none" stroke="#5e7a6a" stroke-width="2.4"/>
+ <text x="296" y="120" font-family="EB Garamond,serif" font-size="8" font-style="italic" fill="#5e7a6a" transform="rotate(86 296 120)">Tyras / Nistru</text>
+ <g stroke="#5e7a6a" stroke-width="1.3" fill="none"><path d="M84 44 q14 80 4 188"/><path d="M150 42 q12 84 6 190"/><path d="M210 44 q10 84 4 188"/></g>
+ <g font-family="EB Garamond,serif" font-size="7" font-style="italic" fill="#5e7a6a"><text x="74" y="70" transform="rotate(82 74 70)">Siret</text><text x="142" y="70" transform="rotate(84 142 70)">Prut</text></g>
+ <g stroke="#2a2218" stroke-width=".8" stroke-dasharray="2.5 3" fill="none"><path d="M40 96 L290 86"/><path d="M44 142 L292 134"/><path d="M40 186 L290 180"/></g>
+ <g fill="#2a2218">
+  <circle cx="178" cy="76" r="2.8"/><circle cx="120" cy="68" r="1.8"/><circle cx="236" cy="70" r="1.8"/><circle cx="98" cy="118" r="1.8"/><circle cx="160" cy="116" r="1.8"/><circle cx="226" cy="112" r="1.8"/><circle cx="262" cy="124" r="1.8"/><circle cx="118" cy="162" r="1.8"/><circle cx="186" cy="160" r="1.8"/><circle cx="244" cy="166" r="1.8"/><circle cx="146" cy="206" r="1.8"/><circle cx="216" cy="204" r="1.8"/><circle cx="70" cy="206" r="1.8"/>
+ </g>
+ <g font-family="EB Garamond,serif" font-size="7.5" fill="#2a2218">
+  <text x="184" y="74">Iassi</text><text x="100" y="64">Suczawa</text><text x="240" y="66">Soroca</text><text x="164" y="112">Roman</text><text x="190" y="156">Berlad</text><text x="150" y="202">Galacz</text>
+ </g>
+ <g font-family="EB Garamond,serif" font-size="7" font-style="italic" fill="#4d4233"><text x="56" y="98" transform="rotate(-4 56 98)">Tzinut. Sucz.</text><text x="208" y="92" transform="rotate(-2 208 92)">Tzinut. Iass.</text></g>
+</svg>`
+},
+{
+ id:'josephine', stela:'IX', stratum:'IV', n:4, hall:5,
+ short:'IOSEPHINA', name:'IOSEPHINA · FIRST MILITARY SVRVEY OF TRANSYLVANIA',
+ sub:'Accuracy and secrecy, born twins',
+ year:1771, yLab:'1769–73', dateLabel:'A.D. 1769–73',
+ when:'Transylvania 1769–73 · Banat 1769–72 · Bukovina 1773–75',
+ maker:'Habsburg General Staff, plane-table parties',
+ medium:'hand-coloured manuscript, c. 280 sheets, 1:28,800',
+ modus:'plane-table survey; triangulation only in the Second Survey (1806–69)',
+ repo:'Kriegsarchiv, Vienna — classified from birth',
+ survival:'complete, because locked away',
+ depth:25.5, lens:false,
+ seals:{M:4.5,A:5,N:4,L:4,S:4.5},
+ sealLines:{
+  M:'1:28,800 — every mill and ford in the ledger',
+  A:'the Habsburg staff entire',
+  N:'German official, the village voices beneath',
+  L:'military edges: gradients, fords, bridge-loads',
+  S:'the best map of the land, which the land may not see'},
+ reads:{ORD:4,LIT:4,RES:0.5,COR:4.5,RAS:4.5,VAC:1},
+ verdicts:{
+  ORD:'one scale, one key, hundreds of sheets — the state acquires a format',
+  LIT:'toponyms standardised in German; locals consulted, then overruled',
+  RES:'inherited almost nothing; walked every valley',
+  COR:'plane-table verified; triangulation waits for the Second Survey',
+  RAS:'classified at birth',
+  VAC:'blank only where the surveyor&rsquo;s horse could not go'},
+ find:'Accuracy becomes armament: the sheet records which bridges bear cannon.',
+ nota:'Roughly 280 manuscript sheets for Transylvania alone, with written military commentary on every road and ford. The Second Survey (1806&ndash;69) added triangulation &mdash; measured everything twice, and classified it both times.',
+ mus:`<p>After the Seven Years&rsquo; War the Habsburg staff resolved to know exactly what they ruled. Transylvania was taken at 1:28,800 in 1769&ndash;73, plane-table parties walking every valley: each mill, ford and tavern drawn, each road annotated for the march &mdash; which bridges bear cannon, where a column can water.</p>
+ <p>The sheets were never meant for eyes outside the staff. Hand-coloured, hundreds strong, they went into Vienna and stayed there: the most accurate portrait the land had ever received, and the one it was not allowed to see. From here on, accuracy and secrecy travel together.</p>`,
+ tr:`<p>The first machine-regular layer in the section: uniform thickness, standard inclusions, a single depositional format imposed across hundreds of sheets. The layer&rsquo;s lower contact is abrupt &mdash; it inherits almost nothing from below, having been walked fresh.</p>
+ <p>Field note: the deposit was sealed immediately after formation. What the trench exposes here was opened to scholarship only generations later; treat the SECRETVM stamping as part of the artifact, not damage to it.</p>`,
+ vig:`<svg viewBox="0 0 320 240" role="img" aria-label="Josephine survey sheet: plane-table grid, hachured hills, red roads, SECRETVM stamp">
+ <rect x="8" y="8" width="304" height="224" fill="none" stroke="#2a2218" stroke-width="1.6"/>
+ <g stroke="#2a2218" stroke-width=".4" opacity=".35"><line x1="84" y1="8" x2="84" y2="232"/><line x1="160" y1="8" x2="160" y2="232"/><line x1="236" y1="8" x2="236" y2="232"/><line x1="8" y1="64" x2="312" y2="64"/><line x1="8" y1="120" x2="312" y2="120"/><line x1="8" y1="176" x2="312" y2="176"/></g>
+ <g stroke="#4d4233" stroke-width=".7">
+  <g transform="translate(70,60) rotate(-18)"><line x1="0" y1="0" x2="0" y2="10"/><line x1="5" y1="0" x2="5" y2="12"/><line x1="10" y1="0" x2="10" y2="13"/><line x1="15" y1="0" x2="15" y2="12"/><line x1="20" y1="0" x2="20" y2="10"/><line x1="25" y1="0" x2="25" y2="8"/></g>
+  <g transform="translate(190,84) rotate(12)"><line x1="0" y1="0" x2="0" y2="9"/><line x1="5" y1="0" x2="5" y2="12"/><line x1="10" y1="0" x2="10" y2="14"/><line x1="15" y1="0" x2="15" y2="12"/><line x1="20" y1="0" x2="20" y2="9"/></g>
+  <g transform="translate(120,150) rotate(-8)"><line x1="0" y1="0" x2="0" y2="8"/><line x1="5" y1="0" x2="5" y2="11"/><line x1="10" y1="0" x2="10" y2="13"/><line x1="15" y1="0" x2="15" y2="11"/><line x1="20" y1="0" x2="20" y2="8"/></g>
+  <g transform="translate(238,170) rotate(20)"><line x1="0" y1="0" x2="0" y2="9"/><line x1="5" y1="0" x2="5" y2="12"/><line x1="10" y1="0" x2="10" y2="12"/><line x1="15" y1="0" x2="15" y2="9"/></g>
+ </g>
+ <g stroke="#9e3b2b" stroke-width="1.5" fill="none"><path d="M14 196 q60 -24 120 -56 q70 -36 178 -52"/><path d="M70 230 q24 -48 64 -90"/></g>
+ <path d="M30 40 q60 22 130 18 q80 -5 150 14" fill="none" stroke="#5e7a6a" stroke-width="1.8"/>
+ <g fill="#2a2218"><rect x="128" y="128" width="5" height="4"/><rect x="136" y="126" width="5" height="4"/><rect x="132" y="120" width="5" height="4"/><rect x="222" y="96" width="5" height="4"/><rect x="230" y="98" width="5" height="4"/><rect x="60" y="178" width="5" height="4"/></g>
+ <g font-family="EB Garamond,serif" font-size="7" fill="#2a2218"><text x="124" y="144">Mühlbach</text><text x="218" y="112">Broos</text><text x="48" y="192">Dorf</text></g>
+ <g transform="translate(160,120) rotate(-16)"><rect x="-96" y="-15" width="192" height="30" fill="none" stroke="#9e3b2b" stroke-width="1.6"/><text x="0" y="7" font-family="Cinzel,serif" font-size="18" letter-spacing="9" fill="#9e3b2b" text-anchor="middle" opacity=".9">SECRETVM</text></g>
+ <text x="300" y="226" font-family="IBM Plex Mono,monospace" font-size="6.5" fill="#4d4233" text-anchor="end">SECT. 138 · 1:28.800</text>
+</svg>`
+},
+{
+ id:'russia', stela:'X', stratum:'III', n:3, hall:5,
+ short:'RVSSIA·1835', name:'RVSSIAN GENERAL STAFF · THE PRINCIPALITIES',
+ sub:'Triangulation gives error a number and a sign',
+ year:1835, yLab:'1835', dateLabel:'A.D. 1835',
+ when:'survey after 1829 · published 1835',
+ maker:'Russian General Staff, under Kiselyov&rsquo;s administration',
+ medium:'engraved, 1:420,000',
+ modus:'first triangulation of Wallachia & Moldavia',
+ repo:'staff archives; sheets in major collections',
+ survival:'the triangles outlived the occupation by half a century',
+ depth:19.1, lens:false,
+ seals:{M:4,A:5,N:3,L:4,S:4},
+ sealLines:{
+  M:'the Principalities&rsquo; first geodetic skeleton',
+  A:'the occupier as geodesist',
+  N:'Бухарестъ for București — the alphabet of administration',
+  L:'treaty lines surveyed after Adrianople',
+  S:'made for marching, not for sale'},
+ reads:{ORD:4.5,LIT:3,RES:2,COR:4.5,RAS:4,VAC:1.5},
+ verdicts:{
+  ORD:'triangulation gives error a number and a sign',
+  LIT:'Romanian re-spelled in Russian Cyrillic',
+  RES:'old roads verified against new triangles',
+  COR:'the first sheet against which residuals could be taken',
+  RAS:'a general staff&rsquo;s product, shared sparingly',
+  VAC:'little blank; much restricted'},
+ find:'The new state will inherit its geometry from its occupier.',
+ nota:'After Adrianople (1829), Russian officers under Kiselyov ran the first triangulation of Wallachia and Moldavia; the 1:420,000 sheet of 1835 underlay Romanian mapping for half a century.',
+ mus:`<p>The Treaty of Adrianople left Russia administering the Principalities, and Kiselyov&rsquo;s officers did what occupying staffs do: they measured. For the first time Wallachia and Moldavia received a triangulation &mdash; a network of computed points against which every later survey could take residuals. Error finally had a number and a sign.</p>
+ <p>Published in 1835 at 1:420,000, with Romanian names re-spelled in Russian Cyrillic, the map was a general staff&rsquo;s instrument, shared sparingly. Its triangles, though, proved durable: the Romanian state that emerged a generation later built its own cartography on an occupier&rsquo;s skeleton.</p>`,
+ tr:`<p>Thin but structurally decisive layer: the first in the section laid on a computed framework. In plan the deposit resolves into a lattice of fixed points; everything between them is interpolation, honestly labelled as such.</p>
+ <p>Field note: inclusions carry double markings &mdash; Romanian content, Cyrillic casing &mdash; the second such transliteration veil in the sequence (compare Stratum VI). The lattice itself persists into every layer above.</p>`,
+ vig:`<svg viewBox="0 0 320 240" role="img" aria-label="Triangulation network with Cyrillic labels and scale bar">
+ <rect x="8" y="8" width="304" height="224" fill="none" stroke="#2a2218" stroke-width="1.6"/>
+ <g stroke="#9e3b2b" stroke-width=".9" fill="none">
+  <path d="M48 190 L110 84 L186 150 Z"/><path d="M110 84 L208 56 L186 150 Z"/><path d="M186 150 L268 104 L208 56 Z"/><path d="M48 190 L150 206 L186 150 Z"/><path d="M150 206 L252 196 L186 150 Z"/><path d="M252 196 L268 104"/>
+ </g>
+ <g fill="#efe9da" stroke="#2a2218" stroke-width="1.2">
+  <circle cx="48" cy="190" r="5"/><circle cx="110" cy="84" r="5"/><circle cx="186" cy="150" r="5"/><circle cx="208" cy="56" r="5"/><circle cx="268" cy="104" r="5"/><circle cx="150" cy="206" r="5"/><circle cx="252" cy="196" r="5"/>
+ </g>
+ <g fill="#2a2218"><circle cx="48" cy="190" r="1.5"/><circle cx="110" cy="84" r="1.5"/><circle cx="186" cy="150" r="1.5"/><circle cx="208" cy="56" r="1.5"/><circle cx="268" cy="104" r="1.5"/><circle cx="150" cy="206" r="1.5"/><circle cx="252" cy="196" r="1.5"/></g>
+ <g font-family="EB Garamond,serif" font-size="8.5" fill="#2a2218">
+  <text x="156" y="222">Бухарестъ</text><text x="96" y="74">Питешти</text><text x="214" y="46">Бузеу</text><text x="274" y="96">Браиловъ</text><text x="30" y="206">Крайова</text><text x="192" y="166">Плоешти</text>
+ </g>
+ <path d="M14 224 Q120 232 312 226" fill="none" stroke="#5e7a6a" stroke-width="2" opacity=".7"/>
+ <g transform="translate(36,28)"><line x1="0" y1="0" x2="80" y2="0" stroke="#2a2218" stroke-width="3"/><line x1="0" y1="0" x2="40" y2="0" stroke="#efe9da" stroke-width="1.4"/><text x="0" y="12" font-family="IBM Plex Mono,monospace" font-size="6.5" fill="#4d4233">МАСШТАБЪ 1:420.000</text></g>
+ <text x="246" y="26" font-family="Cinzel,serif" font-size="8" letter-spacing="2" fill="#2a2218">1835</text>
+ <g stroke="#2a2218" stroke-width=".5" opacity=".4" stroke-dasharray="1.5 3"><line x1="110" y1="84" x2="48" y2="190"/></g>
+</svg>`
+},
+{
+ id:'szathmari', stela:'XI', stratum:'II', n:2, hall:6,
+ short:'SZATHMÁRI', name:'CHARTA ROMÂNIEI MERIDIONALE',
+ sub:'The country prints its own name across itself',
+ year:1864, yLab:'1864', dateLabel:'A.D. 1864',
+ when:'printed Vienna, 1864, under Cuza',
+ maker:'commonly attributed to Carol Popp de Szathmári, editor, under military oversight',
+ medium:'lithograph, c. 112 sheets, 1:57,600',
+ modus:'built on the Austrian survey of the 1850s; field-updated',
+ repo:'national collections; widely reproduced',
+ survival:'plentiful — the first deliberately public state map',
+ depth:16.2, lens:false,
+ seals:{M:4,A:4,N:4,L:4,S:2},
+ sealLines:{
+  M:'1:57,600 across one hundred and twelve sheets',
+  A:'Cuza&rsquo;s young state, printing itself',
+  N:'the alphabet changes hands mid-country',
+  L:'the union of 1859 drawn as one fabric',
+  S:'openness as policy — the anti-secret map'},
+ reads:{ORD:4,LIT:4.5,RES:3.5,COR:3.5,RAS:1,VAC:1},
+ verdicts:{
+  ORD:'Austrian triangles become Romanian sheet-lines',
+  LIT:'ROMÂNIA set in Latin type, first time on an official sheet',
+  RES:'built openly on the occupiers&rsquo; surveys — inheritance acknowledged',
+  COR:'the borrowed base verified and updated in the field',
+  RAS:'little struck; this map wants to be seen',
+  VAC:'dense, public, taught in schools'},
+ find:'The country prints its own name across itself: ROMÂNIA, in Latin letters, 1864.',
+ nota:'Szathmári photographed the Danubian front in 1854 &mdash; among the first war photographers anywhere &mdash; and a decade later lithographed his country. The state was named România in 1862; the Latin alphabet was decreed the same year.',
+ mus:`<p>Union in 1859; the name <em>România</em> adopted in 1862; the Latin alphabet decreed the same year after decades of drift. Two years later the young state issued its first great map: southern Romania at 1:57,600 across some 112 sheets, printed in Vienna, commonly attributed to Cuza&rsquo;s court artist Szathmári as editor under military oversight.</p>
+ <p>The geometry is openly inherited &mdash; the Austrian survey of the 1850s beneath, the Russian triangles before that &mdash; verified and updated in the field. What is new is the writing: ROMÂNIA in Latin type across its own territory, the alphabet changing hands on the sheet itself.</p>`,
+ tr:`<p>Bright, well-sorted public layer &mdash; the first deposit in centuries laid down to be seen. The bedding planes are borrowed (Austrian, and Russian beneath), the inheritance openly stamped rather than concealed.</p>
+ <p>Field note: a script transition runs through the layer like a colour change in the soil &mdash; Cyrillic ghosts at the base, Latin throughout the upper part. The label ROMÂNIA appears here for the first time in the section.</p>`,
+ vig:`<svg viewBox="0 0 320 240" role="img" aria-label="ROMANIA in Latin letters over a faded Cyrillic ghost, on a sheet-line grid">
+ <rect x="8" y="8" width="304" height="224" fill="none" stroke="#2a2218" stroke-width="1.6"/>
+ <g stroke="#2a2218" stroke-width=".4" opacity=".3">
+  <line x1="68" y1="8" x2="68" y2="232"/><line x1="128" y1="8" x2="128" y2="232"/><line x1="188" y1="8" x2="188" y2="232"/><line x1="248" y1="8" x2="248" y2="232"/>
+  <line x1="8" y1="60" x2="312" y2="60"/><line x1="8" y1="118" x2="312" y2="118"/><line x1="8" y1="176" x2="312" y2="176"/>
+ </g>
+ <g fill="none" stroke="#2a2218" stroke-width="1"><path d="M20 52 q9 -14 18 0 M44 44 q9 -14 18 0 M70 40 q9 -14 18 0 M98 38 q9 -14 18 0 M128 38 q9 -14 18 0 M158 40 q9 -14 18 0 M188 44 q9 -14 18 0 M218 50 q9 -14 18 0 M248 58 q9 -14 18 0 M274 68 q9 -14 18 0"/></g>
+ <path d="M14 206 Q100 216 180 208 Q260 202 310 212" fill="none" stroke="#5e7a6a" stroke-width="2.6"/>
+ <text x="34" y="200" font-family="EB Garamond,serif" font-size="9" font-style="italic" fill="#5e7a6a">Dunărea</text>
+ <text x="162" y="138" font-family="Cinzel,serif" font-size="15" letter-spacing="7" fill="#9e3b2b" opacity=".28" text-anchor="middle">РОМЫНІЯ</text>
+ <text x="160" y="128" font-family="Cinzel,serif" font-size="26" letter-spacing="10" fill="#2a2218" text-anchor="middle">ROMÂNIA</text>
+ <g fill="#2a2218"><circle cx="172" cy="166" r="3"/><circle cx="84" cy="160" r="2"/><circle cx="248" cy="158" r="2"/><circle cx="120" cy="186" r="2"/></g>
+ <g font-family="EB Garamond,serif" font-size="8" fill="#2a2218"><text x="178" y="164">Bucuresci</text><text x="64" y="156">Craiova</text><text x="252" y="154">Brăila</text><text x="124" y="196">Giurgiu</text></g>
+ <text x="160" y="226" font-family="IBM Plex Mono,monospace" font-size="6.5" letter-spacing="2" fill="#4d4233" text-anchor="middle">CHARTA ROMÂNIEI MERIDIONALE · 1:57.600 · MDCCCLXIV</text>
+</svg>`
+},
+{
+ id:'secret', stela:'XII', stratum:'I', n:1, hall:7,
+ short:'SAEC·SECRETVM', name:'THE SECRET CENTVRY · PLANVRI & STEREO 70',
+ sub:'One true map in the safe, one false map at the kiosk',
+ year:1916, yLab:'1916–59', dateLabel:'A.D. 1916–1959 (–1989)',
+ when:'Lambert–Cholesky adopted 1916–17 · ~2,118 sheets to the 1950s · Gauss–Krüger after 1951 · Stereo 70 decreed 1973',
+ maker:'Army Geographic Service; French mission (Berthelot); later Soviet standards',
+ medium:'printed topographic sheets, 1:20,000 — classified',
+ modus:'conformal projections; error hunted to the decimetre',
+ repo:'military archives; georeferenced today by geo-spatial.org',
+ survival:'complete and long unseeable; public derivatives deliberately false',
+ depth:11.0, lens:false,
+ seals:{M:5,A:5,N:4,L:5,S:4.5},
+ sealLines:{
+  M:'2,118 sheets at 1:20,000, built for artillery',
+  A:'the state entire, twice over — Bucharest&rsquo;s and Moscow&rsquo;s',
+  N:'standardised Romanian, by decree',
+  L:'every boundary surveyed, none publishable',
+  S:'the century&rsquo;s defining product is the withheld sheet'},
+ reads:{ORD:5,LIT:4,RES:3,COR:5,RAS:5,VAC:2},
+ verdicts:{
+  ORD:'Lambert–Cholesky, then Gauss–Krüger, then Stereo 70 — projection as regime',
+  LIT:'a 1964 decree renames hundreds of villages at a stroke',
+  RES:'every prior survey compiled — and impounded',
+  COR:'error hunted to the decimetre, in classified ink',
+  RAS:'two cartographies: one true and locked, one public and false',
+  VAC:'even the blanks now carry official stamps'},
+ find:'The state keeps the true map in a safe and sells the false one at the kiosk.',
+ nota:'The Lambert&ndash;Cholesky grid arrived with Berthelot&rsquo;s French mission in 1916&ndash;17; André-Louis Cholesky, whose decomposition every engineer still uses, computed for it and died on the Western Front in 1918. Stereo 70, decreed 1973, still rides the Krasovsky ellipsoid.',
+ mus:`<p>War brought the grid. With Berthelot&rsquo;s French mission came the Lambert&ndash;Cholesky projection and the <em>planurile directoare de tragere</em>: 1:20,000 sheets, some 2,118 of them by the 1950s, drawn so that artillery arithmetic would land where it was aimed. After 1951 the Soviet standards took over &mdash; Krasovsky ellipsoid, Gauss&ndash;Krüger &mdash; and the true map went into the safe.</p>
+ <p>Stereo 70, decreed in 1973, gave Romania its own secant plane near Făgăraș and kept the locks. Public maps were schematic by design; a 1964 decree renamed hundreds of villages at a stroke. The most accurate cartography the land had ever had, and the least seen: two maps of one country, one true and hidden, one false and for sale.</p>`,
+ tr:`<p>Hard, laminated layer just under the topsoil, machine-regular and chemically distinct &mdash; classified ink. Two facies interleave: a true facies, decimetre-accurate, sealed on deposition; and a public facies, deliberately deformed, scattered loose above it.</p>
+ <p>Field note: a renaming event (1964) cuts through the layer like a burnt horizon &mdash; hundreds of toponyms replaced in a single stroke of state. Excavation of the true facies became possible only after 1989; geo-spatial.org has since georeferenced the sheets, which is how this trench can draw them at all.</p>`,
+ vig:`<svg viewBox="0 0 320 240" role="img" aria-label="Topographic sheet half-obscured by censor bars with a SECRET stamp">
+ <rect x="8" y="8" width="304" height="224" fill="none" stroke="#2a2218" stroke-width="1.6"/>
+ <g stroke="#5e7a6a" stroke-width=".9" fill="none" opacity=".9">
+  <path d="M20 200 q30 -26 60 -22 q34 4 56 -18 q26 -26 60 -22 q34 4 60 -20 q22 -20 50 -18"/>
+  <path d="M20 176 q30 -22 58 -20 q34 2 58 -18 q26 -22 60 -18 q36 4 58 -16 q20 -16 52 -16"/>
+  <path d="M22 152 q28 -18 56 -16 q34 2 56 -16 q28 -20 60 -16 q36 4 56 -14"/>
+  <path d="M40 128 q24 -14 52 -12 q32 2 52 -14 q28 -16 58 -12"/>
+ </g>
+ <g stroke="#2a2218" stroke-width=".4" opacity=".4"><line x1="84" y1="8" x2="84" y2="232"/><line x1="160" y1="8" x2="160" y2="232"/><line x1="236" y1="8" x2="236" y2="232"/><line x1="8" y1="84" x2="312" y2="84"/><line x1="8" y1="160" x2="312" y2="160"/></g>
+ <g font-family="IBM Plex Mono,monospace" font-size="6" fill="#4d4233"><text x="86" y="18">4-44-XX</text><text x="238" y="18">4-45-XX</text><text x="12" y="82">52</text><text x="12" y="158">51</text></g>
+ <g fill="#171109">
+  <rect x="22" y="36" width="150" height="13" transform="rotate(-1 22 36)"/>
+  <rect x="120" y="64" width="178" height="13" transform="rotate(.6 120 64)"/>
+  <rect x="30" y="96" width="120" height="13" transform="rotate(-.8 30 96)"/>
+  <rect x="176" y="120" width="124" height="13"/>
+  <rect x="56" y="186" width="170" height="13" transform="rotate(.5 56 186)"/>
+ </g>
+ <g transform="translate(236,196) rotate(-9)"><rect x="-58" y="-15" width="116" height="30" fill="none" stroke="#9e3b2b" stroke-width="2"/><text x="0" y="7" font-family="Cinzel,serif" font-size="15" letter-spacing="5" fill="#9e3b2b" text-anchor="middle">SECRET</text></g>
+ <text x="22" y="226" font-family="IBM Plex Mono,monospace" font-size="6.5" fill="#4d4233">PLAN DIRECTOR DE TRAGERE · 1:20.000 · LAMBERT–CHOLESKY</text>
+</svg>`
+},
+{
+ id:'satellite', stela:'XIII', stratum:'0', n:0, hall:8,
+ short:'SATELLES', name:'THE PRESENT SVRVEY · WGS84 / SENTINEL / OSM',
+ sub:'The thirteenth stone, left rough on purpose',
+ year:2026, yLab:'2026', dateLabel:'A.D. 2026',
+ when:'continuous — re-imaged every few days, edited every minute',
+ maker:'states, firms, volunteers; authority dissolved among them',
+ medium:'pixels, vectors, a datum in every pocket',
+ modus:'WGS84; Sentinel-2 at 10 m; OSM by the minute',
+ repo:'everywhere and nowhere; caches, mirrors, tiles',
+ survival:'revision outruns preservation',
+ depth:0.0, lens:false,
+ seals:{M:5,A:2.5,N:5,L:5,S:2},
+ sealLines:{
+  M:'ten-metre pixels every few days, free of charge',
+  A:'authority dissolved among states, firms and volunteers',
+  N:'five language layers deep on an average Tuesday',
+  L:'treaty lines to the centimetre — and disputed pixels',
+  S:'openness with deliberate smudges'},
+ reads:{ORD:5,LIT:5,RES:4,COR:5,RAS:2.5,VAC:0.5},
+ verdicts:{
+  ORD:'one datum for everyone: WGS84 in every pocket',
+  LIT:'every place in every tongue; endonyms by policy',
+  RES:'restitutio becomes interpolation and training data',
+  COR:'revision outruns the censor — edits by the minute',
+  RAS:'new erasures: blurred pixels, proprietary tiles',
+  VAC:'the void is nearly extinct; one almost misses it'},
+ find:'Everyone now carries a survey the old regime would have killed for.',
+ nota:'The thirteenth stone is left mostly uncarved on purpose: Sentinel-2 re-images the country every few days, OSM edits the land by the minute, and the wall reserves space for whatever instrument comes next.',
+ mus:`<p>The present layer barely needs carving. One datum &mdash; WGS84 &mdash; serves everyone; Sentinel-2 re-images the country at ten metres every few days; volunteers revise the map faster than any censor could redact it. The old readings persist in new forms: <em>restitutio</em> is now interpolation and training data, <em>rasura</em> a blurred compound or a proprietary tile, <em>vacat</em> nearly extinct.</p>
+ <p>So the stone is left rough &mdash; a few orbital scratches, a pin, the coordinates of Cluj. Each generation has believed it finally finished the map. The wall knows better, and keeps space.</p>`,
+ tr:`<p>Topsoil: loose, churned daily, full of living roots. Material from every layer below works upward through it &mdash; a Dacian name on a city-limit sign, Austrian sheet-lines under a cadastral grid, the secret century&rsquo;s contours georeferenced and free.</p>
+ <p>Field note: do not expect this horizon to consolidate. It is re-deposited continuously; by the time the section drawing is inked, the surface has changed.</p>`,
+ vig:`<svg viewBox="0 0 320 240" role="img" aria-label="A nearly uncarved slab: orbital arc, faint Carpathian arc, GPS pin, coordinates">
+ <rect x="8" y="8" width="304" height="224" fill="none" stroke="#2a2218" stroke-width="1.2" opacity=".7"/>
+ <g stroke="#2a2218" stroke-width=".35" opacity=".25"><line x1="68" y1="8" x2="68" y2="232"/><line x1="128" y1="8" x2="128" y2="232"/><line x1="188" y1="8" x2="188" y2="232"/><line x1="248" y1="8" x2="248" y2="232"/><line x1="8" y1="66" x2="312" y2="66"/><line x1="8" y1="124" x2="312" y2="124"/><line x1="8" y1="182" x2="312" y2="182"/></g>
+ <path d="M70 168 q24 -52 78 -62 q56 -10 96 26" fill="none" stroke="#2a2218" stroke-width="1.4" opacity=".4" stroke-dasharray="5 4"/>
+ <text x="206" y="106" font-family="EB Garamond,serif" font-size="7" font-style="italic" fill="#4d4233" opacity=".7">arcus Carpaticus</text>
+ <path d="M20 56 Q160 6 300 64" fill="none" stroke="#9e3b2b" stroke-width="1.1" stroke-dasharray="2 4"/>
+ <g transform="translate(208,28) rotate(14)"><rect x="-6" y="-4" width="12" height="8" fill="#2a2218"/><line x1="-13" y1="0" x2="-7" y2="0" stroke="#2a2218" stroke-width="1.4"/><line x1="7" y1="0" x2="13" y2="0" stroke="#2a2218" stroke-width="1.4"/><rect x="-13" y="-3" width="5" height="6" fill="none" stroke="#2a2218" stroke-width=".9"/><rect x="8" y="-3" width="5" height="6" fill="none" stroke="#2a2218" stroke-width=".9"/></g>
+ <g transform="translate(146,128)"><path d="M0 16 C -10 4 -10 -6 0 -6 C 10 -6 10 4 0 16 Z" fill="#9e3b2b"/><circle cy="0" r="3.4" fill="#efe9da"/></g>
+ <text x="146" y="158" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#2a2218" text-anchor="middle">46.77°N · 23.59°E</text>
+ <text x="146" y="170" font-family="EB Garamond,serif" font-size="8" font-style="italic" fill="#4d4233" text-anchor="middle">Cluj-Napoca — the old name re-attached, 1974</text>
+ <text x="160" y="214" font-family="IBM Plex Mono,monospace" font-size="6.5" letter-spacing="2" fill="#4d4233" text-anchor="middle" opacity=".8">WGS84 · SENTINEL-2 · OSM — NONDVM INCISVM</text>
+</svg>`
+});
+
+/* ---------------- halls ---------------- */
+const HALLS=[
+ {num:'I', title:'AVLA ANTIQVA', tag:'ANTIQVITY · c. 150 — c. 350', intro:'Two Roman instruments, neither a picture in the modern sense: a table of coordinates and a strip-diagram of roads. Between them they fix Dacia in number and in itinerary — and both will be copied for a thousand years by hands that never saw the place.'},
+ {num:'II', title:'AVLA NOMINIS ERRANTIS', tag:'THE WANDERING NAME · c. 1300', intro:'In which the name leaves the land. Chancery Latin and a Dominican province carry DACIA to Denmark; the Carpathian country, meanwhile, is filed under other people&rsquo;s ghosts.', drift:true},
+ {num:'III', title:'AVLA LITORVM', tag:'THE COASTS · 1311', intro:'The sea is surveyed before the land. Genoese and Venetian pilots, working the Black Sea after the Treaty of Nymphaeum (1261), draw the coast to a precision the interior will not see for five centuries.'},
+ {num:'IV', title:'AVLA RENASCENTIAE', tag:'RECOVERY BY PRINT · 1532 — 1595', intro:'Print arrives. Lazarus&rsquo;s Tabula Hungariae (1528) shows the region first; Honterus gives Transylvania its own sheet; Ortelius restores a Dacia that no longer exists. Recovery and invention, on the same presses.'},
+ {num:'V', title:'AVLA PRINCIPVM', tag:'THE PRINCES&rsquo; MAPS · 1700 — 1737', intro:'Two native cartographies a generation apart — Wallachia engraved in Greek, Moldavia remembered in Latin — each a country drafting its own portrait.'},
+ {num:'VI', title:'AVLA IMPERIORVM', tag:'THE EMPIRES MEASVRE · 1769 — 1835', intro:'Habsburg plane-tables and Russian triangles produce the most accurate maps the land has known — and lock them away. Accuracy and secrecy, born twins.'},
+ {num:'VII', title:'AVLA NATIONIS', tag:'THE NATION PRINTS · 1864', intro:'A new state prints its name. On the occupiers&rsquo; geometry, with a freshly decreed alphabet, ROMÂNIA appears in Latin type across its own territory.'},
+ {num:'VIII', title:'AVLA SAECVLI SECRETI', tag:'THE SECRET CENTVRY · 1916 — 1989', intro:'Artillery grids, Soviet projections, decreed toponyms, falsified public sheets: the truest maps ever made of this land, and the least seen.'},
+ {num:'IX', title:'AVLA PRAESENTIS', tag:'THE PRESENT SVRVEY · 2026', intro:'One datum for everyone, imagery every few days, edits by the minute — and the thirteenth stone left rough, because the wall is not finished.'}
+];
+
+/* ---------------- instruments metadata ---------------- */
+const SEALS=[
+ {k:'M', nm:'MENSVRA',   c:'var(--ochre)',     hex:'#c9962e'},
+ {k:'A', nm:'AVCTORITAS',c:'var(--sigillata)', hex:'#b4502e'},
+ {k:'N', nm:'NOMINA',    c:'var(--verdigris)', hex:'#6f9e8a'},
+ {k:'L', nm:'LIMES',     c:'var(--limest)',    hex:'#cfc4a8'},
+ {k:'S', nm:'SILENTIVM', c:'var(--leadash)',   hex:'#7d8b99'}
+];
+const READS=[
+ {k:'ORD', nm:'ORDINATIO',  sig:'‖'},
+ {k:'LIT', nm:'LITTERAE',   sig:'A·B'},
+ {k:'RES', nm:'RESTITVTIO', sig:'[ ]'},
+ {k:'COR', nm:'CORRECTIO',  sig:'⟨ ⟩'},
+ {k:'RAS', nm:'RASVRA',     sig:'⟦ ⟧'},
+ {k:'VAC', nm:'VACAT',      sig:'vac.'}
+];
+const SEALPH={
+ M:{up:'space becomes something measured, not narrated', dn:'measure recedes; the map narrates again', eq:'measure holds level between the cuts'},
+ A:{up:'the state steps in behind the pen', dn:'authority withdraws; a private hand takes over', eq:'the same weight of authority in both layers'},
+ N:{up:'the land grows denser with names and tongues', dn:'the naming thins to fewer voices', eq:'the naming holds its density'},
+ L:{up:'edges harden from rumour into surveyed line', dn:'borders soften back into frontier', eq:'the edges keep their definition'},
+ S:{up:'more is withheld; the sheet learns to keep secrets', dn:'the silence lifts; more is shown than hidden', eq:'the same measure of silence in both'}
+};
+const READPH={
+ ORD:'their geometric armatures part ways',
+ LIT:'they name the land in different tongues',
+ RES:'one inherits; the other walks',
+ COR:'one is verified; the other merely asserted',
+ RAS:'what is suppressed divides them',
+ VAC:'their emptiness is unalike'
+};
+
+/* ---------------- the test pits ---------------- */
+const PITS=[
+ {id:'sarmizegetusa', label:'SARMIZEGETVSA',
+  note:'Two places share the name, forty kilometres apart: Sarmizegetusa Regia, the Dacian royal seat in the Orăștie Mountains, and colonia Ulpia Traiana Sarmizegetusa in Hațeg country. The pit is sunk on the colonia — within sight of Densuș.',
+  cells:{
+   0:{t:'Sarmizegetusa', langs:['ro'], pn:'the colonia&rsquo;s village keeps the name; Regia, in the mountains, is a UNESCO site'},
+   1:{t:'Sarmizegetusa', langs:['ro','hu'], pn:'the village of Grădiștea (Várhely), formally renamed in 1941'},
+   2:{st:'out', pn:'extra muros — the Charta covers Wallachia, not Hațeg country'},
+   3:{st:'out', pn:'extra muros — the Russian sheets stop at the mountains'},
+   4:{t:'Várhely', langs:['hu'], pn:'the Hungarian name — &ldquo;castle place&rdquo; — over the colonia&rsquo;s ruins'},
+   5:{st:'out', pn:'extra muros — Moldavia only'},
+   6:{st:'out', pn:'extra muros — Wallachia only'},
+   7:{t:'Zarmizegethusa regia', langs:['la'], pn:'restored to the sheet from the ancient authors'},
+   8:{t:'Várhely', st:'unc', langs:['hu'], pn:'the village existed; whether the single surviving print marks it is unverified'},
+   9:{st:'abs', pn:'a coastal chart has no use for an inland ruin'},
+   10:{st:'abs', pn:'the region itself has dissolved into Gothia and Scythia'},
+   11:{t:'Sarmategte', langs:['la'], pn:'a road station on the Tibiscum line, miles marked'},
+   12:{t:'Zarmizegethousa', langs:['el','dac'], pn:'the royal seat — βασίλειον — of Decebalus'}
+  }},
+ {id:'apulum', label:'APVLVM',
+  note:'Apulum — Bălgrad — Weissenburg — Karlsburg — Alba Iulia: one hill above the Mureș, five names, every empire leaving its label on the gate.',
+  cells:{
+   0:{t:'Alba Iulia', langs:['ro'], pn:'the union city of 1918'},
+   1:{t:'Alba Iulia', langs:['ro'], pn:'standardised on the secret sheets'},
+   2:{st:'out', pn:'extra muros — Transylvania is not on the Charta'},
+   3:{st:'out', pn:'extra muros — beyond the Russian survey'},
+   4:{t:'Karlsburg', langs:['de'], pn:'the citadel cut for Charles VI, 1715–38, renames the town'},
+   5:{st:'out', pn:'extra muros — Moldavia only'},
+   6:{st:'out', pn:'extra muros — Wallachia only'},
+   7:{t:'Apulum', langs:['la'], pn:'the legion town restored to the sheet'},
+   8:{t:'Weissenburg', langs:['de','sl'], pn:'Saxon name first; Slavic Bălgrad lies beneath it'},
+   9:{st:'abs', pn:'far inland of any pilot&rsquo;s interest'},
+   10:{st:'abs', pn:'no town of this country is named'},
+   11:{t:'Apula', langs:['la'], pn:'the vulgar spelling of a road-book hand'},
+   12:{t:'Apoulon', langs:['el','dac'], pn:'a Dacian name in Greek dress'}
+  }},
+ {id:'napoca', label:'NAPOCA',
+  note:'The Roman name slept for eighteen centuries under Klausenburg, Kolozsvár and Cluj — and was re-attached by decree in 1974. A toponym excavated and re-used: spolia in city limits.',
+  cells:{
+   0:{t:'Cluj-Napoca', langs:['ro'], pn:'the Roman name re-attached by decree, 1974'},
+   1:{t:'Cluj', langs:['ro'], pn:'on the classified sheets, plain Cluj'},
+   2:{st:'out', pn:'extra muros — north of the Charta'},
+   3:{st:'out', pn:'extra muros — beyond the Russian survey'},
+   4:{t:'Klausenburg / Kolozsvár', langs:['de','hu'], pn:'German official, Hungarian beside it'},
+   5:{st:'out', pn:'extra muros — Moldavia only'},
+   6:{st:'out', pn:'extra muros — Wallachia only'},
+   7:{t:'Napoca', langs:['la'], pn:'restored from Ptolemy and the itineraries'},
+   8:{t:'Clausenburg', langs:['de'], pn:'the Saxon town, drawn by a man who knew it'},
+   9:{st:'abs', pn:'no rhumb line reaches the Someș'},
+   10:{st:'abs', pn:'the map has stopped looking'},
+   11:{t:'Napoca', langs:['la'], pn:'a station on the road to Porolissum'},
+   12:{t:'Napouka', langs:['el','dac'], pn:'a Dacian name in Greek transliteration'}
+  }},
+ {id:'drobeta', label:'DROBETA',
+  note:'The Danube crossing: Trajan&rsquo;s bridge, the Tower of Severin, a town founded in 1833, and a hyphen added in 1972 to stitch the Roman name back on. The pit straddles the river road.',
+  cells:{
+   0:{t:'Drobeta-Turnu Severin', langs:['ro'], pn:'hyphenated back to its Roman self in 1972'},
+   1:{t:'Turnu Severin', langs:['ro'], pn:'a county seat on the artillery sheets'},
+   2:{t:'Turnu-Severinu', langs:['ro'], pn:'a town barely thirty years old when printed'},
+   3:{t:'Turnu Severin', st:'unc', langs:['ro'], pn:'the survey straddles the town&rsquo;s founding, 1833'},
+   4:{st:'out', pn:'extra muros — Oltenia lies outside the Transylvanian survey'},
+   5:{st:'out', pn:'extra muros — Moldavia only'},
+   6:{t:'Severin — ruin', langs:['ro'], pn:'the Tower of Severin remembered; the Banat of Severin attested'},
+   7:{t:'Drubetis · Pons Traiani', langs:['la'], pn:'Trajan&rsquo;s bridge drawn across the Danube'},
+   8:{st:'out', pn:'extra muros — beyond the Carpathian ring'},
+   9:{st:'abs', pn:'far upstream of any pilot&rsquo;s chart'},
+   10:{st:'abs', pn:'the crossing survives only in the authors'},
+   11:{t:'Drubetis', langs:['la'], pn:'first station north of the river on the Lederata road'},
+   12:{st:'abs', pn:'not securely among Ptolemy&rsquo;s forty-four poleis'}
+  }}
+];
+const LANGNAMES={dac:'Dacian',el:'Greek',la:'Latin',de:'German',hu:'Hungarian',sl:'Slavic',ru:'Cyrillic',ro:'Romanian'};
+
+/* ============================================================
+   RENDER & INTERACTIONS
+   ============================================================ */
+const byId={}; STONES.forEach(s=>byId[s.id]=s);
+const byStr=STONES.slice().sort((a,b)=>a.n-b.n);          // surface -> bedrock
+const $=(q,el)=> (el||document).querySelector(q);
+
+function ticks(v){
+  let h='';
+  for(let i=1;i<=5;i++){ const c = v>=i ? ' full' : (v>=i-0.5 ? ' half' : ''); h+='<span class="tick'+c+'"></span>'; }
+  return '<span class="ticks">'+h+'</span>';
+}
+
+/* ---------- timeline wall ---------- */
+function tlX(y){ return 5 + 90*Math.sqrt((y-100)/1926); }
+(function renderTimeline(){
+  const box=$('#tlInner'); let h='';
+  const eras=[[500,1450,'MEDIVM AEVVM'],[1800,2026,'AETAS NATIONVM']];
+  eras.forEach(e=>{ h+=`<div class="tl-era" style="left:${tlX(e[0])}%;width:${tlX(e[1])-tlX(e[0])}%"></div>`; });
+  STONES.forEach(s=>{
+    h+=`<button class="tl-stone" style="left:${tlX(s.year)}%" data-id="${s.id}" aria-label="Stela ${s.stela}, ${s.short}, ${s.yLab}">
+      <span class="nm">${s.short}</span><span class="blk"></span><span class="yr">${s.yLab}</span></button>`;
+  });
+  box.innerHTML=h;
+  box.addEventListener('click',e=>{
+    const b=e.target.closest('.tl-stone'); if(!b)return;
+    document.getElementById('stela-'+b.dataset.id).scrollIntoView({behavior:'smooth',block:'start'});
+  });
+})();
+
+/* ---------- the name-drift interlude ---------- */
+const DRIFT_HTML=`<div class="drift" role="img" aria-label="Animated schematic: the word DACIA drifting between the lower Danube and Denmark and back">
+<svg viewBox="0 0 640 320">
+  <g fill="none" stroke="#4d4233" stroke-width="1.1" opacity=".55">
+    <path d="M60 300 q-20 -70 10 -130 q24 -48 70 -64 q-18 -34 12 -56 q26 -20 60 -14"/>
+    <path d="M212 36 q40 -14 84 -2 q14 22 -6 36 q30 4 52 22"/>
+    <path d="M342 92 q60 10 104 44 q56 40 110 50 q40 8 78 2"/>
+    <path d="M120 304 q70 -22 150 -14 q90 8 160 -6 q80 -16 150 -2"/>
+  </g>
+  <g fill="none" stroke="#4d4233" stroke-width="1.1" opacity=".7">
+    <path d="M306 92 q-12 -28 8 -44 q18 -14 34 -4 q12 10 2 26 q16 2 14 18 q-2 14 -22 14 q-22 2 -36 -10"/>
+  </g>
+  <path d="M430 244 q34 -2 58 -10 q26 -10 44 -2" fill="none" stroke="#5e7a6a" stroke-width="2.4" opacity=".8"/>
+  <text x="448" y="262" font-family="EB Garamond,serif" font-size="11" font-style="italic" fill="#5e7a6a">Danubius</text>
+  <path d="M452 226 Q380 120 330 78" fill="none" stroke="#9e3b2b" stroke-width="1" stroke-dasharray="3 5" opacity=".6"/>
+  <text class="d-date d1" x="500" y="216">A.D. 150 · ad Danubium</text>
+  <text class="d-date d2" x="236" y="50">c. 1228 · in Daniam — provincia fratrum</text>
+  <text class="d-date d3" x="500" y="200">1595 · reducta per philologiam</text>
+  <text class="dacia-word" x="0" y="0" text-anchor="middle" transform="translate(470,232)">DACIA</text>
+</svg>
+<p class="drift-cap">NOMEN ERRANS · THE WORD LEAVES THE DANVBE c. 1228 AND IS WALKED HOME BY THE HVMANISTS, 1595</p>
+</div>`;
+
+/* ---------- stela & hall rendering ---------- */
+function stelaHTML(s){
+  const rds=READS.map(r=>`<div class="rd">
+      <span class="nm">${r.nm}<span class="sig">${r.sig}</span></span>
+      ${ticks(s.reads[r.k])}
+      <span class="verdict">${s.verdicts[r.k]}</span></div>`).join('');
+  const ghost = s.id==='satellite'
+    ? `<p style="font-family:var(--disp);letter-spacing:.3em;font-size:13px;color:rgba(42,34,24,.42);margin-top:24px;text-align:center">··· NONDVM INCISVM · SPACE RESERVED FOR THE NEXT SVRVEY ···</p>` : '';
+  return `<section class="stela reveal" id="stela-${s.id}">
+    <div class="stela-head">
+      <div>
+        <p class="stela-num">STELA ${s.stela} · ${s.short}</p>
+        <h4>${s.name}</h4>
+        <p class="sub">${s.sub}</p>
+      </div>
+      <p class="stela-num">${s.dateLabel}</p>
+    </div>
+    <div class="stela-grid">
+      <div class="vigcol">
+        <div class="vignette">${s.vig}</div>
+        <p class="vig-cap">VIGNETTE · IN THE MANNER OF THE ORIGINAL</p>
+        <table class="facts">
+          <tr><td>DATVM</td><td>${s.when}</td></tr>
+          <tr><td>AVCTOR</td><td>${s.maker}</td></tr>
+          <tr><td>MEDIVM</td><td>${s.medium}</td></tr>
+          <tr><td>MODVS</td><td>${s.modus}</td></tr>
+          <tr><td>SEDES</td><td>${s.repo}</td></tr>
+        </table>
+      </div>
+      <div class="stela-body">
+        ${s.mus}
+        <div class="readings">
+          <p class="readings-cap">SEX LECTIONES · THE EPIGRAPHER&rsquo;S VERDICTS</p>
+          ${rds}
+        </div>
+        <div class="nota"><b>NOTA</b>${s.nota}</div>
+        ${ghost}
+        <a class="insitu" href="#stratum-${s.id}">IN SITV · STRATVM ${s.stratum} ↓</a>
+      </div>
+    </div>
+  </section>`;
+}
+(function renderHalls(){
+  const box=$('#halls');
+  box.innerHTML = HALLS.map((h,i)=>{
+    const stones=STONES.filter(s=>s.hall===i).map(stelaHTML).join('');
+    return `<section class="hall" id="hall-${i+1}">
+      <div class="hall-frieze"><h3 class="carved">AVLA ${h.num} · ${h.title.replace(/^AVLA\s+/,'')}</h3><span class="tag">${h.tag}</span></div>
+      <p class="hall-intro">${h.intro}</p>
+      ${h.drift?DRIFT_HTML:''}
+      ${stones}
+    </section>`;
+  }).join('');
+})();
+
+/* ---------- stratum & trench rendering ---------- */
+function stratumHTML(s,inLens){
+  const gauges=SEALS.map(g=>`<div class="seal">
+      <span class="nm">${g.nm}</span>
+      <span class="track"><span class="fill" data-w="${(s.seals[g.k]/5*100).toFixed(0)}%" style="--sc:${g.c}"></span></span>
+      <span class="val">${s.seals[g.k].toFixed(1)}</span>
+      <span class="seal-line">${s.sealLines[g.k]}</span></div>`).join('');
+  return `<section class="stratum reveal" id="stratum-${s.id}"${inLens?' style="padding:8px 0 6px;border-top:none"':''}>
+    <div class="str-head">
+      <span class="str-tag">STRATVM ${s.stratum} · ${s.short}</span>
+      <span class="str-depth">−${s.depth.toFixed(1)} cm · ${s.dateLabel}</span>
+    </div>
+    <h3>${s.name}</h3>
+    <p class="sub">${s.sub}</p>
+    <div class="str-band" style="--bc:var(--st${s.n})"></div>
+    <div class="str-grid">
+      <div class="context">
+        <p class="context-cap">CONTEXT CARD · ${s.lens?'LENS':'LAYER'} ${s.stratum}</p>
+        <table>
+          <tr><td>DEPTH</td><td>−${s.depth.toFixed(1)} cm below datum</td></tr>
+          <tr><td>DATVM</td><td>${s.when}</td></tr>
+          <tr><td>MEDIVM</td><td>${s.medium}</td></tr>
+          <tr><td>SVRVIVAL</td><td>${s.survival}</td></tr>
+        </table>
+      </div>
+      <div class="str-body">
+        ${s.tr}
+        <div class="find"><b>DIAGNOSTIC FIND</b><p class="q">${s.find}</p></div>
+        <div class="seals">
+          <p class="seals-cap">QVINQVE SIGILLA · FIELD GAUGES</p>
+          ${gauges}
+        </div>
+        <a class="inmus" href="#stela-${s.id}">IN MVSAEO · STELA ${s.stela} ↑</a>
+      </div>
+    </div>
+  </section>`;
+}
+(function renderStrata(){
+  let out='';
+  byStr.forEach(s=>{
+    if(s.n===9){
+      out+=`<div class="hiatus">
+        <p class="hiatus-tag">HIATVS · STERILE BAND · c. 350 — 1532</p>
+        <p>Between the Roman road-files and the first native woodcut, twelve centuries deposit nothing of their own: no surviving map of this land made from within it. The band is not empty of history — only of local cartography. Two thin lenses of imported material lie within it, blown in from other traditions.</p>
+        <div class="lens">${stratumHTML(s,true)}</div>`;
+    } else if(s.n===10){
+      out+=`<div class="lens">${stratumHTML(s,true)}</div></div>`;
+    } else out+=stratumHTML(s,false);
+  });
+  $('#strata').innerHTML=out;
+})();
+
+/* ---------- core-sample navigator ---------- */
+(function renderCore(){
+  const col=$('#coreCol'); let h='';
+  const hatch='<div class="core-band hiatus-band" style="height:13px" aria-hidden="true"></div>';
+  byStr.forEach(s=>{
+    if(s.n===9) h+=hatch;
+    const cls=s.lens?' lensb':''; const ht=s.lens?9:26;
+    h+=`<button class="core-band${cls}" style="background:var(--st${s.n});height:${ht}px" data-n="${s.n}" data-id="${s.id}" aria-label="Stratum ${s.stratum} — ${s.short}, ${s.depth.toFixed(1)} centimetres"><span class="lab">STR ${s.stratum} · ${s.short}</span></button>`;
+    if(s.n===10) h+=hatch;
+  });
+  col.innerHTML=h;
+  col.addEventListener('click',e=>{
+    const b=e.target.closest('button.core-band'); if(!b)return;
+    document.getElementById('stratum-'+b.dataset.id).scrollIntoView({behavior:'smooth',block:'start'});
+  });
+})();
+
+/* ---------- collatio desk ---------- */
+(function collatio(){
+  const A=$('#collA'),B=$('#collB'),out=$('#collOut');
+  const opts=STONES.map(s=>`<option value="${s.id}">STELA ${s.stela} · ${s.short}</option>`).join('');
+  A.innerHTML=opts; B.innerHTML=opts; A.value='hereford'; B.value='vesconte';
+  function draw(){
+    const a=byId[A.value], b=byId[B.value];
+    let h=`<div class="coll-head"><span class="a">${a.short} · ${a.yLab}</span><span></span><span class="b">${b.short} · ${b.yLab}</span></div>`;
+    let maxK=null,maxD=-1;
+    READS.forEach(r=>{
+      const av=a.reads[r.k], bv=b.reads[r.k], d=Math.abs(av-bv);
+      if(d>maxD){maxD=d;maxK=r;}
+      h+=`<div class="coll-row"><span class="ta">${ticks(av)}</span><span class="mid">${r.nm}<span class="sig">${r.sig}</span></span><span class="tb">${ticks(bv)}</span></div>
+          <div class="coll-verdicts"><span class="va">${a.verdicts[r.k]}</span><span></span><span class="vb">${b.verdicts[r.k]}</span></div>`;
+    });
+    h+= maxD>0
+      ? `<p class="coll-div"><b>GREATEST DIVERGENCE · ${maxK.nm} · Δ ${maxD.toFixed(1)}</b> — ${READPH[maxK.k]}.</p>`
+      : `<p class="coll-div"><b>NVLLA DISCREPANTIA</b> — the two stones read alike at every point.</p>`;
+    out.innerHTML=h;
+  }
+  A.addEventListener('change',draw); B.addEventListener('change',draw); draw();
+})();
+
+/* ---------- sectio : radar comparison ---------- */
+(function sectio(){
+  const A=$('#secA'),B=$('#secB'),box=$('#radar'),leg=$('#radLegend'),del=$('#deltas');
+  const opts=byStr.map(s=>`<option value="${s.id}">STR ${s.stratum} · ${s.short}</option>`).join('');
+  A.innerHTML=opts; B.innerHTML=opts; A.value='ptolemy'; B.value='josephine';
+  const CA='#c9962e', CB='#6f9e8a';
+  function pts(st,R,cx,cy){
+    return SEALS.map((g,i)=>{
+      const ang=(-90+i*72)*Math.PI/180, r=R*st.seals[g.k]/5;
+      return (cx+r*Math.cos(ang)).toFixed(1)+','+(cy+r*Math.sin(ang)).toFixed(1);
+    }).join(' ');
+  }
+  function draw(){
+    const a=byId[A.value], b=byId[B.value];
+    const cx=200,cy=180,R=128;
+    let svg=`<svg viewBox="0 0 400 356" role="img" aria-label="Pentagon radar comparing the Five Seals of two strata">`;
+    for(let ring=1;ring<=5;ring++){
+      const p=SEALS.map((g,i)=>{const ang=(-90+i*72)*Math.PI/180,r=R*ring/5;
+        return (cx+r*Math.cos(ang)).toFixed(1)+','+(cy+r*Math.sin(ang)).toFixed(1);}).join(' ');
+      svg+=`<polygon points="${p}" fill="none" stroke="rgba(230,220,200,.16)" stroke-width="1"/>`;
+    }
+    SEALS.forEach((g,i)=>{
+      const ang=(-90+i*72)*Math.PI/180;
+      svg+=`<line x1="${cx}" y1="${cy}" x2="${(cx+R*Math.cos(ang)).toFixed(1)}" y2="${(cy+R*Math.sin(ang)).toFixed(1)}" stroke="rgba(230,220,200,.22)" stroke-width="1"/>`;
+      const lx=cx+(R+24)*Math.cos(ang), ly=cy+(R+24)*Math.sin(ang);
+      svg+=`<text x="${lx.toFixed(1)}" y="${(ly+3).toFixed(1)}" text-anchor="middle" font-family="Cinzel,serif" font-size="11" letter-spacing="2" fill="${g.hex}">${g.nm}</text>`;
+    });
+    svg+=`<polygon points="${pts(a,R,cx,cy)}" fill="rgba(201,150,46,.15)" stroke="${CA}" stroke-width="2"/>`;
+    svg+=`<polygon points="${pts(b,R,cx,cy)}" fill="rgba(111,158,138,.17)" stroke="${CB}" stroke-width="2"/>`;
+    [a,b].forEach((st,j)=>{ SEALS.forEach((g,i)=>{
+      const ang=(-90+i*72)*Math.PI/180, r=R*st.seals[g.k]/5;
+      svg+=`<circle cx="${(cx+r*Math.cos(ang)).toFixed(1)}" cy="${(cy+r*Math.sin(ang)).toFixed(1)}" r="3" fill="${j?CB:CA}"/>`;});});
+    svg+='</svg>';
+    box.innerHTML=svg;
+    leg.innerHTML=`<span><span class="sw" style="background:${CA}"></span>STR ${a.stratum} · ${a.short} · ${a.yLab}</span>
+                   <span><span class="sw" style="background:${CB}"></span>STR ${b.stratum} · ${b.short} · ${b.yLab}</span>`;
+    del.innerHTML='<p class="seals-cap" style="padding:0 0 4px">DELTAS · READ FROM '+a.short+' TO '+b.short+'</p>'+SEALS.map(g=>{
+      const d=b.seals[g.k]-a.seals[g.k];
+      const ph= d>0?SEALPH[g.k].up : d<0?SEALPH[g.k].dn : SEALPH[g.k].eq;
+      const sign=d>0?'+':'';
+      return `<div class="delta"><span class="dlab" style="color:${g.hex}">${g.nm} · Δ ${sign}${d.toFixed(1)}</span><span class="dtxt">${ph}</span></div>`;
+    }).join('');
+  }
+  A.addEventListener('change',draw); B.addEventListener('change',draw); draw();
+})();
+
+/* ---------- sondaje : test pits ---------- */
+(function sondaje(){
+  const btns=$('#pitBtns'), note=$('#pitNote'), col=$('#pitCol');
+  btns.innerHTML=PITS.map((p,i)=>`<button class="pitb${i?'':' on'}" role="tab" aria-selected="${i?'false':'true'}" data-id="${p.id}">${p.label}</button>`).join('');
+  function draw(p){
+    note.innerHTML=p.note;
+    col.innerHTML=byStr.map(s=>{
+      const c=p.cells[s.n]||{st:'abs',pn:''};
+      const st=c.st||'ok';
+      let name;
+      if(st==='abs') name='<span class="toponym">— absent —</span>';
+      else if(st==='out') name='<span class="toponym">— extra muros —</span>';
+      else{
+        const chips=(c.langs||[]).map(l=>`<span class="chip ${l}" title="${LANGNAMES[l]||l}">${l.toUpperCase()}</span>`).join('');
+        name=`<span class="toponym">${c.t}</span>${st==='unc'?' <span style="color:var(--ochre)" title="uncertain">?</span>':''}${chips}`;
+      }
+      return `<div class="pit-cell${(st==='abs'||st==='out')?' is-abs':''}" style="--bc:var(--st${s.n})">
+        <span class="pit-str">STR ${s.stratum}<br>${s.yLab}</span>
+        <div class="pit-name">${name}${c.pn?`<span class="pn">${c.pn}</span>`:''}</div></div>`;
+    }).join('');
+  }
+  btns.addEventListener('click',e=>{
+    const b=e.target.closest('.pitb'); if(!b)return;
+    btns.querySelectorAll('.pitb').forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-selected',x===b?'true':'false');});
+    draw(PITS.find(p=>p.id===b.dataset.id));
+  });
+  draw(PITS[0]);
+})();
+
+/* ---------- squeeze toggle ---------- */
+(function(){
+  const b=$('#squeezeBtn');
+  b.addEventListener('click',()=>{
+    const on=document.body.classList.toggle('squeeze');
+    b.setAttribute('aria-pressed',on?'true':'false');
+    b.textContent=on?'LAPIS · STONE VIEW':'CALC · SQUEEZE VIEW';
+  });
+})();
+
+/* ---------- reveals & gauge animation ---------- */
+(function(){
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver(es=>{
+      es.forEach(e=>{
+        if(!e.isIntersecting)return;
+        e.target.classList.add('in');
+        e.target.querySelectorAll('.fill').forEach(f=>{f.style.width=f.dataset.w;});
+        io.unobserve(e.target);
+      });
+    },{threshold:.12});
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  } else {
+    document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
+    document.querySelectorAll('.fill').forEach(f=>{f.style.width=f.dataset.w;});
+  }
+  document.querySelectorAll('.stratum').forEach(el=>el.style.scrollMarginTop='90px');
+  document.querySelectorAll('.stela').forEach(el=>el.style.scrollMarginTop='20px');
+})();
+
+/* ---------- depth HUD & core scroll-spy ---------- */
+(function(){
+  const hud=$('#hud'), hd=$('#hudDepth'), hy=$('#hudDate'), hs=$('#hudStr');
+  const trench=document.getElementById('trench');
+  const items=byStr.map(s=>({s, el:document.getElementById('stratum-'+s.id)}));
+  const bands=Array.from(document.querySelectorAll('.core-band[data-n]'));
+  let ticking=false;
+  function update(){
+    ticking=false;
+    const centerAbs=window.scrollY+window.innerHeight*0.45;
+    const tTop=trench.getBoundingClientRect().top+window.scrollY;
+    const inTrench=centerAbs>tTop+80 && centerAbs<tTop+trench.offsetHeight;
+    hud.classList.toggle('on',inTrench);
+    if(!inTrench){bands.forEach(b=>b.classList.remove('active'));return;}
+    const tops=items.map(it=>it.el.getBoundingClientRect().top+window.scrollY);
+    let i=0; for(let k=0;k<tops.length;k++){ if(centerAbs>=tops[k]) i=k; }
+    let depth;
+    if(i<items.length-1){
+      const t=Math.min(1,Math.max(0,(centerAbs-tops[i])/(tops[i+1]-tops[i]||1)));
+      depth=items[i].s.depth+(items[i+1].s.depth-items[i].s.depth)*t;
+    } else depth=items[i].s.depth;
+    const yr=Math.max(120,Math.round(2026-depth*10));
+    hd.textContent='−'+depth.toFixed(1)+' cm';
+    hy.textContent='A.D. '+yr;
+    hs.textContent='STR '+items[i].s.stratum+' · '+items[i].s.short;
+    bands.forEach(b=>b.classList.toggle('active', +b.dataset.n===items[i].s.n));
+  }
+  window.addEventListener('scroll',()=>{ if(!ticking){ticking=true;requestAnimationFrame(update);} },{passive:true});
+  window.addEventListener('resize',update);
+  update();
+})();
+</script>
+</body>
+</html>
