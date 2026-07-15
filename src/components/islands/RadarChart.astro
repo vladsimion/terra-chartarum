@@ -119,12 +119,21 @@ const ariaLabel =
   {
     series.length > 1 && (
       <ul class="legend">
-        {polys.map((p, si) => (
-          <li data-series={si} style={`--c:${p.color}`}>
-            <span class="dot" />
-            {p.label}
-          </li>
-        ))}
+        {polys.map((p, si) =>
+          interactive ? (
+            <li style={`--c:${p.color}`}>
+              <button type="button" class="legend-btn" data-series={si} aria-label={`Emphasize ${p.label}`}>
+                <span class="dot" />
+                {p.label}
+              </button>
+            </li>
+          ) : (
+            <li style={`--c:${p.color}`}>
+              <span class="dot" />
+              {p.label}
+            </li>
+          ),
+        )}
       </ul>
     )
   }
@@ -134,7 +143,7 @@ const ariaLabel =
 {
   interactive && (
     <script>
-      // Emphasize a series when its legend item is hovered/focused.
+      // Emphasize a series when its legend button is hovered or keyboard-focused.
       document.querySelectorAll('.radar[data-interactive]').forEach((fig) => {
         const set = (idx: number | null) => {
           fig.querySelectorAll<HTMLElement>('.series').forEach((g) => {
@@ -142,10 +151,12 @@ const ariaLabel =
             g.style.opacity = idx === null || idx === i ? '1' : '0.22';
           });
         };
-        fig.querySelectorAll<HTMLElement>('.legend li').forEach((li) => {
-          const i = Number(li.dataset.series);
-          li.addEventListener('mouseenter', () => set(i));
-          li.addEventListener('mouseleave', () => set(null));
+        fig.querySelectorAll<HTMLElement>('.legend-btn').forEach((btn) => {
+          const i = Number(btn.dataset.series);
+          btn.addEventListener('mouseenter', () => set(i));
+          btn.addEventListener('mouseleave', () => set(null));
+          btn.addEventListener('focus', () => set(i));
+          btn.addEventListener('blur', () => set(null));
         });
       });
     </script>
@@ -209,6 +220,19 @@ const ariaLabel =
     align-items: center;
     gap: 0.4rem;
     cursor: default;
+  }
+  .legend-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.15rem 0.3rem;
+    margin: -0.15rem -0.3rem;
+    border: 0;
+    border-radius: var(--radius);
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
   }
   .legend .dot {
     width: 0.7rem;

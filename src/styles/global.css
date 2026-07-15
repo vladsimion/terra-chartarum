@@ -46,6 +46,29 @@
     outline: 2px solid var(--gold);
     outline-offset: 3px;
   }
+
+  /* Keyboard skip link: off-screen until focused, then pinned top-left. */
+  .skip-link {
+    position: fixed;
+    left: 1rem;
+    top: 1rem;
+    z-index: 1000;
+    padding: 0.55rem 0.9rem;
+    background: var(--panel);
+    color: var(--ink);
+    border: 1px solid var(--gold);
+    border-radius: var(--radius);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    transform: translateY(-150%);
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+
+  /* Programmatic focus target (skip link / in-page anchors) shows no outline box. */
+  main:focus { outline: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

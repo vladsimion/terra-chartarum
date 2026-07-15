@@ -53,8 +53,9 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <ViewTransitions />
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
     {!bare && <Header />}
-    <main class={bare ? 'flex-1' : 'flex-1'}>
+    <main id="main-content" tabindex="-1" class="flex-1">
       <slot />
     </main>
     {!bare && <Footer />}
