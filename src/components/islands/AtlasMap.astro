@@ -1,13 +1,17 @@
 ---
 /**
- * AtlasMap (ATLAS-502 / ATLAS-EG3 seed)
+ * AtlasMap (ATLAS-502 / ATLAS-EG3)
  *
  * Cross-essay map view: MapLibre GL base map with a pin per corpus map, popups
  * deep-linking to the source essay, a chronological time-slider, and faceted
- * search. Registered GeoLayers (ATLAS-EG2) are surfaced as toggles; wiring their
- * PMTiles/COG sources into live tiles is ATLAS-EG3. Degrades to a grouped list
- * where WebGL is unavailable.
+ * search. Registered GeoLayers (ATLAS-EG2) render as live vector overlays via the
+ * MapLibre pipeline (ATLAS-EG3): GeoJSON sources load now; the PMTiles protocol is
+ * registered so a `.pmtiles` layer goes live the moment its asset is present. The
+ * time-slider filters both corpus pins and geo layers by temporal extent. Degrades
+ * to a grouped list where WebGL is unavailable.
  */
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { getCorpus, corpusYearRange } from '../../lib/corpus';
 import { getGeoLayers } from '../../lib/geo';
@@ -17,6 +21,13 @@ const corpus = getCorpus();
 const layers = getGeoLayers();
 const essays = await getEssays();
 const [minYear, maxYear] = corpusYearRange();
+
+// A layer is toggleable only when its asset is actually on disk under /public.
+const publicDir = join(process.cwd(), 'public');
+const layerMeta = layers.map((l) => ({
+  ...l,
+  available: existsSync(join(publicDir, l.url.replace(/^\//, ''))),
+}));
 
 const essayMeta = Object.fromEntries(
   essays.map((e) => [e.slug, { title: e.data.title, accent: e.data.accent ?? '#d4b87a' }]),
@@ -28,6 +39,18 @@ const payload = {
     accent: essayMeta[m.essaySlug]?.accent ?? '#d4b87a',
     essayTitle: essayMeta[m.essaySlug]?.title ?? m.essaySlug,
     yearLabel: formatYear(m.year),
+  })),
+  layers: layerMeta.map((l) => ({
+    id: l.id,
+    url: l.url,
+    format: l.format,
+    geometry: l.geometry,
+    color: l.color,
+    yearFrom: l.yearFrom,
+    yearTo: l.yearTo,
+    sourceLayer: l.sourceLayer ?? null,
+    available: l.available,
+    defaultOn: l.defaultOn && l.available,
   })),
   minYear,
   maxYear,
@@ -61,17 +84,29 @@ const payload = {
   </div>
 
   {
-    layers.length > 0 && (
+    layerMeta.length > 0 && (
       <fieldset class="am-layers">
         <legend>Historical GIS layers</legend>
         <p class="am-layers-note">
-          Registered layers (Regime A: PMTiles / COG / FlatGeobuf). Live tiles land in ATLAS-EG3.
+          Regime A (serverless) vector layers. Available assets render live and obey the
+          time-slider; layers awaiting a sourced dataset are marked pending.
         </p>
-        {layers.map((l) => (
-          <label class="am-layer" title={`${l.description} — ${l.source} (${l.license})`}>
-            <input type="checkbox" data-layer={l.id} disabled />
+        {layerMeta.map((l) => (
+          <label
+            class:list={['am-layer', { 'is-pending': !l.available }]}
+            title={`${l.description} — ${l.source} (${l.license})`}
+          >
+            <input
+              type="checkbox"
+              data-layer={l.id}
+              checked={l.defaultOn && l.available}
+              disabled={!l.available}
+            />
             <span>{l.title}</span>
-            <span class="am-layer-meta">{l.format} · {formatYear(l.yearFrom)}–{formatYear(l.yearTo)}</span>
+            <span class="am-layer-meta">
+              {l.format} · {formatYear(l.yearFrom)}–{formatYear(l.yearTo)}
+              {!l.available && ' · pending'}
+            </span>
           </label>
         ))}
       </fieldset>
@@ -96,11 +131,23 @@ const payload = {
 
 <script>
   import maplibregl from 'maplibre-gl';
+  import { Protocol } from 'pmtiles';
+
+  // Register the pmtiles:// protocol once so any PMTiles GeoLayer renders via HTTP
+  // range requests the moment its asset is present (ATLAS-EG3).
+  const pmtilesProtocol = new Protocol();
+  maplibregl.addProtocol('pmtiles', pmtilesProtocol.tile);
 
   type Pt = {
     id: string; title: string; year: number; yearLabel: string;
     essaySlug: string; essayTitle: string; region: string;
     coords: [number, number]; accent: string; blurb?: string;
+  };
+
+  type LayerMeta = {
+    id: string; url: string; format: string; geometry: 'line' | 'fill';
+    color: string; yearFrom: number; yearTo: number;
+    sourceLayer: string | null; available: boolean; defaultOn: boolean;
   };
 
   function hasWebGL(): boolean {
@@ -116,13 +163,20 @@ const payload = {
     const dataEl = root.querySelector<HTMLElement>('[data-atlasmap-data]');
     const mapEl = root.querySelector<HTMLElement>('.am-map');
     if (!dataEl || !mapEl) return;
-    const { corpus } = JSON.parse(dataEl.textContent || '{}') as { corpus: Pt[] };
+    const parsed = JSON.parse(dataEl.textContent || '{}') as {
+      corpus: Pt[]; layers?: LayerMeta[];
+    };
+    const corpus = parsed.corpus ?? [];
+    const geoLayers = parsed.layers ?? [];
 
     const search = root.querySelector<HTMLInputElement>('.am-search')!;
     const essaySel = root.querySelector<HTMLSelectElement>('.am-essay')!;
     const yearIn = root.querySelector<HTMLInputElement>('.am-year')!;
     const yearOut = root.querySelector<HTMLOutputElement>('.am-year-out')!;
     const list = root.querySelector<HTMLElement>('.am-list')!;
+    const layerToggles = Array.from(
+      root.querySelectorAll<HTMLInputElement>('.am-layer input[data-layer]'),
+    );
 
     const fmt = (y: number) => (y < 0 ? `${Math.abs(y)} BC` : `AD ${y}`);
 
@@ -134,14 +188,62 @@ const payload = {
         '<p class="am-fallback-note">WebGL is unavailable — showing the corpus as a list.</p>',
       );
       list.classList.add('is-fallback');
+      // Geo overlays need the GL map; disable their toggles in the fallback.
+      layerToggles.forEach((cb) => { cb.checked = false; cb.disabled = true; });
     }
 
     const markers: { pt: Pt; marker?: maplibregl.Marker; li: HTMLElement }[] = [];
     const listItems = Array.from(list.querySelectorAll('li'));
     corpus.forEach((pt, i) => markers.push({ pt, li: listItems[i] }));
 
+    let map: maplibregl.Map | null = null;
+    let styleReady = false;
+    const activeLayers = new Set<string>();
+    const layerId = (id: string) => `geolyr-${id}`;
+    const sourceId = (id: string) => `geosrc-${id}`;
+
+    // Attach a GeoLayer's source + render layer to the map. GeoJSON loads directly;
+    // PMTiles goes through the registered pmtiles:// protocol.
+    const addGeoLayer = (l: LayerMeta) => {
+      if (!map || !styleReady || map.getSource(sourceId(l.id))) return;
+      const src = sourceId(l.id);
+      const lyr = layerId(l.id);
+      if (l.format === 'geojson') {
+        map.addSource(src, { type: 'geojson', data: l.url });
+      } else if (l.format === 'pmtiles') {
+        map.addSource(src, { type: 'vector', url: `pmtiles://${location.origin}${l.url}` });
+      } else {
+        return; // flatgeobuf/cog need a dedicated loader (EG3 remainder)
+      }
+      const base: maplibregl.AddLayerObject =
+        l.geometry === 'fill'
+          ? { id: lyr, type: 'fill', source: src,
+              paint: { 'fill-color': l.color, 'fill-opacity': 0.22, 'fill-outline-color': l.color } }
+          : { id: lyr, type: 'line', source: src,
+              paint: { 'line-color': l.color, 'line-width': 1.2, 'line-opacity': 0.85 } };
+      if (l.format === 'pmtiles' && l.sourceLayer) base['source-layer'] = l.sourceLayer;
+      map.addLayer(base);
+    };
+
+    const removeGeoLayer = (id: string) => {
+      if (!map) return;
+      if (map.getLayer(layerId(id))) map.removeLayer(layerId(id));
+      if (map.getSource(sourceId(id))) map.removeSource(sourceId(id));
+    };
+
+    // Reveal a toggled-on layer only once the timeline reaches its start year.
+    const syncLayerTime = (cutoff: number) => {
+      if (!map || !styleReady) return;
+      for (const l of geoLayers) {
+        if (!activeLayers.has(l.id) || !map.getLayer(layerId(l.id))) continue;
+        map.setLayoutProperty(
+          layerId(l.id), 'visibility', l.yearFrom <= cutoff ? 'visible' : 'none',
+        );
+      }
+    };
+
     if (mapEl.isConnected) {
-      const map = new maplibregl.Map({
+      map = new maplibregl.Map({
         container: mapEl,
         style: 'https://demotiles.maplibre.org/style.json',
         center: [12, 41],
@@ -167,6 +269,33 @@ const payload = {
           .setPopup(popup)
           .addTo(map);
       }
+
+      map.on('load', () => {
+        styleReady = true;
+        // Honour any default-on / already-checked layer toggles.
+        for (const cb of layerToggles) {
+          if (cb.checked && !cb.disabled) {
+            const l = geoLayers.find((x) => x.id === cb.dataset.layer);
+            if (l) { activeLayers.add(l.id); addGeoLayer(l); }
+          }
+        }
+        syncLayerTime(Number(yearIn.value));
+      });
+    }
+
+    for (const cb of layerToggles) {
+      cb.addEventListener('change', () => {
+        const l = geoLayers.find((x) => x.id === cb.dataset.layer);
+        if (!l) return;
+        if (cb.checked) {
+          activeLayers.add(l.id);
+          addGeoLayer(l);
+          syncLayerTime(Number(yearIn.value));
+        } else {
+          activeLayers.delete(l.id);
+          removeGeoLayer(l.id);
+        }
+      });
     }
 
     const apply = () => {
@@ -186,6 +315,7 @@ const payload = {
         if (marker) marker.getElement().style.display = show ? '' : 'none';
         li.style.display = show ? '' : 'none';
       }
+      syncLayerTime(cutoff);
     };
 
     search.addEventListener('input', apply);
@@ -303,8 +433,10 @@ const payload = {
     align-items: center;
     font-size: var(--step--1);
     color: var(--ink);
-    opacity: 0.75;
   }
+  .am-layer input { accent-color: var(--gold); cursor: pointer; }
+  .am-layer.is-pending { opacity: 0.55; }
+  .am-layer.is-pending input { cursor: not-allowed; }
   .am-layer-meta { font-family: var(--font-mono); font-size: 0.62rem; color: var(--ink-muted); }
 
   .am-list {

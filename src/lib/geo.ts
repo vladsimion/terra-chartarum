@@ -29,13 +29,22 @@ export const GeoLayerSchema = z.object({
   gazetteerIds: z.array(z.string()).optional(),
   essaySlugs: z.array(z.string()).optional(),
   defaultOn: z.boolean().default(false),
+  // Render hints consumed by the MapLibre pipeline (ATLAS-EG3).
+  geometry: z.enum(['line', 'fill']).default('line'),
+  color: z.string().default('#d4b87a'),
+  // Vector-tile source layer (PMTiles); ignored for geojson.
+  sourceLayer: z.string().optional(),
 });
 
 export type GeoLayer = z.infer<typeof GeoLayerSchema>;
 
-// Sample layers. URLs point at open, keyless, cloud-native sources; the render
-// pipeline (EG3) will attach them. Validated at module load so a malformed
-// entry fails the build rather than the browser.
+// Layers. The Natural Earth GeoJSON layers are real, public-domain assets served
+// from /public/geo and rendered live by the MapLibre pipeline (ATLAS-EG3). The
+// essay-linked historical layers are registered with their metadata but ship no
+// binary yet — producing them needs tippecanoe/GDAL tooling and sourced data
+// (ATLAS-EG3 remainder / EG6). The atlas enables a toggle only when its asset is
+// actually present, so a layer goes live the moment its file is dropped in.
+// Validated at module load so a malformed entry fails the build, not the browser.
 const RAW: unknown[] = [
   {
     id: 'ne-coastline',
@@ -49,6 +58,56 @@ const RAW: unknown[] = [
     source: 'Natural Earth',
     license: 'Public Domain',
     attribution: 'Made with Natural Earth',
+    geometry: 'line',
+    color: '#7fa8c9',
+    defaultOn: true,
+  },
+  {
+    id: 'ne-land',
+    title: 'Natural Earth — Land outline',
+    description: 'Coastal landmass outlines — a subtle physical frame for the corpus.',
+    kind: 'vector',
+    format: 'geojson',
+    url: '/geo/ne_110m_land.geojson',
+    yearFrom: -6000,
+    yearTo: 2024,
+    source: 'Natural Earth',
+    license: 'Public Domain',
+    attribution: 'Made with Natural Earth',
+    geometry: 'line',
+    color: '#5c5340',
+    defaultOn: false,
+  },
+  {
+    id: 'ne-rivers',
+    title: 'Natural Earth — Rivers',
+    description: 'Major river and lake centrelines — waterways that carried maps and trade.',
+    kind: 'vector',
+    format: 'geojson',
+    url: '/geo/ne_110m_rivers_lake_centerlines.geojson',
+    yearFrom: -6000,
+    yearTo: 2024,
+    source: 'Natural Earth',
+    license: 'Public Domain',
+    attribution: 'Made with Natural Earth',
+    geometry: 'line',
+    color: '#4f7d8c',
+    defaultOn: false,
+  },
+  {
+    id: 'ne-boundaries',
+    title: 'Modern national boundaries',
+    description: 'Present-day land borders — an anachronistic reference grid over historical maps.',
+    kind: 'vector',
+    format: 'geojson',
+    url: '/geo/ne_110m_admin_0_boundary_lines_land.geojson',
+    yearFrom: 1949,
+    yearTo: 2024,
+    source: 'Natural Earth',
+    license: 'Public Domain',
+    attribution: 'Made with Natural Earth',
+    geometry: 'line',
+    color: '#8a6d4a',
     defaultOn: false,
   },
   {
@@ -64,6 +123,9 @@ const RAW: unknown[] = [
     license: 'CC BY',
     attribution: 'AWMC',
     essaySlugs: ['dacia'],
+    geometry: 'fill',
+    color: '#d98860',
+    sourceLayer: 'provinces',
     defaultOn: false,
   },
   {
@@ -79,6 +141,8 @@ const RAW: unknown[] = [
     license: 'CC BY',
     attribution: 'Terra Chartarum',
     essaySlugs: ['venice-sicily'],
+    geometry: 'line',
+    color: '#96cc84',
     defaultOn: false,
   },
 ];
