@@ -1,0 +1,333 @@
+---
+/**
+ * AtlasMap (ATLAS-502 / ATLAS-EG3 seed)
+ *
+ * Cross-essay map view: MapLibre GL base map with a pin per corpus map, popups
+ * deep-linking to the source essay, a chronological time-slider, and faceted
+ * search. Registered GeoLayers (ATLAS-EG2) are surfaced as toggles; wiring their
+ * PMTiles/COG sources into live tiles is ATLAS-EG3. Degrades to a grouped list
+ * where WebGL is unavailable.
+ */
+import 'maplibre-gl/dist/maplibre-gl.css';
+import { getCorpus, corpusYearRange } from '../../lib/corpus';
+import { getGeoLayers } from '../../lib/geo';
+import { getEssays, formatYear } from '../../lib/registry';
+
+const corpus = getCorpus();
+const layers = getGeoLayers();
+const essays = await getEssays();
+const [minYear, maxYear] = corpusYearRange();
+
+const essayMeta = Object.fromEntries(
+  essays.map((e) => [e.slug, { title: e.data.title, accent: e.data.accent ?? '#d4b87a' }]),
+);
+
+const payload = {
+  corpus: corpus.map((m) => ({
+    ...m,
+    accent: essayMeta[m.essaySlug]?.accent ?? '#d4b87a',
+    essayTitle: essayMeta[m.essaySlug]?.title ?? m.essaySlug,
+    yearLabel: formatYear(m.year),
+  })),
+  minYear,
+  maxYear,
+};
+---
+
+<section class="atlasmap" data-atlasmap>
+  <div class="controls">
+    <input
+      type="search"
+      class="am-search"
+      placeholder="Search maps, regions, essays…"
+      aria-label="Search the corpus"
+    />
+    <select class="am-essay" aria-label="Filter by essay">
+      <option value="">All essays</option>
+      {essays.map((e) => <option value={e.slug}>{e.data.title}</option>)}
+    </select>
+    <div class="am-time">
+      <label for="am-year">Reveal through</label>
+      <input id="am-year" class="am-year" type="range" min={minYear} max={maxYear} value={maxYear} step="1" />
+      <output class="am-year-out" for="am-year">{formatYear(maxYear)}</output>
+    </div>
+  </div>
+
+  <div class="am-stage">
+    <div class="am-map" role="application" aria-label="Map of the essay corpus"></div>
+    <noscript>
+      <p class="am-fallback-note">The interactive map needs JavaScript. The full corpus is listed below.</p>
+    </noscript>
+  </div>
+
+  {
+    layers.length > 0 && (
+      <fieldset class="am-layers">
+        <legend>Historical GIS layers</legend>
+        <p class="am-layers-note">
+          Registered layers (Regime A: PMTiles / COG / FlatGeobuf). Live tiles land in ATLAS-EG3.
+        </p>
+        {layers.map((l) => (
+          <label class="am-layer" title={`${l.description} — ${l.source} (${l.license})`}>
+            <input type="checkbox" data-layer={l.id} disabled />
+            <span>{l.title}</span>
+            <span class="am-layer-meta">{l.format} · {formatYear(l.yearFrom)}–{formatYear(l.yearTo)}</span>
+          </label>
+        ))}
+      </fieldset>
+    )
+  }
+
+  <!-- Progressive-enhancement fallback: full corpus as a grouped list. -->
+  <ol class="am-list">
+    {corpus.map((m) => (
+      <li>
+        <a href={`/essays/${m.essaySlug}/`}>
+          <span class="am-list-year">{formatYear(m.year)}</span>
+          <span class="am-list-title">{m.title}</span>
+          <span class="am-list-region">{m.region}</span>
+        </a>
+      </li>
+    ))}
+  </ol>
+
+  <script type="application/json" data-atlasmap-data set:html={JSON.stringify(payload)} />
+</section>
+
+<script>
+  import maplibregl from 'maplibre-gl';
+
+  type Pt = {
+    id: string; title: string; year: number; yearLabel: string;
+    essaySlug: string; essayTitle: string; region: string;
+    coords: [number, number]; accent: string; blurb?: string;
+  };
+
+  function hasWebGL(): boolean {
+    try {
+      const c = document.createElement('canvas');
+      return !!(c.getContext('webgl2') || c.getContext('webgl'));
+    } catch {
+      return false;
+    }
+  }
+
+  function initAtlasMap(root: HTMLElement) {
+    const dataEl = root.querySelector<HTMLElement>('[data-atlasmap-data]');
+    const mapEl = root.querySelector<HTMLElement>('.am-map');
+    if (!dataEl || !mapEl) return;
+    const { corpus } = JSON.parse(dataEl.textContent || '{}') as { corpus: Pt[] };
+
+    const search = root.querySelector<HTMLInputElement>('.am-search')!;
+    const essaySel = root.querySelector<HTMLSelectElement>('.am-essay')!;
+    const yearIn = root.querySelector<HTMLInputElement>('.am-year')!;
+    const yearOut = root.querySelector<HTMLOutputElement>('.am-year-out')!;
+    const list = root.querySelector<HTMLElement>('.am-list')!;
+
+    const fmt = (y: number) => (y < 0 ? `${Math.abs(y)} BC` : `AD ${y}`);
+
+    // Where WebGL is missing, keep the list and drop the empty map frame.
+    if (!hasWebGL()) {
+      mapEl.remove();
+      root.querySelector('.am-stage')?.insertAdjacentHTML(
+        'beforeend',
+        '<p class="am-fallback-note">WebGL is unavailable — showing the corpus as a list.</p>',
+      );
+      list.classList.add('is-fallback');
+    }
+
+    const markers: { pt: Pt; marker?: maplibregl.Marker; li: HTMLElement }[] = [];
+    const listItems = Array.from(list.querySelectorAll('li'));
+    corpus.forEach((pt, i) => markers.push({ pt, li: listItems[i] }));
+
+    if (mapEl.isConnected) {
+      const map = new maplibregl.Map({
+        container: mapEl,
+        style: 'https://demotiles.maplibre.org/style.json',
+        center: [12, 41],
+        zoom: 2.4,
+        attributionControl: { compact: true },
+      });
+      map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
+
+      for (const entry of markers) {
+        const { pt } = entry;
+        const el = document.createElement('button');
+        el.className = 'am-pin';
+        el.style.setProperty('--accent', pt.accent);
+        el.setAttribute('aria-label', `${pt.title} (${pt.yearLabel})`);
+        const popup = new maplibregl.Popup({ offset: 14, closeButton: false }).setHTML(
+          `<div class="am-pop"><span class="am-pop-year">${pt.yearLabel}</span>` +
+            `<strong class="am-pop-title">${pt.title}</strong>` +
+            (pt.blurb ? `<span class="am-pop-blurb">${pt.blurb}</span>` : '') +
+            `<a class="am-pop-link" href="/essays/${pt.essaySlug}/">${pt.essayTitle} →</a></div>`,
+        );
+        entry.marker = new maplibregl.Marker({ element: el })
+          .setLngLat(pt.coords)
+          .setPopup(popup)
+          .addTo(map);
+      }
+    }
+
+    const apply = () => {
+      const q = search.value.trim().toLowerCase();
+      const slug = essaySel.value;
+      const cutoff = Number(yearIn.value);
+      yearOut.textContent = fmt(cutoff);
+      for (const { pt, marker, li } of markers) {
+        const matchText =
+          !q ||
+          pt.title.toLowerCase().includes(q) ||
+          pt.region.toLowerCase().includes(q) ||
+          pt.essayTitle.toLowerCase().includes(q);
+        const matchEssay = !slug || pt.essaySlug === slug;
+        const matchYear = pt.year <= cutoff;
+        const show = matchText && matchEssay && matchYear;
+        if (marker) marker.getElement().style.display = show ? '' : 'none';
+        li.style.display = show ? '' : 'none';
+      }
+    };
+
+    search.addEventListener('input', apply);
+    essaySel.addEventListener('change', apply);
+    yearIn.addEventListener('input', apply);
+    apply();
+  }
+
+  const boot = () =>
+    document.querySelectorAll<HTMLElement>('[data-atlasmap]').forEach((el) => {
+      if (!el.dataset.atlasmapReady) {
+        el.dataset.atlasmapReady = '1';
+        initAtlasMap(el);
+      }
+    });
+  boot();
+  document.addEventListener('astro:page-load', boot);
+</script>
+
+<style>
+  .atlasmap { display: grid; gap: 1rem; }
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+    align-items: center;
+  }
+  .am-search,
+  .am-essay {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    padding: 0.5rem 0.75rem;
+  }
+  .am-search { flex: 1 1 16rem; }
+  .am-time {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+  }
+  .am-year { accent-color: var(--gold); }
+  .am-year-out { color: var(--gold); min-width: 4.5rem; }
+
+  .am-stage {
+    position: relative;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--panel);
+  }
+  .am-map { height: clamp(360px, 52vh, 620px); }
+  .am-fallback-note {
+    padding: 1rem;
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+    margin: 0;
+  }
+
+  /* Pins */
+  :global(.am-pin) {
+    width: 0.95rem;
+    height: 0.95rem;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--accent) 55%, #000);
+    border: 2px solid var(--accent);
+    cursor: pointer;
+    padding: 0;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+    transition: transform 160ms ease;
+  }
+  :global(.am-pin:hover) { transform: scale(1.35); }
+
+  /* Popups (MapLibre injects into <body>, so these are global) */
+  :global(.maplibregl-popup-content) {
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--ink);
+    font-family: var(--font-body);
+    padding: 0.8rem 0.9rem;
+  }
+  :global(.maplibregl-popup-tip) { border-top-color: var(--panel-2) !important; border-bottom-color: var(--panel-2) !important; }
+  :global(.am-pop) { display: grid; gap: 0.25rem; max-width: 15rem; }
+  :global(.am-pop-year) { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.08em; color: var(--gold); }
+  :global(.am-pop-title) { font-family: var(--font-display); font-size: var(--step-0); }
+  :global(.am-pop-blurb) { font-size: var(--step--1); color: var(--ink-muted); }
+  :global(.am-pop-link) { font-family: var(--font-mono); font-size: var(--step--1); color: var(--gold); margin-top: 0.2rem; }
+
+  .am-layers {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1rem 1.1rem;
+    display: grid;
+    gap: 0.5rem;
+  }
+  .am-layers legend {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    padding: 0 0.4rem;
+  }
+  .am-layers-note { margin: 0 0 0.4rem; color: var(--ink-muted); font-size: var(--step--1); font-style: italic; }
+  .am-layer {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 0.6rem;
+    align-items: center;
+    font-size: var(--step--1);
+    color: var(--ink);
+    opacity: 0.75;
+  }
+  .am-layer-meta { font-family: var(--font-mono); font-size: 0.62rem; color: var(--ink-muted); }
+
+  .am-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.4rem;
+  }
+  /* By default the list is a lightweight index under the map; when it is the
+     WebGL fallback it becomes the primary surface. */
+  .am-list a {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.2rem 0.7rem;
+    padding: 0.5rem 0.7rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+  }
+  .am-list a:hover { border-color: color-mix(in srgb, var(--gold) 50%, var(--line)); }
+  .am-list-year { font-family: var(--font-mono); font-size: 0.62rem; color: var(--gold); }
+  .am-list-title { font-family: var(--font-display); color: var(--ink); }
+  .am-list-region { grid-column: 2; font-size: var(--step--1); color: var(--ink-muted); }
+</style>

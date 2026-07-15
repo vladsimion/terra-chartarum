@@ -1,5 +1,6 @@
 ---
 import PortalLayout from '../layouts/PortalLayout.astro';
+import AtlasMap from '../components/islands/AtlasMap.astro';
 import { getEssays, formatYear } from '../lib/registry';
 
 const essays = await getEssays();
@@ -26,14 +27,22 @@ const bars = essays.map((e) => {
   <section class="shell atlas">
     <header class="atlas-head">
       <p class="eyebrow">The atlas · meta-layer</p>
-      <h1>One timeline, every essay</h1>
+      <h1>Every essay, in space and time</h1>
       <p class="lede">
-        Each essay charted on a shared timeline (ancient centuries compressed).
-        An interactive map view with historical GIS layers is on the roadmap —
-        this is the temporal spine it will hang from.
+        A cross-essay meta-layer: the whole corpus of maps plotted on one
+        interactive map, and every essay charted on one shared timeline (ancient
+        centuries compressed). Historical GIS layers hang from the same spine.
       </p>
     </header>
 
+    <h2 class="section-h">The corpus, mapped</h2>
+    <p class="section-lede">
+      Every historical map discussed across the essays, geolocated. Drag the
+      slider to reveal them in chronological order; search or filter by essay.
+    </p>
+    <AtlasMap />
+
+    <h2 class="section-h section-h--spaced">One timeline, every essay</h2>
     <div class="timeline" role="img" aria-label="Timeline of essays across cartographic history">
       <div class="axis">
         {ticks.map((t) => (
@@ -68,6 +77,10 @@ const bars = essays.map((e) => {
   .atlas-head { max-width: var(--prose-max); margin-bottom: 2.5rem; }
   .atlas-head h1 { font-size: var(--step-4); margin: 0.3rem 0 0.75rem; }
   .lede { color: var(--ink-muted); font-size: var(--step-1); margin: 0; }
+
+  .section-h { font-size: var(--step-2); margin: 0 0 0.5rem; }
+  .section-h--spaced { margin-top: 3.5rem; }
+  .section-lede { color: var(--ink-muted); margin: 0 0 1.25rem; max-width: var(--prose-max); }
 
   .timeline {
     position: relative;
