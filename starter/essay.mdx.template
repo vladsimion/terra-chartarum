@@ -1,0 +1,46 @@
+---
+title: __TITLE__
+subtitle: __SUBTITLE__
+summary: >-
+  __SUMMARY__ One to two sentences — this is the hook shown on gallery cards and
+  in social/OG previews.
+cover: /covers/__SLUG__.svg
+status: native
+eras: [__ERAS__]
+regions: [__REGIONS__]
+lenses: [__LENSES__]
+yearFrom: __YEAR_FROM__
+yearTo: __YEAR_TO__
+mapCount: 0
+readingMinutes: 5
+accent: '#d4b87a'
+order: 50
+featured: false
+publishedAt: '__DATE__'
+updatedAt: '__DATE__'
+# Optional harmonized meta-lens scores (0–1). Remove if not scoring this essay.
+metaScores:
+  measure: 0.5
+  witness: 0.5
+  use: 0.5
+  cosmos: 0.5
+  power: 0.5
+  silence: 0.5
+---
+
+import RadarChart from '../../components/islands/RadarChart.astro';
+import AdaptiveTimeline from '../../components/islands/AdaptiveTimeline.astro';
+import CompareSlider from '../../components/islands/CompareSlider.astro';
+
+Write your essay in Markdown/MDX here. Import only the islands you need (unused
+imports can be deleted). See `src/content/essays/starter-example.mdx` for a fully
+worked example, and `starter/README.md` for the authoring guide.
+
+## A section
+
+Prose, images, and inline components mix freely.
+
+<RadarChart
+  axes={['Measure', 'Witness', 'Use', 'Cosmos', 'Power', 'Silence']}
+  series={[{ label: '__TITLE__', values: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5] }]}
+/>

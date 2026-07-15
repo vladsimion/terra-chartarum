@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Anatomy of a Native Essay">
+  <rect width="800" height="500" fill="#0a0806"/>
+  <g stroke="#8fb98f" stroke-width="1" fill="none" opacity="0.22">
+    <polygon points="400,90 620,230 540,430 260,430 180,230"/>
+    <polygon points="400,170 540,255 500,370 300,370 260,255"/>
+    <path d="M400 90 V430 M180 230 L620 230 M260 430 L540 430"/>
+  </g>
+  <g fill="#96cc84">
+    <circle cx="400" cy="90" r="4"/><circle cx="620" cy="230" r="4"/>
+    <circle cx="540" cy="430" r="4"/><circle cx="260" cy="430" r="4"/>
+    <circle cx="180" cy="230" r="4"/>
+  </g>
+  <text x="58" y="80" fill="#c0ad88" font-family="monospace" font-size="16" letter-spacing="6">NATIVE ESSAY · STARTER</text>
+  <text x="56" y="300" fill="#e8dec5" font-family="Georgia, serif" font-size="50" font-weight="600">Anatomy of a</text>
+  <text x="58" y="356" fill="#96cc84" font-family="Georgia, serif" font-size="50" font-weight="600" font-style="italic">Native Essay</text>
+</svg>

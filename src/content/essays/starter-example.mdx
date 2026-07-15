@@ -1,0 +1,106 @@
+---
+title: Anatomy of a Native Essay
+subtitle: A Worked Example of the Component Library
+summary: >-
+  A native (MDX) essay that doubles as living documentation: it uses every shared
+  island — radar, adaptive timeline, and compare slider — so new authors can copy
+  it as a starting point.
+cover: /covers/starter-example.svg
+status: native
+eras: [Renaissance, Enlightenment, Modern]
+regions: [Global]
+lenses: [Measure, Witness, Use, Cosmos, Power, Silence]
+yearFrom: 1500
+yearTo: 2024
+mapCount: 3
+readingMinutes: 4
+accent: '#96cc84'
+order: 99
+featured: false
+publishedAt: '2026-07-15'
+updatedAt: '2026-07-15'
+metaScores:
+  measure: 0.8
+  witness: 0.7
+  use: 0.6
+  cosmos: 0.4
+  power: 0.55
+  silence: 0.45
+---
+
+import RadarChart from '../../components/islands/RadarChart.astro';
+import AdaptiveTimeline from '../../components/islands/AdaptiveTimeline.astro';
+import CompareSlider from '../../components/islands/CompareSlider.astro';
+
+This page is authored in **MDX** and rendered natively inside the portal shell —
+no iframe. It exists to show the three reusable islands in context. Copy
+`starter/essay.mdx.template` (or run `npm run create-essay`) to begin your own.
+
+## The meta-lens radar
+
+The `RadarChart` island plots one or more series on shared axes, normalized 0–1.
+Pass a single series for an essay's own scores, or several to overlay a
+comparison against the canonical meta-lens.
+
+<RadarChart
+  interactive
+  axes={['Measure', 'Witness', 'Use', 'Cosmos', 'Power', 'Silence']}
+  series={[
+    { label: 'This essay', values: [0.8, 0.7, 0.6, 0.4, 0.55, 0.45] },
+    { label: 'Corpus mean', values: [0.62, 0.58, 0.6, 0.55, 0.66, 0.55], color: 'var(--ink-muted)' },
+  ]}
+  caption="Hover a legend item to emphasize its series."
+/>
+
+## The adaptive timeline
+
+`AdaptiveTimeline` compresses ancient centuries with the same square-root scale
+the cross-essay atlas uses, so a millennium-spanning essay stays legible. Events
+with an `href` become focusable links.
+
+<AdaptiveTimeline
+  ticks={[1500, 1700, 1850, 2024]}
+  caption="Three landmark maps, plotted on a compressed scale."
+  events={[
+    { year: 1507, label: 'Waldseemüller world map' },
+    { year: 1569, label: 'Mercator projection' },
+    { year: 1973, label: 'GPS constellation begins', accent: 'var(--gained)' },
+  ]}
+/>
+
+## The compare slider
+
+`CompareSlider` reveals one layer over another via clip-path, driven by pointer,
+touch, or keyboard (focus the handle and use the arrow keys). Drop images or SVG
+into the `before` and `after` slots.
+
+<CompareSlider start={50} beforeLabel="Projection A" afterLabel="Projection B" caption="Slide, or focus the handle and press ← / →.">
+  <svg slot="before" viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg">
+    <rect width="800" height="360" fill="#0e0c08" />
+    <g stroke="#d4b87a" fill="none" opacity="0.6">
+      {Array.from({ length: 9 }).map((_, i) => (
+        <line x1={i * 100} y1="0" x2={i * 100} y2="360" />
+      ))}
+      {Array.from({ length: 5 }).map((_, i) => (
+        <line x1="0" y1={i * 90} x2="800" y2={i * 90} />
+      ))}
+    </g>
+  </svg>
+  <svg slot="after" viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg">
+    <rect width="800" height="360" fill="#0e0c08" />
+    <g stroke="#96cc84" fill="none" opacity="0.7">
+      {Array.from({ length: 9 }).map((_, i) => (
+        <path d={`M ${i * 100} 0 Q ${i * 100 + 40} 180 ${i * 100} 360`} />
+      ))}
+      {Array.from({ length: 5 }).map((_, i) => (
+        <line x1="0" y1={i * 90} x2="800" y2={i * 90} />
+      ))}
+    </g>
+  </svg>
+</CompareSlider>
+
+---
+
+That's the whole toolkit. Everything above is server-rendered SVG/HTML; only the
+compare slider and the radar's hover ship a few lines of vanilla JS. See
+[the colophon](/colophon/) for the meta-lens crosswalk these components visualize.

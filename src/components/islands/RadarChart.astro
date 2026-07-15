@@ -1,0 +1,226 @@
+---
+/**
+ * RadarChart (ATLAS-401)
+ *
+ * Framework-agnostic radar/spider chart. Renders as static SVG at build time
+ * (zero client JS by default); an optional lightweight <script> adds
+ * hover-to-emphasize when `interactive` is set. Reuses the shared token palette.
+ *
+ * Values are normalized 0–1. Pass one or more series to overlay/compare — the
+ * same widget powers a single essay's native lens and the cross-essay meta-lens.
+ */
+interface Series {
+  label: string;
+  values: number[]; // one per axis, 0–1
+  color?: string; // defaults cycle through token colors
+}
+
+interface Props {
+  axes: string[];
+  series: Series[];
+  size?: number;
+  rings?: number;
+  interactive?: boolean;
+  caption?: string;
+}
+
+const {
+  axes,
+  series,
+  size = 340,
+  rings = 4,
+  interactive = false,
+  caption,
+} = Astro.props;
+
+const cycle = ['var(--gold)', 'var(--gained)', 'var(--sacrificed)', 'var(--ink-muted)'];
+const cx = size / 2;
+const cy = size / 2;
+const pad = size * 0.18; // room for axis labels
+const r = size / 2 - pad;
+const n = axes.length;
+
+const angle = (i: number) => (-90 + (i * 360) / n) * (Math.PI / 180);
+const point = (i: number, v: number) => ({
+  x: cx + r * v * Math.cos(angle(i)),
+  y: cy + r * v * Math.sin(angle(i)),
+});
+const labelPos = (i: number) => ({
+  x: cx + (r + pad * 0.55) * Math.cos(angle(i)),
+  y: cy + (r + pad * 0.55) * Math.sin(angle(i)),
+});
+
+const ringLevels = Array.from({ length: rings }, (_, k) => (k + 1) / rings);
+
+const polys = series.map((s, si) => {
+  const color = s.color ?? cycle[si % cycle.length];
+  const pts = s.values.map((v, i) => point(i, Math.max(0, Math.min(1, v))));
+  const d = pts.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+  return { label: s.label, color, d, pts };
+});
+
+const uid = 'radar-' + Math.random().toString(36).slice(2, 8);
+const ariaLabel =
+  `Radar chart across ${axes.join(', ')}. ` +
+  series
+    .map(
+      (s) =>
+        `${s.label}: ` +
+        s.values.map((v, i) => `${axes[i]} ${(v * 100).toFixed(0)}%`).join(', '),
+    )
+    .join('. ');
+---
+
+<figure class="radar" data-interactive={interactive ? '' : undefined} id={uid}>
+  <svg viewBox={`0 0 ${size} ${size}`} role="img" aria-label={ariaLabel}>
+    <!-- rings -->
+    {
+      ringLevels.map((lvl) => (
+        <polygon
+          class="ring"
+          points={axes
+            .map((_, i) => {
+              const p = point(i, lvl);
+              return `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
+            })
+            .join(' ')}
+        />
+      ))
+    }
+    <!-- spokes + labels -->
+    {
+      axes.map((ax, i) => {
+        const outer = point(i, 1);
+        const lp = labelPos(i);
+        const anchor = Math.abs(lp.x - cx) < 4 ? 'middle' : lp.x > cx ? 'start' : 'end';
+        return (
+          <>
+            <line class="spoke" x1={cx} y1={cy} x2={outer.x} y2={outer.y} />
+            <text class="axis-label" x={lp.x} y={lp.y} text-anchor={anchor} dominant-baseline="middle">
+              {ax}
+            </text>
+          </>
+        );
+      })
+    }
+    <!-- series -->
+    {
+      polys.map((p, si) => (
+        <g class="series" data-series={si} style={`--c:${p.color}`}>
+          <polygon class="area" points={p.d} />
+          {p.pts.map((pt) => (
+            <circle class="node" cx={pt.x} cy={pt.y} r="3" />
+          ))}
+        </g>
+      ))
+    }
+  </svg>
+
+  {
+    series.length > 1 && (
+      <ul class="legend">
+        {polys.map((p, si) => (
+          <li data-series={si} style={`--c:${p.color}`}>
+            <span class="dot" />
+            {p.label}
+          </li>
+        ))}
+      </ul>
+    )
+  }
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+{
+  interactive && (
+    <script>
+      // Emphasize a series when its legend item is hovered/focused.
+      document.querySelectorAll('.radar[data-interactive]').forEach((fig) => {
+        const set = (idx: number | null) => {
+          fig.querySelectorAll<HTMLElement>('.series').forEach((g) => {
+            const i = Number(g.dataset.series);
+            g.style.opacity = idx === null || idx === i ? '1' : '0.22';
+          });
+        };
+        fig.querySelectorAll<HTMLElement>('.legend li').forEach((li) => {
+          const i = Number(li.dataset.series);
+          li.addEventListener('mouseenter', () => set(i));
+          li.addEventListener('mouseleave', () => set(null));
+        });
+      });
+    </script>
+  )
+}
+
+<style>
+  .radar {
+    margin: 0;
+    display: grid;
+    justify-items: center;
+    gap: 0.75rem;
+  }
+  .radar svg {
+    width: 100%;
+    max-width: 380px;
+    height: auto;
+    overflow: visible;
+  }
+  .ring {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  .spoke {
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  .axis-label {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.06em;
+    fill: var(--ink-muted);
+    text-transform: uppercase;
+  }
+  .series {
+    transition: opacity var(--dur-fast) var(--ease-out);
+  }
+  .area {
+    fill: color-mix(in srgb, var(--c) 20%, transparent);
+    stroke: var(--c);
+    stroke-width: 2;
+    stroke-linejoin: round;
+  }
+  .node {
+    fill: var(--c);
+  }
+  .legend {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+    padding: 0;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+  }
+  .legend li {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: default;
+  }
+  .legend .dot {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 2px;
+    background: var(--c);
+  }
+  figcaption {
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+    font-style: italic;
+    text-align: center;
+    max-width: 46ch;
+  }
+</style>

@@ -10,6 +10,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
+    "create-essay": "node scripts/create-essay.mjs",
     "astro": "astro"
   },
   "dependencies": {

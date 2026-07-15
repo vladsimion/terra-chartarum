@@ -1,0 +1,195 @@
+---
+/**
+ * CompareSlider (ATLAS-403)
+ *
+ * Overlay/reveal comparison of two layers via clip-path, driven by pointer,
+ * touch, and keyboard (the handle is a WAI-ARIA slider). Content goes in the
+ * `before` and `after` named slots — images, SVGs, or arbitrary markup — so it
+ * works for map-vs-map overlays and native-lens-vs-meta-lens radar alike.
+ */
+interface Props {
+  start?: number; // initial reveal 0–100
+  beforeLabel?: string;
+  afterLabel?: string;
+  caption?: string;
+}
+
+const {
+  start = 50,
+  beforeLabel = 'Before',
+  afterLabel = 'After',
+  caption,
+} = Astro.props;
+
+const clamped = Math.max(0, Math.min(100, start));
+---
+
+<figure class="cmp" style={`--pos:${clamped}%`} data-compare>
+  <div class="cmp-stage">
+    <div class="cmp-layer cmp-before">
+      <slot name="before" />
+      <span class="cmp-tag tag-before">{beforeLabel}</span>
+    </div>
+    <div class="cmp-layer cmp-after">
+      <slot name="after" />
+      <span class="cmp-tag tag-after">{afterLabel}</span>
+    </div>
+    <div
+      class="cmp-handle"
+      role="slider"
+      tabindex="0"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-valuenow={clamped}
+      aria-label={`Reveal slider between ${beforeLabel} and ${afterLabel}`}
+    >
+      <span class="cmp-line" aria-hidden="true"></span>
+      <span class="cmp-grip" aria-hidden="true">‹ ›</span>
+    </div>
+  </div>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<script>
+  function initCompare(root: HTMLElement) {
+    const handle = root.querySelector<HTMLElement>('.cmp-handle')!;
+    const stage = root.querySelector<HTMLElement>('.cmp-stage')!;
+    let dragging = false;
+
+    const set = (pct: number) => {
+      const v = Math.max(0, Math.min(100, pct));
+      root.style.setProperty('--pos', v + '%');
+      handle.setAttribute('aria-valuenow', String(Math.round(v)));
+    };
+    const fromClientX = (clientX: number) => {
+      const r = stage.getBoundingClientRect();
+      set(((clientX - r.left) / r.width) * 100);
+    };
+
+    const onMove = (e: PointerEvent) => dragging && fromClientX(e.clientX);
+    stage.addEventListener('pointerdown', (e) => {
+      dragging = true;
+      handle.setPointerCapture?.(e.pointerId);
+      fromClientX(e.clientX);
+    });
+    stage.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', () => (dragging = false));
+
+    handle.addEventListener('keydown', (e) => {
+      const now = Number(handle.getAttribute('aria-valuenow')) || 0;
+      const step = e.shiftKey ? 10 : 2;
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { set(now - step); e.preventDefault(); }
+      else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { set(now + step); e.preventDefault(); }
+      else if (e.key === 'Home') { set(0); e.preventDefault(); }
+      else if (e.key === 'End') { set(100); e.preventDefault(); }
+    });
+  }
+
+  const boot = () =>
+    document.querySelectorAll<HTMLElement>('[data-compare]').forEach((el) => {
+      if (!el.dataset.compareReady) {
+        el.dataset.compareReady = '1';
+        initCompare(el);
+      }
+    });
+  boot();
+  document.addEventListener('astro:page-load', boot);
+</script>
+
+<style>
+  .cmp {
+    margin: 2rem 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+  .cmp-stage {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    touch-action: none;
+    user-select: none;
+  }
+  .cmp-layer {
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+  .cmp-layer :global(img),
+  .cmp-layer :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .cmp-before {
+    position: relative;
+  }
+  /* The "after" layer is clipped from the right edge to the handle. */
+  .cmp-after {
+    position: absolute;
+    inset: 0;
+    clip-path: inset(0 0 0 var(--pos));
+  }
+  .cmp-tag {
+    position: absolute;
+    bottom: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: color-mix(in srgb, var(--canvas) 70%, transparent);
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+  }
+  .tag-before { left: 0.6rem; }
+  .tag-after { right: 0.6rem; }
+  .cmp-handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--pos);
+    width: 2.4rem;
+    transform: translateX(-50%);
+    cursor: ew-resize;
+    display: grid;
+    place-items: center;
+  }
+  .cmp-handle:focus-visible {
+    outline: none;
+  }
+  .cmp-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    transform: translateX(-50%);
+    background: var(--gold);
+  }
+  .cmp-grip {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--panel-2);
+    border: 2px solid var(--gold);
+    color: var(--gold);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: -0.1em;
+  }
+  .cmp-handle:focus-visible .cmp-grip {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+  figcaption {
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+    font-style: italic;
+  }
+</style>
