@@ -7,8 +7,9 @@ interface Props {
   map: HistoricalMap;
   essayTitle: string;
   accent?: string;
+  covers?: string[];
 }
-const { map, essayTitle, accent = 'var(--gold)' } = Astro.props;
+const { map, essayTitle, accent = 'var(--gold)', covers = [] } = Astro.props;
 const cover = map.images[0];
 
 // Data attributes power the catalogue's client-side facet filtering (KAN-67).
@@ -16,6 +17,8 @@ const region = map.region;
 const century = centuryLabel(map.year);
 const cartographer = map.cartographer ?? '';
 const tags = map.tags.join('|');
+// Regions this map's footprint depicts, for the "covers …" facet (KAN-74).
+const coversAttr = covers.join('|');
 const searchText = [map.title, map.region, essayTitle, map.cartographer, ...map.tags]
   .filter(Boolean)
   .join(' ')
@@ -29,6 +32,7 @@ const searchText = [map.title, map.region, essayTitle, map.cartographer, ...map.
   data-centuries={century}
   data-cartographers={cartographer}
   data-tags={tags}
+  data-covers={coversAttr}
   data-essays={map.essaySlug}
   data-title={searchText}
 >
