@@ -38,12 +38,13 @@ export const GeoLayerSchema = z.object({
 
 export type GeoLayer = z.infer<typeof GeoLayerSchema>;
 
-// Layers. The Natural Earth GeoJSON layers are real, public-domain assets served
-// from /public/geo and rendered live by the MapLibre pipeline (ATLAS-EG3). The
-// essay-linked historical layers are registered with their metadata but ship no
-// binary yet — producing them needs tippecanoe/GDAL tooling and sourced data
-// (ATLAS-EG3 remainder / EG6). The atlas enables a toggle only when its asset is
-// actually present, so a layer goes live the moment its file is dropped in.
+// Layers. The Natural Earth base layers and the AWMC Roman Empire extent are real
+// GeoJSON assets served from /public/geo and rendered live by the MapLibre pipeline
+// (ATLAS-EG3). The remaining essay-linked historical layer (venetian-maritime-1400)
+// is registered with its metadata but ships no binary yet — producing it needs
+// tippecanoe/GDAL tooling and sourced data (ATLAS-EG3 remainder / EG6). The atlas
+// enables a toggle only when its asset is actually present, so a layer goes live
+// the moment its file is dropped in.
 // Validated at module load so a malformed entry fails the build, not the browser.
 const RAW: unknown[] = [
   {
@@ -129,19 +130,18 @@ const RAW: unknown[] = [
   {
     id: 'roman-empire-117',
     title: 'Roman Empire, AD 117',
-    description: 'Provincial extent at Trajan\'s greatest reach — context for the Dacia essay.',
+    description: 'Imperial extent at Trajan\'s greatest reach — context for the Dacia essay.',
     kind: 'vector',
-    format: 'pmtiles',
-    url: '/geo/roman-empire-117.pmtiles',
+    format: 'geojson',
+    url: '/geo/roman-empire-117.geojson',
     yearFrom: 106,
     yearTo: 271,
-    source: 'Ancient World Mapping Center (placeholder)',
-    license: 'CC BY',
-    attribution: 'AWMC',
+    source: 'Ancient World Mapping Center (AWMC), UNC Chapel Hill — roman_empire_ce_117_extent',
+    license: 'ODbL 1.0',
+    attribution: 'Ancient World Mapping Center; derived from the Barrington Atlas and OpenStreetMap (ODbL)',
     essaySlugs: ['dacia'],
     geometry: 'fill',
     color: '#d98860',
-    sourceLayer: 'provinces',
     defaultOn: false,
   },
   {
