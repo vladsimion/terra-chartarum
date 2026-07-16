@@ -1,8 +1,10 @@
+/* @import must precede all other statements (except @charset/@layer) per the CSS
+   spec, so the design tokens load before Tailwind's layers consume them. */
+@import './tokens.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import './tokens.css';
 
 @layer base {
   html {
