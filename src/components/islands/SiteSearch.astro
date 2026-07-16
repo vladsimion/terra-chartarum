@@ -17,7 +17,7 @@
           type="search"
           class="ss-input"
           data-ss-input
-          placeholder="Search essays, maps, cartographers…"
+          placeholder="Search essays, maps, cartographers, places…"
           aria-label="Search"
           autocomplete="off"
         />
@@ -29,6 +29,7 @@
           <option value="essay">Essays</option>
           <option value="map">Maps</option>
           <option value="cartographer">Cartographers</option>
+          <option value="toponym">Places</option>
         </select>
         <select data-ss-facet="region" aria-label="Filter by region"><option value="">All regions</option></select>
         <select data-ss-facet="era" aria-label="Filter by era"><option value="">All eras</option></select>
@@ -44,14 +45,14 @@
   import type Fuse from 'fuse.js';
 
   type Doc = {
-    type: 'essay' | 'map' | 'cartographer';
+    type: 'essay' | 'map' | 'cartographer' | 'toponym';
     id: string; url: string; title: string;
     subtitle?: string; text?: string; region?: string;
     era?: string; tags?: string[]; year?: number;
   };
 
   const TYPE_LABEL: Record<Doc['type'], string> = {
-    essay: 'Essay', map: 'Map', cartographer: 'Cartographer',
+    essay: 'Essay', map: 'Map', cartographer: 'Cartographer', toponym: 'Place',
   };
 
   function initSiteSearch(root: HTMLElement) {
@@ -278,6 +279,7 @@
   }
   .ss-type--map { background: var(--ink-muted); }
   .ss-type--cartographer { background: color-mix(in srgb, var(--gold) 60%, var(--ink-muted)); }
+  .ss-type--toponym { background: color-mix(in srgb, var(--gold) 30%, var(--ink-muted)); }
   .ss-hit-body { display: flex; flex-direction: column; gap: 0.1rem; }
   .ss-hit-body strong { color: var(--ink); font-weight: 600; }
   .ss-hit-sub { color: var(--ink-muted); font-size: var(--step--1); font-style: italic; }
