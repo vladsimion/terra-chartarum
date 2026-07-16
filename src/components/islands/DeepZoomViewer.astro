@@ -1,0 +1,143 @@
+---
+/**
+ * DeepZoomViewer (ATLAS-805 / KAN-69)
+ *
+ * Opt-in high-resolution pan/zoom viewer for a map scan. The static <img> is the
+ * fallback and the only thing in the initial payload; OpenSeadragon (~400K) is
+ * dynamic-imported only on interaction (click "Explore in high resolution" or the
+ * image itself) — the same lazy pattern as the MapLibre atlas. The host page only
+ * renders this island when an image actually carries a tiled source, so default
+ * catalogue pages ship zero extra bytes.
+ *
+ * `tileSource` is either a DeepZoom .dzi (scripts/build-map-tiles.mjs output) or
+ * an IIIF info.json; OpenSeadragon auto-detects which from the string.
+ */
+interface Props {
+  tileSource: string;
+  src: string;
+  alt: string;
+  credit?: string;
+  license?: string;
+}
+const { tileSource, src, alt, credit, license } = Astro.props;
+---
+
+<figure class="dzv" data-dzv data-tilesource={tileSource}>
+  <div class="dzv-stage">
+    <img class="dzv-img" src={src} alt={alt} loading="lazy" decoding="async" />
+    <div class="dzv-viewer" data-dzv-viewer aria-label={`High-resolution view of ${alt}`} hidden></div>
+    <button type="button" class="dzv-open" data-dzv-open>
+      <span aria-hidden="true">⤢</span> Explore in high resolution
+    </button>
+  </div>
+  {(credit || license) && (
+    <figcaption>
+      {credit}
+      {license && <span class="dzv-lic"> · {license}</span>}
+    </figcaption>
+  )}
+</figure>
+
+<script>
+  // Type-only import — erased at build. The real OpenSeadragon module is pulled
+  // in lazily inside launch(), so nothing ships until the reader opts in.
+  import type OpenSeadragonNS from 'openseadragon';
+
+  function initDeepZoom(root: HTMLElement) {
+    if (root.dataset.dzvReady) return; // guard re-binding on view transitions
+    root.dataset.dzvReady = 'true';
+
+    const tileSource = root.dataset.tilesource;
+    const viewerEl = root.querySelector<HTMLElement>('[data-dzv-viewer]');
+    const img = root.querySelector<HTMLImageElement>('.dzv-img');
+    const openBtn = root.querySelector<HTMLButtonElement>('[data-dzv-open]');
+    if (!tileSource || !viewerEl || !img || !openBtn) return;
+
+    let viewer: OpenSeadragonNS.Viewer | null = null;
+    let launching = false;
+
+    async function launch() {
+      if (viewer || launching) return;
+      launching = true;
+      openBtn!.disabled = true;
+      openBtn!.textContent = 'Loading viewer…';
+      try {
+        const { default: OpenSeadragon } = await import('openseadragon');
+        viewerEl!.hidden = false;
+        viewer = OpenSeadragon({
+          element: viewerEl!,
+          tileSources: tileSource!,
+          prefixUrl: '',
+          showNavigator: true,
+          navigatorPosition: 'BOTTOM_RIGHT',
+          gestureSettingsMouse: { clickToZoom: false },
+          maxZoomPixelRatio: 2,
+          animationTime: 0.6,
+        });
+        // Swap the static fallback for the interactive canvas.
+        img!.hidden = true;
+        openBtn!.hidden = true;
+      } catch {
+        // Leave the static image in place if the viewer can't load.
+        viewerEl!.hidden = true;
+        openBtn!.disabled = false;
+        openBtn!.textContent = 'High-resolution viewer unavailable';
+      } finally {
+        launching = false;
+      }
+    }
+
+    openBtn.addEventListener('click', launch);
+    img.addEventListener('click', launch);
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-dzv]').forEach(initDeepZoom);
+  document.addEventListener('astro:page-load', () =>
+    document.querySelectorAll<HTMLElement>('[data-dzv]').forEach(initDeepZoom),
+  );
+</script>
+
+<style>
+  .dzv { margin: 0 0 2.5rem; }
+  .dzv-stage {
+    position: relative;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--panel);
+  }
+  .dzv-img { width: 100%; display: block; cursor: zoom-in; }
+  .dzv-viewer { width: 100%; height: clamp(360px, 60vh, 680px); background: var(--canvas); }
+  .dzv-open {
+    position: absolute;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: color-mix(in srgb, var(--canvas) 82%, transparent);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.06em;
+    padding: 0.45rem 0.8rem;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+  }
+  .dzv-open:hover:not(:disabled) { border-color: var(--gold); color: var(--gold); }
+  .dzv-open:disabled { opacity: 0.7; cursor: progress; }
+  .dzv figcaption {
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+    margin-top: 0.5rem;
+  }
+  .dzv-lic { color: var(--ink-muted); }
+
+  /* OpenSeadragon injects controls globally; keep the navigator on-brand. */
+  :global(.dzv-viewer .navigator) {
+    border: 1px solid var(--line) !important;
+    background: var(--panel) !important;
+  }
+</style>

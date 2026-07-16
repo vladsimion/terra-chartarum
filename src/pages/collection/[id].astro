@@ -6,6 +6,7 @@ import { getCartographerById } from '../../lib/cartographers';
 import { resolveMapBibliography } from '../../lib/bibliography';
 import { getEssays, formatYear } from '../../lib/registry';
 import CiteExport from '../../components/islands/CiteExport.astro';
+import DeepZoomViewer from '../../components/islands/DeepZoomViewer.astro';
 import type { CiteInput } from '../../lib/cite';
 
 export async function getStaticPaths() {
@@ -69,6 +70,9 @@ const citeInput: CiteInput = {
 };
 
 const cover = map.images[0];
+// A high-res tiled source (DeepZoom .dzi or IIIF info.json) opts the cover into
+// the pan/zoom viewer (KAN-69); OpenSeadragon auto-detects which from the string.
+const tileSource = cover?.dziTileSource ?? cover?.iiif;
 ---
 
 <PortalLayout
@@ -101,7 +105,15 @@ const cover = map.images[0];
       </p>
     </header>
 
-    {cover && (
+    {cover && tileSource ? (
+      <DeepZoomViewer
+        tileSource={tileSource}
+        src={cover.src}
+        alt={cover.alt}
+        credit={cover.credit}
+        license={cover.license}
+      />
+    ) : cover ? (
       <figure class="detail-figure">
         <img src={cover.src} alt={cover.alt} loading="lazy" decoding="async" />
         {cover.credit && (
@@ -111,7 +123,7 @@ const cover = map.images[0];
           </figcaption>
         )}
       </figure>
-    )}
+    ) : null}
 
     {(rows.length > 0 || cartographerName) && (
       <section class="detail-block">
