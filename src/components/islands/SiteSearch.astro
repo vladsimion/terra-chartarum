@@ -1,0 +1,284 @@
+---
+// Global fuzzy search (ATLAS-1102 / KAN-77). Mounted from the Header. The index
+// and Fuse.js are both loaded lazily on first focus, so nothing ships in the
+// initial bundle.
+---
+
+<div class="sitesearch" data-sitesearch>
+  <button type="button" class="ss-trigger" data-ss-open aria-haspopup="dialog">
+    <span class="ss-ico" aria-hidden="true">⌕</span>
+    <span class="ss-label">Search</span>
+  </button>
+
+  <dialog class="ss-dialog" data-ss-dialog aria-label="Site search">
+    <form method="dialog" class="ss-form">
+      <div class="ss-bar">
+        <input
+          type="search"
+          class="ss-input"
+          data-ss-input
+          placeholder="Search essays, maps, cartographers…"
+          aria-label="Search"
+          autocomplete="off"
+        />
+        <button type="submit" class="ss-close" data-ss-close aria-label="Close search">Esc</button>
+      </div>
+      <div class="ss-facets">
+        <select data-ss-facet="type" aria-label="Filter by type">
+          <option value="">All types</option>
+          <option value="essay">Essays</option>
+          <option value="map">Maps</option>
+          <option value="cartographer">Cartographers</option>
+        </select>
+        <select data-ss-facet="region" aria-label="Filter by region"><option value="">All regions</option></select>
+        <select data-ss-facet="era" aria-label="Filter by era"><option value="">All eras</option></select>
+        <select data-ss-facet="tag" aria-label="Filter by tag"><option value="">All tags</option></select>
+      </div>
+    </form>
+    <p class="ss-status" data-ss-status aria-live="polite"></p>
+    <ul class="ss-results" data-ss-results></ul>
+  </dialog>
+</div>
+
+<script>
+  import type Fuse from 'fuse.js';
+
+  type Doc = {
+    type: 'essay' | 'map' | 'cartographer';
+    id: string; url: string; title: string;
+    subtitle?: string; text?: string; region?: string;
+    era?: string; tags?: string[]; year?: number;
+  };
+
+  const TYPE_LABEL: Record<Doc['type'], string> = {
+    essay: 'Essay', map: 'Map', cartographer: 'Cartographer',
+  };
+
+  function initSiteSearch(root: HTMLElement) {
+    if (root.dataset.ssReady) return; // guard against re-binding on view transitions
+    root.dataset.ssReady = 'true';
+
+    const openBtn = root.querySelector<HTMLButtonElement>('[data-ss-open]')!;
+    const dialog = root.querySelector<HTMLDialogElement>('[data-ss-dialog]')!;
+    const input = root.querySelector<HTMLInputElement>('[data-ss-input]')!;
+    const status = root.querySelector<HTMLElement>('[data-ss-status]')!;
+    const results = root.querySelector<HTMLElement>('[data-ss-results]')!;
+    const facets = Array.from(root.querySelectorAll<HTMLSelectElement>('[data-ss-facet]'));
+
+    let docs: Doc[] = [];
+    let fuse: Fuse<Doc> | null = null;
+    let loaded = false;
+    let loading = false;
+
+    const uniq = (xs: string[]) => Array.from(new Set(xs.filter(Boolean))).sort();
+
+    async function ensureLoaded() {
+      if (loaded || loading) return;
+      loading = true;
+      status.textContent = 'Loading index…';
+      try {
+        const [{ default: FuseCtor }, res] = await Promise.all([
+          import('fuse.js'),
+          fetch('/search-index.json'),
+        ]);
+        docs = (await res.json()) as Doc[];
+        fuse = new FuseCtor(docs, {
+          includeScore: true,
+          threshold: 0.4,
+          ignoreLocation: true,
+          keys: [
+            { name: 'title', weight: 3 },
+            { name: 'subtitle', weight: 1 },
+            { name: 'region', weight: 1 },
+            { name: 'tags', weight: 1 },
+            { name: 'text', weight: 0.5 },
+          ],
+        });
+        // Populate region/era/tag facets from the index.
+        fill('region', uniq(docs.map((d) => d.region ?? '')));
+        fill('era', uniq(docs.flatMap((d) => (d.era ? d.era.split(', ') : []))));
+        fill('tag', uniq(docs.flatMap((d) => d.tags ?? [])));
+        loaded = true;
+      } catch {
+        status.textContent = 'Search is unavailable.';
+      } finally {
+        loading = false;
+        if (loaded) render();
+      }
+    }
+
+    function fill(facet: string, values: string[]) {
+      const sel = facets.find((f) => f.dataset.ssFacet === facet);
+      if (!sel) return;
+      for (const v of values) {
+        const opt = document.createElement('option');
+        opt.value = v; opt.textContent = v;
+        sel.appendChild(opt);
+      }
+    }
+
+    function selected(facet: string) {
+      return facets.find((f) => f.dataset.ssFacet === facet)?.value ?? '';
+    }
+
+    function render() {
+      if (!loaded) return;
+      const q = input.value.trim();
+      const base: Doc[] = q && fuse ? fuse.search(q).map((r) => r.item) : docs;
+
+      const type = selected('type');
+      const region = selected('region');
+      const era = selected('era');
+      const tag = selected('tag');
+
+      const filtered = base.filter((d) => {
+        if (type && d.type !== type) return false;
+        if (region && d.region !== region) return false;
+        if (era && !(d.era ?? '').split(', ').includes(era)) return false;
+        if (tag && !(d.tags ?? []).includes(tag)) return false;
+        return true;
+      });
+
+      const top = filtered.slice(0, 40);
+      results.innerHTML = top
+        .map(
+          (d) =>
+            `<li><a class="ss-hit" href="${d.url}">` +
+            `<span class="ss-type ss-type--${d.type}">${TYPE_LABEL[d.type]}</span>` +
+            `<span class="ss-hit-body"><strong>${d.title}</strong>` +
+            (d.subtitle ? `<span class="ss-hit-sub">${d.subtitle}</span>` : '') +
+            `</span></a></li>`,
+        )
+        .join('');
+      status.textContent = filtered.length
+        ? `${filtered.length} result${filtered.length === 1 ? '' : 's'}` +
+          (filtered.length > top.length ? ` (showing ${top.length})` : '')
+        : 'No matches.';
+    }
+
+    function open() {
+      if (!dialog.open) dialog.showModal();
+      ensureLoaded();
+      requestAnimationFrame(() => input.focus());
+    }
+
+    openBtn.addEventListener('click', open);
+    input.addEventListener('input', render);
+    input.addEventListener('focus', ensureLoaded);
+    facets.forEach((f) => f.addEventListener('change', render));
+    // Keyboard: Cmd/Ctrl-K opens search anywhere.
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        open();
+      }
+    });
+    // Click on the backdrop (outside the dialog's content box) closes it.
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+  }
+
+  const root = document.querySelector<HTMLElement>('[data-sitesearch]');
+  if (root) initSiteSearch(root);
+</script>
+
+<style>
+  .sitesearch { display: inline-flex; }
+  .ss-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
+  }
+  .ss-trigger:hover { color: var(--ink); border-color: var(--gold); }
+  .ss-ico { font-size: 1.1em; }
+
+  .ss-dialog {
+    width: min(640px, 92vw);
+    max-height: 80vh;
+    margin: 10vh auto auto;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    color: var(--ink);
+    overflow: hidden;
+  }
+  .ss-dialog::backdrop { background: color-mix(in srgb, var(--canvas) 78%, transparent); }
+  .ss-form { padding: 1rem 1.1rem 0.6rem; border-bottom: 1px solid var(--line); }
+  .ss-bar { display: flex; gap: 0.6rem; align-items: center; }
+  .ss-input {
+    flex: 1;
+    background: var(--canvas);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--ink);
+    padding: 0.6rem 0.8rem;
+    font-family: var(--font-body);
+    font-size: var(--step-1);
+  }
+  .ss-close {
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    padding: 0.4rem 0.55rem;
+    cursor: pointer;
+  }
+  .ss-close:hover { color: var(--ink); border-color: var(--gold); }
+  .ss-facets { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.7rem; }
+  .ss-facets select {
+    background: var(--canvas);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: var(--step--1);
+    padding: 0.35rem 0.5rem;
+  }
+  .ss-status {
+    margin: 0;
+    padding: 0.6rem 1.1rem;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+  }
+  .ss-results { list-style: none; margin: 0; padding: 0 0.6rem 0.8rem; overflow-y: auto; max-height: 52vh; }
+  .ss-hit {
+    display: flex;
+    gap: 0.75rem;
+    align-items: baseline;
+    padding: 0.6rem 0.7rem;
+    border-radius: var(--radius);
+    color: inherit;
+  }
+  .ss-hit:hover { background: var(--canvas); }
+  .ss-type {
+    flex: none;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--canvas);
+    background: var(--gold);
+    border-radius: 999px;
+    padding: 0.12rem 0.5rem;
+  }
+  .ss-type--map { background: var(--ink-muted); }
+  .ss-type--cartographer { background: color-mix(in srgb, var(--gold) 60%, var(--ink-muted)); }
+  .ss-hit-body { display: flex; flex-direction: column; gap: 0.1rem; }
+  .ss-hit-body strong { color: var(--ink); font-weight: 600; }
+  .ss-hit-sub { color: var(--ink-muted); font-size: var(--step--1); font-style: italic; }
+</style>

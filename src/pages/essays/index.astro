@@ -63,7 +63,11 @@ const facets = await getFacets();
 </PortalLayout>
 
 <script>
-  // Client-side faceted filtering (ATLAS-203). No framework needed.
+  import type Fuse from 'fuse.js';
+
+  // Client-side faceted filtering (ATLAS-203). The free-text box is upgraded to
+  // fuzzy matching (KAN-77): Fuse.js is dynamic-imported on first keystroke, so
+  // it never ships in the gallery's initial bundle.
   function initGallery() {
     const grid = document.getElementById('grid');
     if (!grid) return;
@@ -76,8 +80,44 @@ const facets = await getFacets();
     const count = document.getElementById('count');
     const empty = document.getElementById('empty');
 
+    type Row = { el: HTMLElement; title: string };
+    const rows: Row[] = cards.map((el) => ({
+      el,
+      title: el.dataset.title ?? '',
+    }));
+
+    let fuse: Fuse<Row> | null = null;
+    let loadingFuse = false;
+    async function ensureFuse() {
+      if (fuse || loadingFuse) return;
+      loadingFuse = true;
+      try {
+        const { default: FuseCtor } = await import('fuse.js');
+        fuse = new FuseCtor(rows, {
+          keys: ['title'],
+          threshold: 0.4,
+          ignoreLocation: true,
+        });
+      } finally {
+        loadingFuse = false;
+        apply();
+      }
+    }
+
     function apply() {
-      const term = (q?.value ?? '').trim().toLowerCase();
+      const term = (q?.value ?? '').trim();
+      // Fuzzy hit-set for the term (falls back to substring until Fuse loads).
+      let matched: Set<HTMLElement> | null = null;
+      if (term) {
+        if (fuse) {
+          matched = new Set(fuse.search(term).map((r) => r.item.el));
+        } else {
+          const lc = term.toLowerCase();
+          matched = new Set(
+            rows.filter((r) => r.title.includes(lc)).map((r) => r.el),
+          );
+        }
+      }
       let shown = 0;
       for (const card of cards) {
         let ok = true;
@@ -87,7 +127,7 @@ const facets = await getFacets();
           const values = (card.dataset[field] ?? '').split('|');
           if (!values.includes(sel.value)) ok = false;
         }
-        if (ok && term) ok = (card.dataset.title ?? '').includes(term);
+        if (ok && matched) ok = matched.has(card);
         card.hidden = !ok;
         if (ok) shown++;
       }
@@ -95,7 +135,11 @@ const facets = await getFacets();
       if (empty) empty.hidden = shown !== 0;
     }
 
-    q?.addEventListener('input', apply);
+    q?.addEventListener('focus', ensureFuse, { once: true });
+    q?.addEventListener('input', () => {
+      void ensureFuse();
+      apply();
+    });
     selects.forEach((s) => s.addEventListener('change', apply));
     reset?.addEventListener('click', () => {
       if (q) q.value = '';

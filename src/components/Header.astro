@@ -1,4 +1,5 @@
 ---
+import SiteSearch from './islands/SiteSearch.astro';
 const path = Astro.url.pathname;
 const nav = [
   { href: '/essays/', label: 'Essays' },
@@ -34,6 +35,7 @@ const isActive = (href: string) =>
         }
       </ul>
     </nav>
+    <SiteSearch />
   </div>
 </header>
 
