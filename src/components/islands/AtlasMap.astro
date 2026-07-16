@@ -130,13 +130,13 @@ const payload = {
 </section>
 
 <script>
-  import maplibregl from 'maplibre-gl';
-  import { Protocol } from 'pmtiles';
+  // Type-only imports are erased at build, so MapLibre (~785K) and pmtiles are
+  // pulled in lazily via dynamic import() below — only once the map actually
+  // initializes with WebGL present. Readers without WebGL never download them.
+  import type { Map as MLMap, Marker as MLMarker, AddLayerObject } from 'maplibre-gl';
 
-  // Register the pmtiles:// protocol once so any PMTiles GeoLayer renders via HTTP
-  // range requests the moment its asset is present (ATLAS-EG3).
-  const pmtilesProtocol = new Protocol();
-  maplibregl.addProtocol('pmtiles', pmtilesProtocol.tile);
+  // Register the pmtiles:// protocol at most once across page-load re-inits.
+  let protocolRegistered = false;
 
   type Pt = {
     id: string; title: string; year: number; yearLabel: string;
@@ -159,7 +159,7 @@ const payload = {
     }
   }
 
-  function initAtlasMap(root: HTMLElement) {
+  async function initAtlasMap(root: HTMLElement) {
     const dataEl = root.querySelector<HTMLElement>('[data-atlasmap-data]');
     const mapEl = root.querySelector<HTMLElement>('.am-map');
     if (!dataEl || !mapEl) return;
@@ -192,11 +192,11 @@ const payload = {
       layerToggles.forEach((cb) => { cb.checked = false; cb.disabled = true; });
     }
 
-    const markers: { pt: Pt; marker?: maplibregl.Marker; li: HTMLElement }[] = [];
+    const markers: { pt: Pt; marker?: MLMarker; li: HTMLElement }[] = [];
     const listItems = Array.from(list.querySelectorAll('li'));
     corpus.forEach((pt, i) => markers.push({ pt, li: listItems[i] }));
 
-    let map: maplibregl.Map | null = null;
+    let map: MLMap | null = null;
     let styleReady = false;
     const activeLayers = new Set<string>();
     const layerId = (id: string) => `geolyr-${id}`;
@@ -215,7 +215,7 @@ const payload = {
       } else {
         return; // flatgeobuf/cog need a dedicated loader (EG3 remainder)
       }
-      const base: maplibregl.AddLayerObject =
+      const base: AddLayerObject =
         l.geometry === 'fill'
           ? { id: lyr, type: 'fill', source: src,
               paint: { 'fill-color': l.color, 'fill-opacity': 0.22, 'fill-outline-color': l.color } }
@@ -243,6 +243,16 @@ const payload = {
     };
 
     if (mapEl.isConnected) {
+      // Pull the heavy GL + tiling libs only now, when we're really rendering.
+      const [{ default: maplibregl }, { Protocol }] = await Promise.all([
+        import('maplibre-gl'),
+        import('pmtiles'),
+      ]);
+      if (!protocolRegistered) {
+        maplibregl.addProtocol('pmtiles', new Protocol().tile);
+        protocolRegistered = true;
+      }
+
       map = new maplibregl.Map({
         container: mapEl,
         style: 'https://demotiles.maplibre.org/style.json',
