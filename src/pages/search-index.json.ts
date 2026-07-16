@@ -1,15 +1,17 @@
 import type { APIContext } from 'astro';
 import { getCorpus, centuryLabel } from '../lib/corpus';
 import { getCartographers, mapsByCartographer } from '../lib/cartographers';
+import { getToponyms, toponymNames } from '../lib/toponyms';
 import { getEssays, formatYear } from '../lib/registry';
 
 /**
  * Unified search index (ATLAS-1101 / KAN-76). One static JSON document over
- * essays + maps + cartographers, in rss.xml.ts style, consumed by the Fuse.js
- * SiteSearch island (KAN-77). Toponyms join once the concordance lands (KAN-75).
+ * essays + maps + cartographers + toponyms, in rss.xml.ts style, consumed by the
+ * Fuse.js SiteSearch island (KAN-77). Toponyms (KAN-75) let a reader search by
+ * any historical name a place is known by and land on it in the atlas.
  */
 interface SearchDoc {
-  type: 'essay' | 'map' | 'cartographer';
+  type: 'essay' | 'map' | 'cartographer' | 'toponym';
   id: string;
   url: string;
   title: string;
@@ -70,6 +72,21 @@ export async function GET(_context: APIContext) {
       region: c.places.join(', '),
       tags: [...c.places, ...maps.map((m) => m.title)],
       year: c.born,
+    });
+  }
+
+  for (const t of getToponyms()) {
+    const names = toponymNames(t);
+    const historical = names.slice(1); // everything but the modern name
+    docs.push({
+      type: 'toponym',
+      id: t.id,
+      // Deep-link into the atlas, which centres its dedicated toponym pin.
+      url: `/atlas/#topo-${t.id}`,
+      title: t.modern,
+      subtitle: historical.join(' · '),
+      text: names.join(' '),
+      tags: historical,
     });
   }
 

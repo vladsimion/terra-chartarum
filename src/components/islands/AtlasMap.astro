@@ -16,6 +16,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { getCorpusCore, corpusYearRange } from '../../lib/corpus';
 import { getGeoLayers } from '../../lib/geo';
 import { coveragePolygons } from '../../lib/coverage';
+import { getToponyms, toponymNames } from '../../lib/toponyms';
 import { getEssays, formatYear } from '../../lib/registry';
 
 // Only the atlas-critical projection ships to the client — rich catalogue
@@ -44,6 +45,22 @@ const essayMeta = Object.fromEntries(
   essays.map((e) => [e.slug, { title: e.data.title, accent: e.data.accent ?? '#d4b87a' }]),
 );
 
+// Toponym concordance (KAN-75): a separate, toggleable pin set of places carrying
+// the ancient / medieval / variant names by which the corpus calls them, with the
+// essays and maps that reference each — resolved here so the popup is self-contained.
+const toponyms = getToponyms().map((t) => ({
+  id: t.id,
+  modern: t.modern,
+  names: toponymNames(t),
+  historical: toponymNames(t).slice(1),
+  coords: t.coords,
+  pleiadesId: t.pleiadesId ?? null,
+  essays: t.essaySlugs.map((s) => ({ slug: s, title: essayMeta[s]?.title ?? s })),
+  maps: t.mapIds
+    .filter((id) => corpusTitle.has(id))
+    .map((id) => ({ id, title: corpusTitle.get(id)! })),
+}));
+
 const payload = {
   corpus: corpus.map((m) => ({
     ...m,
@@ -64,6 +81,7 @@ const payload = {
     defaultOn: l.defaultOn && l.available,
   })),
   coverage,
+  toponyms,
   minYear,
   maxYear,
 };
@@ -92,6 +110,12 @@ const payload = {
       <input id="am-year" class="am-year" type="range" min={minYear} max={maxYear} value={maxYear} step="1" />
       <output class="am-year-out" for="am-year">{formatYear(maxYear)}</output>
     </div>
+    {toponyms.length > 0 && (
+      <label class="am-topo-toggle">
+        <input type="checkbox" class="am-topo-check" />
+        <span>Ancient &amp; medieval place-names</span>
+      </label>
+    )}
   </div>
 
   <div class="am-stage">
@@ -170,6 +194,13 @@ const payload = {
 
   type Coverage = { id: string; title: string; ring: [number, number][] };
 
+  type Toponym = {
+    id: string; modern: string; names: string[]; historical: string[];
+    coords: [number, number]; pleiadesId: string | null;
+    essays: { slug: string; title: string }[];
+    maps: { id: string; title: string }[];
+  };
+
   function hasWebGL(): boolean {
     try {
       const c = document.createElement('canvas');
@@ -184,11 +215,12 @@ const payload = {
     const mapEl = root.querySelector<HTMLElement>('.am-map');
     if (!dataEl || !mapEl) return;
     const parsed = JSON.parse(dataEl.textContent || '{}') as {
-      corpus: Pt[]; layers?: LayerMeta[]; coverage?: Coverage[];
+      corpus: Pt[]; layers?: LayerMeta[]; coverage?: Coverage[]; toponyms?: Toponym[];
     };
     const corpus = parsed.corpus ?? [];
     const geoLayers = parsed.layers ?? [];
     const coverage = parsed.coverage ?? [];
+    const toponyms = parsed.toponyms ?? [];
 
     // Ray-casting point-in-ring, inlined (no turf.js) for the footprint filter.
     const pointInRing = (x: number, y: number, ring: [number, number][]) => {
@@ -208,6 +240,7 @@ const payload = {
     const coversSel = root.querySelector<HTMLSelectElement>('.am-covers');
     const yearIn = root.querySelector<HTMLInputElement>('.am-year')!;
     const yearOut = root.querySelector<HTMLOutputElement>('.am-year-out')!;
+    const topoCheck = root.querySelector<HTMLInputElement>('.am-topo-check');
     const list = root.querySelector<HTMLElement>('.am-list')!;
     const layerToggles = Array.from(
       root.querySelectorAll<HTMLInputElement>('.am-layer input[data-layer]'),
@@ -230,6 +263,10 @@ const payload = {
     const markers: { pt: Pt; marker?: MLMarker; li: HTMLElement }[] = [];
     const listItems = Array.from(list.querySelectorAll('li'));
     corpus.forEach((pt, i) => markers.push({ pt, li: listItems[i] }));
+
+    // A dedicated concordance pin set (KAN-75), kept entirely separate from both
+    // the corpus pins and the GeoLayer pipeline (addGeoLayer has no point branch).
+    const topoMarkers: { topo: Toponym; marker: MLMarker }[] = [];
 
     let map: MLMap | null = null;
     let styleReady = false;
@@ -315,6 +352,42 @@ const payload = {
           .addTo(map);
       }
 
+      // Toponym pins — a distinct marker set with multi-name popups, hidden until
+      // the reader toggles them on (or a #topo-<id> deep-link requests one).
+      for (const topo of toponyms) {
+        const el = document.createElement('button');
+        el.className = 'am-topo-pin';
+        el.setAttribute('aria-label', `${topo.modern} — historical names`);
+        const names = topo.historical.length
+          ? `<ul class="am-topo-names">${topo.historical
+              .map((n) => `<li>${n}</li>`)
+              .join('')}</ul>`
+          : '';
+        const links = [
+          ...topo.maps.map(
+            (m) => `<a class="am-pop-link" href="/collection/${m.id}/">${m.title} →</a>`,
+          ),
+          ...topo.essays.map(
+            (e) => `<a class="am-pop-link" href="/essays/${e.slug}/">${e.title} →</a>`,
+          ),
+        ].join('');
+        const pleiades = topo.pleiadesId
+          ? `<a class="am-pop-link" href="https://pleiades.stoa.org/places/${topo.pleiadesId}" target="_blank" rel="noopener">Pleiades ↗</a>`
+          : '';
+        const popup = new maplibregl.Popup({ offset: 12, closeButton: false }).setHTML(
+          `<div class="am-pop am-topo-pop"><span class="am-pop-year">Place-names</span>` +
+            `<strong class="am-pop-title">${topo.modern}</strong>` +
+            names + links + pleiades +
+            `</div>`,
+        );
+        const marker = new maplibregl.Marker({ element: el })
+          .setLngLat(topo.coords)
+          .setPopup(popup)
+          .addTo(map);
+        el.style.display = 'none'; // off until toggled / deep-linked
+        topoMarkers.push({ topo, marker });
+      }
+
       map.on('load', () => {
         styleReady = true;
         // Honour any default-on / already-checked layer toggles.
@@ -328,11 +401,35 @@ const payload = {
       });
     }
 
-    // Deep-link support: /atlas/#<map-id> flies to and opens that pin (KAN-68).
+    // Toggle the concordance pin set on/off as one group.
+    const setTopoVisible = (on: boolean) => {
+      for (const { marker } of topoMarkers) {
+        marker.getElement().style.display = on ? '' : 'none';
+        if (!on) marker.getPopup()?.remove();
+      }
+    };
+    topoCheck?.addEventListener('change', () => setTopoVisible(topoCheck.checked));
+
+    // Deep-link support: /atlas/#<map-id> flies to and opens that pin (KAN-68);
+    // /atlas/#topo-<id> reveals the concordance set and opens that place (KAN-75).
     // In the no-WebGL fallback it scrolls the corresponding list item into view.
     const focusFromHash = () => {
-      const id = decodeURIComponent(location.hash.replace(/^#/, ''));
-      if (!id) return;
+      const raw = decodeURIComponent(location.hash.replace(/^#/, ''));
+      if (!raw) return;
+      if (raw.startsWith('topo-')) {
+        const entry = topoMarkers.find((t) => t.topo.id === raw.slice('topo-'.length));
+        if (!entry || !map) return;
+        if (topoCheck && !topoCheck.checked) topoCheck.checked = true;
+        const open = () => {
+          setTopoVisible(true);
+          map!.flyTo({ center: entry.topo.coords, zoom: 5 });
+          if (!entry.marker.getPopup()?.isOpen()) entry.marker.togglePopup();
+        };
+        if (styleReady) open();
+        else map.once('load', open);
+        return;
+      }
+      const id = raw;
       const entry = markers.find((m) => m.pt.id === id);
       if (!entry) return;
       if (map) {
@@ -471,6 +568,47 @@ const payload = {
     transition: transform 160ms ease;
   }
   :global(.am-pin:hover) { transform: scale(1.35); }
+
+  /* Concordance pins — a diamond in a cooler hue, distinct from the round corpus pins. */
+  :global(.am-topo-pin) {
+    width: 0.8rem;
+    height: 0.8rem;
+    background: color-mix(in srgb, #7fa8c9 55%, #000);
+    border: 2px solid #7fa8c9;
+    cursor: pointer;
+    padding: 0;
+    transform: rotate(45deg);
+    box-shadow: 0 0 0 3px color-mix(in srgb, #7fa8c9 20%, transparent);
+    transition: transform 160ms ease;
+  }
+  :global(.am-topo-pin:hover) { transform: rotate(45deg) scale(1.3); }
+
+  .am-topo-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+    cursor: pointer;
+  }
+  .am-topo-toggle input { accent-color: #7fa8c9; cursor: pointer; }
+
+  :global(.am-topo-names) {
+    list-style: none;
+    margin: 0.1rem 0 0.2rem;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.5rem;
+  }
+  :global(.am-topo-names li) {
+    font-family: var(--font-body);
+    font-size: var(--step--1);
+    color: var(--ink);
+    font-style: italic;
+  }
+  :global(.am-topo-names li:not(:last-child))::after { content: '·'; margin-left: 0.5rem; color: var(--ink-muted); }
 
   /* Popups (MapLibre injects into <body>, so these are global) */
   :global(.maplibregl-popup-content) {
