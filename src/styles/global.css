@@ -42,6 +42,13 @@
     color: var(--canvas);
   }
 
+  /* Browser-default placeholders render at reduced opacity and often fail
+     contrast. Pin to a token that clears WCAG AA (ink-muted ≈ 8.9:1 on panel). */
+  ::placeholder {
+    color: var(--ink-muted);
+    opacity: 1;
+  }
+
   :focus-visible {
     outline: 2px solid var(--gold);
     outline-offset: 3px;
