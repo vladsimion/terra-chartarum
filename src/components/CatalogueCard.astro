@@ -32,7 +32,7 @@ const searchText = [map.title, map.region, essayTitle, map.cartographer, ...map.
   data-essays={map.essaySlug}
   data-title={searchText}
 >
-  <a href={`/essays/${map.essaySlug}/`} class="mcard-link">
+  <a href={`/collection/${map.id}/`} class="mcard-link">
     {cover ? (
       <div class="mcard-media">
         <img src={cover.src} alt={cover.alt} loading="lazy" decoding="async" />
