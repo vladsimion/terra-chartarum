@@ -1,5 +1,5 @@
 /**
- * Cross-essay corpus (ATLAS-501)
+ * Cross-essay corpus (ATLAS-501) + rich catalogue backbone (ATLAS-801 / KAN-65)
  *
  * A unified list of individual historical maps referenced across the essays,
  * each geolocated (where it depicts / was made) so the atlas can plot the whole
@@ -7,18 +7,88 @@
  *
  * This is authored data, not derived — it links a map to its source essay so
  * pins deep-link back into the essay that discusses it.
+ *
+ * The record schema is a *superset*: every field the collection catalogue will
+ * eventually surface (cartographer, provenance, bibliography, imagery…) is
+ * present but optional/defaulted, so today's 15 seed records validate unchanged.
+ * The atlas map only ever consumes the `MapCore` projection (see getCorpusCore),
+ * which keeps the heavyweight catalogue metadata out of the inline client
+ * payload it ships to every visitor.
  */
-export interface HistoricalMap {
-  id: string;
-  title: string;
-  year: number; // negative = BC
-  essaySlug: string;
-  region: string;
-  coords: [number, number]; // [lng, lat]
-  blurb?: string;
-}
+import { z } from 'astro:content';
 
-export const CORPUS: HistoricalMap[] = [
+/**
+ * A cited work — flexible enough for a one-line reference or a structured entry.
+ */
+export const BibEntrySchema = z.object({
+  citation: z.string(),
+  url: z.string().optional(),
+});
+
+/** A reproduction / scan of the map, with attribution + licensing. */
+export const MapImageSchema = z.object({
+  src: z.string(),
+  alt: z.string(),
+  credit: z.string().optional(),
+  license: z.string().optional(),
+});
+
+/**
+ * The full catalogue record. `MapCoreSchema` below picks the atlas-critical
+ * subset; everything outside that subset is optional and defaults to empty so
+ * the existing seed data (core fields only) parses without modification.
+ */
+export const HistoricalMapSchema = z.object({
+  // --- Atlas-critical core (mirrored by MapCoreSchema) ---
+  id: z.string(),
+  title: z.string(),
+  year: z.number(), // negative = BC
+  essaySlug: z.string(),
+  region: z.string(),
+  coords: z.tuple([z.number(), z.number()]), // [lng, lat]
+  blurb: z.string().optional(),
+
+  // --- Rich catalogue metadata (all optional / defaulted) ---
+  cartographer: z.string().optional(),
+  publisher: z.string().optional(),
+  engraver: z.string().optional(),
+  edition: z.string().optional(),
+  state: z.string().optional(),
+  dimensions: z.string().optional(), // e.g. "54 × 41 cm"
+  scale: z.string().optional(),
+  medium: z.string().optional(), // e.g. "copper engraving, hand-coloured"
+  condition: z.string().optional(),
+  provenance: z.string().optional(),
+  acquisition: z.string().optional(),
+  bibliography: z.array(BibEntrySchema).default([]),
+  relatedMapIds: z.array(z.string()).default([]),
+  relatedEssaySlugs: z.array(z.string()).default([]),
+  images: z.array(MapImageSchema).default([]),
+  tags: z.array(z.string()).default([]),
+  coveragePath: z.string().optional(), // GeoJSON asset outlining depicted extent
+});
+
+export type HistoricalMap = z.infer<typeof HistoricalMapSchema>;
+
+/**
+ * The atlas-critical subset — exactly the fields the MapLibre island needs to
+ * plot a pin, filter it, and deep-link back to its essay. AtlasMap serialises
+ * *this* shape into its inline payload so rich catalogue fields never inflate
+ * the bytes every visitor downloads.
+ */
+export const MapCoreSchema = HistoricalMapSchema.pick({
+  id: true,
+  title: true,
+  year: true,
+  essaySlug: true,
+  region: true,
+  coords: true,
+  blurb: true,
+});
+
+export type MapCore = z.infer<typeof MapCoreSchema>;
+
+const RAW: unknown[] = [
   // The Cartographic Sacrifice
   { id: 'babylonian', title: 'Babylonian World Map', year: -600, essaySlug: 'cartography', region: 'Mesopotamia', coords: [44.42, 32.54], blurb: 'The Imago Mundi — earth as a disc ringed by the bitter river.' },
   { id: 'eratosthenes', title: "Eratosthenes' World", year: -220, essaySlug: 'cartography', region: 'Alexandria', coords: [29.92, 31.2], blurb: 'A measured earth: the first grid of parallels and meridians.' },
@@ -43,8 +113,24 @@ export const CORPUS: HistoricalMap[] = [
   { id: 'specht', title: 'Specht Map of Dacia', year: 1791, essaySlug: 'dacia', region: 'Romania', coords: [26.1, 44.43], blurb: 'Habsburg military survey turns territory into administered grid.' },
 ];
 
+// Validated at module load so a malformed record fails the build, not the browser.
+export const CORPUS: HistoricalMap[] = RAW.map((m) => HistoricalMapSchema.parse(m));
+
 export function getCorpus(): HistoricalMap[] {
   return [...CORPUS].sort((a, b) => a.year - b.year);
+}
+
+/**
+ * Atlas-critical projection (ATLAS-802 / KAN-66). AtlasMap consumes *this* so
+ * rich catalogue fields never enter the inline client payload. Sorted like
+ * getCorpus for a stable pin/list order.
+ */
+export function getCorpusCore(): MapCore[] {
+  return getCorpus().map((m) => MapCoreSchema.parse(m));
+}
+
+export function getMapById(id: string): HistoricalMap | undefined {
+  return CORPUS.find((m) => m.id === id);
 }
 
 export function corpusYearRange(): [number, number] {

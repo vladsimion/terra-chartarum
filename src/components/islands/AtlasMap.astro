@@ -13,11 +13,13 @@
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { getCorpus, corpusYearRange } from '../../lib/corpus';
+import { getCorpusCore, corpusYearRange } from '../../lib/corpus';
 import { getGeoLayers } from '../../lib/geo';
 import { getEssays, formatYear } from '../../lib/registry';
 
-const corpus = getCorpus();
+// Only the atlas-critical projection ships to the client — rich catalogue
+// metadata (provenance, bibliography, imagery) stays server-side (KAN-66).
+const corpus = getCorpusCore();
 const layers = getGeoLayers();
 const essays = await getEssays();
 const [minYear, maxYear] = corpusYearRange();
