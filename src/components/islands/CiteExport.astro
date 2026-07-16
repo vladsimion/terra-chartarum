@@ -1,0 +1,139 @@
+---
+// Citation export island (ATLAS-1104 / KAN-79). Renders format tabs + a copy
+// button on the map detail page. The strings are built client-side from the
+// serialised CiteInput via the pure formatters in src/lib/cite.ts, so this ships
+// no new runtime dependency and no citation text in the initial payload.
+import type { CiteInput } from '../../lib/cite';
+
+interface Props {
+  input: CiteInput;
+}
+const { input } = Astro.props;
+---
+
+<div class="cite" data-cite data-input={JSON.stringify(input)}>
+  <div class="cite-tabs" role="tablist" aria-label="Citation format">
+    <button type="button" role="tab" data-cite-fmt="bibtex" aria-selected="true">BibTeX</button>
+    <button type="button" role="tab" data-cite-fmt="ris" aria-selected="false">RIS</button>
+    <button type="button" role="tab" data-cite-fmt="chicago" aria-selected="false">Chicago</button>
+  </div>
+  <pre class="cite-out" data-cite-out tabindex="0"></pre>
+  <div class="cite-actions">
+    <button type="button" class="cite-copy" data-cite-copy>Copy</button>
+    <span class="cite-status" data-cite-status aria-live="polite"></span>
+  </div>
+</div>
+
+<script>
+  import { formatCitation, type CiteFormat, type CiteInput } from '../../lib/cite';
+
+  function initCite(root: HTMLElement) {
+    if (root.dataset.citeReady) return; // guard re-binding on view transitions
+    root.dataset.citeReady = 'true';
+
+    let input: CiteInput;
+    try {
+      input = JSON.parse(root.dataset.input ?? '{}') as CiteInput;
+    } catch {
+      return;
+    }
+
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-cite-fmt]'));
+    const out = root.querySelector<HTMLElement>('[data-cite-out]')!;
+    const copy = root.querySelector<HTMLButtonElement>('[data-cite-copy]')!;
+    const status = root.querySelector<HTMLElement>('[data-cite-status]')!;
+    let fmt: CiteFormat = 'bibtex';
+
+    function render() {
+      out.textContent = formatCitation(input, fmt);
+      status.textContent = '';
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        fmt = (tab.dataset.citeFmt as CiteFormat) ?? 'bibtex';
+        tabs.forEach((t) => t.setAttribute('aria-selected', String(t === tab)));
+        render();
+      });
+    });
+
+    copy.addEventListener('click', async () => {
+      const text = out.textContent ?? '';
+      try {
+        await navigator.clipboard.writeText(text);
+        status.textContent = 'Copied.';
+      } catch {
+        // Fallback for browsers without the async clipboard API / no permission.
+        const sel = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(out);
+        sel?.removeAllRanges();
+        sel?.addRange(range);
+        status.textContent = document.execCommand('copy') ? 'Copied.' : 'Press ⌘/Ctrl-C to copy.';
+      }
+    });
+
+    render();
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-cite]').forEach(initCite);
+</script>
+
+<style>
+  .cite {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    padding: 1rem 1.1rem;
+  }
+  .cite-tabs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.8rem; }
+  .cite-tabs button {
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.06em;
+    padding: 0.35rem 0.7rem;
+    cursor: pointer;
+  }
+  .cite-tabs button:hover { color: var(--ink); border-color: var(--gold); }
+  .cite-tabs button[aria-selected='true'] {
+    color: var(--canvas);
+    background: var(--gold);
+    border-color: var(--gold);
+  }
+  .cite-out {
+    margin: 0 0 0.8rem;
+    padding: 0.8rem 0.9rem;
+    background: var(--canvas);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-x: auto;
+  }
+  .cite-actions { display: flex; align-items: center; gap: 0.75rem; }
+  .cite-copy {
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.06em;
+    padding: 0.4rem 0.9rem;
+    cursor: pointer;
+  }
+  .cite-copy:hover { border-color: var(--gold); color: var(--gold); }
+  .cite-status {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+  }
+</style>

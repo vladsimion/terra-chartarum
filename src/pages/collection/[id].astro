@@ -5,6 +5,8 @@ import type { HistoricalMap } from '../../lib/corpus';
 import { getCartographerById } from '../../lib/cartographers';
 import { resolveMapBibliography } from '../../lib/bibliography';
 import { getEssays, formatYear } from '../../lib/registry';
+import CiteExport from '../../components/islands/CiteExport.astro';
+import type { CiteInput } from '../../lib/cite';
 
 export async function getStaticPaths() {
   return getCorpus().map((map) => ({ params: { id: map.id }, props: { map } }));
@@ -53,6 +55,18 @@ const relatedEssaySlugs = Array.from(
 ).filter((slug) => essayMeta[slug]);
 
 const bibliography = resolveMapBibliography(map);
+
+// Citation payload (KAN-79) — resolved author + canonical URL; the island builds
+// the BibTeX/RIS/Chicago strings client-side from this.
+const citeInput: CiteInput = {
+  id: map.id,
+  title: map.title,
+  year: map.year,
+  author: cartographerName,
+  publisher: map.publisher,
+  place: map.region,
+  url: new URL(`/collection/${map.id}/`, Astro.site).toString(),
+};
 
 const cover = map.images[0];
 ---
@@ -171,6 +185,11 @@ const cover = map.images[0];
         </ul>
       </section>
     )}
+
+    <section class="detail-block">
+      <h2>Cite this map</h2>
+      <CiteExport input={citeInput} />
+    </section>
   </article>
 </PortalLayout>
 
