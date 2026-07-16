@@ -5,10 +5,14 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  // Portable static output; deploy target chosen later (ATLAS-605).
+  // Portable static output, deployed to Cloudflare Pages via git integration
+  // (build: `npm run build`, output dir: `dist`). See KAN-56.
   output: 'static',
-  // TODO(ATLAS-605): set the real production origin before launch.
-  site: 'https://atlas.example.com',
+  // Production origin (ATLAS-605) — Cloudflare Pages default subdomain. Drives
+  // canonical tags, absolute OG image URLs, the sitemap, RSS, and citation URLs.
+  // If the CF project is named something other than `terra-chartarum`, update
+  // this (and public/robots.txt) to match its <project>.pages.dev subdomain.
+  site: 'https://terra-chartarum.pages.dev',
   integrations: [
     mdx(),
     tailwind({ applyBaseStyles: false }),
