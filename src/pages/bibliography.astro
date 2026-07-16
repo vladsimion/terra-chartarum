@@ -1,0 +1,129 @@
+---
+import PortalLayout from '../layouts/PortalLayout.astro';
+import { getFullBibliography, getCitingMaps } from '../lib/bibliography';
+import { formatYear } from '../lib/registry';
+
+const entries = getFullBibliography().map((b) => ({
+  entry: b,
+  citing: getCitingMaps(b.id),
+}));
+---
+
+<PortalLayout
+  title="Bibliography"
+  description="Every scholarly work cited across the collection, deduped and back-linked to the maps that cite it."
+>
+  <section class="shell biblio">
+    <header class="biblio-head">
+      <p class="eyebrow">Sources</p>
+      <h1>Bibliography</h1>
+      <p class="lede">
+        {entries.length} works cited across the collection, sorted by author.
+        Each entry links back to the maps that cite it.
+      </p>
+    </header>
+
+    <div class="controls" role="search">
+      <input
+        id="q"
+        type="search"
+        placeholder="Filter by author, title, or year…"
+        aria-label="Filter the bibliography"
+        autocomplete="off"
+      />
+    </div>
+    <p id="count" class="count" aria-live="polite"></p>
+
+    <ol class="biblist" id="biblist">
+      {entries.map(({ entry, citing }) => (
+        <li
+          class="bibitem"
+          data-text={[entry.author, entry.title, entry.year, entry.citation]
+            .filter(Boolean)
+            .join(' ')
+            .toLowerCase()}
+        >
+          <p class="cite">
+            {entry.url ? <a href={entry.url}>{entry.citation}</a> : entry.citation}
+          </p>
+          {citing.length > 0 && (
+            <p class="citedby">
+              Cited by:{' '}
+              {citing.map((m, i) => (
+                <>
+                  {i > 0 && <span aria-hidden="true">, </span>}
+                  <a href={`/collection/${m.id}/`}>{m.title}</a>
+                  <span class="muted"> ({formatYear(m.year)})</span>
+                </>
+              ))}
+            </p>
+          )}
+        </li>
+      ))}
+    </ol>
+    <p id="empty" class="empty" hidden>No sources match that filter.</p>
+  </section>
+</PortalLayout>
+
+<script>
+  function initBiblio() {
+    const list = document.getElementById('biblist');
+    if (!list) return;
+    const items = Array.from(list.querySelectorAll<HTMLElement>('.bibitem'));
+    const q = document.getElementById('q') as HTMLInputElement;
+    const count = document.getElementById('count');
+    const empty = document.getElementById('empty');
+
+    function apply() {
+      const term = (q?.value ?? '').trim().toLowerCase();
+      let shown = 0;
+      for (const item of items) {
+        const ok = !term || (item.dataset.text ?? '').includes(term);
+        item.hidden = !ok;
+        if (ok) shown++;
+      }
+      if (count) count.textContent = `${shown} of ${items.length} works`;
+      if (empty) empty.hidden = shown !== 0;
+    }
+
+    q?.addEventListener('input', apply);
+    apply();
+  }
+
+  initBiblio();
+  document.addEventListener('astro:page-load', initBiblio);
+</script>
+
+<style>
+  .biblio { padding-block: clamp(2.5rem, 6vw, 4rem); max-width: var(--prose-max); }
+  .biblio-head { margin-bottom: 2rem; }
+  .biblio-head h1 { font-size: var(--step-4); margin: 0.3rem 0 0.75rem; }
+  .lede { color: var(--ink-muted); font-size: var(--step-1); margin: 0; }
+  .controls { margin-bottom: 1rem; }
+  .controls input[type='search'] {
+    width: 100%;
+    background: var(--canvas);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--ink);
+    padding: 0.6rem 0.8rem;
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+  }
+  .count {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+    margin: 0 0 1.5rem;
+  }
+  .biblist { margin: 0; padding-left: 1.4rem; display: grid; gap: 1.4rem; }
+  .bibitem { color: var(--ink); }
+  .cite { margin: 0 0 0.35rem; font-size: var(--step-0); line-height: 1.5; }
+  .cite a { color: var(--gold); }
+  .cite a:hover { color: var(--ink); }
+  .citedby { margin: 0; font-size: var(--step--1); color: var(--ink-muted); }
+  .citedby a { color: var(--gold); }
+  .citedby a:hover { color: var(--ink); }
+  .muted { color: var(--ink-muted); }
+  .empty { color: var(--ink-muted); font-style: italic; padding: 2rem 0; }
+</style>

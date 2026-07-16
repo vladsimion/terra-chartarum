@@ -18,12 +18,21 @@
 import { z } from 'astro:content';
 
 /**
- * A cited work — flexible enough for a one-line reference or a structured entry.
+ * An inline citation on a map — a self-contained reference that isn't (yet) in
+ * the shared bibliography registry. Records may instead cite a registry entry
+ * by its string key; see `MapBibRefSchema` (KAN-70).
  */
-export const BibEntrySchema = z.object({
+export const InlineBibSchema = z.object({
   citation: z.string(),
   url: z.string().optional(),
+  author: z.string().optional(),
+  year: z.number().optional(),
+  title: z.string().optional(),
 });
+
+/** A map cites a work either by shared-registry key (string) or inline. */
+export const MapBibRefSchema = z.union([z.string(), InlineBibSchema]);
+export type MapBibRef = z.infer<typeof MapBibRefSchema>;
 
 /** A reproduction / scan of the map, with attribution + licensing. */
 export const MapImageSchema = z.object({
@@ -61,7 +70,7 @@ export const HistoricalMapSchema = z.object({
   condition: z.string().optional(),
   provenance: z.string().optional(),
   acquisition: z.string().optional(),
-  bibliography: z.array(BibEntrySchema).default([]),
+  bibliography: z.array(MapBibRefSchema).default([]),
   relatedMapIds: z.array(z.string()).default([]),
   relatedEssaySlugs: z.array(z.string()).default([]),
   images: z.array(MapImageSchema).default([]),
@@ -91,17 +100,17 @@ export type MapCore = z.infer<typeof MapCoreSchema>;
 
 const RAW: unknown[] = [
   // The Cartographic Sacrifice
-  { id: 'babylonian', title: 'Babylonian World Map', year: -600, essaySlug: 'cartography', region: 'Mesopotamia', coords: [44.42, 32.54], blurb: 'The Imago Mundi — earth as a disc ringed by the bitter river.' },
+  { id: 'babylonian', title: 'Babylonian World Map', year: -600, essaySlug: 'cartography', region: 'Mesopotamia', coords: [44.42, 32.54], blurb: 'The Imago Mundi — earth as a disc ringed by the bitter river.', bibliography: ['harley-2001', 'brotton-2012'] },
   { id: 'eratosthenes', title: "Eratosthenes' World", year: -220, essaySlug: 'cartography', region: 'Alexandria', coords: [29.92, 31.2], blurb: 'A measured earth: the first grid of parallels and meridians.' },
   { id: 'hereford', title: 'Hereford Mappa Mundi', year: 1300, essaySlug: 'cartography', region: 'England', coords: [-2.72, 52.06], blurb: 'A theology of space with Jerusalem at the centre.' },
-  { id: 'mercator', title: 'Mercator Projection', year: 1569, essaySlug: 'cartography', region: 'Duisburg', coords: [6.76, 51.43], blurb: 'Rhumb lines made straight — navigation bought with area.', cartographer: 'Gerardus Mercator', cartographerId: 'mercator' },
-  { id: 'cassini', title: 'Carte de Cassini', year: 1744, essaySlug: 'cartography', region: 'France', coords: [2.35, 48.85], blurb: 'Triangulation turns a kingdom into a survey.', cartographer: 'César-François Cassini de Thury', cartographerId: 'cassini' },
+  { id: 'mercator', title: 'Mercator Projection', year: 1569, essaySlug: 'cartography', region: 'Duisburg', coords: [6.76, 51.43], blurb: 'Rhumb lines made straight — navigation bought with area.', cartographer: 'Gerardus Mercator', cartographerId: 'mercator', bibliography: ['snyder-1993', 'brotton-2012'] },
+  { id: 'cassini', title: 'Carte de Cassini', year: 1744, essaySlug: 'cartography', region: 'France', coords: [2.35, 48.85], blurb: 'Triangulation turns a kingdom into a survey.', cartographer: 'César-François Cassini de Thury', cartographerId: 'cassini', bibliography: ['edney-2019'] },
   { id: 'blue-marble', title: 'The Blue Marble', year: 1972, essaySlug: 'cartography', region: 'Global', coords: [0, 0], blurb: 'Earth seen whole, from outside — the photographic map.' },
 
   // La Rotta e il Catasto (Venice vs Sicily)
   { id: 'carta-pisana', title: 'Carta Pisana', year: 1290, essaySlug: 'venice-sicily', region: 'Mediterranean', coords: [9.5, 41], blurb: 'The oldest surviving portolan — the sea as a web of bearings.' },
   { id: 'fra-mauro', title: 'Fra Mauro Map', year: 1450, essaySlug: 'venice-sicily', region: 'Venice', coords: [12.34, 45.44], blurb: "Venice's encyclopaedic world, drawn south-up." },
-  { id: 'idrisi', title: "Al-Idrisi's Tabula Rogeriana", year: 1154, essaySlug: 'venice-sicily', region: 'Sicily', coords: [13.36, 38.12], blurb: 'Made at the Norman court of Palermo for Roger II.', cartographer: 'Muhammad al-Idrisi', cartographerId: 'al-idrisi' },
+  { id: 'idrisi', title: "Al-Idrisi's Tabula Rogeriana", year: 1154, essaySlug: 'venice-sicily', region: 'Sicily', coords: [13.36, 38.12], blurb: 'Made at the Norman court of Palermo for Roger II.', cartographer: 'Muhammad al-Idrisi', cartographerId: 'al-idrisi', bibliography: ['harley-2001', { citation: 'S. Maqbul Ahmad, "Cartography of al-Sharīf al-Idrīsī", in The History of Cartography, vol. 2.1 (1992), 156–174.', author: 'Ahmad, S. Maqbul', year: 1992, title: 'Cartography of al-Sharīf al-Idrīsī' }] },
 
   // Speculum Chartarum
   { id: 'ptolemy', title: 'Ptolemy Geographia', year: 150, essaySlug: 'speculum', region: 'Alexandria', coords: [29.92, 31.2], blurb: 'Coordinates for 8,000 places — cartography as a table of numbers.' },
