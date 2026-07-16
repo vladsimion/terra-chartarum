@@ -3,6 +3,7 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
 import { getCorpus, getMapById, centuryLabel } from '../../lib/corpus';
 import type { HistoricalMap } from '../../lib/corpus';
 import { getCartographerById } from '../../lib/cartographers';
+import { resolveMapBibliography } from '../../lib/bibliography';
 import { getEssays, formatYear } from '../../lib/registry';
 
 export async function getStaticPaths() {
@@ -50,6 +51,8 @@ const relatedMaps = map.relatedMapIds
 const relatedEssaySlugs = Array.from(
   new Set([map.essaySlug, ...map.relatedEssaySlugs]),
 ).filter((slug) => essayMeta[slug]);
+
+const bibliography = resolveMapBibliography(map);
 
 const cover = map.images[0];
 ---
@@ -158,11 +161,11 @@ const cover = map.images[0];
       </section>
     )}
 
-    {map.bibliography.length > 0 && (
+    {bibliography.length > 0 && (
       <section class="detail-block">
         <h2>Bibliography</h2>
         <ul class="biblist">
-          {map.bibliography.map((b) => (
+          {bibliography.map((b) => (
             <li>{b.url ? <a href={b.url}>{b.citation}</a> : b.citation}</li>
           ))}
         </ul>
