@@ -15,6 +15,7 @@ import { join } from 'node:path';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { getCorpusCore, corpusYearRange } from '../../lib/corpus';
 import { getGeoLayers } from '../../lib/geo';
+import { coveragePolygons } from '../../lib/coverage';
 import { getEssays, formatYear } from '../../lib/registry';
 
 // Only the atlas-critical projection ships to the client — rich catalogue
@@ -23,6 +24,14 @@ const corpus = getCorpusCore();
 const layers = getGeoLayers();
 const essays = await getEssays();
 const [minYear, maxYear] = corpusYearRange();
+
+// Depicted-extent footprints (KAN-74): each map's coverage ring plus its title,
+// in corpus (chronological) order, for the atlas "depicted within" filter.
+const corpusTitle = new Map(corpus.map((m) => [m.id, m.title] as const));
+const coverage = coveragePolygons()
+  .filter((c) => corpusTitle.has(c.mapId))
+  .map((c) => ({ id: c.mapId, title: corpusTitle.get(c.mapId)!, ring: c.ring }))
+  .sort((a, b) => corpus.findIndex((m) => m.id === a.id) - corpus.findIndex((m) => m.id === b.id));
 
 // A layer is toggleable only when its asset is actually on disk under /public.
 const publicDir = join(process.cwd(), 'public');
@@ -54,6 +63,7 @@ const payload = {
     available: l.available,
     defaultOn: l.defaultOn && l.available,
   })),
+  coverage,
   minYear,
   maxYear,
 };
@@ -71,6 +81,12 @@ const payload = {
       <option value="">All essays</option>
       {essays.map((e) => <option value={e.slug}>{e.data.title}</option>)}
     </select>
+    {coverage.length > 0 && (
+      <select class="am-covers" aria-label="Show only maps depicted within another map's extent">
+        <option value="">Depicted anywhere</option>
+        {coverage.map((c) => <option value={c.id}>Within {c.title}</option>)}
+      </select>
+    )}
     <div class="am-time">
       <label for="am-year">Reveal through</label>
       <input id="am-year" class="am-year" type="range" min={minYear} max={maxYear} value={maxYear} step="1" />
@@ -152,6 +168,8 @@ const payload = {
     sourceLayer: string | null; available: boolean; defaultOn: boolean;
   };
 
+  type Coverage = { id: string; title: string; ring: [number, number][] };
+
   function hasWebGL(): boolean {
     try {
       const c = document.createElement('canvas');
@@ -166,13 +184,28 @@ const payload = {
     const mapEl = root.querySelector<HTMLElement>('.am-map');
     if (!dataEl || !mapEl) return;
     const parsed = JSON.parse(dataEl.textContent || '{}') as {
-      corpus: Pt[]; layers?: LayerMeta[];
+      corpus: Pt[]; layers?: LayerMeta[]; coverage?: Coverage[];
     };
     const corpus = parsed.corpus ?? [];
     const geoLayers = parsed.layers ?? [];
+    const coverage = parsed.coverage ?? [];
+
+    // Ray-casting point-in-ring, inlined (no turf.js) for the footprint filter.
+    const pointInRing = (x: number, y: number, ring: [number, number][]) => {
+      let inside = false;
+      for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        const [xi, yi] = ring[i];
+        const [xj, yj] = ring[j];
+        if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) {
+          inside = !inside;
+        }
+      }
+      return inside;
+    };
 
     const search = root.querySelector<HTMLInputElement>('.am-search')!;
     const essaySel = root.querySelector<HTMLSelectElement>('.am-essay')!;
+    const coversSel = root.querySelector<HTMLSelectElement>('.am-covers');
     const yearIn = root.querySelector<HTMLInputElement>('.am-year')!;
     const yearOut = root.querySelector<HTMLOutputElement>('.am-year-out')!;
     const list = root.querySelector<HTMLElement>('.am-list')!;
@@ -339,6 +372,10 @@ const payload = {
       const q = search.value.trim().toLowerCase();
       const slug = essaySel.value;
       const cutoff = Number(yearIn.value);
+      // Footprint filter: keep only pins that fall inside the selected map's ring.
+      const footprint = coversSel?.value
+        ? coverage.find((c) => c.id === coversSel.value)
+        : undefined;
       yearOut.textContent = fmt(cutoff);
       for (const { pt, marker, li } of markers) {
         const matchText =
@@ -348,7 +385,9 @@ const payload = {
           pt.essayTitle.toLowerCase().includes(q);
         const matchEssay = !slug || pt.essaySlug === slug;
         const matchYear = pt.year <= cutoff;
-        const show = matchText && matchEssay && matchYear;
+        const matchFootprint =
+          !footprint || pointInRing(pt.coords[0], pt.coords[1], footprint.ring);
+        const show = matchText && matchEssay && matchYear && matchFootprint;
         if (marker) marker.getElement().style.display = show ? '' : 'none';
         li.style.display = show ? '' : 'none';
       }
@@ -357,6 +396,7 @@ const payload = {
 
     search.addEventListener('input', apply);
     essaySel.addEventListener('change', apply);
+    coversSel?.addEventListener('change', apply);
     yearIn.addEventListener('input', apply);
     apply();
   }
@@ -381,7 +421,8 @@ const payload = {
     align-items: center;
   }
   .am-search,
-  .am-essay {
+  .am-essay,
+  .am-covers {
     background: var(--panel);
     border: 1px solid var(--line);
     border-radius: var(--radius);

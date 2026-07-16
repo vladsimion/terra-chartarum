@@ -1,0 +1,530 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "mapId": "babylonian",
+        "title": "Babylonian World Map",
+        "region": "Mesopotamia"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              35,
+              25
+            ],
+            [
+              55,
+              25
+            ],
+            [
+              55,
+              40
+            ],
+            [
+              35,
+              40
+            ],
+            [
+              35,
+              25
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mapId": "eratosthenes",
+        "title": "Eratosthenes' World",
+        "region": "Alexandria"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -15,
+              5
+            ],
+            [
+              90,
+              5
+            ],
+            [
+              90,
+              60
+            ],
+            [
+              -15,
+              60
+            ],
+            [
+              -15,
+              5
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mapId": "idrisi",
+        "title": "Al-Idrisi's Tabula Rogeriana",
+        "region": "Sicily"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -20,
+              -5
+            ],
+            [
+              110,
+              -5
+            ],
+            [
+              110,
+              62
+            ],
+            [
+              -20,
+              62
+            ],
+            [
+              -20,
+              -5
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mapId": "ptolemy",
+        "title": "Ptolemy Geographia",
+        "region": "Alexandria"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -15,
+              -15
+            ],
+            [
+              140,
+              -15
+            ],
+            [
+              140,
+              65
+            ],
+            [
+              -15,
+              65
+            ],
+            [
+              -15,
+              -15
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mapId": "peutinger",
+        "title": "Tabula Peutingeriana",
+        "region": "Roman Empire"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -10,
+              18
+            ],
+            [
+              100,
+              18
+            ],
+            [
+              100,
+              58
+            ],
+            [
+              -10,
+              58
+            ],
+            [
+              -10,
+              18
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mapId": "hereford",
+        "title": "Hereford Mappa Mundi",
+        "region": "England"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -20,
+              -10
+            ],
+            [
+              120,
+              -10
+            ],
+            [
+              120,
+              70
+            ],
+            [
+              -20,
+              70
+            ],
+            [
+              -20,
+              -10
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mapId": "carta-pisana",
+        "title": "Carta Pisana",
+        "region": "Mediterranean"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -12,
+              28
+            ],
+            [
+              42,
+              28
+            ],
+            [
+              42,
+              48
+            ],
+            [
+              -12,
+              48
+            ],
+            [
+              -12,
+              28
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mapId": "fra-mauro",
+        "title": "Fra Mauro Map",
+        "region": "Venice"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -25,
+              -40
+            ],
+            [
+              140,
+              -40
+            ],
+            [
+              140,
+              72
+            ],
+            [
+              -25,
+              72
+            ],
+            [
+              -25,
+              -40
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mapId": "honterus",
+        "title": "Honterus' Transylvania",
+        "region": "Transylvania"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              22,
+              45
+            ],
+            [
+              27,
+              45
+            ],
+            [
+              27,
+              48
+            ],
+            [
+              22,
+              48
+            ],
+            [
+              22,
+              45
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mapId": "waldseemuller",
+        "title": "Waldseemüller World Map",
+        "region": "Saint-Dié"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -140,
+              -60
+            ],
+            [
+              160,
+              -60
+            ],
+            [
+              160,
+              78
+            ],
+            [
+              -140,
+              78
+            ],
+            [
+              -140,
+              -60
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mapId": "mercator",
+        "title": "Mercator Projection",
+        "region": "Duisburg"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -170,
+              -80
+            ],
+            [
+              180,
+              -80
+            ],
+            [
+              180,
+              83
+            ],
+            [
+              -170,
+              83
+            ],
+            [
+              -170,
+              -80
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mapId": "ortelius",
+        "title": "Ortelius Theatrum",
+        "region": "Antwerp"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -175,
+              -80
+            ],
+            [
+              180,
+              -80
+            ],
+            [
+              180,
+              82
+            ],
+            [
+              -175,
+              82
+            ],
+            [
+              -175,
+              -80
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mapId": "cassini",
+        "title": "Carte de Cassini",
+        "region": "France"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -5,
+              41
+            ],
+            [
+              9,
+              41
+            ],
+            [
+              9,
+              51
+            ],
+            [
+              -5,
+              51
+            ],
+            [
+              -5,
+              41
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mapId": "specht",
+        "title": "Specht Map of Dacia",
+        "region": "Romania"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              20,
+              43
+            ],
+            [
+              30,
+              43
+            ],
+            [
+              30,
+              48
+            ],
+            [
+              20,
+              48
+            ],
+            [
+              20,
+              43
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mapId": "blue-marble",
+        "title": "The Blue Marble",
+        "region": "Global"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -180,
+              -85
+            ],
+            [
+              180,
+              -85
+            ],
+            [
+              180,
+              85
+            ],
+            [
+              -180,
+              85
+            ],
+            [
+              -180,
+              -85
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -3,6 +3,7 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
 import CatalogueCard from '../../components/CatalogueCard.astro';
 import { getCorpus, centuryLabel } from '../../lib/corpus';
 import { getEssays } from '../../lib/registry';
+import { regionsCoveredByMap, regionsWithCoverage } from '../../lib/coverage';
 
 const maps = getCorpus();
 const essays = await getEssays();
@@ -28,6 +29,11 @@ const tags = uniqSorted(maps.flatMap((m) => m.tags));
 const essayOptions = essays
   .filter((e) => maps.some((m) => m.essaySlug === e.slug))
   .map((e) => ({ slug: e.slug, title: e.data.title }));
+
+// "Covers …" facet (KAN-74): which regions each map's footprint depicts, and
+// the union of covered regions for the dropdown options.
+const coversByMap = Object.fromEntries(maps.map((m) => [m.id, regionsCoveredByMap(m.id)]));
+const coverageRegions = regionsWithCoverage();
 ---
 
 <PortalLayout
@@ -91,6 +97,15 @@ const essayOptions = essays
           </select>
         </div>
       )}
+      {coverageRegions.length > 0 && (
+        <div class="facet">
+          <label for="covers">Covers</label>
+          <select id="covers" data-facet="covers">
+            <option value="">Any place</option>
+            {coverageRegions.map((r) => <option value={r}>{r}</option>)}
+          </select>
+        </div>
+      )}
       <button id="reset" type="button">Reset</button>
     </div>
 
@@ -102,6 +117,7 @@ const essayOptions = essays
           map={m}
           essayTitle={essayMeta[m.essaySlug]?.title ?? m.essaySlug}
           accent={essayMeta[m.essaySlug]?.accent}
+          covers={coversByMap[m.id]}
         />
       ))}
     </div>
