@@ -34,12 +34,19 @@ export const InlineBibSchema = z.object({
 export const MapBibRefSchema = z.union([z.string(), InlineBibSchema]);
 export type MapBibRef = z.infer<typeof MapBibRefSchema>;
 
-/** A reproduction / scan of the map, with attribution + licensing. */
+/**
+ * A reproduction / scan of the map, with attribution + licensing. When a
+ * high-resolution tiled source is available (KAN-69), `dziTileSource` (a DeepZoom
+ * .dzi produced by scripts/build-map-tiles.mjs) or `iiif` (an IIIF info.json)
+ * opts the image into the pan/zoom viewer; `src` stays the static fallback.
+ */
 export const MapImageSchema = z.object({
   src: z.string(),
   alt: z.string(),
   credit: z.string().optional(),
   license: z.string().optional(),
+  dziTileSource: z.string().optional(),
+  iiif: z.string().optional(),
 });
 
 /**
