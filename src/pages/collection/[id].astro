@@ -2,6 +2,7 @@
 import PortalLayout from '../../layouts/PortalLayout.astro';
 import { getCorpus, getMapById, centuryLabel } from '../../lib/corpus';
 import type { HistoricalMap } from '../../lib/corpus';
+import { getCartographerById } from '../../lib/cartographers';
 import { getEssays, formatYear } from '../../lib/registry';
 
 export async function getStaticPaths() {
@@ -20,10 +21,15 @@ const essayMeta = Object.fromEntries(
 const accent = essayMeta[map.essaySlug]?.accent ?? 'var(--gold)';
 const sourceEssayTitle = essayMeta[map.essaySlug]?.title ?? map.essaySlug;
 
+// Cartographer resolves to a registry profile when linked (KAN-71/72); the
+// name falls back to the free-text field otherwise.
+const cartographer = map.cartographerId ? getCartographerById(map.cartographerId) : undefined;
+const cartographerName = cartographer?.name ?? map.cartographer;
+
 // Metadata rows — only rendered when a value is present, so the sparse seed
-// records don't show a table full of blanks (KAN-68).
+// records don't show a table full of blanks (KAN-68). Cartographer is handled
+// separately so it can render as a link to the profile.
 const metaRows: [string, string | undefined][] = [
-  ['Cartographer', map.cartographer],
   ['Publisher', map.publisher],
   ['Engraver', map.engraver],
   ['Edition', map.edition],
@@ -62,7 +68,15 @@ const cover = map.images[0];
     <header class="detail-head">
       <p class="eyebrow">{formatYear(map.year)} · {centuryLabel(map.year)} · {map.region}</p>
       <h1>{map.title}</h1>
-      {map.cartographer && <p class="detail-author">{map.cartographer}</p>}
+      {cartographerName && (
+        <p class="detail-author">
+          {cartographer ? (
+            <a href={`/cartographers/${cartographer.id}/`}>{cartographerName}</a>
+          ) : (
+            cartographerName
+          )}
+        </p>
+      )}
       {map.blurb && <p class="lede">{map.blurb}</p>}
       <p class="detail-actions">
         <a class="btn" href={`/atlas/#${map.id}`}>View on the atlas →</a>
@@ -82,11 +96,23 @@ const cover = map.images[0];
       </figure>
     )}
 
-    {rows.length > 0 && (
+    {(rows.length > 0 || cartographerName) && (
       <section class="detail-block">
         <h2>Catalogue record</h2>
         <table class="meta">
           <tbody>
+            {cartographerName && (
+              <tr>
+                <th scope="row">Cartographer</th>
+                <td>
+                  {cartographer ? (
+                    <a href={`/cartographers/${cartographer.id}/`}>{cartographerName}</a>
+                  ) : (
+                    cartographerName
+                  )}
+                </td>
+              </tr>
+            )}
             {rows.map(([label, value]) => (
               <tr>
                 <th scope="row">{label}</th>
