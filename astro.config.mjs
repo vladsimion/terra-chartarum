@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import tailwind from '@astrojs/tailwind';
+import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
@@ -11,8 +12,9 @@ export default defineConfig({
   integrations: [
     mdx(),
     tailwind({ applyBaseStyles: false }),
-    // TODO(ATLAS-205): re-add @astrojs/sitemap (+ robots.txt, RSS) — pin a
-    // version compatible with this Astro release.
+    // Pinned to 3.2.1: later 3.x depend on the `astro:routes:resolved` hook,
+    // which Astro 4.16 doesn't emit (bump when moving to Astro 5). See ATLAS-205.
+    sitemap(),
   ],
   // Seamless atlas -> essay navigation is enabled per-page via <ViewTransitions/>.
   prefetch: true,
