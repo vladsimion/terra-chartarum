@@ -1,0 +1,129 @@
+---
+import type { HistoricalMap } from '../lib/corpus';
+import { centuryLabel } from '../lib/corpus';
+import { formatYear } from '../lib/registry';
+
+interface Props {
+  map: HistoricalMap;
+  essayTitle: string;
+  accent?: string;
+}
+const { map, essayTitle, accent = 'var(--gold)' } = Astro.props;
+const cover = map.images[0];
+
+// Data attributes power the catalogue's client-side facet filtering (KAN-67).
+const region = map.region;
+const century = centuryLabel(map.year);
+const cartographer = map.cartographer ?? '';
+const tags = map.tags.join('|');
+const searchText = [map.title, map.region, essayTitle, map.cartographer, ...map.tags]
+  .filter(Boolean)
+  .join(' ')
+  .toLowerCase();
+---
+
+<article
+  class="mcard"
+  style={`--accent:${accent}`}
+  data-regions={region}
+  data-centuries={century}
+  data-cartographers={cartographer}
+  data-tags={tags}
+  data-essays={map.essaySlug}
+  data-title={searchText}
+>
+  <a href={`/essays/${map.essaySlug}/`} class="mcard-link">
+    {cover ? (
+      <div class="mcard-media">
+        <img src={cover.src} alt={cover.alt} loading="lazy" decoding="async" />
+      </div>
+    ) : (
+      <div class="mcard-media mcard-media--empty" aria-hidden="true">
+        <span>{century}</span>
+      </div>
+    )}
+    <div class="mcard-body">
+      <p class="eyebrow">{formatYear(map.year)} · {map.region}</p>
+      <h3 class="mcard-title">{map.title}</h3>
+      {map.cartographer && <p class="mcard-author">{map.cartographer}</p>}
+      {map.blurb && <p class="mcard-blurb">{map.blurb}</p>}
+      <ul class="mcard-tags" aria-label="Tags">
+        <li class="essay">{essayTitle}</li>
+        {map.tags.slice(0, 3).map((t) => <li>{t}</li>)}
+      </ul>
+    </div>
+  </a>
+</article>
+
+<style>
+  .mcard {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    overflow: hidden;
+    transition:
+      transform var(--dur) var(--ease-out),
+      border-color var(--dur) var(--ease-out);
+  }
+  .mcard:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+  }
+  .mcard-link { color: inherit; display: block; height: 100%; }
+  .mcard-media {
+    aspect-ratio: 16 / 10;
+    background: var(--panel-2);
+    border-bottom: 1px solid var(--line);
+  }
+  .mcard-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .mcard-media--empty {
+    display: grid;
+    place-items: center;
+  }
+  .mcard-media--empty span {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--accent) 60%, var(--ink-muted));
+  }
+  .mcard-body { padding: 1.15rem 1.3rem 1.4rem; }
+  .mcard-title {
+    font-size: var(--step-1);
+    margin: 0.35rem 0 0.15rem;
+    color: var(--ink);
+  }
+  .mcard-author {
+    margin: 0 0 0.6rem;
+    color: var(--accent);
+    font-style: italic;
+    font-size: var(--step-0);
+  }
+  .mcard-blurb {
+    margin: 0 0 1rem;
+    color: var(--ink-muted);
+    font-size: var(--step-0);
+  }
+  .mcard-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .mcard-tags li {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.2rem 0.6rem;
+  }
+  .mcard-tags .essay {
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
+  }
+</style>

@@ -137,3 +137,22 @@ export function corpusYearRange(): [number, number] {
   const years = CORPUS.map((m) => m.year);
   return [Math.min(...years), Math.max(...years)];
 }
+
+/**
+ * Human century label for a signed year (negative = BC), used as a catalogue
+ * facet. 600 BC → "6th century BC"; AD 150 → "2nd century"; 1569 → "16th century".
+ */
+export function centuryLabel(year: number): string {
+  const n = Math.ceil(Math.abs(year) / 100);
+  const suffix =
+    n % 100 >= 11 && n % 100 <= 13
+      ? 'th'
+      : n % 10 === 1
+        ? 'st'
+        : n % 10 === 2
+          ? 'nd'
+          : n % 10 === 3
+            ? 'rd'
+            : 'th';
+  return `${n}${suffix} century${year < 0 ? ' BC' : ''}`;
+}
