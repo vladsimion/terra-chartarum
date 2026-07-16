@@ -11,6 +11,8 @@
     "preview": "astro preview",
     "check": "astro check",
     "create-essay": "node scripts/create-essay.mjs",
+    "build-geo-layer": "node scripts/build-geo-layer.mjs",
+    "build-map-tiles": "node scripts/build-map-tiles.mjs",
     "astro": "astro"
   },
   "dependencies": {
