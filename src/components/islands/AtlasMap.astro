@@ -295,6 +295,31 @@ const payload = {
       });
     }
 
+    // Deep-link support: /atlas/#<map-id> flies to and opens that pin (KAN-68).
+    // In the no-WebGL fallback it scrolls the corresponding list item into view.
+    const focusFromHash = () => {
+      const id = decodeURIComponent(location.hash.replace(/^#/, ''));
+      if (!id) return;
+      const entry = markers.find((m) => m.pt.id === id);
+      if (!entry) return;
+      if (map) {
+        const open = () => {
+          map!.flyTo({ center: entry.pt.coords, zoom: 4.5 });
+          if (entry.marker && !entry.marker.getPopup()?.isOpen()) entry.marker.togglePopup();
+        };
+        if (styleReady) open();
+        else map.once('load', open);
+      } else {
+        entry.li.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    };
+    // Re-run on hash changes; keep a single listener across page-load re-inits.
+    const w = window as unknown as { __amHashHandler?: () => void };
+    if (w.__amHashHandler) window.removeEventListener('hashchange', w.__amHashHandler);
+    w.__amHashHandler = focusFromHash;
+    window.addEventListener('hashchange', focusFromHash);
+    focusFromHash();
+
     for (const cb of layerToggles) {
       cb.addEventListener('change', () => {
         const l = geoLayers.find((x) => x.id === cb.dataset.layer);

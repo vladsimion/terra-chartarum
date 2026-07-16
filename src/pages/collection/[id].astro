@@ -1,0 +1,245 @@
+---
+import PortalLayout from '../../layouts/PortalLayout.astro';
+import { getCorpus, getMapById, centuryLabel } from '../../lib/corpus';
+import type { HistoricalMap } from '../../lib/corpus';
+import { getEssays, formatYear } from '../../lib/registry';
+
+export async function getStaticPaths() {
+  return getCorpus().map((map) => ({ params: { id: map.id }, props: { map } }));
+}
+
+interface Props {
+  map: HistoricalMap;
+}
+const { map } = Astro.props;
+
+const essays = await getEssays();
+const essayMeta = Object.fromEntries(
+  essays.map((e) => [e.slug, { title: e.data.title, accent: e.data.accent ?? '#d4b87a' }]),
+);
+const accent = essayMeta[map.essaySlug]?.accent ?? 'var(--gold)';
+const sourceEssayTitle = essayMeta[map.essaySlug]?.title ?? map.essaySlug;
+
+// Metadata rows — only rendered when a value is present, so the sparse seed
+// records don't show a table full of blanks (KAN-68).
+const metaRows: [string, string | undefined][] = [
+  ['Cartographer', map.cartographer],
+  ['Publisher', map.publisher],
+  ['Engraver', map.engraver],
+  ['Edition', map.edition],
+  ['State', map.state],
+  ['Dimensions', map.dimensions],
+  ['Scale', map.scale],
+  ['Medium', map.medium],
+  ['Condition', map.condition],
+  ['Provenance', map.provenance],
+  ['Acquisition', map.acquisition],
+];
+const rows = metaRows.filter(([, v]) => v);
+
+const relatedMaps = map.relatedMapIds
+  .map((id) => getMapById(id))
+  .filter((m): m is HistoricalMap => Boolean(m));
+// Related essays: explicit links plus the map's own source essay.
+const relatedEssaySlugs = Array.from(
+  new Set([map.essaySlug, ...map.relatedEssaySlugs]),
+).filter((slug) => essayMeta[slug]);
+
+const cover = map.images[0];
+---
+
+<PortalLayout
+  title={map.title}
+  description={map.blurb ?? `${map.title} — ${formatYear(map.year)}, ${map.region}.`}
+>
+  <article class="shell detail" style={`--accent:${accent}`}>
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/collection/">Collection</a>
+      <span aria-hidden="true">/</span>
+      <span>{map.title}</span>
+    </nav>
+
+    <header class="detail-head">
+      <p class="eyebrow">{formatYear(map.year)} · {centuryLabel(map.year)} · {map.region}</p>
+      <h1>{map.title}</h1>
+      {map.cartographer && <p class="detail-author">{map.cartographer}</p>}
+      {map.blurb && <p class="lede">{map.blurb}</p>}
+      <p class="detail-actions">
+        <a class="btn" href={`/atlas/#${map.id}`}>View on the atlas →</a>
+        <a class="btn btn--ghost" href={`/essays/${map.essaySlug}/`}>{sourceEssayTitle}</a>
+      </p>
+    </header>
+
+    {cover && (
+      <figure class="detail-figure">
+        <img src={cover.src} alt={cover.alt} loading="lazy" decoding="async" />
+        {cover.credit && (
+          <figcaption>
+            {cover.credit}
+            {cover.license && <span class="lic"> · {cover.license}</span>}
+          </figcaption>
+        )}
+      </figure>
+    )}
+
+    {rows.length > 0 && (
+      <section class="detail-block">
+        <h2>Catalogue record</h2>
+        <table class="meta">
+          <tbody>
+            {rows.map(([label, value]) => (
+              <tr>
+                <th scope="row">{label}</th>
+                <td>{value}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+    )}
+
+    {map.tags.length > 0 && (
+      <section class="detail-block">
+        <h2>Tags</h2>
+        <ul class="taglist">
+          {map.tags.map((t) => <li>{t}</li>)}
+        </ul>
+      </section>
+    )}
+
+    {relatedEssaySlugs.length > 0 && (
+      <section class="detail-block">
+        <h2>Related essays</h2>
+        <ul class="linklist">
+          {relatedEssaySlugs.map((slug) => (
+            <li><a href={`/essays/${slug}/`}>{essayMeta[slug].title}</a></li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {relatedMaps.length > 0 && (
+      <section class="detail-block">
+        <h2>Related maps</h2>
+        <ul class="linklist">
+          {relatedMaps.map((m) => (
+            <li>
+              <a href={`/collection/${m.id}/`}>{m.title}</a>
+              <span class="muted"> · {formatYear(m.year)}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {map.bibliography.length > 0 && (
+      <section class="detail-block">
+        <h2>Bibliography</h2>
+        <ul class="biblist">
+          {map.bibliography.map((b) => (
+            <li>{b.url ? <a href={b.url}>{b.citation}</a> : b.citation}</li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </article>
+</PortalLayout>
+
+<style>
+  .detail { padding-block: clamp(2.5rem, 6vw, 4rem); max-width: var(--prose-max); }
+  .crumbs {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .detail-head h1 { font-size: var(--step-4); margin: 0.3rem 0 0.4rem; }
+  .detail-author {
+    color: var(--accent);
+    font-style: italic;
+    font-size: var(--step-1);
+    margin: 0 0 0.75rem;
+  }
+  .lede { color: var(--ink-muted); font-size: var(--step-1); margin: 0 0 1.5rem; }
+  .detail-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 0 0 2.5rem; }
+  .btn {
+    display: inline-block;
+    padding: 0.55rem 1rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--accent);
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.06em;
+  }
+  .btn:hover { background: color-mix(in srgb, var(--accent) 28%, transparent); color: var(--ink); }
+  .btn--ghost { background: transparent; border-color: var(--line); color: var(--ink-muted); }
+  .btn--ghost:hover { border-color: var(--accent); color: var(--ink); }
+
+  .detail-figure { margin: 0 0 2.5rem; }
+  .detail-figure img {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    display: block;
+  }
+  .detail-figure figcaption {
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+    margin-top: 0.5rem;
+  }
+  .detail-figure .lic { color: var(--ink-muted); }
+
+  .detail-block { margin-bottom: 2.5rem; }
+  .detail-block h2 {
+    font-size: var(--step-1);
+    margin: 0 0 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .meta { width: 100%; border-collapse: collapse; }
+  .meta th, .meta td {
+    text-align: left;
+    padding: 0.55rem 0.75rem;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+    font-size: var(--step-0);
+  }
+  .meta th {
+    width: 32%;
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+  .linklist, .biblist { margin: 0; padding-left: 1.2rem; }
+  .linklist li, .biblist li { margin-bottom: 0.5rem; color: var(--ink-muted); }
+  .linklist a, .biblist a { color: var(--accent); }
+  .linklist a:hover, .biblist a:hover { color: var(--ink); }
+  .muted { color: var(--ink-muted); }
+  .taglist {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .taglist li {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.2rem 0.6rem;
+  }
+</style>
