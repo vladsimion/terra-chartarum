@@ -35,6 +35,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    <link rel="alternate" type="application/rss+xml" title="Terra Chartarum — Essays" href="/rss.xml" />
 
     <!-- Open Graph / social -->
     <meta property="og:type" content="website" />
