@@ -44,6 +44,23 @@
     color: var(--ink);
   }
 
+  /* WCAG 1.4.1 (Use of Color): links embedded in running text must be
+     distinguishable without relying on colour. The chrome links (header/footer
+     nav, breadcrumbs, cards, timeline tracks) stand alone and carry their own
+     non-colour affordance, so the underline is scoped to prose paragraphs and
+     content link-lists — the contexts axe flags as text blocks. */
+  p a,
+  .linklist li a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+  }
+  p a:hover,
+  .linklist li a:hover {
+    text-decoration-color: currentColor;
+  }
+
   ::selection {
     background: var(--gold);
     color: var(--canvas);
