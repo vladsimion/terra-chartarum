@@ -1,0 +1,112 @@
+---
+// Essay section wrapper (TC-104 / KAN-95).
+//
+// Native (MDX) essays wrap a chapter in <Section id="…" title="…" rooms={[…]}>
+// to (a) emit a stable anchor the room pages can deep-link to, and (b) optionally
+// declare the room(s) that chapter belongs to. The room tags shown here are the
+// visible counterpart of the essay's `sections` frontmatter, which is the
+// queryable source of truth room pages read (see lib/room-sections.ts); keep the
+// `id`s in sync between the two.
+import { getRoom, type RoomSlug } from '../data/rooms';
+
+interface Props {
+  /** Anchor id — must match the matching `sections[].id` in frontmatter. */
+  id: string;
+  /** Section heading text. */
+  title: string;
+  /** Room(s) this section belongs to; primary first. */
+  rooms?: RoomSlug[];
+  /** Heading level (2 = chapter, 3 = sub-section). */
+  level?: 2 | 3;
+}
+
+const { id, title, rooms = [], level = 2 } = Astro.props;
+const tagged = rooms.map((slug) => getRoom(slug)).filter((room) => room !== undefined);
+---
+
+<section id={id} class="essay-section" data-rooms={rooms.length ? rooms.join(' ') : undefined}>
+  <div class="section-head">
+    {
+      level === 3 ? (
+        <h3 class="section-title">
+          <a class="section-anchor" href={`#${id}`}>
+            {title}
+          </a>
+        </h3>
+      ) : (
+        <h2 class="section-title">
+          <a class="section-anchor" href={`#${id}`}>
+            {title}
+          </a>
+        </h2>
+      )
+    }
+    {
+      tagged.length > 0 && (
+        <ul class="section-rooms" aria-label="Rooms this chapter belongs to">
+          {tagged.map((room) => (
+            <li>
+              <a href={`/rooms/${room.slug}/`}>
+                <img src={room.glyph} alt="" width="16" height="16" aria-hidden="true" />
+                {room.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+  <slot />
+</section>
+
+<style>
+  .essay-section {
+    scroll-margin-top: 4rem;
+  }
+  .section-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+  }
+  .section-title {
+    margin-bottom: 0;
+  }
+  .section-anchor {
+    color: inherit;
+    text-decoration: none;
+  }
+  .section-anchor:hover {
+    color: var(--gold);
+  }
+  .section-rooms {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .section-rooms a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.2rem 0.6rem;
+    text-decoration: none;
+  }
+  .section-rooms a:hover {
+    color: var(--gold);
+    border-color: color-mix(in srgb, var(--gold) 40%, var(--line));
+  }
+  .section-rooms img {
+    display: block;
+  }
+</style>

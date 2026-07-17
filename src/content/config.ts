@@ -39,6 +39,22 @@ const essays = defineCollection({
     room: z.enum(ROOM_SLUGS),
     secondaryRooms: z.array(z.enum(ROOM_SLUGS)).max(2).default([]),
     roomAnchor: z.boolean().default(false),
+    // Section-level room tagging (TC-104 / KAN-95). A single chapter of an essay
+    // can belong to room(s) other than the essay's primary room, so it surfaces
+    // on those room pages via a deep link. Each `id` MUST match an anchor in the
+    // rendered essay body — a native <Section id> heading or a legacy embed's
+    // section id — so the room page can link straight to that chapter.
+    sections: z
+      .array(
+        z.object({
+          id: z.string(),
+          title: z.string(),
+          room: z.enum(ROOM_SLUGS),
+          secondaryRooms: z.array(z.enum(ROOM_SLUGS)).max(2).default([]),
+          roomAnchor: z.boolean().default(false),
+        }),
+      )
+      .default([]),
     publishedAt: z.string(),
     updatedAt: z.string(),
     // Harmonized meta-lens scores, normalized 0-1 (additive, optional).

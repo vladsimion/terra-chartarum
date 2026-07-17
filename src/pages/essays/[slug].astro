@@ -24,6 +24,25 @@ const accent = data.accent ?? 'var(--gold)';
 // leakage against the portal chrome. Native (MDX) essays render inline instead.
 const isLegacy = data.status === 'legacy' && data.embedPath;
 const { Content } = await essay.render();
+
+// Section deep-links (KAN-95): a room page links to /essays/<slug>/#<id>. Legacy
+// essays live in a same-origin iframe, so forward the parent hash into the
+// frame's src to scroll the embed to that chapter. Injected verbatim via set:html
+// so it ships as inline JS rather than a bundled module.
+const hashForwardScript = `(function () {
+  function syncHash() {
+    var frame = document.getElementById('essay-frame');
+    if (!frame) return;
+    var base = frame.getAttribute('data-base');
+    var hash = window.location.hash;
+    if (!base || !hash) return;
+    var want = base + hash;
+    if (frame.getAttribute('src') !== want) frame.setAttribute('src', want);
+  }
+  syncHash();
+  window.addEventListener('hashchange', syncHash);
+  document.addEventListener('astro:page-load', syncHash);
+})();`;
 ---
 
 <PortalLayout title={data.title} description={data.summary} ogImage={`/og/${essay.slug}.png`}>
@@ -42,8 +61,10 @@ const { Content } = await essay.render();
   {
     isLegacy ? (
       <iframe
+        id="essay-frame"
         class="essay-frame"
         src={data.embedPath}
+        data-base={data.embedPath}
         title={`${data.title} — ${data.subtitle}`}
         loading="lazy"
       />
@@ -53,6 +74,8 @@ const { Content } = await essay.render();
       </article>
     )
   }
+
+  {isLegacy ? <script is:inline set:html={hashForwardScript} /> : null}
 </PortalLayout>
 
 <style>
