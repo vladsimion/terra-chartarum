@@ -1,5 +1,8 @@
-# CI guardrail (KAN-14 / ATLAS-102).
-# Runs on every PR and on pushes to main: format check -> type check -> build.
+# CI guardrail (KAN-14 / ATLAS-102, extended by KAN-176).
+# Runs on every PR and on pushes to main. Three parallel jobs:
+#   verify — format, lint, type-check, unit tests, build (fast gate)
+#   e2e    — Playwright smoke + axe accessibility budget over the built site
+#   lighthouse — Lighthouse CI (accessibility budget hard, perf/bp/seo as warnings)
 # Node is pinned via .node-version to match the Cloudflare Pages build (KAN-56).
 name: CI
 
@@ -18,7 +21,7 @@ permissions:
 
 jobs:
   verify:
-    name: Format, type-check & build
+    name: Format, lint, type-check, unit & build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -36,8 +39,67 @@ jobs:
       - name: Prettier format check
         run: npm run format:check
 
+      - name: ESLint
+        run: npm run lint
+
       - name: Astro type check
         run: npm run check
 
+      - name: Unit tests (Vitest)
+        run: npm test
+
       - name: Build (static output)
         run: npm run build
+
+  e2e:
+    name: E2E + accessibility (Playwright + axe)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        # The Playwright config builds and previews dist/ itself via webServer.
+        run: npm run test:e2e
+
+      - name: Upload report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  lighthouse:
+    name: Lighthouse CI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (static output)
+        run: npm run build
+
+      - name: Run Lighthouse CI
+        run: npx lhci autorun

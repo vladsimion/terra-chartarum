@@ -2,6 +2,11 @@
 dist/
 .astro/
 
+# test / CI artifacts
+playwright-report/
+test-results/
+.lighthouseci/
+
 # dependencies
 node_modules/
 .npm-cache/

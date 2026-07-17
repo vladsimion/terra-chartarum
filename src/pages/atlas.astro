@@ -43,8 +43,8 @@ const bars = essays.map((e) => {
     <AtlasMap />
 
     <h2 class="section-h section-h--spaced">One timeline, every essay</h2>
-    <div class="timeline" role="img" aria-label="Timeline of essays across cartographic history">
-      <div class="axis">
+    <div class="timeline" role="group" aria-label="Timeline of essays across cartographic history">
+      <div class="axis" aria-hidden="true">
         {
           ticks.map((t) => (
             <span class="tick" style={`left:${pos(t)}%`}>
