@@ -40,6 +40,14 @@ describe('rooms taxonomy (KAN-92)', () => {
     }
   });
 
+  it('gives every room a curatorial lede of 100–150 words (KAN-98 AC)', () => {
+    for (const room of ROOMS) {
+      const words = room.lede.trim().split(/\s+/).length;
+      expect(words, `${room.slug} lede word count`).toBeGreaterThanOrEqual(100);
+      expect(words, `${room.slug} lede word count`).toBeLessThanOrEqual(150);
+    }
+  });
+
   it('resolves rooms by slug and rejects unknown slugs', () => {
     expect(getRoom('theatre')?.title).toBe('The Theatre');
     expect(getRoom('atlas')).toBeUndefined();
