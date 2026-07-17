@@ -2,6 +2,10 @@
 // Global fuzzy search (ATLAS-1102 / KAN-77). Mounted from the Header. The index
 // and Fuse.js are both loaded lazily on first focus, so nothing ships in the
 // initial bundle.
+//
+// The Room facet (KAN-100) is rendered server-side from ROOMS so its options
+// stay in cosmography order with proper titles; the index only carries the slug.
+import { ROOMS } from '../../data/rooms';
 ---
 
 <div class="sitesearch" data-sitesearch>
@@ -30,6 +34,10 @@
           <option value="map">Maps</option>
           <option value="cartographer">Cartographers</option>
           <option value="toponym">Places</option>
+        </select>
+        <select data-ss-facet="room" aria-label="Filter by room">
+          <option value="">All rooms</option>
+          {ROOMS.map((r) => <option value={r.slug}>{r.title}</option>)}
         </select>
         <select data-ss-facet="region" aria-label="Filter by region"
           ><option value="">All regions</option></select
@@ -60,6 +68,7 @@
     region?: string;
     era?: string;
     tags?: string[];
+    rooms?: string[];
     year?: number;
   };
 
@@ -144,12 +153,14 @@
       const base: Doc[] = q && fuse ? fuse.search(q).map((r) => r.item) : docs;
 
       const type = selected('type');
+      const room = selected('room');
       const region = selected('region');
       const era = selected('era');
       const tag = selected('tag');
 
       const filtered = base.filter((d) => {
         if (type && d.type !== type) return false;
+        if (room && !(d.rooms ?? []).includes(room)) return false;
         if (region && d.region !== region) return false;
         if (era && !(d.era ?? '').split(', ').includes(era)) return false;
         if (tag && !(d.tags ?? []).includes(tag)) return false;
