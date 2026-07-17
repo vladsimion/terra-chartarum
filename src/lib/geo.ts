@@ -55,6 +55,7 @@ export type GeoLayer = z.infer<typeof GeoLayerSchema>;
 const RAW: unknown[] = [
   {
     id: 'ne-coastline',
+    room: 'earth',
     title: 'Natural Earth — Coastline',
     description: 'Small-scale physical coastline, a neutral base for historical overlays.',
     kind: 'vector',
@@ -71,6 +72,7 @@ const RAW: unknown[] = [
   },
   {
     id: 'ne-land',
+    room: 'earth',
     title: 'Natural Earth — Land outline',
     description: 'Coastal landmass outlines — a subtle physical frame for the corpus.',
     kind: 'vector',
@@ -87,6 +89,8 @@ const RAW: unknown[] = [
   },
   {
     id: 'ne-rivers',
+    room: 'earth',
+    secondaryRooms: ['road'],
     title: 'Natural Earth — Rivers',
     description: 'Major river and lake centrelines — waterways that carried maps and trade.',
     kind: 'vector',
@@ -103,6 +107,7 @@ const RAW: unknown[] = [
   },
   {
     id: 'ne-boundaries',
+    room: 'border',
     title: 'Modern national boundaries',
     description: 'Present-day land borders — an anachronistic reference grid over historical maps.',
     kind: 'vector',
@@ -119,6 +124,7 @@ const RAW: unknown[] = [
   },
   {
     id: 'map-coverage',
+    room: 'map',
     title: 'Depicted extents (corpus)',
     description:
       'The area each corpus map depicts — one footprint polygon per map, keyed by mapId.',
@@ -136,6 +142,8 @@ const RAW: unknown[] = [
   },
   {
     id: 'roman-empire-117',
+    room: 'border',
+    secondaryRooms: ['archive'],
     title: 'Roman Empire, AD 117',
     description: "Imperial extent at Trajan's greatest reach — context for the Dacia essay.",
     kind: 'vector',
@@ -154,6 +162,8 @@ const RAW: unknown[] = [
   },
   {
     id: 'venetian-maritime-1400',
+    room: 'road',
+    secondaryRooms: ['border'],
     title: 'Venetian Maritime Network, c.1400',
     description: 'Trade routes and stato da màr nodes underpinning the Venice/Sicily duel.',
     kind: 'vector',
