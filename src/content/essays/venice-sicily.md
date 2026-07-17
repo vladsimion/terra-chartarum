@@ -21,6 +21,14 @@ featured: true
 room: road
 roomAnchor: true
 secondaryRooms: [border, city]
+sections:
+  - id: sicilia
+    title: Three surveys of an island that was owned
+    room: border
+  - id: registro
+    title: The double-entry of two worldviews
+    room: border
+    secondaryRooms: [archive]
 publishedAt: '2025-01-01'
 updatedAt: '2026-07-15'
 metaScores:

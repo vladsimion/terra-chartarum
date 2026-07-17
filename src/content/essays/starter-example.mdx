@@ -18,6 +18,11 @@ accent: '#96cc84'
 order: 99
 featured: false
 room: map
+sections:
+  - id: on-abstraction
+    title: Why these components are theatre
+    room: theatre
+    secondaryRooms: [map]
 publishedAt: '2026-07-15'
 updatedAt: '2026-07-15'
 metaScores:
@@ -32,6 +37,7 @@ metaScores:
 import RadarChart from '../../components/islands/RadarChart.astro';
 import AdaptiveTimeline from '../../components/islands/AdaptiveTimeline.astro';
 import CompareSlider from '../../components/islands/CompareSlider.astro';
+import Section from '../../components/Section.astro';
 
 This page is authored in **MDX** and rendered natively inside the portal shell —
 no iframe. It exists to show the three reusable islands in context. Copy
@@ -110,6 +116,17 @@ into the `before` and `after` slots.
 </CompareSlider>
 
 ---
+
+<Section id="on-abstraction" title="Why these components are theatre" rooms={['theatre', 'map']}>
+
+This chapter belongs to a different room than the essay. It is wrapped in
+`<Section>`, which emits the `#on-abstraction` anchor and declares its rooms —
+mirroring the `sections` entry in this essay's frontmatter, the queryable source
+of truth the room pages read. Every island above stages an argument about a map
+rather than reproducing one, which is why this section is tagged **The Theatre**
+(abstraction) as well as **The Map**.
+
+</Section>
 
 That's the whole toolkit. Everything above is server-rendered SVG/HTML; only the
 compare slider and the radar's hover ship a few lines of vanilla JS. See
