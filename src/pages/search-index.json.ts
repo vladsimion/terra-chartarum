@@ -3,6 +3,12 @@ import { getCorpus, centuryLabel } from '../lib/corpus';
 import { getCartographers, mapsByCartographer } from '../lib/cartographers';
 import { getToponyms, toponymNames } from '../lib/toponyms';
 import { getEssays, formatYear } from '../lib/registry';
+import type { RoomSlug } from '../data/rooms';
+
+/** Collapse an item's primary + secondary room tags into a slug list (KAN-100). */
+function roomTags(item: { room?: RoomSlug; secondaryRooms?: RoomSlug[] }): RoomSlug[] {
+  return [item.room, ...(item.secondaryRooms ?? [])].filter((r): r is RoomSlug => Boolean(r));
+}
 
 /**
  * Unified search index (ATLAS-1101 / KAN-76). One static JSON document over
@@ -20,6 +26,8 @@ interface SearchDoc {
   region?: string;
   era?: string;
   tags?: string[];
+  /** Room slugs this doc belongs to, primary + secondary (KAN-100 facet). */
+  rooms?: RoomSlug[];
   year?: number;
 }
 
@@ -38,6 +46,7 @@ export async function GET(_context: APIContext) {
       region: e.data.regions.join(', '),
       era: e.data.eras.join(', '),
       tags: [...e.data.regions, ...e.data.eras],
+      rooms: roomTags(e.data),
       year: e.data.yearFrom,
     });
   }
@@ -53,6 +62,7 @@ export async function GET(_context: APIContext) {
       region: m.region,
       era: centuryLabel(m.year),
       tags: m.tags,
+      rooms: roomTags(m),
       year: m.year,
     });
   }
@@ -71,6 +81,7 @@ export async function GET(_context: APIContext) {
       text: c.bio,
       region: c.places.join(', '),
       tags: [...c.places, ...maps.map((m) => m.title)],
+      rooms: roomTags(c),
       year: c.born,
     });
   }
