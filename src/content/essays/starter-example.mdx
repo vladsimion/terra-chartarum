@@ -3,8 +3,8 @@ title: Anatomy of a Native Essay
 subtitle: A Worked Example of the Component Library
 summary: >-
   A native (MDX) essay that doubles as living documentation: it uses every shared
-  island — radar, adaptive timeline, and compare slider — so new authors can copy
-  it as a starting point.
+  island — radar, adaptive timeline, compare slider, and scrollytelling — so new
+  authors can copy it as a starting point.
 cover: /covers/starter-example.svg
 status: native
 eras: [Renaissance, Enlightenment, Modern]
@@ -37,6 +37,7 @@ metaScores:
 import RadarChart from '../../components/islands/RadarChart.astro';
 import AdaptiveTimeline from '../../components/islands/AdaptiveTimeline.astro';
 import CompareSlider from '../../components/islands/CompareSlider.astro';
+import Scrollytelling from '../../components/islands/Scrollytelling.astro';
 import Section from '../../components/Section.astro';
 
 This page is authored in **MDX** and rendered natively inside the portal shell —
@@ -114,6 +115,57 @@ into the `before` and `after` slots.
     </g>
   </svg>
 </CompareSlider>
+
+## The scrollytelling scaffold
+
+`Scrollytelling` pairs a sticky `graphic` pane with a column of narrative steps.
+Mark each step block `data-scrolly-step`; give the graphic ordered
+`data-scrolly-figure` panels and it cross-fades to the one matching the active
+step as the reader scrolls. It rides the shared IntersectionObserver scroll-spy
+(`src/lib/scrollytelling.ts`) and is reduced-motion aware — under
+`prefers-reduced-motion` the graphic un-sticks and every figure reads in flow.
+Prefer a bespoke graphic? Listen for the `scrolly:step` event it dispatches.
+
+<Scrollytelling label="How a projection unrolls the globe">
+  <svg slot="graphic" data-scrolly-figure viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
+    <rect width="320" height="320" fill="#0e0c08" />
+    <circle cx="160" cy="160" r="120" fill="none" stroke="#d4b87a" stroke-width="2" />
+    <ellipse cx="160" cy="160" rx="120" ry="46" fill="none" stroke="#d4b87a" opacity="0.5" />
+    <line x1="160" y1="40" x2="160" y2="280" stroke="#d4b87a" opacity="0.5" />
+  </svg>
+  <svg slot="graphic" data-scrolly-figure viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
+    <rect width="320" height="320" fill="#0e0c08" />
+    <g fill="none" stroke="#d4b87a" stroke-width="2">
+      <path d="M40 160 Q160 60 280 160" />
+      <path d="M40 160 Q160 260 280 160" />
+      <line x1="160" y1="60" x2="160" y2="260" opacity="0.5" />
+    </g>
+  </svg>
+  <svg slot="graphic" data-scrolly-figure viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
+    <rect width="320" height="320" fill="#0e0c08" />
+    <g fill="none" stroke="#96cc84" stroke-width="2">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <line x1={40 + i * 48} y1="60" x2={40 + i * 48} y2="260" opacity="0.7" />
+      ))}
+      {Array.from({ length: 5 }).map((_, i) => (
+        <line x1="40" y1={60 + i * 50} x2="280" y2={60 + i * 50} opacity="0.7" />
+      ))}
+    </g>
+  </svg>
+
+  <div data-scrolly-step>
+    **The globe.** Start with the sphere — the only faithful model, and the one
+    you can never lay flat on a table or a page.
+  </div>
+  <div data-scrolly-step>
+    **The cut.** To flatten it you must tear it somewhere. Every projection is a
+    decision about where that violence goes.
+  </div>
+  <div data-scrolly-step>
+    **The grid.** Rolled onto a plane, the meridians snap parallel — legible,
+    printable, and quietly lying about the poles.
+  </div>
+</Scrollytelling>
 
 ---
 
