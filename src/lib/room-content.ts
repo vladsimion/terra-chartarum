@@ -9,6 +9,7 @@
 import { getEssays, type Essay } from './registry';
 import { CORPUS, type HistoricalMap } from './corpus';
 import { CARTOGRAPHERS, type Cartographer } from './cartographers';
+import { GEO_LAYERS, type GeoLayer } from './geo';
 import { type RoomSlug } from '../data/rooms';
 
 /** Anything room-taggable: a required-or-optional primary plus 0–2 secondaries. */
@@ -169,4 +170,36 @@ export async function getRelatedByRoom(
     cartographers: CARTOGRAPHERS,
     ...opts,
   });
+}
+
+/** Item tallies for a room, counting primary AND secondary membership. */
+export interface RoomCounts {
+  essays: number;
+  maps: number;
+  layers: number;
+}
+
+export interface RoomCountsInput {
+  room: RoomSlug;
+  essays: Essay[];
+  maps: HistoricalMap[];
+  layers: GeoLayer[];
+}
+
+/**
+ * Tally the essays, collection sheets, and Atlas layers that belong to `room`
+ * (primary or secondary). Powers the counts on the rooms overview grid (KAN-96).
+ */
+export function roomCounts(input: RoomCountsInput): RoomCounts {
+  const { room, essays, maps, layers } = input;
+  return {
+    essays: essays.filter((e) => inRoom(e.data, room)).length,
+    maps: maps.filter((m) => inRoom(m, room)).length,
+    layers: layers.filter((l) => inRoom(l, room)).length,
+  };
+}
+
+/** Live item tallies for a room (async wrapper over the registries). */
+export async function getRoomCounts(room: RoomSlug): Promise<RoomCounts> {
+  return roomCounts({ room, essays: await getEssays(), maps: CORPUS, layers: GEO_LAYERS });
 }

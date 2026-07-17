@@ -1,0 +1,155 @@
+---
+// Rooms overview (TC-201 / KAN-96).
+//
+// The seven-room cosmography as a single grid: each room shows its glyph, its
+// one-line blurb, and item counts (essays + collection sheets + Atlas layers,
+// counting primary AND secondary membership). Counts are resolved by
+// lib/room-content.roomCounts so this page stays presentational.
+import PortalLayout from '../../layouts/PortalLayout.astro';
+import { ROOMS } from '../../data/rooms';
+import { roomCounts } from '../../lib/room-content';
+import { getEssays } from '../../lib/registry';
+import { CORPUS } from '../../lib/corpus';
+import { GEO_LAYERS } from '../../lib/geo';
+
+const essays = await getEssays();
+const cards = ROOMS.map((room) => ({
+  room,
+  counts: roomCounts({ room: room.slug, essays, maps: CORPUS, layers: GEO_LAYERS }),
+}));
+
+const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+---
+
+<PortalLayout
+  title="The Seven Rooms"
+  description="Terra Chartarum as a cosmography of seven rooms — the world as ground, the map as craft, and the many ways a place becomes a line."
+>
+  <section class="shell rooms">
+    <header class="rooms-head">
+      <p class="eyebrow">The cosmography</p>
+      <h1>The Seven Rooms</h1>
+      <p class="lede">
+        The atlas is arranged as a medieval cosmography — seven rooms, each asking a different
+        question of the world. Enter one to read its essays, walk its maps, and see where its
+        borders touch the others.
+      </p>
+    </header>
+
+    <ul class="grid">
+      {
+        cards.map(({ room, counts }) => (
+          <li class="rcard">
+            <a href={`/rooms/${room.slug}/`}>
+              <div class="rcard-glyph">
+                <img src={room.glyph} alt="" width="48" height="48" aria-hidden="true" />
+              </div>
+              <div class="rcard-body">
+                <p class="rcard-order">Room {room.order}</p>
+                <h2>{room.title}</h2>
+                <p class="rcard-blurb">{room.blurb}</p>
+                <ul class="rcard-counts" aria-label="Contents">
+                  <li>{plural(counts.essays, 'essay', 'essays')}</li>
+                  <li>{plural(counts.maps, 'sheet', 'sheets')}</li>
+                  <li>{plural(counts.layers, 'layer', 'layers')}</li>
+                </ul>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</PortalLayout>
+
+<style>
+  .rooms {
+    padding-block: clamp(2.5rem, 6vw, 4rem);
+  }
+  .rooms-head {
+    max-width: var(--prose-max);
+    margin-bottom: 2rem;
+  }
+  .rooms-head h1 {
+    font-size: var(--step-4);
+    margin: 0.3rem 0 0.75rem;
+  }
+  .lede {
+    color: var(--ink-muted);
+    font-size: var(--step-1);
+    margin: 0;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+    gap: 1.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .rcard {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    transition:
+      transform var(--dur) var(--ease-out),
+      border-color var(--dur) var(--ease-out);
+  }
+  .rcard:hover {
+    transform: translateY(-4px);
+    border-color: var(--gold);
+  }
+  .rcard a {
+    display: flex;
+    gap: 1rem;
+    color: inherit;
+    padding: 1.35rem 1.4rem 1.5rem;
+    height: 100%;
+  }
+  .rcard-glyph {
+    flex: none;
+  }
+  .rcard-glyph img {
+    display: block;
+  }
+  .rcard-order {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 0.15rem;
+  }
+  .rcard h2 {
+    font-size: var(--step-2);
+    margin: 0 0 0.4rem;
+    color: var(--ink);
+  }
+  .rcard-blurb {
+    color: var(--ink-muted);
+    font-size: var(--step-0);
+    margin: 0 0 0.9rem;
+  }
+  .rcard-counts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.75rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--ink);
+  }
+  .rcard-counts li:not(:last-child)::after {
+    content: '·';
+    margin-left: 0.75rem;
+    color: var(--ink-muted);
+  }
+  @media (max-width: 380px) {
+    .rcard a {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+  }
+</style>

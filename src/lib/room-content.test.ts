@@ -4,11 +4,13 @@ import {
   essaysInRoom,
   computeRoomPath,
   relatedByRoom,
+  roomCounts,
   type RelatedItem,
 } from './room-content';
 import type { Essay } from './registry';
 import type { HistoricalMap } from './corpus';
 import type { Cartographer } from './cartographers';
+import type { GeoLayer } from './geo';
 import type { RoomSlug } from '../data/rooms';
 
 // Room cross-linking queries (KAN-99). The async getRoomPath / getRelatedByRoom
@@ -35,6 +37,10 @@ function map(id: string, room?: RoomSlug, secondaryRooms: RoomSlug[] = []): Hist
 
 function cartographer(id: string, room?: RoomSlug, secondaryRooms: RoomSlug[] = []): Cartographer {
   return { id, name: `Cartographer ${id}`, bio: `Bio ${id}`, room, secondaryRooms } as Cartographer;
+}
+
+function layer(id: string, room?: RoomSlug, secondaryRooms: RoomSlug[] = []): GeoLayer {
+  return { id, title: `Layer ${id}`, room, secondaryRooms } as GeoLayer;
 }
 
 describe('inRoom', () => {
@@ -156,5 +162,27 @@ describe('relatedByRoom', () => {
 
   it('returns an empty list for a room with no content', () => {
     expect(relatedByRoom({ room: 'theatre', essays: [], maps: [], cartographers: [] })).toEqual([]);
+  });
+});
+
+describe('roomCounts', () => {
+  const essays = [essay('e1', 'border'), essay('e2', 'city', ['border']), essay('e3', 'road')];
+  const maps = [map('m1', 'border'), map('m2', 'city')];
+  const layers = [layer('l1', 'city', ['border']), layer('l2', 'road')];
+
+  it('counts primary and secondary members across all three types', () => {
+    expect(roomCounts({ room: 'border', essays, maps, layers })).toEqual({
+      essays: 2, // e1 primary, e2 secondary
+      maps: 1, // m1 primary
+      layers: 1, // l1 secondary
+    });
+  });
+
+  it('returns zeroes for a room with no content', () => {
+    expect(roomCounts({ room: 'theatre', essays, maps, layers })).toEqual({
+      essays: 0,
+      maps: 0,
+      layers: 0,
+    });
   });
 });
