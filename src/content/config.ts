@@ -1,4 +1,5 @@
 import { defineCollection, z } from 'astro:content';
+import { ROOM_SLUGS } from '../data/rooms';
 
 // Canonical meta-lens dimensions (see registry.ts crosswalk, §5 of the plan).
 export const CANONICAL_DIMENSIONS = [
@@ -31,6 +32,13 @@ const essays = defineCollection({
     accent: z.string().optional(), // CSS color for per-essay identity
     order: z.number().default(0),
     featured: z.boolean().default(false),
+    // Seven-room cosmography (TC-102 / KAN-93). `room` is the essay's primary
+    // room and is REQUIRED — the build fails on a missing or non-canonical slug.
+    // `secondaryRooms` (0–2) lets an essay also surface in adjacent rooms;
+    // `roomAnchor` marks the essay that headlines its room.
+    room: z.enum(ROOM_SLUGS),
+    secondaryRooms: z.array(z.enum(ROOM_SLUGS)).max(2).default([]),
+    roomAnchor: z.boolean().default(false),
     publishedAt: z.string(),
     updatedAt: z.string(),
     // Harmonized meta-lens scores, normalized 0-1 (additive, optional).

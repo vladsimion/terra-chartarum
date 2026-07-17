@@ -18,6 +18,7 @@ readingMinutes: 20
 accent: '#c9a24b'
 order: 4
 featured: true
+room: road
 publishedAt: '2025-01-01'
 updatedAt: '2026-07-15'
 metaScores:

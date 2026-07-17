@@ -18,6 +18,7 @@ readingMinutes: 25
 accent: '#d4b87a'
 order: 1
 featured: true
+room: map
 publishedAt: '2025-01-01'
 updatedAt: '2026-07-15'
 metaScores:
