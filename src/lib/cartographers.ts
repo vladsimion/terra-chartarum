@@ -41,6 +41,7 @@ export type Cartographer = z.infer<typeof CartographerSchema>;
 const RAW: unknown[] = [
   {
     id: 'mercator',
+    room: 'map',
     name: 'Gerardus Mercator',
     sortName: 'Mercator, Gerardus',
     born: 1512,
@@ -52,6 +53,8 @@ const RAW: unknown[] = [
   },
   {
     id: 'ortelius',
+    room: 'theatre',
+    secondaryRooms: ['map'],
     name: 'Abraham Ortelius',
     sortName: 'Ortelius, Abraham',
     born: 1527,
@@ -63,6 +66,8 @@ const RAW: unknown[] = [
   },
   {
     id: 'waldseemuller',
+    room: 'theatre',
+    secondaryRooms: ['map'],
     name: 'Martin Waldseemüller',
     sortName: 'Waldseemüller, Martin',
     born: 1470,
@@ -74,6 +79,7 @@ const RAW: unknown[] = [
   },
   {
     id: 'al-idrisi',
+    room: 'road',
     name: 'Muhammad al-Idrisi',
     sortName: 'Idrisi, Muhammad al-',
     born: 1100,
@@ -85,6 +91,8 @@ const RAW: unknown[] = [
   },
   {
     id: 'cassini',
+    room: 'map',
+    secondaryRooms: ['border'],
     name: 'César-François Cassini de Thury',
     sortName: 'Cassini de Thury, César-François',
     born: 1714,
@@ -101,6 +109,7 @@ const RAW: unknown[] = [
   },
   {
     id: 'honterus',
+    room: 'border',
     name: 'Johannes Honterus',
     sortName: 'Honterus, Johannes',
     born: 1498,

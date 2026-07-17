@@ -19,6 +19,7 @@ accent: '#b9c7d6'
 order: 3
 featured: false
 room: theatre
+secondaryRooms: [map]
 publishedAt: '2025-01-01'
 updatedAt: '2026-07-15'
 metaScores:

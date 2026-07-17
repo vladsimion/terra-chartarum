@@ -19,6 +19,8 @@ accent: '#c9a24b'
 order: 4
 featured: true
 room: road
+roomAnchor: true
+secondaryRooms: [border, city]
 publishedAt: '2025-01-01'
 updatedAt: '2026-07-15'
 metaScores:

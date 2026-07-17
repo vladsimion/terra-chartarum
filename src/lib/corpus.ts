@@ -115,6 +115,8 @@ const RAW: unknown[] = [
   // The Cartographic Sacrifice
   {
     id: 'babylonian',
+    room: 'map',
+    secondaryRooms: ['theatre'],
     coveragePath: '/geo/coverage.geojson#babylonian',
     title: 'Babylonian World Map',
     year: -600,
@@ -126,6 +128,7 @@ const RAW: unknown[] = [
   },
   {
     id: 'eratosthenes',
+    room: 'map',
     coveragePath: '/geo/coverage.geojson#eratosthenes',
     title: "Eratosthenes' World",
     year: -220,
@@ -136,6 +139,8 @@ const RAW: unknown[] = [
   },
   {
     id: 'hereford',
+    room: 'map',
+    secondaryRooms: ['theatre'],
     coveragePath: '/geo/coverage.geojson#hereford',
     title: 'Hereford Mappa Mundi',
     year: 1300,
@@ -146,6 +151,7 @@ const RAW: unknown[] = [
   },
   {
     id: 'mercator',
+    room: 'map',
     coveragePath: '/geo/coverage.geojson#mercator',
     title: 'Mercator Projection',
     year: 1569,
@@ -159,6 +165,7 @@ const RAW: unknown[] = [
   },
   {
     id: 'cassini',
+    room: 'map',
     coveragePath: '/geo/coverage.geojson#cassini',
     title: 'Carte de Cassini',
     year: 1744,
@@ -172,6 +179,8 @@ const RAW: unknown[] = [
   },
   {
     id: 'blue-marble',
+    room: 'map',
+    secondaryRooms: ['earth'],
     coveragePath: '/geo/coverage.geojson#blue-marble',
     title: 'The Blue Marble',
     year: 1972,
@@ -184,6 +193,7 @@ const RAW: unknown[] = [
   // La Rotta e il Catasto (Venice vs Sicily)
   {
     id: 'carta-pisana',
+    room: 'road',
     coveragePath: '/geo/coverage.geojson#carta-pisana',
     title: 'Carta Pisana',
     year: 1290,
@@ -194,6 +204,8 @@ const RAW: unknown[] = [
   },
   {
     id: 'fra-mauro',
+    room: 'road',
+    secondaryRooms: ['theatre'],
     coveragePath: '/geo/coverage.geojson#fra-mauro',
     title: 'Fra Mauro Map',
     year: 1450,
@@ -204,6 +216,7 @@ const RAW: unknown[] = [
   },
   {
     id: 'idrisi',
+    room: 'road',
     coveragePath: '/geo/coverage.geojson#idrisi',
     title: "Al-Idrisi's Tabula Rogeriana",
     year: 1154,
@@ -228,6 +241,8 @@ const RAW: unknown[] = [
   // Speculum Chartarum
   {
     id: 'ptolemy',
+    room: 'theatre',
+    secondaryRooms: ['map'],
     coveragePath: '/geo/coverage.geojson#ptolemy',
     title: 'Ptolemy Geographia',
     year: 150,
@@ -238,6 +253,8 @@ const RAW: unknown[] = [
   },
   {
     id: 'waldseemuller',
+    room: 'theatre',
+    secondaryRooms: ['map'],
     coveragePath: '/geo/coverage.geojson#waldseemuller',
     title: 'Waldseemüller World Map',
     year: 1507,
@@ -250,6 +267,8 @@ const RAW: unknown[] = [
   },
   {
     id: 'ortelius',
+    room: 'theatre',
+    secondaryRooms: ['map'],
     coveragePath: '/geo/coverage.geojson#ortelius',
     title: 'Ortelius Theatrum',
     year: 1570,
@@ -264,6 +283,8 @@ const RAW: unknown[] = [
   // Terra Sigillata (Dacia)
   {
     id: 'peutinger',
+    room: 'border',
+    secondaryRooms: ['road'],
     coveragePath: '/geo/coverage.geojson#peutinger',
     title: 'Tabula Peutingeriana',
     year: 400,
@@ -274,6 +295,7 @@ const RAW: unknown[] = [
   },
   {
     id: 'honterus',
+    room: 'border',
     coveragePath: '/geo/coverage.geojson#honterus',
     title: "Honterus' Transylvania",
     year: 1532,
@@ -286,6 +308,7 @@ const RAW: unknown[] = [
   },
   {
     id: 'specht',
+    room: 'border',
     coveragePath: '/geo/coverage.geojson#specht',
     title: 'Specht Map of Dacia',
     year: 1791,

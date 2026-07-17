@@ -18,6 +18,8 @@ accent: '#cdc2ab'
 order: 2
 featured: true
 room: border
+roomAnchor: true
+secondaryRooms: [archive]
 publishedAt: '2025-01-01'
 updatedAt: '2026-07-15'
 metaScores:
