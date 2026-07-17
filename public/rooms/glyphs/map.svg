@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="The Map">
+  <circle cx="32" cy="32" r="28" stroke="#d4b87a" stroke-width="1.5" opacity="0.3"/>
+  <g stroke="#d4b87a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 20H42L48 26V46H16Z"/>
+    <path d="M42 20V26H48" opacity="0.75"/>
+    <path d="M16 30H48M16 38H48" opacity="0.7"/>
+    <path d="M26 20V46M36 20V46" opacity="0.7"/>
+  </g>
+  <path d="M20 44C28 28 36 30 46 24" stroke="#c0ad88" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 4"/>
+</svg>

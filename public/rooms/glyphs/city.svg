@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="The City">
+  <circle cx="32" cy="32" r="28" stroke="#d4b87a" stroke-width="1.5" opacity="0.3"/>
+  <g stroke="#d4b87a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 46H50"/>
+    <path d="M18 46V32H26V46"/>
+    <path d="M28 46V22H38V46"/>
+    <path d="M40 46V36H48V46"/>
+  </g>
+  <g fill="#c0ad88">
+    <rect x="31" y="27" width="2" height="2"/>
+    <rect x="34" y="27" width="2" height="2"/>
+    <rect x="31" y="33" width="2" height="2"/>
+    <rect x="34" y="33" width="2" height="2"/>
+  </g>
+</svg>

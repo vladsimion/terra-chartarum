@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="The Road">
+  <circle cx="32" cy="32" r="28" stroke="#d4b87a" stroke-width="1.5" opacity="0.3"/>
+  <g stroke="#d4b87a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 44L32 22L46 40"/>
+    <path d="M32 22L30 46" opacity="0.6" stroke-dasharray="1 5"/>
+  </g>
+  <g fill="#0a0806" stroke="#d4b87a" stroke-width="2">
+    <circle cx="18" cy="44" r="3.4"/>
+    <circle cx="32" cy="22" r="3.4"/>
+    <circle cx="46" cy="40" r="3.4"/>
+  </g>
+</svg>

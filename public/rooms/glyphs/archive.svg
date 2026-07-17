@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="The Archive">
+  <circle cx="32" cy="32" r="28" stroke="#d4b87a" stroke-width="1.5" opacity="0.3"/>
+  <g stroke="#d4b87a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="18" y="18" width="28" height="9" rx="2"/>
+    <rect x="18" y="30" width="28" height="9" rx="2"/>
+    <rect x="18" y="42" width="28" height="9" rx="2"/>
+  </g>
+  <g fill="#c0ad88">
+    <circle cx="32" cy="22.5" r="1.6"/>
+    <circle cx="32" cy="34.5" r="1.6"/>
+    <circle cx="32" cy="46.5" r="1.6"/>
+  </g>
+</svg>
