@@ -1,6 +1,10 @@
 ---
 import PortalLayout from '../../layouts/PortalLayout.astro';
 import { getEssays } from '../../lib/registry';
+import RoomBadge from '../../components/RoomBadge.astro';
+import RoomPath from '../../components/RoomPath.astro';
+import RelatedByRoom from '../../components/RelatedByRoom.astro';
+import { getRoomPath, getRelatedByRoom } from '../../lib/room-content';
 
 export async function getStaticPaths() {
   const essays = await getEssays();
@@ -24,6 +28,11 @@ const accent = data.accent ?? 'var(--gold)';
 // leakage against the portal chrome. Native (MDX) essays render inline instead.
 const isLegacy = data.status === 'legacy' && data.embedPath;
 const { Content } = await essay.render();
+
+// Room cross-linking (KAN-99): place this essay within its room's reading path
+// and surface a mixed grid of other room content at the essay's end.
+const roomPath = await getRoomPath(data.room, essay.slug);
+const relatedByRoom = await getRelatedByRoom(data.room, { excludeEssaySlug: essay.slug });
 
 // Section deep-links (KAN-95): a room page links to /essays/<slug>/#<id>. Legacy
 // essays live in a same-origin iframe, so forward the parent hash into the
@@ -51,6 +60,7 @@ const hashForwardScript = `(function () {
       <a class="back" href="/essays/">← Atlas of essays</a>
       <span class="crumb" aria-hidden="true">/</span>
       <span class="crumb-title" transition:name={`essay-${essay.slug}`}>{data.title}</span>
+      <RoomBadge room={data.room} variant="solid" />
       <nav class="pager" aria-label="Essay navigation">
         <a href={`/essays/${prev.slug}/`} title={prev.data.title}>‹ Prev</a>
         <a href={`/essays/${next.slug}/`} title={next.data.title}>Next ›</a>
@@ -72,6 +82,15 @@ const hashForwardScript = `(function () {
       <article class="shell native-essay">
         <Content />
       </article>
+    )
+  }
+
+  {
+    (roomPath || relatedByRoom.length > 0) && (
+      <div class="shell essay-room-links">
+        {roomPath && <RoomPath path={roomPath} />}
+        <RelatedByRoom room={data.room} items={relatedByRoom} />
+      </div>
     )
   }
 
@@ -133,6 +152,10 @@ const hashForwardScript = `(function () {
   }
   .native-essay {
     padding-block: 3rem;
+    max-width: var(--prose-max);
+  }
+  .essay-room-links {
+    padding-block: 1rem 4rem;
     max-width: var(--prose-max);
   }
 </style>

@@ -1,0 +1,122 @@
+---
+// RoomPath (TC-204 / KAN-99).
+//
+// A reading-path pager shown at the end of an essay: it places the essay within
+// its room's canonical sequence ("2 of 3 in The Border") and links to the
+// previous / next essay in that room. The position + neighbours are resolved by
+// lib/room-content.computeRoomPath so this component stays presentational.
+import { getRoom, type RoomSlug } from '../data/rooms';
+import type { RoomPathResult } from '../lib/room-content';
+
+interface Props {
+  path: RoomPathResult;
+}
+
+const { path } = Astro.props;
+const room = getRoom(path.room as RoomSlug);
+---
+
+<nav class="room-path" aria-label={`Reading path through ${room?.title ?? path.room}`}>
+  <a class="room-path-head" href={`/rooms/${path.room}/`}>
+    {room?.glyph && <img src={room.glyph} alt="" width="20" height="20" aria-hidden="true" />}
+    <span class="rp-room">{room?.title ?? path.room}</span>
+    <span class="rp-pos">
+      {path.position} of {path.total}
+    </span>
+  </a>
+  <div class="room-path-nav">
+    {
+      path.prev ? (
+        <a class="rp-link rp-prev" href={path.prev.href}>
+          <span class="rp-dir">‹ Previous in room</span>
+          <span class="rp-title">{path.prev.title}</span>
+        </a>
+      ) : (
+        <span class="rp-link rp-empty">Start of the room</span>
+      )
+    }
+    {
+      path.next ? (
+        <a class="rp-link rp-next" href={path.next.href}>
+          <span class="rp-dir">Next in room ›</span>
+          <span class="rp-title">{path.next.title}</span>
+        </a>
+      ) : (
+        <span class="rp-link rp-empty">End of the room</span>
+      )
+    }
+  </div>
+</nav>
+
+<style>
+  .room-path {
+    border-top: 1px solid var(--line);
+    padding-top: 1.5rem;
+    margin-top: 2.5rem;
+  }
+  .room-path-head {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--ink-muted);
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .room-path-head:hover {
+    color: var(--gold);
+  }
+  .rp-pos {
+    color: var(--gold);
+  }
+  .room-path-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .rp-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 0.85rem 1rem;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  a.rp-link:hover {
+    border-color: color-mix(in srgb, var(--gold) 45%, var(--line));
+  }
+  .rp-next {
+    text-align: right;
+  }
+  .rp-dir {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .rp-title {
+    font-family: var(--font-display);
+    font-size: var(--step-0);
+  }
+  .rp-empty {
+    color: var(--ink-muted);
+    justify-content: center;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+  }
+  @media (max-width: 34rem) {
+    .room-path-nav {
+      grid-template-columns: 1fr;
+    }
+    .rp-next {
+      text-align: left;
+    }
+  }
+</style>

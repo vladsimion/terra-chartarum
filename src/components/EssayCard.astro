@@ -1,6 +1,7 @@
 ---
 import type { Essay } from '../lib/registry';
 import { yearRange } from '../lib/registry';
+import RoomBadge from './RoomBadge.astro';
 
 interface Props {
   essay: Essay;
@@ -27,7 +28,10 @@ const dims = Object.keys(data.metaScores ?? {}).join('|');
       <img src={data.cover} alt="" loading="lazy" decoding="async" />
     </div>
     <div class="card-body">
-      <p class="eyebrow">{yearRange(data.yearFrom, data.yearTo)}</p>
+      <div class="card-meta">
+        <p class="eyebrow">{yearRange(data.yearFrom, data.yearTo)}</p>
+        <RoomBadge room={data.room} href={null} />
+      </div>
       <h3 class="card-title" transition:name={`essay-${slug}`}>{data.title}</h3>
       <p class="card-sub">{data.subtitle}</p>
       <p class="card-summary">{data.summary}</p>
@@ -71,6 +75,12 @@ const dims = Object.keys(data.metaScores ?? {}).join('|');
   }
   .card-body {
     padding: 1.25rem 1.35rem 1.5rem;
+  }
+  .card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
   }
   .card-title {
     font-size: var(--step-2);
