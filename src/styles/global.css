@@ -24,7 +24,10 @@
     flex-direction: column;
   }
 
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     font-family: var(--font-display);
     font-weight: 600;
     line-height: 1.12;
@@ -37,7 +40,9 @@
     text-decoration: none;
     transition: color var(--dur-fast) var(--ease-out);
   }
-  a:hover { color: var(--ink); }
+  a:hover {
+    color: var(--ink);
+  }
 
   ::selection {
     background: var(--gold);
@@ -77,12 +82,18 @@
   }
 
   /* Programmatic focus target (skip link / in-page anchors) shows no outline box. */
-  main:focus { outline: none; }
+  main:focus {
+    outline: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;

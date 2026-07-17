@@ -7,8 +7,8 @@ import PortalLayout from '../layouts/PortalLayout.astro';
     <p class="eyebrow">404 · terra incognita</p>
     <h1>Off the edge of the map</h1>
     <p>
-      Here be dragons. The page you were looking for isn't charted — try the
-      gallery or return to the atlas.
+      Here be dragons. The page you were looking for isn't charted — try the gallery or return to
+      the atlas.
     </p>
     <div class="actions">
       <a class="btn" href="/">Home</a>
@@ -19,14 +19,36 @@ import PortalLayout from '../layouts/PortalLayout.astro';
 </PortalLayout>
 
 <style>
-  .notfound { padding-block: clamp(4rem, 12vw, 8rem); max-width: 55ch; }
-  .notfound h1 { font-size: var(--step-4); margin: 0.4rem 0 1rem; }
-  .notfound p { color: var(--ink-muted); font-size: var(--step-1); margin: 0 0 2rem; }
-  .actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
-  .btn {
-    font-family: var(--font-mono); font-size: var(--step--1); letter-spacing: 0.14em;
-    text-transform: uppercase; padding: 0.6rem 1.2rem; border: 1px solid var(--gold);
-    border-radius: var(--radius); color: var(--gold);
+  .notfound {
+    padding-block: clamp(4rem, 12vw, 8rem);
+    max-width: 55ch;
   }
-  .btn:hover { background: var(--gold); color: var(--canvas); }
+  .notfound h1 {
+    font-size: var(--step-4);
+    margin: 0.4rem 0 1rem;
+  }
+  .notfound p {
+    color: var(--ink-muted);
+    font-size: var(--step-1);
+    margin: 0 0 2rem;
+  }
+  .actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .btn {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.6rem 1.2rem;
+    border: 1px solid var(--gold);
+    border-radius: var(--radius);
+    color: var(--gold);
+  }
+  .btn:hover {
+    background: var(--gold);
+    color: var(--canvas);
+  }
 </style>

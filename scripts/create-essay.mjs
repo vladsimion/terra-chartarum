@@ -34,7 +34,9 @@ const essayPath = join(root, 'src/content/essays', `${slug}.mdx`);
 const coverPath = join(root, 'public/covers', `${slug}.svg`);
 
 const exists = async (p) =>
-  access(p, constants.F_OK).then(() => true).catch(() => false);
+  access(p, constants.F_OK)
+    .then(() => true)
+    .catch(() => false);
 
 if (await exists(essayPath)) {
   console.error(`Refusing to overwrite existing essay: ${essayPath}`);

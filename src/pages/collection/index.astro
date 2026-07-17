@@ -19,9 +19,7 @@ const regions = uniqSorted(maps.map((m) => m.region));
 // Centuries ordered chronologically (by the underlying year), not alphabetically.
 const centuries = Array.from(
   new Map(
-    [...maps]
-      .sort((a, b) => a.year - b.year)
-      .map((m) => [centuryLabel(m.year), true]),
+    [...maps].sort((a, b) => a.year - b.year).map((m) => [centuryLabel(m.year), true]),
   ).keys(),
 );
 const cartographers = uniqSorted(maps.map((m) => m.cartographer ?? ''));
@@ -45,8 +43,8 @@ const coverageRegions = regionsWithCoverage();
       <p class="eyebrow">The collection</p>
       <h1>Catalogue of maps</h1>
       <p class="lede">
-        {maps.length} historical maps across every essay. Filter by century,
-        region, cartographer, or tag — or search by title.
+        {maps.length} historical maps across every essay. Filter by century, region, cartographer, or
+        tag — or search by title.
       </p>
     </header>
 
@@ -79,47 +77,61 @@ const coverageRegions = regionsWithCoverage();
           {essayOptions.map((e) => <option value={e.slug}>{e.title}</option>)}
         </select>
       </div>
-      {cartographers.length > 0 && (
-        <div class="facet">
-          <label for="cartographer">Cartographer</label>
-          <select id="cartographer" data-facet="cartographers">
-            <option value="">All cartographers</option>
-            {cartographers.map((c) => <option value={c}>{c}</option>)}
-          </select>
-        </div>
-      )}
-      {tags.length > 0 && (
-        <div class="facet">
-          <label for="tag">Tag</label>
-          <select id="tag" data-facet="tags">
-            <option value="">All tags</option>
-            {tags.map((t) => <option value={t}>{t}</option>)}
-          </select>
-        </div>
-      )}
-      {coverageRegions.length > 0 && (
-        <div class="facet">
-          <label for="covers">Covers</label>
-          <select id="covers" data-facet="covers">
-            <option value="">Any place</option>
-            {coverageRegions.map((r) => <option value={r}>{r}</option>)}
-          </select>
-        </div>
-      )}
+      {
+        cartographers.length > 0 && (
+          <div class="facet">
+            <label for="cartographer">Cartographer</label>
+            <select id="cartographer" data-facet="cartographers">
+              <option value="">All cartographers</option>
+              {cartographers.map((c) => (
+                <option value={c}>{c}</option>
+              ))}
+            </select>
+          </div>
+        )
+      }
+      {
+        tags.length > 0 && (
+          <div class="facet">
+            <label for="tag">Tag</label>
+            <select id="tag" data-facet="tags">
+              <option value="">All tags</option>
+              {tags.map((t) => (
+                <option value={t}>{t}</option>
+              ))}
+            </select>
+          </div>
+        )
+      }
+      {
+        coverageRegions.length > 0 && (
+          <div class="facet">
+            <label for="covers">Covers</label>
+            <select id="covers" data-facet="covers">
+              <option value="">Any place</option>
+              {coverageRegions.map((r) => (
+                <option value={r}>{r}</option>
+              ))}
+            </select>
+          </div>
+        )
+      }
       <button id="reset" type="button">Reset</button>
     </div>
 
     <p id="count" class="count" aria-live="polite"></p>
 
     <div class="grid" id="grid">
-      {maps.map((m) => (
-        <CatalogueCard
-          map={m}
-          essayTitle={essayMeta[m.essaySlug]?.title ?? m.essaySlug}
-          accent={essayMeta[m.essaySlug]?.accent}
-          covers={coversByMap[m.id]}
-        />
-      ))}
+      {
+        maps.map((m) => (
+          <CatalogueCard
+            map={m}
+            essayTitle={essayMeta[m.essaySlug]?.title ?? m.essaySlug}
+            accent={essayMeta[m.essaySlug]?.accent}
+            covers={coversByMap[m.id]}
+          />
+        ))
+      }
     </div>
     <p id="empty" class="empty" hidden>No maps match those filters.</p>
   </section>
@@ -132,9 +144,7 @@ const coverageRegions = regionsWithCoverage();
     if (!grid) return;
     const cards = Array.from(grid.querySelectorAll<HTMLElement>('.mcard'));
     const q = document.getElementById('q') as HTMLInputElement;
-    const selects = Array.from(
-      document.querySelectorAll<HTMLSelectElement>('select[data-facet]'),
-    );
+    const selects = Array.from(document.querySelectorAll<HTMLSelectElement>('select[data-facet]'));
     const reset = document.getElementById('reset');
     const count = document.getElementById('count');
     const empty = document.getElementById('empty');
@@ -173,10 +183,22 @@ const coverageRegions = regionsWithCoverage();
 </script>
 
 <style>
-  .catalogue { padding-block: clamp(2.5rem, 6vw, 4rem); }
-  .catalogue-head { max-width: var(--prose-max); margin-bottom: 2rem; }
-  .catalogue-head h1 { font-size: var(--step-4); margin: 0.3rem 0 0.75rem; }
-  .lede { color: var(--ink-muted); font-size: var(--step-1); margin: 0; }
+  .catalogue {
+    padding-block: clamp(2.5rem, 6vw, 4rem);
+  }
+  .catalogue-head {
+    max-width: var(--prose-max);
+    margin-bottom: 2rem;
+  }
+  .catalogue-head h1 {
+    font-size: var(--step-4);
+    margin: 0.3rem 0 0.75rem;
+  }
+  .lede {
+    color: var(--ink-muted);
+    font-size: var(--step-1);
+    margin: 0;
+  }
 
   .controls {
     display: flex;
@@ -200,7 +222,11 @@ const coverageRegions = regionsWithCoverage();
     font-family: var(--font-body);
     font-size: var(--step-0);
   }
-  .facet { display: flex; flex-direction: column; gap: 0.3rem; }
+  .facet {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
   .facet label {
     font-family: var(--font-mono);
     font-size: 0.7rem;
@@ -219,7 +245,10 @@ const coverageRegions = regionsWithCoverage();
     font-size: var(--step-0);
     cursor: pointer;
   }
-  .controls button:hover { border-color: var(--gold); color: var(--gold); }
+  .controls button:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
   .count {
     font-family: var(--font-mono);
     font-size: var(--step--1);
@@ -231,5 +260,9 @@ const coverageRegions = regionsWithCoverage();
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1.5rem;
   }
-  .empty { color: var(--ink-muted); font-style: italic; padding: 2rem 0; }
+  .empty {
+    color: var(--ink-muted);
+    font-style: italic;
+    padding: 2rem 0;
+  }
 </style>

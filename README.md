@@ -13,12 +13,12 @@ TypeScript, Tailwind, and a CSS custom-property design-token layer.
 
 ## The essays
 
-| Essay | Scope | Native lens |
-|-------|-------|-------------|
-| **The Cartographic Sacrifice** | 8,000 yrs, global | Accuracy · Usability · Navigation · Symbolism · Politics · Completeness · Richness |
-| **Terra Sigillata · Lapidarium Dacicum** | Dacia/Romania, 19 centuries | Quinque Sigilla + Sex Lectiones |
-| **Speculum Chartarum** | Antiquity → early-modern geodesy | Six Bearings: Geodesy · Witness · Cosmos · Fitness · Reach · Hand |
-| **La Rotta e il Catasto** (Venice vs Sicily) | 1150–1750, Mediterranean | Harley theory, 6-axis radar |
+| Essay                                        | Scope                            | Native lens                                                                        |
+| -------------------------------------------- | -------------------------------- | ---------------------------------------------------------------------------------- |
+| **The Cartographic Sacrifice**               | 8,000 yrs, global                | Accuracy · Usability · Navigation · Symbolism · Politics · Completeness · Richness |
+| **Terra Sigillata · Lapidarium Dacicum**     | Dacia/Romania, 19 centuries      | Quinque Sigilla + Sex Lectiones                                                    |
+| **Speculum Chartarum**                       | Antiquity → early-modern geodesy | Six Bearings: Geodesy · Witness · Cosmos · Fitness · Reach · Hand                  |
+| **La Rotta e il Catasto** (Venice vs Sicily) | 1150–1750, Mediterranean         | Harley theory, 6-axis radar                                                        |
 
 The four analytical vocabularies are harmonized — additively, never replacing —
 onto **six canonical meta-lens dimensions** (Measure, Witness, Use, Cosmos, Power,

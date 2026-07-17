@@ -51,9 +51,9 @@ const relatedMaps = map.relatedMapIds
   .map((id) => getMapById(id))
   .filter((m): m is HistoricalMap => Boolean(m));
 // Related essays: explicit links plus the map's own source essay.
-const relatedEssaySlugs = Array.from(
-  new Set([map.essaySlug, ...map.relatedEssaySlugs]),
-).filter((slug) => essayMeta[slug]);
+const relatedEssaySlugs = Array.from(new Set([map.essaySlug, ...map.relatedEssaySlugs])).filter(
+  (slug) => essayMeta[slug],
+);
 
 const bibliography = resolveMapBibliography(map);
 
@@ -89,15 +89,17 @@ const tileSource = cover?.dziTileSource ?? cover?.iiif;
     <header class="detail-head">
       <p class="eyebrow">{formatYear(map.year)} · {centuryLabel(map.year)} · {map.region}</p>
       <h1>{map.title}</h1>
-      {cartographerName && (
-        <p class="detail-author">
-          {cartographer ? (
-            <a href={`/cartographers/${cartographer.id}/`}>{cartographerName}</a>
-          ) : (
-            cartographerName
-          )}
-        </p>
-      )}
+      {
+        cartographerName && (
+          <p class="detail-author">
+            {cartographer ? (
+              <a href={`/cartographers/${cartographer.id}/`}>{cartographerName}</a>
+            ) : (
+              cartographerName
+            )}
+          </p>
+        )
+      }
       {map.blurb && <p class="lede">{map.blurb}</p>}
       <p class="detail-actions">
         <a class="btn" href={`/atlas/#${map.id}`}>View on the atlas →</a>
@@ -105,98 +107,114 @@ const tileSource = cover?.dziTileSource ?? cover?.iiif;
       </p>
     </header>
 
-    {cover && tileSource ? (
-      <DeepZoomViewer
-        tileSource={tileSource}
-        src={cover.src}
-        alt={cover.alt}
-        credit={cover.credit}
-        license={cover.license}
-      />
-    ) : cover ? (
-      <figure class="detail-figure">
-        <img src={cover.src} alt={cover.alt} loading="lazy" decoding="async" />
-        {cover.credit && (
-          <figcaption>
-            {cover.credit}
-            {cover.license && <span class="lic"> · {cover.license}</span>}
-          </figcaption>
-        )}
-      </figure>
-    ) : null}
+    {
+      cover && tileSource ? (
+        <DeepZoomViewer
+          tileSource={tileSource}
+          src={cover.src}
+          alt={cover.alt}
+          credit={cover.credit}
+          license={cover.license}
+        />
+      ) : cover ? (
+        <figure class="detail-figure">
+          <img src={cover.src} alt={cover.alt} loading="lazy" decoding="async" />
+          {cover.credit && (
+            <figcaption>
+              {cover.credit}
+              {cover.license && <span class="lic"> · {cover.license}</span>}
+            </figcaption>
+          )}
+        </figure>
+      ) : null
+    }
 
-    {(rows.length > 0 || cartographerName) && (
-      <section class="detail-block">
-        <h2>Catalogue record</h2>
-        <table class="meta">
-          <tbody>
-            {cartographerName && (
-              <tr>
-                <th scope="row">Cartographer</th>
-                <td>
-                  {cartographer ? (
-                    <a href={`/cartographers/${cartographer.id}/`}>{cartographerName}</a>
-                  ) : (
-                    cartographerName
-                  )}
-                </td>
-              </tr>
-            )}
-            {rows.map(([label, value]) => (
-              <tr>
-                <th scope="row">{label}</th>
-                <td>{value}</td>
-              </tr>
+    {
+      (rows.length > 0 || cartographerName) && (
+        <section class="detail-block">
+          <h2>Catalogue record</h2>
+          <table class="meta">
+            <tbody>
+              {cartographerName && (
+                <tr>
+                  <th scope="row">Cartographer</th>
+                  <td>
+                    {cartographer ? (
+                      <a href={`/cartographers/${cartographer.id}/`}>{cartographerName}</a>
+                    ) : (
+                      cartographerName
+                    )}
+                  </td>
+                </tr>
+              )}
+              {rows.map(([label, value]) => (
+                <tr>
+                  <th scope="row">{label}</th>
+                  <td>{value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      )
+    }
+
+    {
+      map.tags.length > 0 && (
+        <section class="detail-block">
+          <h2>Tags</h2>
+          <ul class="taglist">
+            {map.tags.map((t) => (
+              <li>{t}</li>
             ))}
-          </tbody>
-        </table>
-      </section>
-    )}
+          </ul>
+        </section>
+      )
+    }
 
-    {map.tags.length > 0 && (
-      <section class="detail-block">
-        <h2>Tags</h2>
-        <ul class="taglist">
-          {map.tags.map((t) => <li>{t}</li>)}
-        </ul>
-      </section>
-    )}
+    {
+      relatedEssaySlugs.length > 0 && (
+        <section class="detail-block">
+          <h2>Related essays</h2>
+          <ul class="linklist">
+            {relatedEssaySlugs.map((slug) => (
+              <li>
+                <a href={`/essays/${slug}/`}>{essayMeta[slug].title}</a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
 
-    {relatedEssaySlugs.length > 0 && (
-      <section class="detail-block">
-        <h2>Related essays</h2>
-        <ul class="linklist">
-          {relatedEssaySlugs.map((slug) => (
-            <li><a href={`/essays/${slug}/`}>{essayMeta[slug].title}</a></li>
-          ))}
-        </ul>
-      </section>
-    )}
+    {
+      relatedMaps.length > 0 && (
+        <section class="detail-block">
+          <h2>Related maps</h2>
+          <ul class="linklist">
+            {relatedMaps.map((m) => (
+              <li>
+                <a href={`/collection/${m.id}/`}>{m.title}</a>
+                <span class="muted"> · {formatYear(m.year)}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
 
-    {relatedMaps.length > 0 && (
-      <section class="detail-block">
-        <h2>Related maps</h2>
-        <ul class="linklist">
-          {relatedMaps.map((m) => (
-            <li>
-              <a href={`/collection/${m.id}/`}>{m.title}</a>
-              <span class="muted"> · {formatYear(m.year)}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
-    )}
-
-    {bibliography.length > 0 && (
-      <section class="detail-block">
-        <h2>Bibliography</h2>
-        <ul class="biblist">
-          {bibliography.map((b) => (
-            <li>{b.url ? <a href={b.url}>{b.citation}</a> : b.citation}</li>
-          ))}
-        </ul>
-      </section>
-    )}
+    {
+      bibliography.length > 0 && (
+        <section class="detail-block">
+          <h2>Bibliography</h2>
+          <ul class="biblist">
+            {bibliography.map((b) => (
+              <li>{b.url ? <a href={b.url}>{b.citation}</a> : b.citation}</li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
 
     <section class="detail-block">
       <h2>Cite this map</h2>
@@ -206,7 +224,10 @@ const tileSource = cover?.dziTileSource ?? cover?.iiif;
 </PortalLayout>
 
 <style>
-  .detail { padding-block: clamp(2.5rem, 6vw, 4rem); max-width: var(--prose-max); }
+  .detail {
+    padding-block: clamp(2.5rem, 6vw, 4rem);
+    max-width: var(--prose-max);
+  }
   .crumbs {
     font-family: var(--font-mono);
     font-size: var(--step--1);
@@ -217,15 +238,27 @@ const tileSource = cover?.dziTileSource ?? cover?.iiif;
     gap: 0.5rem;
     margin-bottom: 1.5rem;
   }
-  .detail-head h1 { font-size: var(--step-4); margin: 0.3rem 0 0.4rem; }
+  .detail-head h1 {
+    font-size: var(--step-4);
+    margin: 0.3rem 0 0.4rem;
+  }
   .detail-author {
     color: var(--accent);
     font-style: italic;
     font-size: var(--step-1);
     margin: 0 0 0.75rem;
   }
-  .lede { color: var(--ink-muted); font-size: var(--step-1); margin: 0 0 1.5rem; }
-  .detail-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 0 0 2.5rem; }
+  .lede {
+    color: var(--ink-muted);
+    font-size: var(--step-1);
+    margin: 0 0 1.5rem;
+  }
+  .detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 0 0 2.5rem;
+  }
   .btn {
     display: inline-block;
     padding: 0.55rem 1rem;
@@ -237,11 +270,23 @@ const tileSource = cover?.dziTileSource ?? cover?.iiif;
     font-size: var(--step--1);
     letter-spacing: 0.06em;
   }
-  .btn:hover { background: color-mix(in srgb, var(--accent) 28%, transparent); color: var(--ink); }
-  .btn--ghost { background: transparent; border-color: var(--line); color: var(--ink-muted); }
-  .btn--ghost:hover { border-color: var(--accent); color: var(--ink); }
+  .btn:hover {
+    background: color-mix(in srgb, var(--accent) 28%, transparent);
+    color: var(--ink);
+  }
+  .btn--ghost {
+    background: transparent;
+    border-color: var(--line);
+    color: var(--ink-muted);
+  }
+  .btn--ghost:hover {
+    border-color: var(--accent);
+    color: var(--ink);
+  }
 
-  .detail-figure { margin: 0 0 2.5rem; }
+  .detail-figure {
+    margin: 0 0 2.5rem;
+  }
   .detail-figure img {
     width: 100%;
     border: 1px solid var(--line);
@@ -253,17 +298,25 @@ const tileSource = cover?.dziTileSource ?? cover?.iiif;
     color: var(--ink-muted);
     margin-top: 0.5rem;
   }
-  .detail-figure .lic { color: var(--ink-muted); }
+  .detail-figure .lic {
+    color: var(--ink-muted);
+  }
 
-  .detail-block { margin-bottom: 2.5rem; }
+  .detail-block {
+    margin-bottom: 2.5rem;
+  }
   .detail-block h2 {
     font-size: var(--step-1);
     margin: 0 0 1rem;
     padding-bottom: 0.4rem;
     border-bottom: 1px solid var(--line);
   }
-  .meta { width: 100%; border-collapse: collapse; }
-  .meta th, .meta td {
+  .meta {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .meta th,
+  .meta td {
     text-align: left;
     padding: 0.55rem 0.75rem;
     border-bottom: 1px solid var(--line);
@@ -279,11 +332,27 @@ const tileSource = cover?.dziTileSource ?? cover?.iiif;
     text-transform: uppercase;
     font-weight: 400;
   }
-  .linklist, .biblist { margin: 0; padding-left: 1.2rem; }
-  .linklist li, .biblist li { margin-bottom: 0.5rem; color: var(--ink-muted); }
-  .linklist a, .biblist a { color: var(--accent); }
-  .linklist a:hover, .biblist a:hover { color: var(--ink); }
-  .muted { color: var(--ink-muted); }
+  .linklist,
+  .biblist {
+    margin: 0;
+    padding-left: 1.2rem;
+  }
+  .linklist li,
+  .biblist li {
+    margin-bottom: 0.5rem;
+    color: var(--ink-muted);
+  }
+  .linklist a,
+  .biblist a {
+    color: var(--accent);
+  }
+  .linklist a:hover,
+  .biblist a:hover {
+    color: var(--ink);
+  }
+  .muted {
+    color: var(--ink-muted);
+  }
   .taglist {
     display: flex;
     flex-wrap: wrap;

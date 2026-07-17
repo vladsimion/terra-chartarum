@@ -32,7 +32,9 @@ function arg(name) {
 }
 
 const exists = (p) =>
-  access(p, constants.F_OK).then(() => true).catch(() => false);
+  access(p, constants.F_OK)
+    .then(() => true)
+    .catch(() => false);
 
 function hasBinary(bin) {
   const r = spawnSync(bin, ['--version'], { stdio: 'ignore' });

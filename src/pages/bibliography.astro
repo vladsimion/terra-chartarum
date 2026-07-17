@@ -18,8 +18,8 @@ const entries = getFullBibliography().map((b) => ({
       <p class="eyebrow">Sources</p>
       <h1>Bibliography</h1>
       <p class="lede">
-        {entries.length} works cited across the collection, sorted by author.
-        Each entry links back to the maps that cite it.
+        {entries.length} works cited across the collection, sorted by author. Each entry links back to
+        the maps that cite it.
       </p>
     </header>
 
@@ -35,31 +35,33 @@ const entries = getFullBibliography().map((b) => ({
     <p id="count" class="count" aria-live="polite"></p>
 
     <ol class="biblist" id="biblist">
-      {entries.map(({ entry, citing }) => (
-        <li
-          class="bibitem"
-          data-text={[entry.author, entry.title, entry.year, entry.citation]
-            .filter(Boolean)
-            .join(' ')
-            .toLowerCase()}
-        >
-          <p class="cite">
-            {entry.url ? <a href={entry.url}>{entry.citation}</a> : entry.citation}
-          </p>
-          {citing.length > 0 && (
-            <p class="citedby">
-              Cited by:{' '}
-              {citing.map((m, i) => (
-                <>
-                  {i > 0 && <span aria-hidden="true">, </span>}
-                  <a href={`/collection/${m.id}/`}>{m.title}</a>
-                  <span class="muted"> ({formatYear(m.year)})</span>
-                </>
-              ))}
+      {
+        entries.map(({ entry, citing }) => (
+          <li
+            class="bibitem"
+            data-text={[entry.author, entry.title, entry.year, entry.citation]
+              .filter(Boolean)
+              .join(' ')
+              .toLowerCase()}
+          >
+            <p class="cite">
+              {entry.url ? <a href={entry.url}>{entry.citation}</a> : entry.citation}
             </p>
-          )}
-        </li>
-      ))}
+            {citing.length > 0 && (
+              <p class="citedby">
+                Cited by:{' '}
+                {citing.map((m, i) => (
+                  <>
+                    {i > 0 && <span aria-hidden="true">, </span>}
+                    <a href={`/collection/${m.id}/`}>{m.title}</a>
+                    <span class="muted"> ({formatYear(m.year)})</span>
+                  </>
+                ))}
+              </p>
+            )}
+          </li>
+        ))
+      }
     </ol>
     <p id="empty" class="empty" hidden>No sources match that filter.</p>
   </section>
@@ -95,11 +97,25 @@ const entries = getFullBibliography().map((b) => ({
 </script>
 
 <style>
-  .biblio { padding-block: clamp(2.5rem, 6vw, 4rem); max-width: var(--prose-max); }
-  .biblio-head { margin-bottom: 2rem; }
-  .biblio-head h1 { font-size: var(--step-4); margin: 0.3rem 0 0.75rem; }
-  .lede { color: var(--ink-muted); font-size: var(--step-1); margin: 0; }
-  .controls { margin-bottom: 1rem; }
+  .biblio {
+    padding-block: clamp(2.5rem, 6vw, 4rem);
+    max-width: var(--prose-max);
+  }
+  .biblio-head {
+    margin-bottom: 2rem;
+  }
+  .biblio-head h1 {
+    font-size: var(--step-4);
+    margin: 0.3rem 0 0.75rem;
+  }
+  .lede {
+    color: var(--ink-muted);
+    font-size: var(--step-1);
+    margin: 0;
+  }
+  .controls {
+    margin-bottom: 1rem;
+  }
   .controls input[type='search'] {
     width: 100%;
     background: var(--canvas);
@@ -116,14 +132,43 @@ const entries = getFullBibliography().map((b) => ({
     color: var(--ink-muted);
     margin: 0 0 1.5rem;
   }
-  .biblist { margin: 0; padding-left: 1.4rem; display: grid; gap: 1.4rem; }
-  .bibitem { color: var(--ink); }
-  .cite { margin: 0 0 0.35rem; font-size: var(--step-0); line-height: 1.5; }
-  .cite a { color: var(--gold); }
-  .cite a:hover { color: var(--ink); }
-  .citedby { margin: 0; font-size: var(--step--1); color: var(--ink-muted); }
-  .citedby a { color: var(--gold); }
-  .citedby a:hover { color: var(--ink); }
-  .muted { color: var(--ink-muted); }
-  .empty { color: var(--ink-muted); font-style: italic; padding: 2rem 0; }
+  .biblist {
+    margin: 0;
+    padding-left: 1.4rem;
+    display: grid;
+    gap: 1.4rem;
+  }
+  .bibitem {
+    color: var(--ink);
+  }
+  .cite {
+    margin: 0 0 0.35rem;
+    font-size: var(--step-0);
+    line-height: 1.5;
+  }
+  .cite a {
+    color: var(--gold);
+  }
+  .cite a:hover {
+    color: var(--ink);
+  }
+  .citedby {
+    margin: 0;
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+  }
+  .citedby a {
+    color: var(--gold);
+  }
+  .citedby a:hover {
+    color: var(--ink);
+  }
+  .muted {
+    color: var(--ink-muted);
+  }
+  .empty {
+    color: var(--ink-muted);
+    font-style: italic;
+    padding: 2rem 0;
+  }
 </style>

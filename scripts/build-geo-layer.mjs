@@ -44,7 +44,9 @@ function passthrough() {
 }
 
 const exists = (p) =>
-  access(p, constants.F_OK).then(() => true).catch(() => false);
+  access(p, constants.F_OK)
+    .then(() => true)
+    .catch(() => false);
 
 function hasBinary(bin) {
   const r = spawnSync(bin, ['--version'], { stdio: 'ignore' });
@@ -81,9 +83,15 @@ if (ext === '.pmtiles') {
   // -zg picks a zoom range; drop-densest keeps tiles under the size limit. Both
   // are overridable via passthrough args (they come after these on the line).
   args = [
-    '-o', outPath, '--force', '-l', layerName,
-    '-zg', '--drop-densest-as-needed',
-    ...passthrough(), input,
+    '-o',
+    outPath,
+    '--force',
+    '-l',
+    layerName,
+    '-zg',
+    '--drop-densest-as-needed',
+    ...passthrough(),
+    input,
   ];
   cmd = 'tippecanoe';
 } else if (ext === '.fgb') {

@@ -23,14 +23,7 @@ interface Props {
   caption?: string;
 }
 
-const {
-  events,
-  from,
-  to,
-  compress = true,
-  ticks,
-  caption,
-} = Astro.props;
+const { events, from, to, compress = true, ticks, caption } = Astro.props;
 
 const sorted = [...events].sort((a, b) => a.year - b.year);
 const minY = from ?? Math.min(...sorted.map((e) => e.year));
@@ -73,11 +66,22 @@ const tickYears = ticks ?? [minY, maxY];
           </>
         );
         return e.href ? (
-          <a class="atl-node" role="listitem" style={style} href={e.href} title={`${e.label} (${fmt(e.year)})`}>
+          <a
+            class="atl-node"
+            role="listitem"
+            style={style}
+            href={e.href}
+            title={`${e.label} (${fmt(e.year)})`}
+          >
             {inner}
           </a>
         ) : (
-          <span class="atl-node" role="listitem" style={style} title={`${e.label} (${fmt(e.year)})`}>
+          <span
+            class="atl-node"
+            role="listitem"
+            style={style}
+            title={`${e.label} (${fmt(e.year)})`}
+          >
             {inner}
           </span>
         );

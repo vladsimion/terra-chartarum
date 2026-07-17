@@ -25,17 +25,20 @@ const { tileSource, src, alt, credit, license } = Astro.props;
 <figure class="dzv" data-dzv data-tilesource={tileSource}>
   <div class="dzv-stage">
     <img class="dzv-img" src={src} alt={alt} loading="lazy" decoding="async" />
-    <div class="dzv-viewer" data-dzv-viewer aria-label={`High-resolution view of ${alt}`} hidden></div>
+    <div class="dzv-viewer" data-dzv-viewer aria-label={`High-resolution view of ${alt}`} hidden>
+    </div>
     <button type="button" class="dzv-open" data-dzv-open>
       <span aria-hidden="true">⤢</span> Explore in high resolution
     </button>
   </div>
-  {(credit || license) && (
-    <figcaption>
-      {credit}
-      {license && <span class="dzv-lic"> · {license}</span>}
-    </figcaption>
-  )}
+  {
+    (credit || license) && (
+      <figcaption>
+        {credit}
+        {license && <span class="dzv-lic"> · {license}</span>}
+      </figcaption>
+    )
+  }
 </figure>
 
 <script>
@@ -98,7 +101,9 @@ const { tileSource, src, alt, credit, license } = Astro.props;
 </script>
 
 <style>
-  .dzv { margin: 0 0 2.5rem; }
+  .dzv {
+    margin: 0 0 2.5rem;
+  }
   .dzv-stage {
     position: relative;
     border: 1px solid var(--line);
@@ -106,8 +111,16 @@ const { tileSource, src, alt, credit, license } = Astro.props;
     overflow: hidden;
     background: var(--panel);
   }
-  .dzv-img { width: 100%; display: block; cursor: zoom-in; }
-  .dzv-viewer { width: 100%; height: clamp(360px, 60vh, 680px); background: var(--canvas); }
+  .dzv-img {
+    width: 100%;
+    display: block;
+    cursor: zoom-in;
+  }
+  .dzv-viewer {
+    width: 100%;
+    height: clamp(360px, 60vh, 680px);
+    background: var(--canvas);
+  }
   .dzv-open {
     position: absolute;
     right: 0.75rem;
@@ -126,14 +139,22 @@ const { tileSource, src, alt, credit, license } = Astro.props;
     cursor: pointer;
     backdrop-filter: blur(4px);
   }
-  .dzv-open:hover:not(:disabled) { border-color: var(--gold); color: var(--gold); }
-  .dzv-open:disabled { opacity: 0.7; cursor: progress; }
+  .dzv-open:hover:not(:disabled) {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+  .dzv-open:disabled {
+    opacity: 0.7;
+    cursor: progress;
+  }
   .dzv figcaption {
     font-size: var(--step--1);
     color: var(--ink-muted);
     margin-top: 0.5rem;
   }
-  .dzv-lic { color: var(--ink-muted); }
+  .dzv-lic {
+    color: var(--ink-muted);
+  }
 
   /* OpenSeadragon injects controls globally; keep the navigator on-brand. */
   :global(.dzv-viewer .navigator) {

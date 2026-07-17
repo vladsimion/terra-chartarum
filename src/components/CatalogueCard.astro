@@ -37,15 +37,17 @@ const searchText = [map.title, map.region, essayTitle, map.cartographer, ...map.
   data-title={searchText}
 >
   <a href={`/collection/${map.id}/`} class="mcard-link">
-    {cover ? (
-      <div class="mcard-media">
-        <img src={cover.src} alt={cover.alt} loading="lazy" decoding="async" />
-      </div>
-    ) : (
-      <div class="mcard-media mcard-media--empty" aria-hidden="true">
-        <span>{century}</span>
-      </div>
-    )}
+    {
+      cover ? (
+        <div class="mcard-media">
+          <img src={cover.src} alt={cover.alt} loading="lazy" decoding="async" />
+        </div>
+      ) : (
+        <div class="mcard-media mcard-media--empty" aria-hidden="true">
+          <span>{century}</span>
+        </div>
+      )
+    }
     <div class="mcard-body">
       <p class="eyebrow">{formatYear(map.year)} · {map.region}</p>
       <h3 class="mcard-title">{map.title}</h3>
@@ -73,13 +75,22 @@ const searchText = [map.title, map.region, essayTitle, map.cartographer, ...map.
     transform: translateY(-4px);
     border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
   }
-  .mcard-link { color: inherit; display: block; height: 100%; }
+  .mcard-link {
+    color: inherit;
+    display: block;
+    height: 100%;
+  }
   .mcard-media {
     aspect-ratio: 16 / 10;
     background: var(--panel-2);
     border-bottom: 1px solid var(--line);
   }
-  .mcard-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .mcard-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
   .mcard-media--empty {
     display: grid;
     place-items: center;
@@ -91,7 +102,9 @@ const searchText = [map.title, map.region, essayTitle, map.cartographer, ...map.
     text-transform: uppercase;
     color: color-mix(in srgb, var(--accent) 60%, var(--ink-muted));
   }
-  .mcard-body { padding: 1.15rem 1.3rem 1.4rem; }
+  .mcard-body {
+    padding: 1.15rem 1.3rem 1.4rem;
+  }
   .mcard-title {
     font-size: var(--step-1);
     margin: 0.35rem 0 0.15rem;

@@ -9,8 +9,7 @@ const nav = [
   { href: '/about/', label: 'About' },
   { href: '/colophon/', label: 'Colophon' },
 ];
-const isActive = (href: string) =>
-  href === '/' ? path === '/' : path.startsWith(href);
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
 ---
 
 <header class="site-header" transition:persist>
@@ -24,10 +23,7 @@ const isActive = (href: string) =>
         {
           nav.map((item) => (
             <li>
-              <a
-                href={item.href}
-                aria-current={isActive(item.href) ? 'page' : undefined}
-              >
+              <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
                 {item.label}
               </a>
             </li>
@@ -64,8 +60,13 @@ const isActive = (href: string) =>
     font-size: var(--step-1);
     letter-spacing: 0.04em;
   }
-  .brand:hover { color: var(--gold); }
-  .brand-mark { color: var(--gold); font-size: 0.8em; }
+  .brand:hover {
+    color: var(--gold);
+  }
+  .brand-mark {
+    color: var(--gold);
+    font-size: 0.8em;
+  }
   nav ul {
     display: flex;
     gap: clamp(0.8rem, 2.5vw, 1.75rem);
@@ -88,6 +89,8 @@ const isActive = (href: string) =>
     border-bottom-color: var(--gold);
   }
   @media (max-width: 640px) {
-    .brand-name { display: none; }
+    .brand-name {
+      display: none;
+    }
   }
 </style>

@@ -86,7 +86,12 @@ const { input } = Astro.props;
     background: var(--panel);
     padding: 1rem 1.1rem;
   }
-  .cite-tabs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.8rem; }
+  .cite-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 0.8rem;
+  }
   .cite-tabs button {
     background: transparent;
     border: 1px solid var(--line);
@@ -98,7 +103,10 @@ const { input } = Astro.props;
     padding: 0.35rem 0.7rem;
     cursor: pointer;
   }
-  .cite-tabs button:hover { color: var(--ink); border-color: var(--gold); }
+  .cite-tabs button:hover {
+    color: var(--ink);
+    border-color: var(--gold);
+  }
   .cite-tabs button[aria-selected='true'] {
     color: var(--canvas);
     background: var(--gold);
@@ -118,7 +126,11 @@ const { input } = Astro.props;
     word-break: break-word;
     overflow-x: auto;
   }
-  .cite-actions { display: flex; align-items: center; gap: 0.75rem; }
+  .cite-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
   .cite-copy {
     background: transparent;
     border: 1px solid var(--line);
@@ -130,7 +142,10 @@ const { input } = Astro.props;
     padding: 0.4rem 0.9rem;
     cursor: pointer;
   }
-  .cite-copy:hover { border-color: var(--gold); color: var(--gold); }
+  .cite-copy:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
   .cite-status {
     font-family: var(--font-mono);
     font-size: var(--step--1);
