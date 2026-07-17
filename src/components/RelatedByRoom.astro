@@ -1,0 +1,103 @@
+---
+// RelatedByRoom (TC-204 / KAN-99).
+//
+// A mixed grid of cross-links — essays, maps, and cartographers — that share a
+// room, shown at the end of an essay. Items are resolved and capped (AC: 6) by
+// lib/room-content.relatedByRoom, which round-robins the three content types so
+// this list stays a genuine mix; this component only renders them.
+import { getRoom, type RoomSlug } from '../data/rooms';
+import type { RelatedItem } from '../lib/room-content';
+
+interface Props {
+  room: RoomSlug;
+  items: RelatedItem[];
+}
+
+const { room: slug, items } = Astro.props;
+const room = getRoom(slug);
+const KIND_LABEL: Record<RelatedItem['kind'], string> = {
+  essay: 'Essay',
+  map: 'Map',
+  cartographer: 'Cartographer',
+};
+---
+
+{
+  items.length > 0 && (
+    <section class="related-room" aria-labelledby="related-room-h">
+      <h2 id="related-room-h" class="related-room-h">
+        {room?.glyph && <img src={room.glyph} alt="" width="22" height="22" aria-hidden="true" />}
+        More in {room?.title ?? slug}
+      </h2>
+      <ul class="related-grid">
+        {items.map((item) => (
+          <li class="related-card">
+            <a href={item.href}>
+              <span class="rc-kind">{KIND_LABEL[item.kind]}</span>
+              <span class="rc-title">{item.title}</span>
+              {item.blurb && <span class="rc-blurb">{item.blurb}</span>}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+<style>
+  .related-room {
+    border-top: 1px solid var(--line);
+    padding-top: 1.5rem;
+    margin-top: 2.5rem;
+  }
+  .related-room-h {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--step-1);
+    margin-bottom: 1.1rem;
+  }
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 0.85rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .related-card a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    height: 100%;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    padding: 0.9rem 1rem;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .related-card a:hover {
+    border-color: color-mix(in srgb, var(--gold) 45%, var(--line));
+  }
+  .rc-kind {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .rc-title {
+    font-family: var(--font-display);
+    font-size: var(--step-0);
+  }
+  .rc-blurb {
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
