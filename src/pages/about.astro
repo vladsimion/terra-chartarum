@@ -1,36 +1,86 @@
 ---
+// About / site manifesto (TC-401 / KAN-103).
+//
+// Charter decision D4: the two framing arguments once planned as standalone
+// essays — "Every Map Is an Argument" and "The Seduction of Precision" — are
+// absorbed here as the site's curatorial statement, so they never appear as
+// separate essays. This page also introduces the seven-room cosmography and
+// links each room individually.
 import PortalLayout from '../layouts/PortalLayout.astro';
 import { getEssays } from '../lib/registry';
+import { ROOMS } from '../data/rooms';
 const essays = await getEssays();
 ---
 
 <PortalLayout
-  title="About"
-  description="What Terra Chartarum is: a portal and platform for interactive historical cartography essays."
+  title="About & Manifesto"
+  description="Terra Chartarum is a portal for reading maps critically: every map is an argument, precision is a seduction with a cost, and the atlas is arranged as a cosmography of seven rooms."
 >
   <section class="shell prose">
-    <p class="eyebrow">About</p>
+    <p class="eyebrow">About &amp; manifesto</p>
     <h1>A portal for reading maps critically</h1>
     <p>
       <strong>Terra Chartarum</strong> gathers a growing family of interactive visual essays about the
       history and politics of cartography. Each essay is an immersive, self-contained piece with its own
       art direction; the portal gives them a shared front door, a common navigation, and a cross-essay
-      atlas — so four experiments read as one publication rather than four tabs.
+      atlas — so several experiments read as one publication rather than several tabs.
     </p>
     <p>
-      The guiding idea, drawn from J.B. Harley, is that maps are never neutral: every choice to
-      measure, name, or bound the world also erases something. The essays make those trade-offs
-      visible; the
+      This page is also the atlas's manifesto. Two ideas run beneath everything gathered here, and
+      rather than stand as essays of their own they are set down once, plainly, as the lens through
+      which the rest is meant to be read.
+    </p>
+
+    <h2>Every map is an argument</h2>
+    <p>
+      The guiding idea, drawn from J.B. Harley, is that maps are never neutral. A map is not a
+      window onto the world but a made thing — with a maker, a method, and a motive. Every choice to
+      measure, name, or bound the world is also a choice about what to leave out, and each omission
+      is quiet enough to pass for objectivity. To draw a coastline is to decide where land ends; to
+      print a border is to turn an argument into a fact; to centre one meridian is to make
+      everywhere else a margin. The map persuades precisely because it looks like a description
+      rather than a claim.
+    </p>
+    <p>
+      Reading maps critically means refusing that disguise — asking, of every sheet, not only
+      <em>is it accurate?</em> but <em
+        >whose purpose does this accuracy serve, and what does it render invisible?</em
+      > The essays make those trade-offs visible; the
       <a href="/colophon/">colophon</a> documents the shared meta-lens that lets them be compared.
+    </p>
+
+    <h2>The seduction of precision</h2>
+    <p>
+      The second idea is a caution about the first. Precision is seductive: a finer grid, a truer
+      projection, a more exact survey all feel like pure gains, and for centuries the history of
+      cartography has been told as a march toward them. But every gain in accuracy, usability, or
+      control exacts a quiet sacrifice somewhere else — a living, four-dimensional world traded for
+      a legible surface, a negotiated place fixed into a parcel, a plural name overwritten by a
+      single official one. The sharper the map, the more confident its silences.
+    </p>
+    <p>
+      Terra Chartarum does not reject precision; it refuses to mistake it for innocence. We treat
+      the elegant, authoritative map as the one most worth interrogating — because it is the one
+      whose argument is easiest to miss.
     </p>
 
     <h2>The seven rooms</h2>
     <p>
-      The atlas is also arranged as a medieval cosmography — <a href="/rooms/">seven rooms</a>, each
-      asking a different question of the world: the Earth as ground, the Map as craft, the City, the
-      Border, the Road, the Archive, and the Theatre in which knowledge is staged. Enter a room to
-      read its essays, walk its maps, and see where its borders touch the others.
+      To hold these arguments in view, the atlas is arranged not as a list but as a medieval
+      cosmography — <a href="/rooms/">seven rooms</a>, each asking a different question of the
+      world. Enter a room to read its essays, walk its maps, and see where its borders touch the
+      others.
     </p>
+    <ul class="rooms-list">
+      {
+        ROOMS.map((room) => (
+          <li>
+            <a href={`/rooms/${room.slug}/`}>{room.title}</a>
+            <span> — {room.blurb}</span>
+          </li>
+        ))
+      }
+    </ul>
 
     <h2>The essays so far</h2>
     <ul class="list">
@@ -75,16 +125,19 @@ const essays = await getEssays();
     font-family: var(--font-display);
     color: var(--ink);
   }
+  .rooms-list,
   .list {
     list-style: none;
     padding: 0;
     margin: 0;
   }
+  .rooms-list li,
   .list li {
     padding: 0.5rem 0;
     border-bottom: 1px solid var(--line);
     color: var(--ink-muted);
   }
+  .rooms-list a,
   .list a {
     font-family: var(--font-display);
     font-size: var(--step-1);
