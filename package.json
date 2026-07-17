@@ -17,6 +17,7 @@
     "format:check": "prettier --check .",
     "create-essay": "node scripts/create-essay.mjs",
     "build-geo-layer": "node scripts/build-geo-layer.mjs",
+    "build-og-images": "node scripts/build-og-images.mjs",
     "build-map-tiles": "node scripts/build-map-tiles.mjs",
     "astro": "astro"
   },

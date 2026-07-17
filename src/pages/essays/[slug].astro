@@ -26,7 +26,7 @@ const isLegacy = data.status === 'legacy' && data.embedPath;
 const { Content } = await essay.render();
 ---
 
-<PortalLayout title={data.title} description={data.summary} ogImage={data.cover}>
+<PortalLayout title={data.title} description={data.summary} ogImage={`/og/${essay.slug}.png`}>
   <div class="essay-bar" style={`--accent:${accent}`}>
     <div class="shell bar-inner">
       <a class="back" href="/essays/">← Atlas of essays</a>

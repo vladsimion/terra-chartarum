@@ -31,7 +31,9 @@ export default tseslint.config(
   {
     // Node-context tooling scripts use console + process freely.
     files: ['scripts/**/*.{js,mjs}', '*.config.{js,mjs,ts}'],
-    languageOptions: { globals: { process: 'readonly', console: 'readonly' } },
+    languageOptions: {
+      globals: { process: 'readonly', console: 'readonly', Buffer: 'readonly' },
+    },
   },
   {
     // Astro generates env.d.ts with a triple-slash reference by design.
