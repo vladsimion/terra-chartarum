@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="The Border">
+  <circle cx="32" cy="32" r="28" stroke="#d4b87a" stroke-width="1.5" opacity="0.3"/>
+  <path d="M32 14C40 24 24 30 34 40C28 48 34 50 32 50" stroke="#d4b87a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 4"/>
+  <g fill="#c0ad88">
+    <circle cx="20" cy="26" r="2.6"/>
+    <circle cx="46" cy="38" r="2.6"/>
+  </g>
+</svg>

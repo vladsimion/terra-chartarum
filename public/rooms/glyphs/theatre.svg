@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="The Theatre">
+  <circle cx="32" cy="32" r="28" stroke="#d4b87a" stroke-width="1.5" opacity="0.3"/>
+  <g stroke="#d4b87a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 20H48V24C48 24 44 26 44 32V44H20V32C20 26 16 24 16 24Z"/>
+    <path d="M14 48H50"/>
+    <circle cx="32" cy="35" r="6"/>
+  </g>
+  <path d="M27 35H37" stroke="#c0ad88" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
+</svg>
