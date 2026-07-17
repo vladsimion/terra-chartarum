@@ -31,7 +31,7 @@ const { Content } = await essay.render();
     <div class="shell bar-inner">
       <a class="back" href="/essays/">← Atlas of essays</a>
       <span class="crumb" aria-hidden="true">/</span>
-      <span class="crumb-title">{data.title}</span>
+      <span class="crumb-title" transition:name={`essay-${essay.slug}`}>{data.title}</span>
       <nav class="pager" aria-label="Essay navigation">
         <a href={`/essays/${prev.slug}/`} title={prev.data.title}>‹ Prev</a>
         <a href={`/essays/${next.slug}/`} title={next.data.title}>Next ›</a>

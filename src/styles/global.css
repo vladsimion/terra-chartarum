@@ -87,6 +87,30 @@
   }
 }
 
+/* View transitions (KAN-23) --------------------------------------------------
+   Wire the shell-wide cross-fade to the shared motion tokens so atlas -> essay
+   navigation reads as deliberate rather than the browser default. Per-slug
+   named essay titles (EssayCard / atlas timeline / [slug] bar) morph on top of
+   this root fade. */
+::view-transition-old(root) {
+  animation: tc-vt-out var(--dur) var(--ease-in-out) both;
+}
+::view-transition-new(root) {
+  animation: tc-vt-in var(--dur) var(--ease-out) both;
+}
+@keyframes tc-vt-out {
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+@keyframes tc-vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -97,6 +121,13 @@
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+  }
+  /* Native view-transition pseudo-elements aren't matched by the universal
+     selector above, so silence them (root fade + named morphs) explicitly. */
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 }
 
