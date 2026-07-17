@@ -12,6 +12,7 @@
  * layers the map will consume, and drives the layer-toggle UI.
  */
 import { z } from 'astro:content';
+import { ROOM_SLUGS } from '../data/rooms';
 
 export const GeoLayerSchema = z.object({
   id: z.string(),
@@ -34,6 +35,11 @@ export const GeoLayerSchema = z.object({
   color: z.string().default('#d4b87a'),
   // Vector-tile source layer (PMTiles); ignored for geojson.
   sourceLayer: z.string().optional(),
+  // Seven-room cosmography (TC-102 / KAN-93). Optional here so existing layers
+  // validate unchanged; retro-tagging lands in KAN-94.
+  room: z.enum(ROOM_SLUGS).optional(),
+  secondaryRooms: z.array(z.enum(ROOM_SLUGS)).max(2).default([]),
+  roomAnchor: z.boolean().default(false),
 });
 
 export type GeoLayer = z.infer<typeof GeoLayerSchema>;

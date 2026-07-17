@@ -9,6 +9,7 @@
  * module load so a malformed entry fails the build, not the browser.
  */
 import { z } from 'astro:content';
+import { ROOM_SLUGS } from '../data/rooms';
 import { getCorpus } from './corpus';
 import type { HistoricalMap } from './corpus';
 
@@ -28,6 +29,11 @@ export const CartographerSchema = z.object({
   essaySlugs: z.array(z.string()).default([]),
   links: z.array(CartographerLinkSchema).default([]),
   portrait: z.string().optional(),
+  // Seven-room cosmography (TC-102 / KAN-93). Optional here so existing records
+  // validate unchanged; retro-tagging lands in KAN-94.
+  room: z.enum(ROOM_SLUGS).optional(),
+  secondaryRooms: z.array(z.enum(ROOM_SLUGS)).max(2).default([]),
+  roomAnchor: z.boolean().default(false),
 });
 
 export type Cartographer = z.infer<typeof CartographerSchema>;

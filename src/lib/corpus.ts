@@ -16,6 +16,7 @@
  * payload it ships to every visitor.
  */
 import { z } from 'astro:content';
+import { ROOM_SLUGS } from '../data/rooms';
 
 /**
  * An inline citation on a map — a self-contained reference that isn't (yet) in
@@ -83,6 +84,11 @@ export const HistoricalMapSchema = z.object({
   images: z.array(MapImageSchema).default([]),
   tags: z.array(z.string()).default([]),
   coveragePath: z.string().optional(), // depicted extent; fragment into the merged coverage.geojson (KAN-74)
+  // Seven-room cosmography (TC-102 / KAN-93). Optional here so existing seed
+  // records validate unchanged; retro-tagging lands in KAN-94.
+  room: z.enum(ROOM_SLUGS).optional(),
+  secondaryRooms: z.array(z.enum(ROOM_SLUGS)).max(2).default([]),
+  roomAnchor: z.boolean().default(false),
 });
 
 export type HistoricalMap = z.infer<typeof HistoricalMapSchema>;

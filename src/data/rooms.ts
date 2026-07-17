@@ -79,14 +79,16 @@ export const ROOMS: readonly Room[] = [
   },
 ] as const;
 
-/**
- * Room slugs as a readonly tuple, for reuse as a zod enum in the content schema
- * (KAN-93). Kept in declaration (cosmography) order.
- */
-export const ROOM_SLUGS = ROOMS.map((r) => r.slug) as readonly string[];
-
 /** A room slug, narrowed to the seven canonical values. */
 export type RoomSlug = (typeof ROOMS)[number]['slug'];
+
+/**
+ * Room slugs as a non-empty literal tuple, for reuse as a zod enum in the
+ * content schema (KAN-93). z.enum() requires a `[U, ...U[]]` tuple (non-empty,
+ * non-readonly), which a plain `readonly string[]` does not satisfy, so we
+ * assert the tuple shape here. Kept in declaration (cosmography) order.
+ */
+export const ROOM_SLUGS = ROOMS.map((r) => r.slug) as [RoomSlug, ...RoomSlug[]];
 
 const ROOM_BY_SLUG = new Map(ROOMS.map((r) => [r.slug, r]));
 
