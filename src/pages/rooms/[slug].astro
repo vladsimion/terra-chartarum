@@ -1,0 +1,462 @@
+---
+// Room landing page (TC-202 / KAN-97).
+//
+// Per-room reading room implementing charter §2.2: a lede, an anchor hero (the
+// room's defining piece), its member essays (primary members, with secondary
+// members shown distinctly), passing sections (chapters of other essays that
+// touch this room), the Atlas layers and collection sheets tagged to it, and
+// links to the adjacent rooms in cosmography order. Any section with no content
+// is omitted entirely (AC), so a sparse room still reads cleanly.
+import PortalLayout from '../../layouts/PortalLayout.astro';
+import { ROOMS } from '../../data/rooms';
+import { getEssays } from '../../lib/registry';
+import { CORPUS } from '../../lib/corpus';
+import { GEO_LAYERS } from '../../lib/geo';
+import { inRoom } from '../../lib/room-content';
+import { getSectionsByRoom } from '../../lib/room-sections';
+
+export async function getStaticPaths() {
+  const n = ROOMS.length;
+  return ROOMS.map((room, i) => ({
+    params: { slug: room.slug },
+    props: {
+      room,
+      prev: ROOMS[(i - 1 + n) % n],
+      next: ROOMS[(i + 1) % n],
+    },
+  }));
+}
+
+const { room, prev, next } = Astro.props;
+
+const essays = await getEssays();
+const members = essays.filter((e) => inRoom(e.data, room.slug));
+const primaryEssays = members.filter((e) => e.data.room === room.slug);
+const secondaryEssays = members.filter((e) => e.data.room !== room.slug);
+
+// Anchor hero: the room's defining essay (a primary member flagged roomAnchor).
+const anchor = primaryEssays.find((e) => e.data.roomAnchor) ?? null;
+const restEssays = anchor ? primaryEssays.filter((e) => e.slug !== anchor.slug) : primaryEssays;
+
+const sections = await getSectionsByRoom(room.slug);
+const layers = GEO_LAYERS.filter((l) => inRoom(l, room.slug));
+const sheets = CORPUS.filter((m) => inRoom(m, room.slug));
+
+const mapThumb = (m: (typeof sheets)[number]) => m.images?.[0]?.src;
+---
+
+<PortalLayout title={`${room.title} — The Seven Rooms`} description={room.blurb}>
+  <article class="shell room" style="--accent: var(--gold)">
+    <nav class="room-crumbs" aria-label="Breadcrumb">
+      <a href="/rooms/">← The Seven Rooms</a>
+    </nav>
+
+    <header class="room-head">
+      <div class="room-glyph">
+        <img src={room.glyph} alt="" width="64" height="64" aria-hidden="true" />
+      </div>
+      <div>
+        <p class="eyebrow">Room {room.order} of {ROOMS.length}</p>
+        <h1>{room.title}</h1>
+        <p class="lede">{room.blurb}</p>
+      </div>
+    </header>
+
+    {
+      anchor && (
+        <section class="room-section room-anchor" aria-labelledby="anchor-h">
+          <p class="section-kicker" id="anchor-h">
+            The room's anchor
+          </p>
+          <a class="anchor-card" href={`/essays/${anchor.slug}/`}>
+            <div class="anchor-media">
+              <img src={anchor.data.cover} alt="" loading="lazy" decoding="async" />
+            </div>
+            <div class="anchor-body">
+              <h2>{anchor.data.title}</h2>
+              <p class="anchor-sub">{anchor.data.subtitle}</p>
+              <p class="anchor-summary">{anchor.data.summary}</p>
+            </div>
+          </a>
+        </section>
+      )
+    }
+
+    {
+      restEssays.length > 0 && (
+        <section class="room-section" aria-labelledby="essays-h">
+          <h2 class="section-h" id="essays-h">
+            Essays in this room
+          </h2>
+          <ul class="link-grid">
+            {restEssays.map((e) => (
+              <li class="lcard">
+                <a href={`/essays/${e.slug}/`}>
+                  <span class="lc-title">{e.data.title}</span>
+                  <span class="lc-sub">{e.data.subtitle}</span>
+                  <span class="lc-summary">{e.data.summary}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      secondaryEssays.length > 0 && (
+        <section class="room-section" aria-labelledby="passing-essays-h">
+          <h2 class="section-h" id="passing-essays-h">
+            Essays that pass through
+          </h2>
+          <ul class="link-grid">
+            {secondaryEssays.map((e) => (
+              <li class="lcard lcard-secondary">
+                <a href={`/essays/${e.slug}/`}>
+                  <span class="lc-flag">Secondary</span>
+                  <span class="lc-title">{e.data.title}</span>
+                  <span class="lc-sub">{e.data.subtitle}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      sections.length > 0 && (
+        <section class="room-section" aria-labelledby="sections-h">
+          <h2 class="section-h" id="sections-h">
+            Chapters in this room
+          </h2>
+          <ul class="link-grid">
+            {sections.map((s) => (
+              <li class="lcard lcard-tight">
+                <a href={s.href}>
+                  <span class="lc-title">{s.title}</span>
+                  <span class="lc-sub">in {s.essayTitle}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      layers.length > 0 && (
+        <section class="room-section" aria-labelledby="layers-h">
+          <h2 class="section-h" id="layers-h">
+            Atlas layers
+          </h2>
+          <ul class="link-grid">
+            {layers.map((l) => (
+              <li class="lcard lcard-tight">
+                <a href="/atlas/">
+                  <span class="lc-title">{l.title}</span>
+                  <span class="lc-sub">{l.description}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      sheets.length > 0 && (
+        <section class="room-section" aria-labelledby="sheets-h">
+          <h2 class="section-h" id="sheets-h">
+            Collection sheets
+          </h2>
+          <ul class="sheet-grid">
+            {sheets.map((m) => (
+              <li class="scard">
+                <a href={`/collection/${m.id}/`}>
+                  {mapThumb(m) && (
+                    <span class="sc-media">
+                      <img src={mapThumb(m)} alt="" loading="lazy" decoding="async" />
+                    </span>
+                  )}
+                  <span class="sc-title">{m.title}</span>
+                  {m.blurb && <span class="sc-blurb">{m.blurb}</span>}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <nav class="room-adjacent" aria-label="Adjacent rooms">
+      <a class="adj adj-prev" href={`/rooms/${prev.slug}/`}>
+        <span class="adj-dir">‹ Room {prev.order}</span>
+        <span class="adj-title">
+          <img src={prev.glyph} alt="" width="20" height="20" aria-hidden="true" />
+          {prev.title}
+        </span>
+      </a>
+      <a class="adj adj-next" href={`/rooms/${next.slug}/`}>
+        <span class="adj-dir">Room {next.order} ›</span>
+        <span class="adj-title">
+          <img src={next.glyph} alt="" width="20" height="20" aria-hidden="true" />
+          {next.title}
+        </span>
+      </a>
+    </nav>
+  </article>
+</PortalLayout>
+
+<style>
+  .room {
+    padding-block: clamp(2rem, 5vw, 3.5rem);
+    max-width: var(--prose-max);
+  }
+  .room-crumbs {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    margin-bottom: 1.5rem;
+  }
+  .room-crumbs a {
+    color: var(--ink-muted);
+  }
+  .room-crumbs a:hover {
+    color: var(--gold);
+  }
+  .room-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    margin-bottom: 2.5rem;
+  }
+  .room-glyph {
+    flex: none;
+  }
+  .room-glyph img {
+    display: block;
+  }
+  .room-head h1 {
+    font-size: var(--step-4);
+    margin: 0.2rem 0 0.6rem;
+  }
+  .room-head .lede {
+    color: var(--ink-muted);
+    font-size: var(--step-1);
+    margin: 0;
+  }
+  .room-section {
+    margin-bottom: 2.75rem;
+  }
+  .section-h {
+    font-size: var(--step-1);
+    border-top: 1px solid var(--line);
+    padding-top: 1.1rem;
+    margin: 0 0 1.1rem;
+  }
+  .section-kicker {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 0.8rem;
+  }
+
+  .anchor-card {
+    display: grid;
+    grid-template-columns: minmax(0, 12rem) 1fr;
+    gap: 1.25rem;
+    border: 1px solid color-mix(in srgb, var(--gold) 35%, var(--line));
+    border-radius: var(--radius);
+    background: var(--panel);
+    color: inherit;
+    overflow: hidden;
+    transition: border-color var(--dur) var(--ease-out);
+  }
+  .anchor-card:hover {
+    border-color: var(--gold);
+  }
+  .anchor-media {
+    background: var(--panel-2);
+  }
+  .anchor-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .anchor-body {
+    padding: 1.2rem 1.35rem 1.35rem 0;
+  }
+  .anchor-body h2 {
+    font-size: var(--step-2);
+    margin: 0 0 0.2rem;
+  }
+  .anchor-sub {
+    color: var(--gold);
+    font-style: italic;
+    margin: 0 0 0.6rem;
+  }
+  .anchor-summary {
+    color: var(--ink-muted);
+    font-size: var(--step-0);
+    margin: 0;
+  }
+
+  .link-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: 0.85rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .lcard a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    height: 100%;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    padding: 0.95rem 1.05rem;
+    color: var(--ink);
+  }
+  .lcard a:hover {
+    border-color: color-mix(in srgb, var(--gold) 45%, var(--line));
+  }
+  .lcard-secondary a {
+    background: transparent;
+    border-style: dashed;
+  }
+  .lc-flag {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .lc-title {
+    font-family: var(--font-display);
+    font-size: var(--step-0);
+  }
+  .lc-sub {
+    color: var(--gold);
+    font-style: italic;
+    font-size: var(--step--1);
+  }
+  .lc-summary {
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+    margin-top: 0.15rem;
+  }
+
+  .sheet-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+    gap: 0.85rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .scard a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    height: 100%;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    padding: 0.75rem 0.8rem 0.9rem;
+    color: var(--ink);
+  }
+  .scard a:hover {
+    border-color: color-mix(in srgb, var(--gold) 45%, var(--line));
+  }
+  .sc-media {
+    display: block;
+    aspect-ratio: 4 / 3;
+    background: var(--panel-2);
+    border-radius: calc(var(--radius) - 1px);
+    overflow: hidden;
+  }
+  .sc-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .sc-title {
+    font-family: var(--font-display);
+    font-size: var(--step-0);
+  }
+  .sc-blurb {
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+  }
+
+  .room-adjacent {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    border-top: 1px solid var(--line);
+    padding-top: 1.5rem;
+    margin-top: 1rem;
+  }
+  .adj {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 0.85rem 1rem;
+    color: var(--ink);
+  }
+  .adj:hover {
+    border-color: color-mix(in srgb, var(--gold) 45%, var(--line));
+  }
+  .adj-next {
+    text-align: right;
+  }
+  .adj-dir {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .adj-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-display);
+    font-size: var(--step-0);
+  }
+  .adj-next .adj-title {
+    flex-direction: row-reverse;
+  }
+  .adj-title img {
+    display: block;
+  }
+  @media (max-width: 34rem) {
+    .anchor-card {
+      grid-template-columns: 1fr;
+    }
+    .anchor-media {
+      aspect-ratio: 16 / 9;
+    }
+    .anchor-body {
+      padding: 0 1.25rem 1.25rem;
+    }
+    .room-adjacent {
+      grid-template-columns: 1fr;
+    }
+    .adj-next {
+      text-align: left;
+    }
+    .adj-next .adj-title {
+      flex-direction: row;
+    }
+  }
+</style>
