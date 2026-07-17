@@ -62,7 +62,9 @@ const bars = essays.map((e) => {
               style={`left:${left}%; width:${width}%; --accent:${essay.data.accent ?? 'var(--gold)'}`}
               title={`${essay.data.title} (${formatYear(essay.data.yearFrom)} – ${formatYear(essay.data.yearTo)})`}
             >
-              <span class="track-label">{essay.data.title}</span>
+              <span class="track-label" transition:name={`essay-${essay.slug}`}>
+                {essay.data.title}
+              </span>
             </a>
           ))
         }

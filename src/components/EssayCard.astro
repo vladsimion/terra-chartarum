@@ -28,7 +28,7 @@ const dims = Object.keys(data.metaScores ?? {}).join('|');
     </div>
     <div class="card-body">
       <p class="eyebrow">{yearRange(data.yearFrom, data.yearTo)}</p>
-      <h3 class="card-title">{data.title}</h3>
+      <h3 class="card-title" transition:name={`essay-${slug}`}>{data.title}</h3>
       <p class="card-sub">{data.subtitle}</p>
       <p class="card-summary">{data.summary}</p>
       <ul class="card-tags" aria-label="Regions">
