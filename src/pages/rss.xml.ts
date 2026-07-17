@@ -18,8 +18,7 @@ export async function GET(context: APIContext) {
 
   return rss({
     title: 'Terra Chartarum — Essays',
-    description:
-      'An interactive historical atlas — a gallery of cartographic visual essays.',
+    description: 'An interactive historical atlas — a gallery of cartographic visual essays.',
     site: context.site!,
     items,
   });

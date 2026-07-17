@@ -9,10 +9,7 @@ export type CanonicalDimension = (typeof CANONICAL_DIMENSIONS)[number];
  * Additive layer only — each essay keeps its native lens; this maps native axes
  * onto six canonical dimensions derived from the essays' shared Harley spine.
  */
-export const DIMENSION_META: Record<
-  CanonicalDimension,
-  { label: string; blurb: string }
-> = {
+export const DIMENSION_META: Record<CanonicalDimension, { label: string; blurb: string }> = {
   measure: { label: 'Measure', blurb: 'Geometric & survey fidelity.' },
   witness: { label: 'Witness', blurb: 'Empirical grounding vs. inherited copy.' },
   use: { label: 'Use', blurb: 'Navigation, fitness for task, reach.' },
@@ -62,8 +59,7 @@ export const CROSSWALK: Record<string, Partial<Record<CanonicalDimension, number
 export async function getEssays(): Promise<Essay[]> {
   const essays = await getCollection('essays');
   return essays.sort(
-    (a, b) =>
-      a.data.order - b.data.order || a.data.title.localeCompare(b.data.title),
+    (a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title),
   );
 }
 

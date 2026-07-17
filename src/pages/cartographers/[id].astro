@@ -18,9 +18,7 @@ const { person } = Astro.props;
 
 const maps = mapsByCartographer(person.id);
 const essays = await getEssays();
-const essayMeta = Object.fromEntries(
-  essays.map((e) => [e.slug, e.data.title]),
-);
+const essayMeta = Object.fromEntries(essays.map((e) => [e.slug, e.data.title]));
 // Essays to cross-link: the person's declared essays plus any their maps touch.
 const essaySlugs = Array.from(
   new Set([...person.essaySlugs, ...maps.map((m) => m.essaySlug)]),
@@ -32,10 +30,7 @@ const lifespan =
     : '';
 ---
 
-<PortalLayout
-  title={person.name}
-  description={person.bio}
->
+<PortalLayout title={person.name} description={person.bio}>
   <article class="shell person">
     <nav class="crumbs" aria-label="Breadcrumb">
       <a href="/cartographers/">Cartographers</a>
@@ -51,44 +46,62 @@ const lifespan =
 
     <p class="bio">{person.bio}</p>
 
-    {person.links.length > 0 && (
-      <section class="person-block">
-        <h2>Links</h2>
-        <ul class="linklist">
-          {person.links.map((l) => <li><a href={l.url}>{l.label}</a></li>)}
-        </ul>
-      </section>
-    )}
+    {
+      person.links.length > 0 && (
+        <section class="person-block">
+          <h2>Links</h2>
+          <ul class="linklist">
+            {person.links.map((l) => (
+              <li>
+                <a href={l.url}>{l.label}</a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
 
-    {maps.length > 0 && (
-      <section class="person-block">
-        <h2>Maps in the collection</h2>
-        <ul class="linklist">
-          {maps.map((m) => (
-            <li>
-              <a href={`/collection/${m.id}/`}>{m.title}</a>
-              <span class="muted"> · {formatYear(m.year)} · {m.region}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
-    )}
+    {
+      maps.length > 0 && (
+        <section class="person-block">
+          <h2>Maps in the collection</h2>
+          <ul class="linklist">
+            {maps.map((m) => (
+              <li>
+                <a href={`/collection/${m.id}/`}>{m.title}</a>
+                <span class="muted">
+                  {' '}
+                  · {formatYear(m.year)} · {m.region}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
 
-    {essaySlugs.length > 0 && (
-      <section class="person-block">
-        <h2>Essays</h2>
-        <ul class="linklist">
-          {essaySlugs.map((slug) => (
-            <li><a href={`/essays/${slug}/`}>{essayMeta[slug]}</a></li>
-          ))}
-        </ul>
-      </section>
-    )}
+    {
+      essaySlugs.length > 0 && (
+        <section class="person-block">
+          <h2>Essays</h2>
+          <ul class="linklist">
+            {essaySlugs.map((slug) => (
+              <li>
+                <a href={`/essays/${slug}/`}>{essayMeta[slug]}</a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
   </article>
 </PortalLayout>
 
 <style>
-  .person { padding-block: clamp(2.5rem, 6vw, 4rem); max-width: var(--prose-max); }
+  .person {
+    padding-block: clamp(2.5rem, 6vw, 4rem);
+    max-width: var(--prose-max);
+  }
   .crumbs {
     font-family: var(--font-mono);
     font-size: var(--step--1);
@@ -99,25 +112,50 @@ const lifespan =
     gap: 0.5rem;
     margin-bottom: 1.5rem;
   }
-  .person-head h1 { font-size: var(--step-4); margin: 0 0 0.3rem; }
+  .person-head h1 {
+    font-size: var(--step-4);
+    margin: 0 0 0.3rem;
+  }
   .dates {
     font-family: var(--font-mono);
     font-size: var(--step-0);
     color: var(--gold);
     margin: 0 0 0.15rem;
   }
-  .places { font-style: italic; color: var(--ink-muted); margin: 0 0 1.5rem; }
-  .bio { color: var(--ink); font-size: var(--step-1); margin: 0 0 2.5rem; }
-  .person-block { margin-bottom: 2.5rem; }
+  .places {
+    font-style: italic;
+    color: var(--ink-muted);
+    margin: 0 0 1.5rem;
+  }
+  .bio {
+    color: var(--ink);
+    font-size: var(--step-1);
+    margin: 0 0 2.5rem;
+  }
+  .person-block {
+    margin-bottom: 2.5rem;
+  }
   .person-block h2 {
     font-size: var(--step-1);
     margin: 0 0 1rem;
     padding-bottom: 0.4rem;
     border-bottom: 1px solid var(--line);
   }
-  .linklist { margin: 0; padding-left: 1.2rem; }
-  .linklist li { margin-bottom: 0.5rem; color: var(--ink-muted); }
-  .linklist a { color: var(--gold); }
-  .linklist a:hover { color: var(--ink); }
-  .muted { color: var(--ink-muted); }
+  .linklist {
+    margin: 0;
+    padding-left: 1.2rem;
+  }
+  .linklist li {
+    margin-bottom: 0.5rem;
+    color: var(--ink-muted);
+  }
+  .linklist a {
+    color: var(--gold);
+  }
+  .linklist a:hover {
+    color: var(--ink);
+  }
+  .muted {
+    color: var(--ink-muted);
+  }
 </style>

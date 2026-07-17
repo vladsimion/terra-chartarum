@@ -26,12 +26,14 @@ navigation, motion, and metadata** — each essay keeps its bespoke interior.
   `document`) and prevents global-CSS collision with the shell.
 
 ### Route → asset separation (important)
+
 The wrapper route `/essays/<slug>/` and the raw essay must **not** share an
 output path. Raw essays therefore live at `/embed/<slug>/`, and each wrapper's
 iframe points at `/embed/<slug>/index.html`. Do not move raw essays back under
 `public/essays/` — the wrapper would recursively load itself.
 
 ### Directory layout (as built)
+
 ```
 src/
   pages/
@@ -82,19 +84,27 @@ and an `embedPath`; native essays (future) will carry MDX bodies.
 
 ```ts
 interface Essay {
-  title: string; subtitle: string; summary: string;
-  cover: string;                       // /covers/<slug>.svg
+  title: string;
+  subtitle: string;
+  summary: string;
+  cover: string; // /covers/<slug>.svg
   status: 'legacy' | 'native';
-  embedPath?: string;                  // /embed/<slug>/index.html (legacy)
-  eras: string[]; regions: string[]; lenses: string[];
-  yearFrom: number; yearTo: number;
-  mapCount?: number; readingMinutes?: number;
-  accent: string; order: number; featured?: boolean;
-  publishedAt: string; updatedAt: string;
-  metaScores?: Partial<Record<CanonicalDimension, number>>;  // 0–1
+  embedPath?: string; // /embed/<slug>/index.html (legacy)
+  eras: string[];
+  regions: string[];
+  lenses: string[];
+  yearFrom: number;
+  yearTo: number;
+  mapCount?: number;
+  readingMinutes?: number;
+  accent: string;
+  order: number;
+  featured?: boolean;
+  publishedAt: string;
+  updatedAt: string;
+  metaScores?: Partial<Record<CanonicalDimension, number>>; // 0–1
 }
-type CanonicalDimension =
-  'measure' | 'witness' | 'use' | 'cosmos' | 'power' | 'silence';
+type CanonicalDimension = 'measure' | 'witness' | 'use' | 'cosmos' | 'power' | 'silence';
 ```
 
 `src/lib/registry.ts` reads the collection and exposes `getEssays()`,
@@ -106,29 +116,29 @@ type CanonicalDimension =
 ## 4. Harmonized Meta-Lens (additive)
 
 The four essays use different analytical vocabularies. They are harmonized into
-**one overarching lens of 6 canonical dimensions** — *derived from*, not imposed
+**one overarching lens of 6 canonical dimensions** — _derived from_, not imposed
 on, the essays (all four share a Harley critical-cartography spine where Power
 and Silence are first-class).
 
 **Design rule: additive, never replacing.** Each essay keeps its native lens
 intact inside the interior. The meta-lens lives only at the **portal level**
 (faceted discovery, tagging, optional cross-essay radar) and is documented
-transparently in `/colophon` as *one interpretive frame* — on-theme, since every
+transparently in `/colophon` as _one interpretive frame_ — on-theme, since every
 map has its own silences.
 
-| Canonical | Meaning | cartography | Speculum | Dacia | Venice·Sicily |
-|-----------|---------|-------------|----------|-------|---------------|
-| **Measure** | geometric/survey fidelity | Accuracy | Geodesy | mensvra | MARE/TERRA detail |
-| **Witness** | empirical grounding vs copied | (Completeness) | Witness | — | — |
-| **Use** | navigation, fitness, reach | Usability, Navigation | Fitness, Reach | — | RETE |
-| **Cosmos** | symbolic/meaning density, naming, craft | Symbolism, Richness | Cosmos, Hand | nomina, ordinatio, litterae | — |
-| **Power** | politics, authority, boundaries | Politics | — | auctoritas, limes | CONFINE, IMPOSIZIONE, CIRCOLAZIONE |
-| **Silence** | omission, erasure, exclusion | (Completeness, inverse) | — | silentium, rasura, vacat | Harley "what omitted" |
+| Canonical   | Meaning                                 | cartography             | Speculum       | Dacia                       | Venice·Sicily                      |
+| ----------- | --------------------------------------- | ----------------------- | -------------- | --------------------------- | ---------------------------------- |
+| **Measure** | geometric/survey fidelity               | Accuracy                | Geodesy        | mensvra                     | MARE/TERRA detail                  |
+| **Witness** | empirical grounding vs copied           | (Completeness)          | Witness        | —                           | —                                  |
+| **Use**     | navigation, fitness, reach              | Usability, Navigation   | Fitness, Reach | —                           | RETE                               |
+| **Cosmos**  | symbolic/meaning density, naming, craft | Symbolism, Richness     | Cosmos, Hand   | nomina, ordinatio, litterae | —                                  |
+| **Power**   | politics, authority, boundaries         | Politics                | —              | auctoritas, limes           | CONFINE, IMPOSIZIONE, CIRCOLAZIONE |
+| **Silence** | omission, erasure, exclusion            | (Completeness, inverse) | —              | silentium, rasura, vacat    | Harley "what omitted"              |
 
 - The machine-readable `CROSSWALK` in `registry.ts` maps each native axis to
   canonical dimensions (e.g. `Accuracy: {measure:1}`,
   `Completeness: {witness:0.5, silence:-0.5}`, `silentium: {silence:1}`).
-- Dacia's **Sex Lectiones** is a *reading method*, not a scoring set — only
+- Dacia's **Sex Lectiones** is a _reading method_, not a scoring set — only
   `rasura`/`vacat` feed Silence; the rest stays a reading protocol.
 - **Normalization:** native scales (1–5, 0–8, categorical) normalize to 0–1 for
   any cross-essay radar, with the commensurability caveat stated inline.
@@ -182,6 +192,7 @@ npm run check      # astro check (types)
 ```
 
 ### Known state / deferrals
+
 - **Sitemap** (`@astrojs/sitemap`) is removed pending a version-compatible pin —
   it crashed the build at `build:done`. Re-add under **ATLAS-205** with RSS +
   `robots.txt`.
@@ -207,7 +218,7 @@ npm run check      # astro check (types)
 ## 9. Milestones
 
 - **M1 — Portal MVP:** E1 + E2 + E3 (+ EL1–EL3) → unified site, all 4 essays
-  live. *(scaffold complete)*
+  live. _(scaffold complete)_
 - **M2 — Platform:** + E4 → shared components + new-essay starter.
 - **M3 — Atlas:** + E5 + EG + EL4 → cross-essay map/timeline/lens/GIS discovery.
 - **M4 — Launch:** + E6 → production deploy; E7 runs continuously after.

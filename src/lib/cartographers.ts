@@ -42,9 +42,7 @@ const RAW: unknown[] = [
     places: ['Rupelmonde', 'Leuven', 'Duisburg'],
     bio: 'Flemish cartographer, engraver and instrument-maker whose 1569 projection made rhumb lines straight for navigators — at the cost of grossly inflating the high latitudes. He coined the term "atlas" for a bound collection of maps.',
     essaySlugs: ['cartography'],
-    links: [
-      { label: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Gerardus_Mercator' },
-    ],
+    links: [{ label: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Gerardus_Mercator' }],
   },
   {
     id: 'ortelius',
@@ -55,9 +53,7 @@ const RAW: unknown[] = [
     places: ['Antwerp'],
     bio: 'Brabantian cartographer and geographer whose Theatrum Orbis Terrarum (1570) is regarded as the first modern atlas: a uniform, bound set of map sheets with a credited list of sources.',
     essaySlugs: ['speculum'],
-    links: [
-      { label: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Abraham_Ortelius' },
-    ],
+    links: [{ label: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Abraham_Ortelius' }],
   },
   {
     id: 'waldseemuller',
@@ -68,9 +64,7 @@ const RAW: unknown[] = [
     places: ['Saint-Dié-des-Vosges'],
     bio: 'German cartographer whose 1507 world map was the first to apply the name "America" to the New World, honouring Amerigo Vespucci.',
     essaySlugs: ['speculum'],
-    links: [
-      { label: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Martin_Waldseem%C3%BCller' },
-    ],
+    links: [{ label: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Martin_Waldseem%C3%BCller' }],
   },
   {
     id: 'al-idrisi',
@@ -81,9 +75,7 @@ const RAW: unknown[] = [
     places: ['Ceuta', 'Palermo'],
     bio: 'Arab geographer at the Norman court of Roger II of Sicily, where he compiled the Tabula Rogeriana (1154) — one of the most advanced world maps of the medieval period, drawn south-up.',
     essaySlugs: ['venice-sicily'],
-    links: [
-      { label: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Muhammad_al-Idrisi' },
-    ],
+    links: [{ label: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Muhammad_al-Idrisi' }],
   },
   {
     id: 'cassini',
@@ -95,7 +87,10 @@ const RAW: unknown[] = [
     bio: 'French astronomer and cartographer (Cassini III) who directed the triangulation-based Carte de Cassini, the first topographic map of an entire nation grounded in systematic geodetic survey.',
     essaySlugs: ['cartography'],
     links: [
-      { label: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/C%C3%A9sar-Fran%C3%A7ois_Cassini_de_Thury' },
+      {
+        label: 'Wikipedia',
+        url: 'https://en.wikipedia.org/wiki/C%C3%A9sar-Fran%C3%A7ois_Cassini_de_Thury',
+      },
     ],
   },
   {
@@ -107,9 +102,7 @@ const RAW: unknown[] = [
     places: ['Kronstadt (Brașov)'],
     bio: 'Transylvanian Saxon humanist, cosmographer and reformer who mapped his own Carpathian homeland and produced widely reprinted cosmographic works.',
     essaySlugs: ['dacia'],
-    links: [
-      { label: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Johannes_Honterus' },
-    ],
+    links: [{ label: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Johannes_Honterus' }],
   },
 ];
 

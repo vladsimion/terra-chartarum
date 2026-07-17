@@ -14,12 +14,7 @@ interface Props {
   caption?: string;
 }
 
-const {
-  start = 50,
-  beforeLabel = 'Before',
-  afterLabel = 'After',
-  caption,
-} = Astro.props;
+const { start = 50, beforeLabel = 'Before', afterLabel = 'After', caption } = Astro.props;
 
 const clamped = Math.max(0, Math.min(100, start));
 ---
@@ -78,10 +73,19 @@ const clamped = Math.max(0, Math.min(100, start));
     handle.addEventListener('keydown', (e) => {
       const now = Number(handle.getAttribute('aria-valuenow')) || 0;
       const step = e.shiftKey ? 10 : 2;
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { set(now - step); e.preventDefault(); }
-      else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { set(now + step); e.preventDefault(); }
-      else if (e.key === 'Home') { set(0); e.preventDefault(); }
-      else if (e.key === 'End') { set(100); e.preventDefault(); }
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+        set(now - step);
+        e.preventDefault();
+      } else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+        set(now + step);
+        e.preventDefault();
+      } else if (e.key === 'Home') {
+        set(0);
+        e.preventDefault();
+      } else if (e.key === 'End') {
+        set(100);
+        e.preventDefault();
+      }
     });
   }
 
@@ -143,8 +147,12 @@ const clamped = Math.max(0, Math.min(100, start));
     padding: 0.15rem 0.5rem;
     border-radius: 999px;
   }
-  .tag-before { left: 0.6rem; }
-  .tag-after { right: 0.6rem; }
+  .tag-before {
+    left: 0.6rem;
+  }
+  .tag-after {
+    right: 0.6rem;
+  }
   .cmp-handle {
     position: absolute;
     top: 0;

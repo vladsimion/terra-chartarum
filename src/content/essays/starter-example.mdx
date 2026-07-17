@@ -47,7 +47,11 @@ comparison against the canonical meta-lens.
   axes={['Measure', 'Witness', 'Use', 'Cosmos', 'Power', 'Silence']}
   series={[
     { label: 'This essay', values: [0.8, 0.7, 0.6, 0.4, 0.55, 0.45] },
-    { label: 'Corpus mean', values: [0.62, 0.58, 0.6, 0.55, 0.66, 0.55], color: 'var(--ink-muted)' },
+    {
+      label: 'Corpus mean',
+      values: [0.62, 0.58, 0.6, 0.55, 0.66, 0.55],
+      color: 'var(--ink-muted)',
+    },
   ]}
   caption="Hover a legend item to emphasize its series."
 />
@@ -74,7 +78,12 @@ with an `href` become focusable links.
 touch, or keyboard (focus the handle and use the arrow keys). Drop images or SVG
 into the `before` and `after` slots.
 
-<CompareSlider start={50} beforeLabel="Projection A" afterLabel="Projection B" caption="Slide, or focus the handle and press ← / →.">
+<CompareSlider
+  start={50}
+  beforeLabel="Projection A"
+  afterLabel="Projection B"
+  caption="Slide, or focus the handle and press ← / →."
+>
   <svg slot="before" viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg">
     <rect width="800" height="360" fill="#0e0c08" />
     <g stroke="#d4b87a" fill="none" opacity="0.6">

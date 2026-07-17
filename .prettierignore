@@ -1,0 +1,26 @@
+# Build output
+dist/
+.astro/
+
+# Dependencies
+node_modules/
+
+# Legacy essays and embeds are preserved verbatim (ATLAS-105) — never reformat them
+public/essays/
+public/embed/
+
+# prettier-plugin-astro cannot parse TypeScript inside a <script> nested in a JSX
+# expression ({interactive && <script>…}); Astro compiles it fine. Skip this one
+# file rather than rewrite shipped, working island code.
+src/components/islands/RadarChart.astro
+
+# Generated / third-party static assets
+public/geo/
+public/pagefind/
+
+# Lockfiles and data dumps
+package-lock.json
+*.csv
+
+# Content-authored data left as-authored
+*.geojson

@@ -29,58 +29,83 @@ const bars = essays.map((e) => {
       <p class="eyebrow">The atlas · meta-layer</p>
       <h1>Every essay, in space and time</h1>
       <p class="lede">
-        A cross-essay meta-layer: the whole corpus of maps plotted on one
-        interactive map, and every essay charted on one shared timeline (ancient
-        centuries compressed). Historical GIS layers hang from the same spine.
+        A cross-essay meta-layer: the whole corpus of maps plotted on one interactive map, and every
+        essay charted on one shared timeline (ancient centuries compressed). Historical GIS layers
+        hang from the same spine.
       </p>
     </header>
 
     <h2 class="section-h">The corpus, mapped</h2>
     <p class="section-lede">
-      Every historical map discussed across the essays, geolocated. Drag the
-      slider to reveal them in chronological order; search or filter by essay.
+      Every historical map discussed across the essays, geolocated. Drag the slider to reveal them
+      in chronological order; search or filter by essay.
     </p>
     <AtlasMap />
 
     <h2 class="section-h section-h--spaced">One timeline, every essay</h2>
     <div class="timeline" role="img" aria-label="Timeline of essays across cartographic history">
       <div class="axis">
-        {ticks.map((t) => (
-          <span class="tick" style={`left:${pos(t)}%`}>
-            <span class="tick-label">{formatYear(t)}</span>
-          </span>
-        ))}
+        {
+          ticks.map((t) => (
+            <span class="tick" style={`left:${pos(t)}%`}>
+              <span class="tick-label">{formatYear(t)}</span>
+            </span>
+          ))
+        }
       </div>
       <div class="tracks">
-        {bars.map(({ essay, left, width }) => (
-          <a
-            class="track"
-            href={`/essays/${essay.slug}/`}
-            style={`left:${left}%; width:${width}%; --accent:${essay.data.accent ?? 'var(--gold)'}`}
-            title={`${essay.data.title} (${formatYear(essay.data.yearFrom)} – ${formatYear(essay.data.yearTo)})`}
-          >
-            <span class="track-label">{essay.data.title}</span>
-          </a>
-        ))}
+        {
+          bars.map(({ essay, left, width }) => (
+            <a
+              class="track"
+              href={`/essays/${essay.slug}/`}
+              style={`left:${left}%; width:${width}%; --accent:${essay.data.accent ?? 'var(--gold)'}`}
+              title={`${essay.data.title} (${formatYear(essay.data.yearFrom)} – ${formatYear(essay.data.yearTo)})`}
+            >
+              <span class="track-label">{essay.data.title}</span>
+            </a>
+          ))
+        }
       </div>
     </div>
 
     <p class="note">
-      Note: the scale is deliberately non-linear — a critical atlas measures time
-      the way its maps measured space, with its own compressions and silences.
+      Note: the scale is deliberately non-linear — a critical atlas measures time the way its maps
+      measured space, with its own compressions and silences.
     </p>
   </section>
 </PortalLayout>
 
 <style>
-  .atlas { padding-block: clamp(2.5rem, 6vw, 4rem); }
-  .atlas-head { max-width: var(--prose-max); margin-bottom: 2.5rem; }
-  .atlas-head h1 { font-size: var(--step-4); margin: 0.3rem 0 0.75rem; }
-  .lede { color: var(--ink-muted); font-size: var(--step-1); margin: 0; }
+  .atlas {
+    padding-block: clamp(2.5rem, 6vw, 4rem);
+  }
+  .atlas-head {
+    max-width: var(--prose-max);
+    margin-bottom: 2.5rem;
+  }
+  .atlas-head h1 {
+    font-size: var(--step-4);
+    margin: 0.3rem 0 0.75rem;
+  }
+  .lede {
+    color: var(--ink-muted);
+    font-size: var(--step-1);
+    margin: 0;
+  }
 
-  .section-h { font-size: var(--step-2); margin: 0 0 0.5rem; }
-  .section-h--spaced { margin-top: 3.5rem; }
-  .section-lede { color: var(--ink-muted); margin: 0 0 1.25rem; max-width: var(--prose-max); }
+  .section-h {
+    font-size: var(--step-2);
+    margin: 0 0 0.5rem;
+  }
+  .section-h--spaced {
+    margin-top: 3.5rem;
+  }
+  .section-lede {
+    color: var(--ink-muted);
+    margin: 0 0 1.25rem;
+    max-width: var(--prose-max);
+  }
 
   .timeline {
     position: relative;
@@ -90,7 +115,10 @@ const bars = essays.map((e) => {
     padding: 3.25rem 1.5rem 1.5rem;
     overflow: hidden;
   }
-  .axis { position: relative; height: 0; }
+  .axis {
+    position: relative;
+    height: 0;
+  }
   .tick {
     position: absolute;
     top: -2.5rem;
@@ -110,7 +138,12 @@ const bars = essays.map((e) => {
     transform: translateX(-50%);
     white-space: nowrap;
   }
-  .tracks { position: relative; display: flex; flex-direction: column; gap: 0.75rem; }
+  .tracks {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
   .track {
     position: relative;
     height: 2.4rem;
@@ -123,7 +156,9 @@ const bars = essays.map((e) => {
     padding-inline: 0.9rem;
     transition: background var(--dur-fast) var(--ease-out);
   }
-  .track:hover { background: color-mix(in srgb, var(--accent) 40%, var(--panel-2)); }
+  .track:hover {
+    background: color-mix(in srgb, var(--accent) 40%, var(--panel-2));
+  }
   .track-label {
     font-family: var(--font-display);
     font-size: var(--step-0);
@@ -132,5 +167,10 @@ const bars = essays.map((e) => {
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .note { color: var(--ink-muted); font-style: italic; margin-top: 1.5rem; max-width: var(--prose-max); }
+  .note {
+    color: var(--ink-muted);
+    font-style: italic;
+    margin-top: 1.5rem;
+    max-width: var(--prose-max);
+  }
 </style>

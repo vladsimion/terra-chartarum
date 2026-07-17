@@ -26,19 +26,19 @@ and the faceted filters — everything reads from the content collection via
 
 Validated by `src/content/config.ts` (Zod). Required unless noted.
 
-| Field | Type | Notes |
-|-------|------|-------|
-| `title`, `subtitle`, `summary` | string | `summary` is the card/OG hook |
-| `cover` | string | path under `/public`, e.g. `/covers/my-essay.svg` |
-| `status` | `native` \| `legacy` | new essays are `native` |
-| `eras`, `regions`, `lenses` | string[] | power the facets; `lenses` = your native axis names |
-| `yearFrom`, `yearTo` | number | negative = BC; drives the timeline position |
-| `mapCount`, `readingMinutes` | number | optional, shown on cards |
-| `accent` | string (hex) | per-essay identity colour |
-| `order` | number | gallery/atlas sort key |
-| `featured` | boolean | surfaces on the landing page |
-| `publishedAt`, `updatedAt` | string | ISO date |
-| `metaScores` | record 0–1 | optional harmonized meta-lens scores |
+| Field                          | Type                 | Notes                                               |
+| ------------------------------ | -------------------- | --------------------------------------------------- |
+| `title`, `subtitle`, `summary` | string               | `summary` is the card/OG hook                       |
+| `cover`                        | string               | path under `/public`, e.g. `/covers/my-essay.svg`   |
+| `status`                       | `native` \| `legacy` | new essays are `native`                             |
+| `eras`, `regions`, `lenses`    | string[]             | power the facets; `lenses` = your native axis names |
+| `yearFrom`, `yearTo`           | number               | negative = BC; drives the timeline position         |
+| `mapCount`, `readingMinutes`   | number               | optional, shown on cards                            |
+| `accent`                       | string (hex)         | per-essay identity colour                           |
+| `order`                        | number               | gallery/atlas sort key                              |
+| `featured`                     | boolean              | surfaces on the landing page                        |
+| `publishedAt`, `updatedAt`     | string               | ISO date                                            |
+| `metaScores`                   | record 0–1           | optional harmonized meta-lens scores                |
 
 ## The component library (`src/components/islands/`)
 

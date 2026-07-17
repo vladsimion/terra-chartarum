@@ -34,9 +34,7 @@ const essays = defineCollection({
     publishedAt: z.string(),
     updatedAt: z.string(),
     // Harmonized meta-lens scores, normalized 0-1 (additive, optional).
-    metaScores: z
-      .record(z.enum(CANONICAL_DIMENSIONS), z.number().min(0).max(1))
-      .optional(),
+    metaScores: z.record(z.enum(CANONICAL_DIMENSIONS), z.number().min(0).max(1)).optional(),
   }),
 });
 

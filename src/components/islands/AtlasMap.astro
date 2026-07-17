@@ -99,29 +99,45 @@ const payload = {
       <option value="">All essays</option>
       {essays.map((e) => <option value={e.slug}>{e.data.title}</option>)}
     </select>
-    {coverage.length > 0 && (
-      <select class="am-covers" aria-label="Show only maps depicted within another map's extent">
-        <option value="">Depicted anywhere</option>
-        {coverage.map((c) => <option value={c.id}>Within {c.title}</option>)}
-      </select>
-    )}
+    {
+      coverage.length > 0 && (
+        <select class="am-covers" aria-label="Show only maps depicted within another map's extent">
+          <option value="">Depicted anywhere</option>
+          {coverage.map((c) => (
+            <option value={c.id}>Within {c.title}</option>
+          ))}
+        </select>
+      )
+    }
     <div class="am-time">
       <label for="am-year">Reveal through</label>
-      <input id="am-year" class="am-year" type="range" min={minYear} max={maxYear} value={maxYear} step="1" />
+      <input
+        id="am-year"
+        class="am-year"
+        type="range"
+        min={minYear}
+        max={maxYear}
+        value={maxYear}
+        step="1"
+      />
       <output class="am-year-out" for="am-year">{formatYear(maxYear)}</output>
     </div>
-    {toponyms.length > 0 && (
-      <label class="am-topo-toggle">
-        <input type="checkbox" class="am-topo-check" />
-        <span>Ancient &amp; medieval place-names</span>
-      </label>
-    )}
+    {
+      toponyms.length > 0 && (
+        <label class="am-topo-toggle">
+          <input type="checkbox" class="am-topo-check" />
+          <span>Ancient &amp; medieval place-names</span>
+        </label>
+      )
+    }
   </div>
 
   <div class="am-stage">
     <div class="am-map" role="application" aria-label="Map of the essay corpus"></div>
     <noscript>
-      <p class="am-fallback-note">The interactive map needs JavaScript. The full corpus is listed below.</p>
+      <p class="am-fallback-note">
+        The interactive map needs JavaScript. The full corpus is listed below.
+      </p>
     </noscript>
   </div>
 
@@ -157,15 +173,17 @@ const payload = {
 
   <!-- Progressive-enhancement fallback: full corpus as a grouped list. -->
   <ol class="am-list">
-    {corpus.map((m) => (
-      <li>
-        <a href={`/essays/${m.essaySlug}/`}>
-          <span class="am-list-year">{formatYear(m.year)}</span>
-          <span class="am-list-title">{m.title}</span>
-          <span class="am-list-region">{m.region}</span>
-        </a>
-      </li>
-    ))}
+    {
+      corpus.map((m) => (
+        <li>
+          <a href={`/essays/${m.essaySlug}/`}>
+            <span class="am-list-year">{formatYear(m.year)}</span>
+            <span class="am-list-title">{m.title}</span>
+            <span class="am-list-region">{m.region}</span>
+          </a>
+        </li>
+      ))
+    }
   </ol>
 
   <script type="application/json" data-atlasmap-data set:html={JSON.stringify(payload)} />
@@ -181,22 +199,40 @@ const payload = {
   let protocolRegistered = false;
 
   type Pt = {
-    id: string; title: string; year: number; yearLabel: string;
-    essaySlug: string; essayTitle: string; region: string;
-    coords: [number, number]; accent: string; blurb?: string;
+    id: string;
+    title: string;
+    year: number;
+    yearLabel: string;
+    essaySlug: string;
+    essayTitle: string;
+    region: string;
+    coords: [number, number];
+    accent: string;
+    blurb?: string;
   };
 
   type LayerMeta = {
-    id: string; url: string; format: string; geometry: 'line' | 'fill';
-    color: string; yearFrom: number; yearTo: number;
-    sourceLayer: string | null; available: boolean; defaultOn: boolean;
+    id: string;
+    url: string;
+    format: string;
+    geometry: 'line' | 'fill';
+    color: string;
+    yearFrom: number;
+    yearTo: number;
+    sourceLayer: string | null;
+    available: boolean;
+    defaultOn: boolean;
   };
 
   type Coverage = { id: string; title: string; ring: [number, number][] };
 
   type Toponym = {
-    id: string; modern: string; names: string[]; historical: string[];
-    coords: [number, number]; pleiadesId: string | null;
+    id: string;
+    modern: string;
+    names: string[];
+    historical: string[];
+    coords: [number, number];
+    pleiadesId: string | null;
     essays: { slug: string; title: string }[];
     maps: { id: string; title: string }[];
   };
@@ -215,7 +251,10 @@ const payload = {
     const mapEl = root.querySelector<HTMLElement>('.am-map');
     if (!dataEl || !mapEl) return;
     const parsed = JSON.parse(dataEl.textContent || '{}') as {
-      corpus: Pt[]; layers?: LayerMeta[]; coverage?: Coverage[]; toponyms?: Toponym[];
+      corpus: Pt[];
+      layers?: LayerMeta[];
+      coverage?: Coverage[];
+      toponyms?: Toponym[];
     };
     const corpus = parsed.corpus ?? [];
     const geoLayers = parsed.layers ?? [];
@@ -251,13 +290,18 @@ const payload = {
     // Where WebGL is missing, keep the list and drop the empty map frame.
     if (!hasWebGL()) {
       mapEl.remove();
-      root.querySelector('.am-stage')?.insertAdjacentHTML(
-        'beforeend',
-        '<p class="am-fallback-note">WebGL is unavailable — showing the corpus as a list.</p>',
-      );
+      root
+        .querySelector('.am-stage')
+        ?.insertAdjacentHTML(
+          'beforeend',
+          '<p class="am-fallback-note">WebGL is unavailable — showing the corpus as a list.</p>',
+        );
       list.classList.add('is-fallback');
       // Geo overlays need the GL map; disable their toggles in the fallback.
-      layerToggles.forEach((cb) => { cb.checked = false; cb.disabled = true; });
+      layerToggles.forEach((cb) => {
+        cb.checked = false;
+        cb.disabled = true;
+      });
     }
 
     const markers: { pt: Pt; marker?: MLMarker; li: HTMLElement }[] = [];
@@ -289,10 +333,18 @@ const payload = {
       }
       const base: AddLayerObject =
         l.geometry === 'fill'
-          ? { id: lyr, type: 'fill', source: src,
-              paint: { 'fill-color': l.color, 'fill-opacity': 0.22, 'fill-outline-color': l.color } }
-          : { id: lyr, type: 'line', source: src,
-              paint: { 'line-color': l.color, 'line-width': 1.2, 'line-opacity': 0.85 } };
+          ? {
+              id: lyr,
+              type: 'fill',
+              source: src,
+              paint: { 'fill-color': l.color, 'fill-opacity': 0.22, 'fill-outline-color': l.color },
+            }
+          : {
+              id: lyr,
+              type: 'line',
+              source: src,
+              paint: { 'line-color': l.color, 'line-width': 1.2, 'line-opacity': 0.85 },
+            };
       if (l.format === 'pmtiles' && l.sourceLayer) base['source-layer'] = l.sourceLayer;
       map.addLayer(base);
     };
@@ -309,7 +361,9 @@ const payload = {
       for (const l of geoLayers) {
         if (!activeLayers.has(l.id) || !map.getLayer(layerId(l.id))) continue;
         map.setLayoutProperty(
-          layerId(l.id), 'visibility', l.yearFrom <= cutoff ? 'visible' : 'none',
+          layerId(l.id),
+          'visibility',
+          l.yearFrom <= cutoff ? 'visible' : 'none',
         );
       }
     };
@@ -359,9 +413,7 @@ const payload = {
         el.className = 'am-topo-pin';
         el.setAttribute('aria-label', `${topo.modern} — historical names`);
         const names = topo.historical.length
-          ? `<ul class="am-topo-names">${topo.historical
-              .map((n) => `<li>${n}</li>`)
-              .join('')}</ul>`
+          ? `<ul class="am-topo-names">${topo.historical.map((n) => `<li>${n}</li>`).join('')}</ul>`
           : '';
         const links = [
           ...topo.maps.map(
@@ -377,7 +429,9 @@ const payload = {
         const popup = new maplibregl.Popup({ offset: 12, closeButton: false }).setHTML(
           `<div class="am-pop am-topo-pop"><span class="am-pop-year">Place-names</span>` +
             `<strong class="am-pop-title">${topo.modern}</strong>` +
-            names + links + pleiades +
+            names +
+            links +
+            pleiades +
             `</div>`,
         );
         const marker = new maplibregl.Marker({ element: el })
@@ -394,7 +448,10 @@ const payload = {
         for (const cb of layerToggles) {
           if (cb.checked && !cb.disabled) {
             const l = geoLayers.find((x) => x.id === cb.dataset.layer);
-            if (l) { activeLayers.add(l.id); addGeoLayer(l); }
+            if (l) {
+              activeLayers.add(l.id);
+              addGeoLayer(l);
+            }
           }
         }
         syncLayerTime(Number(yearIn.value));
@@ -510,7 +567,10 @@ const payload = {
 </script>
 
 <style>
-  .atlasmap { display: grid; gap: 1rem; }
+  .atlasmap {
+    display: grid;
+    gap: 1rem;
+  }
   .controls {
     display: flex;
     flex-wrap: wrap;
@@ -528,7 +588,9 @@ const payload = {
     font-size: var(--step--1);
     padding: 0.5rem 0.75rem;
   }
-  .am-search { flex: 1 1 16rem; }
+  .am-search {
+    flex: 1 1 16rem;
+  }
   .am-time {
     display: flex;
     align-items: center;
@@ -537,8 +599,13 @@ const payload = {
     font-size: var(--step--1);
     color: var(--ink-muted);
   }
-  .am-year { accent-color: var(--gold); }
-  .am-year-out { color: var(--gold); min-width: 4.5rem; }
+  .am-year {
+    accent-color: var(--gold);
+  }
+  .am-year-out {
+    color: var(--gold);
+    min-width: 4.5rem;
+  }
 
   .am-stage {
     position: relative;
@@ -547,7 +614,9 @@ const payload = {
     overflow: hidden;
     background: var(--panel);
   }
-  .am-map { height: clamp(360px, 52vh, 620px); }
+  .am-map {
+    height: clamp(360px, 52vh, 620px);
+  }
   .am-fallback-note {
     padding: 1rem;
     color: var(--ink-muted);
@@ -567,7 +636,9 @@ const payload = {
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
     transition: transform 160ms ease;
   }
-  :global(.am-pin:hover) { transform: scale(1.35); }
+  :global(.am-pin:hover) {
+    transform: scale(1.35);
+  }
 
   /* Concordance pins — a diamond in a cooler hue, distinct from the round corpus pins. */
   :global(.am-topo-pin) {
@@ -581,7 +652,9 @@ const payload = {
     box-shadow: 0 0 0 3px color-mix(in srgb, #7fa8c9 20%, transparent);
     transition: transform 160ms ease;
   }
-  :global(.am-topo-pin:hover) { transform: rotate(45deg) scale(1.3); }
+  :global(.am-topo-pin:hover) {
+    transform: rotate(45deg) scale(1.3);
+  }
 
   .am-topo-toggle {
     display: inline-flex;
@@ -592,7 +665,10 @@ const payload = {
     color: var(--ink-muted);
     cursor: pointer;
   }
-  .am-topo-toggle input { accent-color: #7fa8c9; cursor: pointer; }
+  .am-topo-toggle input {
+    accent-color: #7fa8c9;
+    cursor: pointer;
+  }
 
   :global(.am-topo-names) {
     list-style: none;
@@ -608,7 +684,11 @@ const payload = {
     color: var(--ink);
     font-style: italic;
   }
-  :global(.am-topo-names li:not(:last-child))::after { content: '·'; margin-left: 0.5rem; color: var(--ink-muted); }
+  :global(.am-topo-names li:not(:last-child))::after {
+    content: '·';
+    margin-left: 0.5rem;
+    color: var(--ink-muted);
+  }
 
   /* Popups (MapLibre injects into <body>, so these are global) */
   :global(.maplibregl-popup-content) {
@@ -619,12 +699,35 @@ const payload = {
     font-family: var(--font-body);
     padding: 0.8rem 0.9rem;
   }
-  :global(.maplibregl-popup-tip) { border-top-color: var(--panel-2) !important; border-bottom-color: var(--panel-2) !important; }
-  :global(.am-pop) { display: grid; gap: 0.25rem; max-width: 15rem; }
-  :global(.am-pop-year) { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.08em; color: var(--gold); }
-  :global(.am-pop-title) { font-family: var(--font-display); font-size: var(--step-0); }
-  :global(.am-pop-blurb) { font-size: var(--step--1); color: var(--ink-muted); }
-  :global(.am-pop-link) { font-family: var(--font-mono); font-size: var(--step--1); color: var(--gold); margin-top: 0.2rem; }
+  :global(.maplibregl-popup-tip) {
+    border-top-color: var(--panel-2) !important;
+    border-bottom-color: var(--panel-2) !important;
+  }
+  :global(.am-pop) {
+    display: grid;
+    gap: 0.25rem;
+    max-width: 15rem;
+  }
+  :global(.am-pop-year) {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+  }
+  :global(.am-pop-title) {
+    font-family: var(--font-display);
+    font-size: var(--step-0);
+  }
+  :global(.am-pop-blurb) {
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+  }
+  :global(.am-pop-link) {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--gold);
+    margin-top: 0.2rem;
+  }
 
   .am-layers {
     border: 1px solid var(--line);
@@ -641,7 +744,12 @@ const payload = {
     color: var(--ink-muted);
     padding: 0 0.4rem;
   }
-  .am-layers-note { margin: 0 0 0.4rem; color: var(--ink-muted); font-size: var(--step--1); font-style: italic; }
+  .am-layers-note {
+    margin: 0 0 0.4rem;
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+    font-style: italic;
+  }
   .am-layer {
     display: grid;
     grid-template-columns: auto 1fr auto;
@@ -650,10 +758,21 @@ const payload = {
     font-size: var(--step--1);
     color: var(--ink);
   }
-  .am-layer input { accent-color: var(--gold); cursor: pointer; }
-  .am-layer.is-pending { opacity: 0.55; }
-  .am-layer.is-pending input { cursor: not-allowed; }
-  .am-layer-meta { font-family: var(--font-mono); font-size: 0.62rem; color: var(--ink-muted); }
+  .am-layer input {
+    accent-color: var(--gold);
+    cursor: pointer;
+  }
+  .am-layer.is-pending {
+    opacity: 0.55;
+  }
+  .am-layer.is-pending input {
+    cursor: not-allowed;
+  }
+  .am-layer-meta {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--ink-muted);
+  }
 
   .am-list {
     list-style: none;
@@ -674,8 +793,21 @@ const payload = {
     border-radius: var(--radius);
     background: var(--panel);
   }
-  .am-list a:hover { border-color: color-mix(in srgb, var(--gold) 50%, var(--line)); }
-  .am-list-year { font-family: var(--font-mono); font-size: 0.62rem; color: var(--gold); }
-  .am-list-title { font-family: var(--font-display); color: var(--ink); }
-  .am-list-region { grid-column: 2; font-size: var(--step--1); color: var(--ink-muted); }
+  .am-list a:hover {
+    border-color: color-mix(in srgb, var(--gold) 50%, var(--line));
+  }
+  .am-list-year {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--gold);
+  }
+  .am-list-title {
+    font-family: var(--font-display);
+    color: var(--ink);
+  }
+  .am-list-region {
+    grid-column: 2;
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+  }
 </style>

@@ -114,7 +114,8 @@ const RAW: unknown[] = [
   {
     id: 'map-coverage',
     title: 'Depicted extents (corpus)',
-    description: 'The area each corpus map depicts — one footprint polygon per map, keyed by mapId.',
+    description:
+      'The area each corpus map depicts — one footprint polygon per map, keyed by mapId.',
     kind: 'vector',
     format: 'geojson',
     url: '/geo/coverage.geojson',
@@ -130,7 +131,7 @@ const RAW: unknown[] = [
   {
     id: 'roman-empire-117',
     title: 'Roman Empire, AD 117',
-    description: 'Imperial extent at Trajan\'s greatest reach — context for the Dacia essay.',
+    description: "Imperial extent at Trajan's greatest reach — context for the Dacia essay.",
     kind: 'vector',
     format: 'geojson',
     url: '/geo/roman-empire-117.geojson',
@@ -138,7 +139,8 @@ const RAW: unknown[] = [
     yearTo: 271,
     source: 'Ancient World Mapping Center (AWMC), UNC Chapel Hill — roman_empire_ce_117_extent',
     license: 'ODbL 1.0',
-    attribution: 'Ancient World Mapping Center; derived from the Barrington Atlas and OpenStreetMap (ODbL)',
+    attribution:
+      'Ancient World Mapping Center; derived from the Barrington Atlas and OpenStreetMap (ODbL)',
     essaySlugs: ['dacia'],
     geometry: 'fill',
     color: '#d98860',

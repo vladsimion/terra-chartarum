@@ -28,14 +28,16 @@ const RAW: unknown[] = [
     author: 'Harley, J. B.',
     year: 2001,
     title: 'The New Nature of Maps: Essays in the History of Cartography',
-    citation: 'Harley, J. B. The New Nature of Maps: Essays in the History of Cartography. Baltimore: Johns Hopkins University Press, 2001.',
+    citation:
+      'Harley, J. B. The New Nature of Maps: Essays in the History of Cartography. Baltimore: Johns Hopkins University Press, 2001.',
   },
   {
     id: 'snyder-1993',
     author: 'Snyder, John P.',
     year: 1993,
     title: 'Flattening the Earth: Two Thousand Years of Map Projections',
-    citation: 'Snyder, John P. Flattening the Earth: Two Thousand Years of Map Projections. Chicago: University of Chicago Press, 1993.',
+    citation:
+      'Snyder, John P. Flattening the Earth: Two Thousand Years of Map Projections. Chicago: University of Chicago Press, 1993.',
   },
   {
     id: 'brotton-2012',
@@ -49,7 +51,8 @@ const RAW: unknown[] = [
     author: 'Edney, Matthew H.',
     year: 2019,
     title: 'Cartography: The Ideal and Its History',
-    citation: 'Edney, Matthew H. Cartography: The Ideal and Its History. Chicago: University of Chicago Press, 2019.',
+    citation:
+      'Edney, Matthew H. Cartography: The Ideal and Its History. Chicago: University of Chicago Press, 2019.',
   },
 ];
 
@@ -76,16 +79,12 @@ function resolveRef(ref: MapBibRef): BibEntry | undefined {
 
 /** All resolved citations for a map, in declaration order. */
 export function resolveMapBibliography(map: HistoricalMap): BibEntry[] {
-  return map.bibliography
-    .map(resolveRef)
-    .filter((b): b is BibEntry => Boolean(b));
+  return map.bibliography.map(resolveRef).filter((b): b is BibEntry => Boolean(b));
 }
 
 /** Maps that cite a given bibliography id, for the page's back-links. */
 export function getCitingMaps(bibId: string): HistoricalMap[] {
-  return getCorpus().filter((m) =>
-    resolveMapBibliography(m).some((b) => b.id === bibId),
-  );
+  return getCorpus().filter((m) => resolveMapBibliography(m).some((b) => b.id === bibId));
 }
 
 const authorKey = (b: BibEntry) => (b.author ?? b.citation).toLowerCase();
