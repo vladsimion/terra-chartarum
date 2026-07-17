@@ -1,0 +1,156 @@
+---
+/**
+ * Scrollytelling (ATLAS-404 / KAN-35)
+ *
+ * Reusable sticky-graphic + stepped-narrative scaffold for native essays. The
+ * `graphic` slot holds a sticky pane; the default slot holds the narrative,
+ * whose step blocks are marked `data-scrolly-step`. As the reader scrolls, an
+ * IntersectionObserver scroll-spy (src/lib/scrollytelling.ts) marks the active
+ * step and — if the graphic contains ordered `data-scrolly-figure` panels —
+ * cross-fades to the matching one. A `scrolly:step` CustomEvent is dispatched on
+ * every change so authors can drive bespoke graphics instead.
+ *
+ * Reduced-motion aware: under `prefers-reduced-motion` the graphic stops being
+ * sticky (the piece reads as plain stacked figures + prose) and cross-fades
+ * become instant.
+ */
+interface Props {
+  /** Which side the sticky graphic sits on at wide widths. */
+  align?: 'left' | 'right';
+  /** Accessible label for the scrollytelling region. */
+  label?: string;
+}
+
+const { align = 'right', label = 'Scrollytelling' } = Astro.props;
+---
+
+<section class="scrolly" data-scrolly data-align={align} aria-label={label}>
+  <div class="scrolly-graphic" data-scrolly-graphic>
+    <slot name="graphic" />
+  </div>
+  <div class="scrolly-steps">
+    <slot />
+  </div>
+</section>
+
+<script>
+  import { createScrollSpy, prefersReducedMotion } from '../../lib/scrollytelling';
+
+  function initScrolly(root: HTMLElement) {
+    if (root.dataset.scrollyReady) return; // guard re-binding across view transitions
+    root.dataset.scrollyReady = '1';
+
+    const steps = Array.from(root.querySelectorAll<HTMLElement>('[data-scrolly-step]'));
+    if (!steps.length) return;
+    const figures = Array.from(root.querySelectorAll<HTMLElement>('[data-scrolly-figure]'));
+
+    root.dataset.motion = prefersReducedMotion() ? 'reduced' : 'full';
+
+    const setActive = (index: number) => {
+      if (String(index) === root.dataset.step) return;
+      steps.forEach((s, i) => s.toggleAttribute('data-active', i === index));
+      if (figures.length) {
+        const fig = Math.min(index, figures.length - 1);
+        figures.forEach((f, i) => f.toggleAttribute('data-active', i === fig));
+      }
+      root.dataset.step = String(index);
+      root.dispatchEvent(
+        new CustomEvent('scrolly:step', {
+          detail: { index, step: steps[index] },
+          bubbles: true,
+        }),
+      );
+    };
+
+    createScrollSpy(steps, { onActivate: setActive });
+    // Seed the first step so the graphic is never blank before the first scroll.
+    setActive(0);
+  }
+
+  const boot = () =>
+    document.querySelectorAll<HTMLElement>('[data-scrolly]').forEach((el) => initScrolly(el));
+  boot();
+  document.addEventListener('astro:page-load', boot);
+</script>
+
+<style>
+  .scrolly {
+    display: grid;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    margin: 3rem 0;
+  }
+  .scrolly-graphic {
+    position: sticky;
+    top: 12vh;
+    align-self: start;
+    max-height: 76vh;
+    display: grid;
+    place-items: center;
+  }
+  /* Ordered figure panels cross-fade; only the active one is shown. */
+  .scrolly-graphic :global([data-scrolly-figure]) {
+    grid-area: 1 / 1;
+    opacity: 0;
+    transition: opacity var(--dur) var(--ease-out);
+  }
+  .scrolly-graphic :global([data-scrolly-figure][data-active]) {
+    opacity: 1;
+  }
+  .scrolly-graphic :global(img),
+  .scrolly-graphic :global(svg) {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+  .scrolly-steps {
+    display: grid;
+    gap: 60vh; /* generous scroll distance between steps */
+    padding: 30vh 0;
+  }
+  .scrolly-steps :global([data-scrolly-step]) {
+    max-width: 34ch;
+    padding: 1.25rem 1.5rem;
+    background: color-mix(in srgb, var(--panel) 80%, transparent);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    opacity: 0.45;
+    transition:
+      opacity var(--dur) var(--ease-out),
+      border-color var(--dur) var(--ease-out);
+  }
+  .scrolly-steps :global([data-scrolly-step][data-active]) {
+    opacity: 1;
+    border-color: var(--gold);
+  }
+
+  /* Wide layout: two columns, graphic pinned to the chosen side. */
+  @media (min-width: 52rem) {
+    .scrolly {
+      grid-template-columns: 1fr 1fr;
+      align-items: start;
+    }
+    .scrolly[data-align='right'] .scrolly-graphic {
+      order: 2;
+    }
+    .scrolly[data-align='left'] .scrolly-graphic {
+      order: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scrolly-graphic {
+      position: static;
+      max-height: none;
+    }
+    .scrolly-graphic :global([data-scrolly-figure]) {
+      /* Show every figure in flow; nothing depends on the active cross-fade. */
+      position: static;
+      opacity: 1;
+      transition: none;
+    }
+    .scrolly-steps :global([data-scrolly-step]) {
+      opacity: 1;
+      transition: none;
+    }
+  }
+</style>
