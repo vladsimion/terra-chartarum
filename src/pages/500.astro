@@ -1,0 +1,54 @@
+---
+import PortalLayout from '../layouts/PortalLayout.astro';
+---
+
+<PortalLayout title="A fault in the survey" description="Something went wrong on our end.">
+  <section class="shell servererror">
+    <p class="eyebrow">500 · cartographer's error</p>
+    <h1>A fault in the survey</h1>
+    <p>
+      The instrument slipped and the sheet is spoiled. Something failed on our end while drawing
+      this page — try again in a moment, or return to charted ground.
+    </p>
+    <div class="actions">
+      <a class="btn" href="/">Home</a>
+      <a class="btn" href="/essays/">Essays</a>
+      <a class="btn" href="/atlas/">Atlas</a>
+    </div>
+  </section>
+</PortalLayout>
+
+<style>
+  .servererror {
+    padding-block: clamp(4rem, 12vw, 8rem);
+    max-width: 55ch;
+  }
+  .servererror h1 {
+    font-size: var(--step-4);
+    margin: 0.4rem 0 1rem;
+  }
+  .servererror p {
+    color: var(--ink-muted);
+    font-size: var(--step-1);
+    margin: 0 0 2rem;
+  }
+  .actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .btn {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.6rem 1.2rem;
+    border: 1px solid var(--gold);
+    border-radius: var(--radius);
+    color: var(--gold);
+  }
+  .btn:hover {
+    background: var(--gold);
+    color: var(--canvas);
+  }
+</style>
