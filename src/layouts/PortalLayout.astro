@@ -16,7 +16,7 @@ const {
   title,
   description = 'An interactive historical atlas — a gallery of cartographic visual essays.',
   bare = false,
-  ogImage = '/covers/cartography.svg',
+  ogImage = '/og/default.png',
 } = Astro.props;
 
 const siteName = 'Terra Chartarum';
@@ -48,7 +48,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={new URL(ogImage, Astro.site)} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={new URL(ogImage, Astro.site)} />
 
     <!-- Fonts (self-hosting deferred to ATLAS-602) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
