@@ -70,5 +70,16 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       <slot />
     </main>
     {!bare && <Footer />}
+
+    <script>
+      // A11y (KAN-52): Astro's view transitions swap the DOM without moving
+      // focus, which strands keyboard and screen-reader users on a now-removed
+      // element. After each swap, send focus to the top of the new page's main
+      // content (which is tabindex="-1" and shows no focus box) so the next Tab
+      // continues from a sensible place. Registered once; persists across swaps.
+      document.addEventListener('astro:after-swap', () => {
+        document.getElementById('main-content')?.focus({ preventScroll: true });
+      });
+    </script>
   </body>
 </html>
