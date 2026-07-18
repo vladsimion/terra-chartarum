@@ -18,9 +18,13 @@
   --gained: #96cc84;
   --sacrificed: #d98860;
 
-  /* Typography */
-  --font-display: 'Cinzel', 'IM Fell English', Georgia, serif;
-  --font-body: 'Crimson Pro', 'EB Garamond', Georgia, serif;
+  /* Typography.
+     Self-hosted via @fontsource (KAN-53 / ATLAS-602): the "* Variable" families
+     are the woff2 we ship; the plain names keep any locally installed copy or a
+     re-added static face working, then the generic serif/mono fallback. */
+  --font-display: 'Cinzel Variable', 'Cinzel', 'IM Fell English', Georgia, serif;
+  --font-body:
+    'Crimson Pro Variable', 'Crimson Pro', 'EB Garamond Variable', 'EB Garamond', Georgia, serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
   /* Fluid modular type scale */

@@ -2,6 +2,18 @@
 import { ViewTransitions } from 'astro:transitions';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+// Self-hosted fonts (KAN-53 / ATLAS-602): bundled same-origin woff2 via
+// @fontsource, replacing the render-blocking Google Fonts CDN. Variable faces
+// cover every weight in one file each; italic is only pulled for the body
+// families that use it. All are font-display: swap and unicode-range subset,
+// so browsers fetch only the latin glyphs actually rendered.
+import '@fontsource-variable/cinzel/wght.css';
+import '@fontsource-variable/crimson-pro/wght.css';
+import '@fontsource-variable/crimson-pro/wght-italic.css';
+import '@fontsource-variable/eb-garamond/wght.css';
+import '@fontsource-variable/eb-garamond/wght-italic.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
 import '../styles/global.css';
 
 interface Props {
@@ -53,13 +65,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={new URL(ogImage, Astro.site)} />
 
-    <!-- Fonts (self-hosting deferred to ATLAS-602) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=EB+Garamond:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Fonts are now self-hosted (KAN-53) — bundled via @fontsource in the
+         layout frontmatter, so there is no external font CDN request. -->
 
     <ViewTransitions />
   </head>
