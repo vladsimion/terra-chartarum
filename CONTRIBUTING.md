@@ -91,8 +91,9 @@ Before opening a PR, confirm:
       argument" register (see the manifesto).
 - [ ] Prose and figures use design tokens, not hard-coded styles.
 
-The pull-request template restates the launch-quality bar (a11y / performance /
-metadata); fill it in honestly.
+For essays, the full merge bar is the [essay definition of done](docs/essay-definition-of-done.md);
+the pull-request template restates it (a11y / performance / metadata). Fill it in
+honestly.
 
 ## Pull requests
 
