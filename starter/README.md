@@ -112,7 +112,10 @@ deliberately deferred (ATLAS-401 spike); these need no runtime.
   and is reduced-motion aware — under `prefers-reduced-motion` the graphic
   un-sticks and every figure reads in flow.
 
-## Definition of done (see ATLAS-702)
+## Definition of done
+
+The full merge bar is the [essay definition of done](../docs/essay-definition-of-done.md);
+the pull-request template restates it. In brief:
 
 - [ ] Frontmatter validates (`npm run check`) and cover exists.
 - [ ] `npm run build` succeeds; essay renders at `/essays/<slug>/`.
