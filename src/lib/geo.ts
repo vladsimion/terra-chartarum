@@ -30,11 +30,33 @@ export const GeoLayerSchema = z.object({
   gazetteerIds: z.array(z.string()).optional(),
   essaySlugs: z.array(z.string()).optional(),
   defaultOn: z.boolean().default(false),
-  // Render hints consumed by the MapLibre pipeline (ATLAS-EG3).
-  geometry: z.enum(['line', 'fill']).default('line'),
+  // Render hints consumed by the MapLibre pipeline (ATLAS-EG3; extended VMN-20).
+  // `circle` = graduated point symbols (ports); see `graduate` below.
+  geometry: z.enum(['line', 'fill', 'circle']).default('line'),
   color: z.string().default('#d4b87a'),
   // Vector-tile source layer (PMTiles); ignored for geojson.
   sourceLayer: z.string().optional(),
+  // Per-feature temporal reveal (VMN-2 blocker B2 / decision D2). When true the
+  // time-slider filters individual features by their inclusive valid_from/valid_to
+  // (9999 = open-ended) rather than toggling the whole layer by the envelope above.
+  perFeatureTime: z.boolean().default(false),
+  // Graduated point symbols keyed on a categorical feature field (VMN-20 / B3):
+  // circle-radius by value, e.g. ports sized by `type`.
+  graduate: z
+    .object({
+      field: z.string(),
+      radius: z.record(z.string(), z.number()),
+      fallback: z.number().default(4),
+    })
+    .optional(),
+  // Data-driven dashed lines (VMN-20 / B3): one filtered sub-layer per field value,
+  // e.g. routes dashed by `route_type`. An empty pattern renders solid.
+  dash: z
+    .object({
+      field: z.string(),
+      patterns: z.record(z.string(), z.array(z.number())),
+    })
+    .optional(),
   // Seven-room cosmography (TC-102 / KAN-93). Optional here so existing layers
   // validate unchanged; retro-tagging lands in KAN-94.
   room: z.enum(ROOM_SLUGS).optional(),
@@ -160,23 +182,91 @@ const RAW: unknown[] = [
     color: '#d98860',
     defaultOn: false,
   },
+  // Venetian Maritime Network, c.1400 (VMN). Three per-geometry FGB layers per the
+  // frozen data dictionary (VMN-3) and the VMN-2 render findings: ports graduated by
+  // type, routes dashed by route_type, possessions as phased fills. The .fgb binaries
+  // are produced by the compilation tickets (VMN-9/13/19); until an asset is on disk
+  // the atlas shows the layer as pending. Styling + loader capability lands in VMN-20.
   {
-    id: 'venetian-maritime-1400',
+    id: 'venetian-ports',
     room: 'road',
     secondaryRooms: ['border'],
-    title: 'Venetian Maritime Network, c.1400',
-    description: 'Trade routes and stato da màr nodes underpinning the Venice/Sicily duel.',
+    title: 'Venetian maritime ports, c.1200–1500',
+    description:
+      'Stato da màr nodes — colonies, trading quarters, staging calls and Genoese rivals — graduated by type, each status phase a separate feature.',
     kind: 'vector',
     format: 'flatgeobuf',
-    url: '/geo/venetian-network-1400.fgb',
+    url: '/geo/venetian-ports.fgb',
     yearFrom: 1200,
     yearTo: 1500,
-    source: 'Essay dataset (placeholder)',
+    source: "Terra Chartarum (compiled) — Lane 1973; O'Connell 2009",
     license: 'CC BY',
-    attribution: 'Terra Chartarum',
+    attribution: "Terra Chartarum; after Lane and O'Connell",
+    essaySlugs: ['venice-sicily'],
+    geometry: 'circle',
+    color: '#e2a93f',
+    perFeatureTime: true,
+    graduate: {
+      field: 'type',
+      radius: {
+        metropole: 9,
+        colony: 7,
+        trading_quarter: 6,
+        independent: 5,
+        rival_genoese: 5,
+        staging: 4,
+      },
+      fallback: 4,
+    },
+    defaultOn: false,
+  },
+  {
+    id: 'venetian-routes',
+    room: 'road',
+    secondaryRooms: ['border'],
+    title: 'Venetian galley routes (mude), c.1200–1500',
+    description:
+      'The documented muda convoy lines and private round-ship trades, dashed by route_type and routed through their staging ports.',
+    kind: 'vector',
+    format: 'flatgeobuf',
+    url: '/geo/venetian-routes.fgb',
+    yearFrom: 1200,
+    yearTo: 1500,
+    source: 'Terra Chartarum (compiled) — Lane 1973',
+    license: 'CC BY',
+    attribution: 'Terra Chartarum; after Lane',
     essaySlugs: ['venice-sicily'],
     geometry: 'line',
-    color: '#96cc84',
+    color: '#6db3c2',
+    perFeatureTime: true,
+    dash: {
+      field: 'route_type',
+      patterns: {
+        muda: [],
+        private: [2, 1.5],
+      },
+    },
+    defaultOn: false,
+  },
+  {
+    id: 'venetian-possessions',
+    room: 'border',
+    secondaryRooms: ['road'],
+    title: 'Venetian possessions, c.1200–1500',
+    description:
+      'Territorial extent of the stato da màr — direct rule, protectorates, condominia and contested ground — as phased fills clipped to the coastline.',
+    kind: 'vector',
+    format: 'flatgeobuf',
+    url: '/geo/venetian-possessions.fgb',
+    yearFrom: 1200,
+    yearTo: 1500,
+    source: "Terra Chartarum (compiled) — Lane 1973; O'Connell 2009",
+    license: 'CC BY',
+    attribution: "Terra Chartarum; after Lane and O'Connell",
+    essaySlugs: ['venice-sicily'],
+    geometry: 'fill',
+    color: '#9c5b52',
+    perFeatureTime: true,
     defaultOn: false,
   },
 ];

@@ -77,6 +77,9 @@ const payload = {
     yearFrom: l.yearFrom,
     yearTo: l.yearTo,
     sourceLayer: l.sourceLayer ?? null,
+    perFeatureTime: l.perFeatureTime,
+    graduate: l.graduate ?? null,
+    dash: l.dash ?? null,
     available: l.available,
     defaultOn: l.defaultOn && l.available,
   })),
@@ -193,7 +196,19 @@ const payload = {
   // Type-only imports are erased at build, so MapLibre (~785K) and pmtiles are
   // pulled in lazily via dynamic import() below — only once the map actually
   // initializes with WebGL present. Readers without WebGL never download them.
-  import type { Map as MLMap, Marker as MLMarker, AddLayerObject } from 'maplibre-gl';
+  import type {
+    Map as MLMap,
+    Marker as MLMarker,
+    AddLayerObject,
+    FilterSpecification,
+  } from 'maplibre-gl';
+  import {
+    circleRadiusExpression,
+    withTemporal,
+    dashSubLayers,
+    type GraduateHint,
+    type DashHint,
+  } from '../../lib/geo-style';
 
   // Register the pmtiles:// protocol at most once across page-load re-inits.
   let protocolRegistered = false;
@@ -215,11 +230,14 @@ const payload = {
     id: string;
     url: string;
     format: string;
-    geometry: 'line' | 'fill';
+    geometry: 'line' | 'fill' | 'circle';
     color: string;
     yearFrom: number;
     yearTo: number;
     sourceLayer: string | null;
+    perFeatureTime: boolean;
+    graduate: GraduateHint | null;
+    dash: DashHint | null;
     available: boolean;
     defaultOn: boolean;
   };
@@ -318,53 +336,156 @@ const payload = {
     const layerId = (id: string) => `geolyr-${id}`;
     const sourceId = (id: string) => `geosrc-${id}`;
 
-    // Attach a GeoLayer's source + render layer to the map. GeoJSON loads directly;
-    // PMTiles goes through the registered pmtiles:// protocol.
-    const addGeoLayer = (l: LayerMeta) => {
-      if (!map || !styleReady || map.getSource(sourceId(l.id))) return;
-      const src = sourceId(l.id);
+    // One GeoLayer can expand into several MapLibre layers (a dashed-by-field line
+    // splits into a filtered sub-layer per value). We track the created ids plus
+    // each sub-layer's own base filter so the temporal reveal can AND onto it.
+    type Part = { id: string; baseFilter: unknown | null };
+    const parts = new Map<string, Part[]>();
+
+    // Build the MapLibre render layer(s) for a GeoLayer from its geometry + hints.
+    const buildParts = (
+      l: LayerMeta,
+      src: string,
+    ): { layer: Record<string, unknown>; baseFilter: unknown | null }[] => {
       const lyr = layerId(l.id);
-      if (l.format === 'geojson') {
-        map.addSource(src, { type: 'geojson', data: l.url });
-      } else if (l.format === 'pmtiles') {
-        map.addSource(src, { type: 'vector', url: `pmtiles://${location.origin}${l.url}` });
-      } else {
-        return; // flatgeobuf/cog need a dedicated loader (EG3 remainder)
-      }
-      const base: AddLayerObject =
-        l.geometry === 'fill'
-          ? {
+      const withSrcLayer = (o: Record<string, unknown>) => {
+        if (l.format === 'pmtiles' && l.sourceLayer) o['source-layer'] = l.sourceLayer;
+        return o;
+      };
+      if (l.geometry === 'fill') {
+        return [
+          {
+            layer: withSrcLayer({
               id: lyr,
               type: 'fill',
               source: src,
               paint: { 'fill-color': l.color, 'fill-opacity': 0.22, 'fill-outline-color': l.color },
-            }
-          : {
+            }),
+            baseFilter: null,
+          },
+        ];
+      }
+      if (l.geometry === 'circle') {
+        // Graduated point symbols (ports): radius by categorical field, else flat.
+        const radius = l.graduate ? circleRadiusExpression(l.graduate) : 5;
+        return [
+          {
+            layer: withSrcLayer({
               id: lyr,
+              type: 'circle',
+              source: src,
+              paint: {
+                'circle-radius': radius,
+                'circle-color': l.color,
+                'circle-opacity': 0.85,
+                'circle-stroke-width': 1,
+                'circle-stroke-color': '#0b0b0c',
+              },
+            }),
+            baseFilter: null,
+          },
+        ];
+      }
+      // Line — dashed by a categorical field means one filtered sub-layer per value
+      // (line-dasharray is not a data-driven paint property in MapLibre).
+      if (l.dash) {
+        return dashSubLayers(l.dash).map((s) => {
+          const paint: Record<string, unknown> = {
+            'line-color': l.color,
+            'line-width': 1.2,
+            'line-opacity': 0.85,
+          };
+          if (s.dashArray.length) paint['line-dasharray'] = s.dashArray;
+          return {
+            layer: withSrcLayer({
+              id: `${lyr}--${s.value}`,
               type: 'line',
               source: src,
-              paint: { 'line-color': l.color, 'line-width': 1.2, 'line-opacity': 0.85 },
-            };
-      if (l.format === 'pmtiles' && l.sourceLayer) base['source-layer'] = l.sourceLayer;
-      map.addLayer(base);
+              filter: s.filter,
+              paint,
+            }),
+            baseFilter: s.filter,
+          };
+        });
+      }
+      return [
+        {
+          layer: withSrcLayer({
+            id: lyr,
+            type: 'line',
+            source: src,
+            paint: { 'line-color': l.color, 'line-width': 1.2, 'line-opacity': 0.85 },
+          }),
+          baseFilter: null,
+        },
+      ];
+    };
+
+    // Attach a GeoLayer's source + render layer(s) to the map. GeoJSON loads
+    // directly; PMTiles goes through the registered pmtiles:// protocol; FlatGeobuf
+    // is fetched and deserialized to a GeoJSON source via a lazily-loaded decoder
+    // (VMN-2 blocker B1) — the decoder chunk only ships when an FGB layer is toggled.
+    const addGeoLayer = async (l: LayerMeta) => {
+      if (!map || !styleReady || map.getSource(sourceId(l.id))) return;
+      const src = sourceId(l.id);
+      if (l.format === 'geojson') {
+        map.addSource(src, { type: 'geojson', data: l.url });
+      } else if (l.format === 'pmtiles') {
+        map.addSource(src, { type: 'vector', url: `pmtiles://${location.origin}${l.url}` });
+      } else if (l.format === 'flatgeobuf') {
+        try {
+          const [{ geojson }, resp] = await Promise.all([import('flatgeobuf'), fetch(l.url)]);
+          if (!map || !resp.ok || map.getSource(src)) return;
+          const buf = new Uint8Array(await resp.arrayBuffer());
+          // deserialize streams features as an async generator; collect into a
+          // GeoJSON source MapLibre can consume.
+          const features: GeoJSON.Feature[] = [];
+          for await (const f of geojson.deserialize(buf)) {
+            features.push(f as unknown as GeoJSON.Feature);
+          }
+          if (!map || map.getSource(src)) return;
+          map.addSource(src, { type: 'geojson', data: { type: 'FeatureCollection', features } });
+        } catch {
+          return; // asset missing or malformed — leave the layer pending
+        }
+      } else {
+        return; // cog needs a dedicated raster loader
+      }
+      if (!map) return;
+      const built = buildParts(l, src);
+      for (const b of built) map.addLayer(b.layer as unknown as AddLayerObject);
+      parts.set(
+        l.id,
+        built.map((b) => ({ id: b.layer.id as string, baseFilter: b.baseFilter })),
+      );
+      syncLayerTime(Number(yearIn.value));
     };
 
     const removeGeoLayer = (id: string) => {
       if (!map) return;
-      if (map.getLayer(layerId(id))) map.removeLayer(layerId(id));
+      for (const p of parts.get(id) ?? []) {
+        if (map.getLayer(p.id)) map.removeLayer(p.id);
+      }
       if (map.getSource(sourceId(id))) map.removeSource(sourceId(id));
+      parts.delete(id);
     };
 
-    // Reveal a toggled-on layer only once the timeline reaches its start year.
+    // Timeline sync. The layer envelope (registry yearFrom/yearTo) still gates
+    // whole-layer visibility; on top, a per-feature layer (VMN phased model, blocker
+    // B2) filters individual features by their inclusive valid_from/valid_to.
     const syncLayerTime = (cutoff: number) => {
       if (!map || !styleReady) return;
       for (const l of geoLayers) {
-        if (!activeLayers.has(l.id) || !map.getLayer(layerId(l.id))) continue;
-        map.setLayoutProperty(
-          layerId(l.id),
-          'visibility',
-          l.yearFrom <= cutoff ? 'visible' : 'none',
-        );
+        const ps = parts.get(l.id);
+        if (!activeLayers.has(l.id) || !ps) continue;
+        const envelopeVisible = l.yearFrom <= cutoff;
+        for (const p of ps) {
+          if (!map.getLayer(p.id)) continue;
+          map.setLayoutProperty(p.id, 'visibility', envelopeVisible ? 'visible' : 'none');
+          if (l.perFeatureTime) {
+            map.setFilter(p.id, withTemporal(p.baseFilter, cutoff) as FilterSpecification);
+          }
+        }
       }
     };
 
