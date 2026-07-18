@@ -92,6 +92,26 @@ deliberately deferred (ATLAS-401 spike); these need no runtime.
 - Named slots `before` / `after` take any markup (img, svg, div).
 - Pointer + touch + keyboard (focus the handle, arrow keys; Shift = larger step).
 
+### `Scrollytelling`
+
+```mdx
+<Scrollytelling label="How a projection unrolls the globe">
+  <svg slot="graphic" data-scrolly-figure>…</svg>
+  <svg slot="graphic" data-scrolly-figure>…</svg>
+
+  <div data-scrolly-step>**The globe.** …</div>
+  <div data-scrolly-step>**The cut.** …</div>
+</Scrollytelling>
+```
+
+- A sticky `graphic` pane plus a column of `data-scrolly-step` narrative blocks.
+- Give the graphic ordered `data-scrolly-figure` panels and it cross-fades to the
+  one matching the active step; or listen for the `scrolly:step` CustomEvent to
+  drive a bespoke graphic.
+- Rides the shared IntersectionObserver scroll-spy (`src/lib/scrollytelling.ts`)
+  and is reduced-motion aware — under `prefers-reduced-motion` the graphic
+  un-sticks and every figure reads in flow.
+
 ## Definition of done (see ATLAS-702)
 
 - [ ] Frontmatter validates (`npm run check`) and cover exists.
