@@ -68,7 +68,9 @@ jobs:
         run: npm ci
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+        # All engines: cross-browser / responsive QA runs core flows on
+        # Chromium, Firefox and WebKit (mobile projects reuse these engines).
+        run: npx playwright install --with-deps chromium firefox webkit
 
       - name: Run Playwright tests
         # The Playwright config builds and previews dist/ itself via webServer.
