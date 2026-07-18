@@ -31,6 +31,7 @@
     "@fontsource-variable/eb-garamond": "^5.2.7",
     "@fontsource/ibm-plex-mono": "^5.2.7",
     "astro": "^4.16.18",
+    "flatgeobuf": "^4.4.0",
     "fuse.js": "^7.5.0",
     "maplibre-gl": "^4.7.1",
     "openseadragon": "^4.1.1",
