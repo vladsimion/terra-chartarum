@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Contributing guide
+    url: https://github.com/vladsimion/terra-chartarum/blob/main/CONTRIBUTING.md
+    about: How to add an essay or contribute code, from checkout to merged PR.
+  - name: Essay roadmap & backlog
+    url: https://github.com/vladsimion/terra-chartarum/blob/main/docs/roadmap.md
+    about: The prioritised plan for upcoming essays — check here before proposing one.
+  - name: The manifesto
+    url: https://terra-chartarum.pages.dev/about/
+    about: The critical-cartography voice and the seven-room cosmography every essay shares.
