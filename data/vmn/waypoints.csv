@@ -1,0 +1,9 @@
+waypoint_id,name,type,lat,lon,start_date,end_date,source_keys
+lissa,Lissa,staging_harbour,43.060,16.184,,,LANE1973
+lagosta,Lagosta,staging_harbour,42.766,16.899,,,
+lesina,Lesina,staging_harbour,43.172,16.442,,,
+curzola,Curzola,staging_harbour,42.960,17.136,,,
+butrinto,Butrinto,staging_harbour,39.746,20.020,,,LANE1973
+pelagosa,Pelagosa,offshore_waypoint,42.394,16.259,,,
+sason,Saseno,offshore_waypoint,40.505,19.283,,,
+capo_d_otranto,Capo d'Otranto,cape,40.116,18.517,,,
