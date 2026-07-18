@@ -1,0 +1,15 @@
+port_id,name_historic,name_modern,lat,lon,status,start_date,end_date,polity_id,source_keys,notes
+venice,Venice,Venice,45.437,12.335,metropole,0697-01-01,,venice,LANE1973,
+venice,Venice,Venice,45.437,12.335,capital,1204-01-01,1797-05-12,venice,NORWICH1982,
+chioggia,Chioggia,Chioggia,45.218,12.277,subject,1405-01-01,1797-05-12,venice,,
+pola,Pola,Pula,44.869,13.848,subject,1331-01-01,1797-05-12,venice,,
+zara,Zara,Zadar,44.119,15.231,subject,1409-07-09,1797-05-12,venice,,Treaty of Zara acquisition
+sebenico,Sebenico,Šibenik,43.735,15.896,subject,1412-01-01,1797-05-12,venice,,
+trau,Traù,Trogir,43.516,16.251,subject,1420-01-01,1797-05-12,venice,,
+spalato,Spalato,Split,43.509,16.440,subject,1420-01-01,1797-05-12,venice,,
+cattaro,Cattaro,Kotor,42.425,18.771,subject,1420-01-01,1797-05-12,venice,,
+ragusa,Ragusa,Dubrovnik,42.650,18.094,independent,1358-01-27,1808-01-31,ragusa,,Referenced but not Venetian
+durazzo,Durazzo,Durrës,41.313,19.445,subject,1392-01-01,1501-08-17,venice,,
+corfu,Corfu,Corfu,39.624,19.922,subject,1386-01-01,1797-05-12,venice,,
+cephalonia,Cephalonia,Kefalonia,38.176,20.489,subject,1500-12-24,1797-05-12,venice,,
+zante,Zante,Zakynthos,37.787,20.899,subject,1485-01-01,1797-05-12,venice,,
