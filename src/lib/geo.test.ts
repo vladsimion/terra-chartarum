@@ -1,3 +1,5 @@
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { describe, it, expect } from 'vitest';
 import { GEO_LAYERS } from './geo';
 
@@ -37,7 +39,24 @@ describe('VMN atlas layers (VMN-20 registry entries)', () => {
       expect(byId.get(id)?.documentationLinks.map((link) => link.label)).toEqual([
         'Data dictionary',
         'Source log',
+        'Deep-link guide',
       ]);
+    }
+  });
+
+  it('links each VMN layer to a stable passage in the native essay', async () => {
+    const essay = await readFile(
+      join(process.cwd(), 'src', 'content', 'essays', 'venice-sicily.mdx'),
+      'utf8',
+    );
+    for (const id of ids) {
+      const links = byId.get(id)?.essayLinks ?? [];
+      expect(links, id).toHaveLength(1);
+      for (const link of links) {
+        expect(link.slug).toBe('venice-sicily');
+        expect(essay, `${id} frontmatter anchor`).toContain(`- id: ${link.sectionId}`);
+        expect(essay, `${id} rendered anchor`).toContain(`<Section id="${link.sectionId}"`);
+      }
     }
   });
 });

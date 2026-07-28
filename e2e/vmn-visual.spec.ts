@@ -14,18 +14,21 @@ test('ID-only deep links infer the target layer and apply the requested year', a
       target: 'route:muda_romania',
       layer: 'venetian-routes',
       year: 1450,
+      passage: '#rotta',
     },
     {
       query: 'year=1500&territory=morea',
       target: 'territory:morea',
       layer: 'venetian-possessions',
       year: 1500,
+      passage: '#contrazione',
     },
     {
-      query: 'year=1450&port=modon',
+      query: 'beat=port_modon',
       target: 'port:modon',
       layer: 'venetian-ports',
       year: 1450,
+      passage: '#rotta',
     },
   ];
 
@@ -36,11 +39,30 @@ test('ID-only deep links infer the target layer and apply the requested year', a
     });
     await expect(page.locator('.am-year-out')).toHaveText(`AD ${entry.year}`);
     await expect(page.locator(`input[data-layer="${entry.layer}"]`)).toBeChecked();
+    await expect(
+      page.locator(`.maplibregl-popup a[href="/essays/venice-sicily/${entry.passage}"]`),
+    ).toBeVisible();
     await page.waitForTimeout(250);
     await testInfo.attach(entry.target.replace(':', '-'), {
       body: await page.locator('.am-map').screenshot(),
       contentType: 'image/png',
     });
+  }
+});
+
+test('reverse passage links are stable and invalid targets fail safely', async ({ page }) => {
+  await page.goto('/atlas/');
+  await expect(page.locator('a[href="/essays/venice-sicily/#rotta"]')).toHaveCount(2);
+  await expect(page.locator('a[href="/essays/venice-sicily/#contrazione"]')).toHaveCount(1);
+
+  for (const query of [
+    'beat=unknown&route=atlantis&year=1450',
+    'date=not-a-year&layers=unknown&port=atlantis',
+  ]) {
+    await page.goto(`/atlas/?${query}`);
+    await expect(page.locator('.am-map .maplibregl-canvas')).toBeVisible();
+    await expect(page.locator('.atlasmap')).not.toHaveAttribute('data-atlas-target');
+    await expect(page.locator('.am-target-pop')).toHaveCount(0);
   }
 });
 

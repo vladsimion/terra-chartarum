@@ -18,6 +18,7 @@ import { getGeoLayers } from '../../lib/geo';
 import { coveragePolygons } from '../../lib/coverage';
 import { getToponyms, toponymNames } from '../../lib/toponyms';
 import { getEssays, formatYear } from '../../lib/registry';
+import { getVmnAtlasLinks } from '../../lib/vmn-atlas-links';
 
 // Only the atlas-critical projection ships to the client — rich catalogue
 // metadata (provenance, bibliography, imagery) stays server-side (KAN-66).
@@ -80,8 +81,19 @@ const payload = {
     perFeatureTime: l.perFeatureTime,
     graduate: l.graduate ?? null,
     dash: l.dash ?? null,
+    essayLinks: l.essayLinks.map((link) => ({
+      href: `/essays/${link.slug}/#${link.sectionId}`,
+      label: link.label,
+    })),
     available: l.available,
     defaultOn: l.defaultOn && l.available,
+  })),
+  vmnLinks: getVmnAtlasLinks().map(({ beatId, targetType, targetId, year, layerIds }) => ({
+    beatId,
+    targetType,
+    targetId,
+    year,
+    layerIds,
   })),
   coverage,
   toponyms,
@@ -174,14 +186,24 @@ const payload = {
               </span>
             </label>
             {/* Reverse deep link (VMN-28): jump from a layer back to the essay it illustrates. */}
-            {(l.essaySlugs ?? []).length > 0 && (
+            {l.essayLinks.length > 0 ? (
               <p class="am-layer-essays">
-                {(l.essaySlugs ?? [])
-                  .filter((slug) => essayMeta[slug])
-                  .map((slug) => (
-                    <a href={`/essays/${slug}/`}>Read: {essayMeta[slug]?.title} →</a>
-                  ))}
+                {l.essayLinks.map((link) => (
+                  <a href={`/essays/${link.slug}/#${link.sectionId}`}>
+                    Read passage: {link.label} →
+                  </a>
+                ))}
               </p>
+            ) : (
+              (l.essaySlugs ?? []).length > 0 && (
+                <p class="am-layer-essays">
+                  {(l.essaySlugs ?? [])
+                    .filter((slug) => essayMeta[slug])
+                    .map((slug) => (
+                      <a href={`/essays/${slug}/`}>Read: {essayMeta[slug]?.title} →</a>
+                    ))}
+                </p>
+              )
             )}
             {l.documentationLinks.length > 0 && (
               <p class="am-layer-docs">
@@ -237,7 +259,11 @@ const payload = {
     type GraduateHint,
     type DashHint,
   } from '../../lib/geo-style';
-  import { parseVmnAtlasState } from '../../lib/vmn-atlas-state';
+  import {
+    parseVmnAtlasState,
+    resolveVmnBeatState,
+    type VmnBeatState,
+  } from '../../lib/vmn-atlas-state';
 
   // Register the pmtiles:// protocol at most once across page-load re-inits.
   let protocolRegistered = false;
@@ -267,6 +293,7 @@ const payload = {
     perFeatureTime: boolean;
     graduate: GraduateHint | null;
     dash: DashHint | null;
+    essayLinks: { href: string; label: string }[];
     available: boolean;
     defaultOn: boolean;
   };
@@ -300,13 +327,17 @@ const payload = {
     const parsed = JSON.parse(dataEl.textContent || '{}') as {
       corpus: Pt[];
       layers?: LayerMeta[];
+      vmnLinks?: VmnBeatState[];
       coverage?: Coverage[];
       toponyms?: Toponym[];
     };
     const corpus = parsed.corpus ?? [];
     const geoLayers = parsed.layers ?? [];
+    const vmnLinks = parsed.vmnLinks ?? [];
     const coverage = parsed.coverage ?? [];
     const toponyms = parsed.toponyms ?? [];
+    const reverseEssayLink = (layer: string) =>
+      geoLayers.find((candidate) => candidate.id === layer)?.essayLinks[0];
 
     // Ray-casting point-in-ring, inlined (no turf.js) for the footprint filter.
     const pointInRing = (x: number, y: number, ring: [number, number][]) => {
@@ -363,6 +394,7 @@ const payload = {
     let map: MLMap | null = null;
     let PopupCtor: (typeof import('maplibre-gl'))['Popup'] | null = null;
     let portPopup: MLPopup | null = null;
+    let targetPopup: MLPopup | null = null;
     let portPopupPinned = false;
     let styleReady = false;
     // Decoded VMN features, retained so ID-only deep links can focus their target
@@ -411,6 +443,7 @@ const payload = {
       const notes = properties.notes
         ? `<span class="am-pop-blurb">${escapeHtml(properties.notes)}</span>`
         : '';
+      const essayLink = reverseEssayLink('venetian-ports');
       return (
         `<div class="am-pop am-port-pop">` +
         `<span class="am-pop-year">${dates}</span>` +
@@ -421,6 +454,11 @@ const payload = {
         )}</span>` +
         `<span class="am-pop-meta">Polity: ${escapeHtml(readable(properties.polity_id))}</span>` +
         notes +
+        (essayLink
+          ? `<a class="am-pop-link" href="${escapeHtml(essayLink.href)}">${escapeHtml(
+              essayLink.label,
+            )} →</a>`
+          : '') +
         `</div>`
       );
     };
@@ -629,10 +667,12 @@ const payload = {
       if (id === 'venetian-routes') {
         routeFeatures = [];
         focusedRouteId = '';
+        targetPopup?.remove();
       }
       if (id === 'venetian-possessions') {
         possessionFeatures = [];
         focusedTerritoryId = '';
+        targetPopup?.remove();
       }
     };
 
@@ -877,14 +917,33 @@ const payload = {
         map.setFilter(focusId, filter);
       }
       const bounds = featureBounds(feature);
-      if (bounds) map.fitBounds(bounds, { padding: 72, maxZoom: 6 });
+      if (bounds) {
+        map.fitBounds(bounds, { padding: 72, maxZoom: 6 });
+        const essayLink = reverseEssayLink(sourceLayerId);
+        if (PopupCtor && essayLink) {
+          targetPopup?.remove();
+          targetPopup = new PopupCtor({ offset: 8, closeButton: true, closeOnClick: true })
+            .setLngLat([(bounds[0][0] + bounds[1][0]) / 2, (bounds[0][1] + bounds[1][1]) / 2])
+            .setHTML(
+              `<div class="am-pop am-target-pop">` +
+                `<span class="am-pop-year">${sourceLayerId === 'venetian-routes' ? 'Route' : 'Territory'}</span>` +
+                `<strong class="am-pop-title">${escapeHtml(readable(value))}</strong>` +
+                `<a class="am-pop-link" href="${escapeHtml(essayLink.href)}">${escapeHtml(
+                  essayLink.label,
+                )} →</a></div>`,
+            )
+            .addTo(map);
+        }
+      }
     };
 
-    // Query-param deep links (KAN-190/191):
-    // /atlas?year=<n>&zoom=<n>&layers=<a,b>&port|route|territory=<id>.
+    // Query-param deep links (KAN-189/190/191):
+    // /atlas?year=<n>&zoom=<n>&layers=<a,b>&beat=<id>&port|route|territory=<id>.
     // Target params imply their required layer and are resolved only by dataset ID.
     const applyDeepLink = async () => {
-      const state = parseVmnAtlasState(location.search);
+      const state = resolveVmnBeatState(parseVmnAtlasState(location.search), vmnLinks);
+      delete root.dataset.atlasTarget;
+      targetPopup?.remove();
       if (state.year !== undefined) {
         yearIn.value = String(
           Math.max(Number(yearIn.min), Math.min(Number(yearIn.max), state.year)),

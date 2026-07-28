@@ -95,7 +95,14 @@ pipeline. The clipping base is Natural Earth 1:10m land, release `v5.1.1`, pinne
 with the matching coastline and SHA-256 checksums in
 `data/vmn/base/manifest.json`.
 
-## `venetian-routes.fgb` — LineString (§5.4)
+## `routes-paths.geojson` → `venetian-routes.fgb` — LineString (§5.4)
+
+Route attributes and ordered authority references live in
+[`routes.csv`](../../data/vmn/routes.csv). Authored display geometry lives
+separately in [`routes-paths.geojson`](../../data/vmn/routes-paths.geojson), one
+LineString per matching `route_id`. The split keeps dates, types, commodities,
+and provenance in the authority table while allowing sea paths to carry
+additional navigational vertices without inventing new ports.
 
 | Field                     | Type   | Notes                                                                                   |
 | ------------------------- | ------ | --------------------------------------------------------------------------------------- |
@@ -109,7 +116,13 @@ with the matching coastline and SHA-256 checksums in
 
 **Current coverage:** seven documented/schematic route spines: five state galley
 convoys and two representative private round-ship corridors. Each is routed through
-authority-table ports and time-neutral waypoints.
+authority-table ports and time-neutral waypoints. The authored lines were seeded
+from maritime routes and corrected against the pinned Natural Earth 1:10m land
+through the Otranto approaches, Cyclades passages, Dardanelles/Bosphorus, and
+other coastal constraints present in the seven routes. The QA gate requires all
+declared anchors in order and rejects land intersections outside a 0.05° harbour
+approach around those anchors; the exception accounts for lagoon mouths and
+narrow inlets absent from the 1:10m base.
 
 ## Supporting non-spatial tables (§5.5)
 
@@ -121,7 +134,8 @@ authority-table ports and time-neutral waypoints.
 - **`atlas_links.csv`** — ID-only essay-beat → Atlas state mappings. Each row
   carries a `port`, `route`, or `possession` target id, year, pipe-separated
   layer ids, and a `popup`/`highlight` display mode; it contains no geometry or
-  copied display prose.
+  copied display prose. See [`deep-links.md`](deep-links.md) for the accepted
+  URL state and stable reverse-link ID conventions.
 - **`commodities.csv`** — `tag, label, direction, note` (reserved for VMN-E7).
 
 ## Decisions & deviations from spec

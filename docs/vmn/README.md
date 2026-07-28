@@ -17,11 +17,11 @@ _Venetian Maritime Network, c.1400 — Dataset & Essay Enrichment_.
 `make vmn` runs `scripts/vmn/build.py`, which validates the authority-table CSVs
 and writes the cloud-native FlatGeobuf assets the atlas renders:
 
-| Stage       | Ticket | Input        | Output                                | Status |
-| ----------- | ------ | ------------ | ------------------------------------- | ------ |
-| ports       | VMN-9  | `ports.csv`  | `public/geo/venetian-ports.fgb`       | live   |
-| routes      | VMN-13 | `routes.csv` | `public/geo/venetian-routes.fgb`      | live   |
-| possessions | VMN-19 | `events.csv` | `public/geo/venetian-possessions.fgb` | live   |
+| Stage       | Ticket | Input                                 | Output                                | Status |
+| ----------- | ------ | ------------------------------------- | ------------------------------------- | ------ |
+| ports       | VMN-9  | `ports.csv`                           | `public/geo/venetian-ports.fgb`       | live   |
+| routes      | VMN-13 | `routes.csv` + `routes-paths.geojson` | `public/geo/venetian-routes.fgb`      | live   |
+| possessions | VMN-19 | `events.csv`                          | `public/geo/venetian-possessions.fgb` | live   |
 
 The ports stage projects each authority-table phase to a Point feature, mapping
 ISO `start_date`/`end_date` to INTEGER `valid_from`/`valid_to` years (empty end →
@@ -39,8 +39,9 @@ as the served asset.
 
 The writer is GDAL's FlatGeobuf driver via
 [`pyogrio`](https://pyogrio.readthedocs.io/) — whose wheel bundles GDAL, so no
-system GDAL/PROJ is needed. Shapely builds route geometry and clips generalized
-possession traces to the checksummed Natural Earth 1:10m land layer in
+system GDAL/PROJ is needed. Shapely compiles the authored, coastline-corrected
+route paths and clips generalized possession traces to the checksummed Natural
+Earth 1:10m land layer in
 `data/vmn/base/`. Its release, source URLs, per-theme versions and SHA-256 hashes
 are pinned in `data/vmn/base/manifest.json`; the build aborts if either the land
 or matching coastline file drifts. Bootstrap the venv once, then build:
@@ -63,8 +64,8 @@ can't merge green.
 | Geometry    | valid, correct type per file, EPSG:4326, bbox within the Med/Black Sea window | live   |
 | Time        | `valid_from ≤ valid_to`; phases non-overlapping where a layer declares it     | live   |
 | Provenance  | every feature's `source_keys` resolve in `sources.csv`                        | live   |
-| Referential | routes' waypoints resolve to a port whose lifespan overlaps                   | live   |
-| Coastline   | possessions ⊆ Natural Earth land (+1 km buffer)                               | live   |
+| Referential | route waypoints resolve, overlap in time, and occur in order on the path      | live   |
+| Coastline   | possessions stay on land; route interiors do not cross 1:10m land             | live   |
 
 Ports may carry temporally overlapping phases by design (decision D2: Venice is
 `metropole` + `capital` at once), so the non-overlap rule is scoped to layers
@@ -84,4 +85,5 @@ Every compiled feature carries `source_keys` resolving into
 [`data/vmn/sources.csv`](../../data/vmn/sources.csv). See the spec §8 for the
 full QA/validation rules the gate enforces. The human-readable provenance and
 publication policy are in [`source-log.md`](source-log.md); release screenshots
-follow [`visual-qa.md`](visual-qa.md).
+follow [`visual-qa.md`](visual-qa.md). Stable essay↔Atlas URL and ID conventions
+are in [`deep-links.md`](deep-links.md).
