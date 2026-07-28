@@ -10,6 +10,7 @@ test-results/
 # dependencies
 node_modules/
 .npm-cache/
+.venv/
 
 # logs / env
 *.log
