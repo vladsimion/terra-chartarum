@@ -11,6 +11,7 @@ export default tseslint.config(
       'dist/',
       '.astro/',
       'node_modules/',
+      '.venv/',
       'public/',
       'starter/',
       'playwright-report/',

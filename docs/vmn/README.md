@@ -14,10 +14,38 @@ _Venetian Maritime Network, c.1400 — Dataset & Essay Enrichment_.
 
 ## Pipeline
 
-`make vmn` runs `scripts/vmn/build.py`. Today that is a no-op stub; the real
-compile path (CSV → geocode/join → expand events → clip to Natural Earth land →
-validate §8 → write FlatGeobuf) arrives with the D4 build tickets
-(VMN-9 / VMN-13 / VMN-19) and the CI validation gate with VMN-21.
+`make vmn` runs `scripts/vmn/build.py`, which validates the authority-table CSVs
+and writes the cloud-native FlatGeobuf assets the atlas renders:
+
+| Stage       | Ticket | Input             | Output                                | Status |
+| ----------- | ------ | ----------------- | ------------------------------------- | ------ |
+| ports       | VMN-9  | `ports.csv`       | `public/geo/venetian-ports.fgb`       | live   |
+| routes      | VMN-13 | `routes.csv`      | `public/geo/venetian-routes.fgb`      | stub   |
+| possessions | VMN-19 | `possessions.csv` | `public/geo/venetian-possessions.fgb` | stub   |
+
+The ports stage projects each authority-table phase to a Point feature, mapping
+ISO `start_date`/`end_date` to INTEGER `valid_from`/`valid_to` years (empty end →
+`9999` open-ended sentinel) for the renderer's per-feature time filter, and
+graduates the point on the controlled `status` vocabulary. It validates the CSV
+(header shape, required fields, `status` vocab, lat/lon bounds, ISO dates,
+`end ≥ start`, sourced phases, `source_keys` resolving into `sources.csv`, unique
+`(port_id, start_date)`) and aborts on any error before writing. The compiled
+`.fgb` carries GDAL's packed-Hilbert spatial index and is committed to the repo
+as the served asset.
+
+### Toolchain
+
+The writer is GDAL's FlatGeobuf driver via
+[`pyogrio`](https://pyogrio.readthedocs.io/) — whose wheel bundles GDAL, so no
+system GDAL/PROJ is needed (geopandas/pyproj are deliberately avoided; they don't
+build on Python 3.14). Bootstrap the venv once, then build:
+
+```sh
+make vmn-venv   # one-time: creates .venv, installs pyogrio + numpy
+make vmn        # compiles data/vmn/*.csv -> public/geo/venetian-*.fgb
+```
+
+The CI validation gate lands with VMN-21.
 
 ## Provenance
 
