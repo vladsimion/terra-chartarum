@@ -113,15 +113,15 @@ describe('essay frontmatter (AC)', () => {
   });
 
   it('La Rotta e il Catasto tags a chapter to The Border with a deep link', () => {
-    const { data } = readSections('venice-sicily.md');
+    const { data } = readSections('venice-sicily.mdx');
     const sections = (data.sections ?? []) as Array<{ id: string; room: string }>;
     const border = sections.find((s) => s.room === 'border');
     expect(border, 'venice-sicily has a Border-tagged section').toBeDefined();
-    // The id must resolve to a real anchor in the legacy embed for the deep link.
-    const embed = fileURLToPath(
-      new URL('../../public/embed/venice-sicily/index.html', import.meta.url),
+    // Now a native MDX essay: the id must resolve to a real <Section> anchor in
+    // the body for the room-page deep link to land on that chapter.
+    const raw = readFileSync(`${essaysDir}/venice-sicily.mdx`, 'utf8');
+    expect(raw, `essay body contains <Section id="${border!.id}">`).toContain(
+      `<Section id="${border!.id}"`,
     );
-    const html = readFileSync(embed, 'utf8');
-    expect(html, `embed contains #${border!.id}`).toContain(`id="${border!.id}"`);
   });
 });

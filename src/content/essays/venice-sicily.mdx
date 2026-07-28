@@ -1,0 +1,557 @@
+---
+title: La Rotta e il Catasto
+subtitle: Venice, Sicily, and Two Ways of Drawing the Same Sea
+summary: >-
+  Six centuries of Mediterranean cartography set as a duel: Venice's maritime
+  network against Sicily's administered territory — two ideologies of space
+  drawn onto one sea.
+cover: /covers/venice-sicily.svg
+status: native
+eras: [Medieval, Renaissance, Early Modern]
+regions: [Venice, Sicily, Mediterranean]
+lenses: [MARE, TERRA, RETE, CONFINE, CIRCOLAZIONE, IMPOSIZIONE]
+yearFrom: 1150
+yearTo: 1750
+mapCount: 22
+readingMinutes: 22
+accent: '#c9a24b'
+order: 4
+featured: true
+room: road
+roomAnchor: true
+secondaryRooms: [border, city]
+sections:
+  - id: specchio
+    title: One island, two maps
+    room: map
+    secondaryRooms: [border]
+  - id: rotta
+    title: The route, harbour by harbour
+    room: road
+    secondaryRooms: [city]
+  - id: sicilia
+    title: Three surveys of an island that was owned
+    room: border
+  - id: evidenze
+    title: The evidence up close
+    room: archive
+    secondaryRooms: [map]
+  - id: contrazione
+    title: The sea-state, drawn and undrawn
+    room: border
+    secondaryRooms: [road]
+  - id: registro
+    title: The double-entry of two worldviews
+    room: border
+    secondaryRooms: [archive]
+  - id: confronto
+    title: The instrument — any chart against any survey
+    room: theatre
+    secondaryRooms: [map]
+publishedAt: '2025-01-01'
+updatedAt: '2026-07-28'
+metaScores:
+  measure: 0.65
+  witness: 0.6
+  use: 0.8
+  cosmos: 0.55
+  power: 0.9
+  silence: 0.75
+---
+
+import RadarChart from '../../components/islands/RadarChart.astro';
+import AdaptiveTimeline from '../../components/islands/AdaptiveTimeline.astro';
+import CompareSlider from '../../components/islands/CompareSlider.astro';
+import DeepZoomViewer from '../../components/islands/DeepZoomViewer.astro';
+import PortProfilePopover from '../../components/islands/PortProfilePopover.astro';
+import ContractionSequence from '../../components/islands/ContractionSequence.astro';
+import Section from '../../components/Section.astro';
+
+<p class="essay-kicker">
+  Venezia · una repubblica di armatori — <strong>la rotta</strong> · Sicilia · un regno posseduto —{' '}
+  <strong>il catasto</strong>
+</p>
+
+**La rotta.** The route. Space as a network of harbors, winds and bearings — drawn
+by the people who sailed it, sold openly on the Riva, blank one league inland.
+**Il catasto.** The cadastre. Space as a register of fields, fiefs and boundaries —
+drawn by engineers sent from elsewhere, filed in a foreign capital, blank from the
+shoreline out. _One sea · two maps · 1150 – 1750._
+
+## Venice drew the sea and left the land blank. Sicily's rulers drew the land and left the sea blank.
+
+Between the twelfth and the eighteenth centuries, the two great islands of Italian
+power produced two incompatible pictures of the same Mediterranean. Neither picture
+is more accurate. Each is a complete theory of what space is _for_ — and of who gets
+to say so. Maps here are not illustration. They are evidence of mentality and
+governance: material traces of how connectivity, social organization and political
+control were structured differently in a merchant republic and a possessed kingdom.
+
+> **La tesi.** Venetian cartography reflects a _network-oriented, maritime worldview_:
+> space as connections to be sailed. Sicilian cartography reflects _territorial
+> control and administrative segmentation_: space as ground to be held, taxed, and
+> defended. The pages below demonstrate it — first in a single image, then map by
+> map, ruler by ruler.
+
+<Section id="specchio" title="One island, two maps" rooms={['map', 'border']}>
+
+The same Sicily, drawn twice. On the left, the island as a Venetian pilot kept it —
+a coastline of harbors hung on a web of bearings, the interior silent. On the right,
+the island as a viceroy's engineer filed it — three administrative _valli_, fiefs
+measured in _salme_, the coast a chain of watchtowers facing out. **Drag the seam.**
+
+<CompareSlider
+  start={50}
+  beforeLabel="La carta del pilota · Venezia"
+  afterLabel="La carta del viceré · Madrid"
+  caption="Left: anonymous portolan chart of the Mediterranean & Black Sea, c. 1320–50, vellum (Library of Congress, via Wikimedia Commons). Right: Ortelius, Sicily with the territory of Syracuse inset, Theatrum Orbis Terrarum (Folger copy, via Wikimedia Commons). Etna appears on both: the pilot's landmark, the surveyor's hazard."
+>
+  <img
+    slot="before"
+    src="https://commons.wikimedia.org/wiki/Special:FilePath/Mediterranean%20chart%20fourteenth%20century2.jpg?width=1600"
+    alt="Anonymous portolan chart of the Mediterranean and Black Sea, c. 1320-1350, vellum (Library of Congress)"
+    loading="lazy"
+    decoding="async"
+  />
+  <img
+    slot="after"
+    src="https://commons.wikimedia.org/wiki/Special:FilePath/Map%20of%20ancient%20Sicily%20and%20inset%20map%20of%20the%20territories%20of%20Syracuse%20by%20Abraham%20Ortelius.jpeg?width=1600"
+    alt="Abraham Ortelius, map of Sicily with inset of the territory of Syracuse, from the Theatrum Orbis Terrarum (Folger copy)"
+    loading="lazy"
+    decoding="async"
+  />
+</CompareSlider>
+
+### Lettura veneziana — the coast is the only line that matters
+
+On the pilot's chart, Sicily is a rim of fourteen harbor names written perpendicular
+to the shore, red for the great ports, hung on a lattice of compass bearings. Every
+route runs _off the map_ — to Tunis, to Naples, to Candia — because for Venice the
+island is a waypoint in a network, not a destination. One league inland the parchment
+goes silent. The interior is not hidden; it is simply not asked about.
+
+### Lettura siciliana — the interior is the whole subject
+
+On the engineer's survey, the same island is partitioned into its three historic
+_valli_, sown with inland towns and fiefs measured in _salme_ for the tax rolls, its
+coast reduced to a defensive perimeter of royal strongholds and watchtowers facing
+outward. The sea — the entire organizing fact of the Venetian sheet — is a pale margin
+labelled _mare_, the direction trouble comes from.
+
+</Section>
+
+## Interrogating the map, not admiring it
+
+A map proves nothing by itself. It becomes evidence when you cross-examine it. Four
+questions — Harley's questions — asked of both archives, with four pairs of answers
+that do not match.
+
+**1 · Who made it?** _Venice: pilots and merchant houses._ Charts grew out of the
+trade itself: compiled by navigators, corrected voyage by voyage, copied in commercial
+workshops, finally absorbed into the chancery of a republic of shipowners. The mapmaker
+and the map's subject were the same people. _Sicily: engineers sent from elsewhere._
+Surveys were commissioned by whoever owned the island that century — a Norman king, an
+Aragonese viceroy, the council of Madrid. Al-Idrisi worked for Roger II; Spannocchi for
+Philip II; Schmettau for Charles VI. The mapped rarely held the pen.
+
+**2 · For whom?** _Venice: anyone who sails._ Portolans circulated openly — bought,
+sold, copied, carried aboard. Cartographic knowledge in Venice was a shared commercial
+asset, which is precisely why dozens of near-identical charts survive in dozens of
+hands. _Sicily: the ruler's archive._ Surveys were filed, not published. Spannocchi's
+atlas of the Sicilian coast went to Madrid; Schmettau's topography went to Vienna. The
+island's most accurate self-portraits left the island with its rulers.
+
+**3 · For what purpose?** _Venice: to move._ Reach Modon before the convoy; round Capo
+Passero on the Tunis run; thread the Archipelago in October. The chart's unit is the
+league and the rhumb; its verb is _navigare_. _Sicily: to hold._ Tax the _salme_, count
+the hearths of the _riveli_, garrison the towers, fix the boundary of the fief. The
+survey's unit is the _salma_ and the _feudo_; its verb is _possedere_.
+
+**4 · What is omitted?** _Venice: the land behind the harbor._ Interiors are blank or
+vague even in Venice's own colonies — Crete and Cyprus appear as rims of anchorages.
+Omission here is not ignorance; it is a statement that the interior generates no
+questions a pilot needs answered. _Sicily: the sea beyond the towers._ On the surveys
+the sea carries no routes, no soundings, no winds: it is the axis along which corsairs
+and rival fleets arrive. The same omission in reverse — and an equally complete theory
+of space.
+
+<Section id="rotta" title="The route, harbour by harbour" rooms={['road', 'city']}>
+
+{/* DRAFT PROSE (VMN-25, KAN-169): narrative connective tissue drafted for author review. Every factual card below is resolved live from the published gazetteer via PortProfilePopover, not written by hand. */}
+
+To read the Venetian sheet is to read it as a pilot did: not as an island to be owned
+but as a _line_ to be run. The great state convoys — the _mude_ — left the basin on a
+fixed calendar and beaded themselves harbour to harbour down the Adriatic, around the
+Morea, and out across the Levant. Each call was a node with a name, a season, and a
+governor; the water between them was the subject. Walk the spine below, north to south
+and west to east, and every card opens the same gazetteer the atlas map renders — the
+route made legible one harbour at a time.
+[See the whole spine lit on the atlas](/atlas?layers=venetian-ports,venetian-routes&year=1450).
+
+The head of the system is the lagoon itself — the only node the Republic drew as a
+portrait rather than a waypoint, because from here the sea is not crossed but _begun_.
+
+<PortProfilePopover portId="venice" open />
+
+Down the eastern Adriatic the convoys took on Dalmatian oarsmen, timber, and salt. Zara
+was the hinge of that coast — held, lost to the Hungarians, and retaken after 1409 when
+Venice simply bought the Dalmatian claim outright.
+
+<PortProfilePopover portId="zara" />
+
+Ragusa is the instructive exception: a rival maritime republic Venice could never
+quite swallow, folded in as a tributary rather than a possession. On the pilot's chart
+it is just another red harbour name; in the ledger of power it is a competitor drawn to
+look like a colleague.
+
+<PortProfilePopover portId="ragusa" />
+
+At the mouth of the Adriatic sits Corfu — the gate. Hold it and the convoys pass; lose
+it and the whole spine is cut. Venice held it, alone among the Ionian islands, straight
+through to the Republic's last year.
+
+<PortProfilePopover portId="corfu" />
+
+Then the two fortresses the Signoria called _the eyes of the Republic_ — Modon and
+Coron, guarding the turn around the Morea where the Adriatic traffic became Levantine
+traffic. Every muda touched here; lose them (as Venice did in 1500) and the eyes go
+dark.
+
+<PortProfilePopover portId="modon" />
+
+<PortProfilePopover portId="coron" />
+
+Across the open water lies Crete — Candia — the capital of the sea-state, the largest
+possession and the one Venice defended longest, through a siege that outlasted
+generations. If the _mude_ had a mid-ocean anchor, this was it.
+
+<PortProfilePopover portId="candia" />
+
+North into the Aegean, Negroponte on Euboea was the bastion of the Archipelago, the
+forward base from which Venice policed the island sea — until it fell in 1470 and the
+policing stopped.
+
+<PortProfilePopover portId="negroponte" />
+
+Malvasia — Monemvasia, the rock — gave the convoys their last friendly Morean harbour
+and the West its Malmsey wine, a single fortress that was worth a fleet to hold.
+
+<PortProfilePopover portId="malvasia" />
+
+Not every call was Venice's own. Chios flew Genoese colours for most of these
+centuries — a foreign harbour on a Venetian route, proof that the network mattered more
+than the flag. A pilot bound for the Levant put in wherever the mastic and the water
+were, whoever owned the mole.
+
+<PortProfilePopover portId="chios" />
+
+At the far end of the outbound leg stood Constantinople, where Venice kept a fortified
+quarter rather than a possession — a city inside a city, the counting-house of the
+whole eastern trade.
+
+<PortProfilePopover portId="constantinople_quarter" />
+
+And the terminus that made the rest pay for itself: Alexandria, the muda's endpoint and
+the funnel through which the spice of the Indies reached the Riva. Never Venetian
+ground — a _fondaco_, a lodged colony in a foreign port — and precisely for that reason
+the truest test of the thesis. Venice did not need to own the harbour. It only needed
+the route to end there.
+
+<PortProfilePopover portId="alexandria" />
+
+</Section>
+
+## Three charts of a republic that floated
+
+Pick any three landmarks of Venetian map-making across three centuries and the same
+grammar repeats: dense coasts, named harbors, functional sea — and an interior treated
+as somebody else's problem.
+
+**1311 · Florence & Venice — Pietro Vesconte, signed portolan charts.** Coastlines
+accurate to within a few miles, harbor names written perpendicular to the shore in red
+and black, a web of compass bearings instead of a graticule — and, one league inland,
+nothing. Each crossing of the sea corrected the chart: iterative proofreading by keel,
+with no crown behind it.
+
+**c. 1450 · Murano — Fra Mauro, mappamondo.** Two metres of vellum, three thousand
+inscriptions, Ptolemy examined and set aside, Africa shown circumnavigable forty years
+before Dias. Even Venice's world map is built the Venetian way: from the reports of
+traders and pilots, the world as accumulated commercial intelligence rather than
+inherited authority.
+
+**1528 · Venice — Benedetto Bordone, Isolario.** The _isolario_ is a genre Venice
+practically owned: the world published as a sequence of islands and harbors, each a
+node with its anchorages and approaches. It is the Stato da Màr's self-image as
+literature — an empire that understood itself not as a territory but as an archipelago
+of connections.
+
+<Section id="sicilia" title="Three surveys of an island that was owned" rooms={['border']}>
+
+Sicily's cartographic landmarks share a different grammar — and one biographical fact:
+each was commissioned by a foreign crown, and each finished its life in that crown's
+archive.
+
+**1154 · Palermo, for the Norman crown — Al-Idrisi, Tabula Rogeriana.** The finest
+world map of its century was made _in_ Sicily — but not _by_ Sicily. It was a royal
+commission, knowledge gathered to the crown, its seventy regional sheets an inventory
+of the world as seen from a conqueror's court in Palermo. The island could see far,
+when its ruler chose to look.
+
+**1578 · for Philip II, filed in Madrid — Tiburzio Spannocchi, Marine del Regno di
+Sicilia.** An atlas of the entire Sicilian coast, beach by beach, tower by tower —
+drawn from the land looking _out_. Where a portolan asks "where can I land?", Spannocchi
+asks "where can _they_ land?". The coast is rendered as a perimeter under surveillance;
+the project fed a building program of hundreds of watchtowers.
+
+**1719–21 · for Charles VI, filed in Vienna — Samuel von Schmettau, topographic map of
+Sicily.** The first systematic topographic survey of the whole island — roads, relief,
+settlements, the interior finally measured — produced in two years of military
+reconnaissance and promptly carried off to the Habsburg war archive. Sicily's most
+accurate map to date was, for Sicilians, effectively invisible.
+
+</Section>
+
+<Section id="evidenze" title="The evidence up close" rooms={['archive', 'map']}>
+
+{/* DRAFT PROSE (VMN-26, KAN-170): each panel's "reading" paragraph drafted for author review. Image credits are transcribed from the source artifacts; where no open scan exists (Coronelli's Sicily) the artefact is flagged blocked-external rather than guessed at. */}
+
+Argument is cheap; the artifacts have to carry it. Three open-access scans, opened here
+in a pan-and-zoom viewer, let you test the thesis against the vellum and the copper
+itself — and one artefact we cannot yet show, for a reason that is itself part of the
+argument.
+
+### The node as portrait — de' Barbari's Venice
+
+<DeepZoomViewer
+  image="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Jacopo_de%27_Barbari_-_View_of_Venice_-_Google_Art_Project.jpg/1280px-Jacopo_de%27_Barbari_-_View_of_Venice_-_Google_Art_Project.jpg"
+  src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Jacopo_de%27_Barbari_-_View_of_Venice_-_Google_Art_Project.jpg/1280px-Jacopo_de%27_Barbari_-_View_of_Venice_-_Google_Art_Project.jpg"
+  alt="Jacopo de' Barbari, View of Venice (Venetie MD), 1500, woodcut on six sheets"
+  credit="Jacopo de' Barbari, Venetie MD, 1500 — Google Art Project"
+  license="Public domain, via Wikimedia Commons"
+/>
+
+_Reading._ Zoom into the basin and you find the whole thesis in one image: Venice drawn
+from five hundred metres up as a _node_, not a territory. There is no hinterland — the
+sheet stops at the water — and the water is populated, ringed with shipping, presided
+over by Neptune in the basin and Mercury above. The city's coat of arms is the sea and
+the trade that crosses it. Read it against the pilot's portolan in §1: same grammar,
+different scale. The harbour _is_ the subject.
+
+### The territory as figure — Ortelius's Sicily
+
+<DeepZoomViewer
+  image="https://commons.wikimedia.org/wiki/Special:FilePath/Map%20of%20ancient%20Sicily%20and%20inset%20map%20of%20the%20territories%20of%20Syracuse%20by%20Abraham%20Ortelius.jpeg?width=1600"
+  src="https://commons.wikimedia.org/wiki/Special:FilePath/Map%20of%20ancient%20Sicily%20and%20inset%20map%20of%20the%20territories%20of%20Syracuse%20by%20Abraham%20Ortelius.jpeg?width=1600"
+  alt="Abraham Ortelius, map of Sicily with an inset of the territory of Syracuse, Theatrum Orbis Terrarum"
+  credit="Abraham Ortelius, Siciliae descriptio, Theatrum Orbis Terrarum — Folger copy"
+  license="Public domain, via Wikimedia Commons"
+/>
+
+_Reading._ The same island, drawn by an Antwerp humanist with no stake in Sicilian
+taxes — and yet the grammar is the viceroy's, not the pilot's. Sicily is a _bounded
+figure_: interior towns named, an inset that zooms not out to the sea-lanes but _in_ to
+a territory, the coast a decorated edge. The sea carries no routes. That the territorial
+grammar survives even in a disinterested Flemish shop is the strongest evidence that it
+belonged to the subject, not the mapmaker.
+
+### The instrument of the network — a fourteenth-century portolan
+
+<DeepZoomViewer
+  image="https://commons.wikimedia.org/wiki/Special:FilePath/Mediterranean%20chart%20fourteenth%20century2.jpg?width=1600"
+  src="https://commons.wikimedia.org/wiki/Special:FilePath/Mediterranean%20chart%20fourteenth%20century2.jpg?width=1600"
+  alt="Anonymous portolan chart of the Mediterranean and Black Sea, c. 1320-1350, vellum"
+  credit="Anonymous, portolan chart of the Mediterranean & Black Sea, c. 1320–50 — Library of Congress"
+  license="Public domain, via Wikimedia Commons"
+/>
+
+_Reading._ Follow the rhumb lines radiating from their wind-rose hubs and you are
+reading the network directly: not a picture of places but a machine for computing a
+course between them. Harbour names crowd perpendicular to every coast; the interiors are
+blank vellum. This is the tradition the Carta Pisana opens and Fra Mauro's _mappamondo_
+inherits — the same accumulated pilots' intelligence, whether folded into a working
+chart or a two-metre world map. The land is not missing. It was never the question.
+
+### The one we cannot show — Coronelli's Regno di Sicilia (1696)
+
+The natural companion to the panels above would be Vincenzo Coronelli's own Sicily
+sheet: the _most Venetian cartographer alive_, cosmographer of the Republic, engraving
+Sicily as a partitioned _kingdom_ — vallo by vallo, under a royal cartouche — while on
+the facing page of the same atlas he draws his own lagoon as pure water and node. That
+single juxtaposition would close the case. But no open-access scan of the sheet resolves
+to a stable image we can responsibly embed, so rather than guess a URL we flag it as
+**blocked-external** and point to the collections instead:
+[search Wikimedia Commons for Coronelli · Sicilia](https://commons.wikimedia.org/w/index.php?search=Coronelli+Sicilia&title=Special:MediaSearch&type=image).
+The gap in the evidence is itself in the ledger — Sicily's best images survive as single
+official sheets in the capitals of its former rulers, harder to open than a chart that
+was sold by the dozen on the Riva.
+
+</Section>
+
+<Section id="contrazione" title="The sea-state, drawn and undrawn" rooms={['border', 'road']}>
+
+The route was not fixed forever. The same possessions the pilots strung their bearings
+between were won, held, and lost across six centuries — and the shape of the _stato da
+màr_ is itself a map that redraws itself in time. Scrub through the phases below: this is
+not a hand-drawn cartoon but the published possessions layer the atlas renders,
+re-projected, each extent appearing only in the years it was actually held.
+
+<ContractionSequence caption="Territorial extent of the Venetian stato da màr, 1204–1797, drawn directly from the published possessions layer. Drag the scrubber to step through the phases; each frame shows only the territories held that year." />
+
+Set this against the harbour spine in §2 and the two readings converge: the network was
+only ever as long as the fortresses that anchored it. When Modon and Coron fell in 1500,
+when Negroponte fell in 1470, when Candia was finally lost in 1669, the _rotta_ did not
+merely shorten on the map — it lost the nodes that made it computable at all.
+[Open the possessions and ports together on the atlas](/atlas?layers=venetian-possessions,venetian-ports&year=1500).
+
+</Section>
+
+<Section id="registro" title="The double-entry of two worldviews" rooms={['border', 'archive']}>
+
+Set the two archives side by side and the differences stop looking like style and start
+looking like structure — a ledger of routes against a register of fields.
+
+| Voce                | Venezia                                                                        | Sicilia                                                            |
+| ------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| Focus               | The sea and its routes — _movement_                                            | The land and its divisions — _possession_                          |
+| Where the detail is | Coastlines, harbors, anchorages; interiors blank even in Venice's own colonies | Interiors, boundaries, fiefs, towers; the sea a pale margin        |
+| Unit of space       | The league and the rhumb — distance _run_                                      | The _salma_ and the _feudo_ — surface _owned_                      |
+| Author              | Pilots, merchants, the Republic's own chancery                                 | Royal engineers and surveyors in foreign service                   |
+| Reader              | Anyone who sails — charts sold and copied openly                               | The crown — surveys filed in Madrid, Vienna, Turin                 |
+| Social shadow       | Mobility, outward orientation, shared commercial knowledge                     | Stratification, localized identities, administrative fragmentation |
+| Failure it fears    | Shipwreck — the route mis-drawn                                                | Revolt or invasion — the ground mis-held                           |
+
+</Section>
+
+## Why the maps could not match
+
+Behind the two grammars stand two political histories. One government kept correcting
+its charts for eleven hundred years. The other island was re-surveyed by each new owner
+— and the surveys left with them.
+
+**Venezia — one chancery, continuous correction.** Eleven hundred years, one government,
+charts that accumulate, each correcting the last.
+
+<AdaptiveTimeline
+  from={697}
+  to={1797}
+  ticks={[700, 1200, 1500, 1797]}
+  caption="Venice: working and commissioned maps across the life of one republic."
+  events={[
+    { year: 1311, label: 'Vesconte, portolan charts' },
+    { year: 1450, label: 'Fra Mauro, mappamondo' },
+    { year: 1528, label: 'Bordone, Isolario' },
+    { year: 1545, label: 'Agnese, portolan atlases' },
+    { year: 1696, label: 'Coronelli, Isolario / Atlante Veneto' },
+  ]}
+/>
+
+**Sicilia — ten regimes, ten surveys, ten departures.** Each new ruler re-mapped the
+island — and shipped the map home: al-Idrisi to the Norman crown; Spannocchi,
+Camilliani and Negro to Madrid; Schmettau to Vienna.
+
+<AdaptiveTimeline
+  from={535}
+  to={1860}
+  ticks={[535, 1061, 1516, 1860]}
+  caption="Sicily: commissioned surveys, each filed with the crown that ordered it."
+  events={[
+    { year: 1154, label: 'al-Idrisi → the Norman crown' },
+    { year: 1578, label: 'Spannocchi → Madrid' },
+    { year: 1584, label: 'Camilliani → Madrid' },
+    { year: 1640, label: 'Negro & Ventimiglia → Madrid' },
+    { year: 1721, label: 'Schmettau → Vienna', accent: 'var(--sacrificed)' },
+  ]}
+/>
+
+The asymmetry is archival as well as political: Venetian charts survive in dozens of
+copies in dozens of hands because they were commercial objects; Sicily's best maps
+survive as single official manuscripts in the capitals of its former rulers. The pattern
+of survival is itself evidence.
+
+> Who controls the mapping controls what the territory **is allowed to be**.
+> — _after J. B. Harley, "Maps, Knowledge, and Power"_
+
+<Section id="confronto" title="The instrument — any chart against any survey" rooms={['theatre', 'map']}>
+
+Twenty-two sheets — ten working and commissioned maps, twelve from the print trade — all
+score the same six axes, so any chart is comparable to any survey. Below, the two whole
+traditions are averaged against each other: the mean Venetian sheet against the mean
+Sicilian one, each axis normalized 0–1. The two silhouettes are almost mirror images —
+which is the entire finding.
+
+<RadarChart
+  interactive
+  axes={['Mare', 'Terra', 'Rete', 'Confine', 'Circolazione', 'Imposizione']}
+  series={[
+    { label: 'Venezia (mean of 11 sheets)', values: [0.79, 0.25, 0.83, 0.16, 0.89, 0.19] },
+    {
+      label: 'Sicilia (mean of 11 sheets)',
+      values: [0.25, 0.78, 0.22, 0.8, 0.59, 0.52],
+      color: 'var(--sacrificed)',
+    },
+  ]}
+  caption="Hover a legend item to emphasize its tradition. Means computed over the essay's 22 scored sheets."
+/>
+
+**Il metodo — what the axes measure.** _Mare_: detail invested in the sea — harbors,
+soundings, winds, routes. _Terra_: detail invested in the interior — relief, roads,
+settlements, land use. _Rete_: how far space is conceived as a network of connections to
+be moved through. _Confine_: how far space is conceived as bounded, partitioned territory
+to be held. _Circolazione_: how freely the map circulated — printed and sold, or filed
+and sealed. _Imposizione_: degree of external commission — made by its own users, or
+ordered by a ruling power.
+
+The decisive test is _Circolazione_ and _Imposizione_. On the four spatial axes the print
+trade could copy either grammar; but the prints stay Venetian or Sicilian in _how they
+were made and sold_ — because the grammar belonged to the subject, not the engraver. From
+Basel, Frankfurt, Antwerp, Amsterdam and Paris, the same shops sold Venice as a _portrait
+of a node_ and Sicily as a _territory-sheet_, and not one of the twelve prints breaks the
+pattern.
+
+</Section>
+
+## Where the neat binary bends
+
+A thesis that ignores its own counter-evidence is decoration. Three honest
+complications — each of which, examined closely, ends up sharpening the argument rather
+than breaking it.
+
+**Sicily could see the whole world.** Al-Idrisi's 1154 map, made in Palermo, outclassed
+anything in Europe for centuries. Sicilian pilots sailed; Messina was a great port. The
+island lacked neither skill nor sea. _What it lacked was a polity of its own to map for_
+— which is exactly the point: cartographic style follows political structure, not talent
+or geography.
+
+**Venice the landlord.** After taking the Terraferma in the fifteenth century, Venice
+surveyed fields, drainage and boundaries like any territorial state — Cristoforo Sorte's
+maps of the mainland are cadastral through and through. _Network logic was a circumstance,
+not an essence_: when Venice owned land, it drew like Sicily's rulers. The map follows
+the form of power.
+
+**Mind the centuries, mind the survivors.** A 1311 chart and a 1721 survey are not
+simultaneous witnesses; commercial charts survive in dozens of copies, state surveys in
+single manuscripts. Compare like with like, always ask who commissioned the sheet, and
+never treat a map as an accurate reflection. _Maps are arguments, not photographs_ —
+including the two on this page.
+
+## Where the evidence lives
+
+Primary collections to draw from, and the secondary works that teach you to read maps as
+instruments of power rather than pictures of places.
+
+**Fonti · primary.** Biblioteca Nazionale Marciana, Venice — Fra Mauro's mappamondo,
+Venetian charts and isolarii. The portolan corpus — Vesconte (1311 onward), Dulcert, the
+Catalan Atlas; widely digitized, incl. [gallica.bnf.fr](https://gallica.bnf.fr).
+Biblioteca Nacional de España, Madrid — Spannocchi, _Descripción de las marinas de todo
+el Reino de Sicilia_ (1578). Archivio di Stato di Palermo — _riveli_ (hearth censuses),
+feudal and administrative records. Austrian war archives, Vienna — Schmettau's
+topographic survey of Sicily (1719–21). Bodleian Library, Oxford — the principal
+surviving copy of al-Idrisi's geography.
+
+**Studi · secondary.** Harley & Woodward (eds.), _The History of Cartography_, vols. 1–3
+— the foundation. J. B. Harley, "Maps, Knowledge, and Power" and "Deconstructing the Map"
+— maps as ideological instruments. Tony Campbell, "Portolan Charts from the Late
+Thirteenth Century to 1500," in HoC vol. 1. Piero Falchetta, _Fra Mauro's World Map_ —
+the lagoon's worldview in one object. Liliane Dufour, studies of Spannocchi and the
+fortified Sicilian coast. Jerry Brotton, _Trading Territories_ — mapping and
+early-modern power, Mediterranean-wide.

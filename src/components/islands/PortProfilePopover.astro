@@ -1,0 +1,227 @@
+---
+/**
+ * PortProfilePopover (VMN-24 / KAN-168)
+ *
+ * Reusable, data-driven port card keyed only by a gazetteer `portId`. It resolves
+ * every field — name triple, phase timeline, note, route membership, Atlas deep
+ * link — from the published FlatGeobuf bundle via src/lib/vmn.ts, so it works for
+ * ANY port with no hardcoded content and no duplicated geometry. Rendered as a
+ * zero-JS <details> disclosure: the summary is the beat anchor, the body the
+ * profile. An unresolved id degrades to the "unavailable" notice from the ticket.
+ *
+ * OPEN_ENDED (9999) valid_to renders as "present"; the same sentinel the atlas
+ * temporal filter keys on (src/lib/geo-style.ts).
+ */
+import { getPortProfile, OPEN_ENDED, type PortPhase } from '../../lib/vmn';
+
+interface Props {
+  /** Gazetteer id (data/vmn/ports.csv `port_id`), e.g. "zara". */
+  portId: string;
+  /** Optional beat label; defaults to the resolved historic name. */
+  label?: string;
+  /** Start expanded (e.g. the beat currently in view). */
+  open?: boolean;
+}
+
+const { portId, label, open = false } = Astro.props;
+const profile = await getPortProfile(portId);
+
+const readable = (value: string) => value.replaceAll('_', ' ');
+const phaseYears = (phase: PortPhase) =>
+  `${phase.validFrom}–${phase.validTo === OPEN_ENDED ? 'present' : phase.validTo}`;
+
+const alternateNames = profile
+  ? [profile.nameLocal, profile.nameModern]
+      .filter(
+        (name, index, values) =>
+          name && name !== profile.nameHistoric && values.indexOf(name) === index,
+      )
+      .join(' · ')
+  : '';
+const spanLabel = profile
+  ? `${profile.yearFrom}–${profile.yearTo === OPEN_ENDED ? 'present' : profile.yearTo}`
+  : '';
+// Related routes deep-link into the atlas with both layers lit (VMN-28 contract).
+const routesHref = profile
+  ? `/atlas?port=${encodeURIComponent(profile.id)}&layers=venetian-ports,venetian-routes`
+  : '';
+---
+
+{
+  profile ? (
+    <details class="port-profile" open={open} data-port={profile.id}>
+      <summary class="pp-summary">
+        <span class="pp-name">{label ?? profile.nameHistoric}</span>
+        {alternateNames && <span class="pp-alt">{alternateNames}</span>}
+        <span class="pp-span">{spanLabel}</span>
+      </summary>
+      <div class="pp-body">
+        <p class="pp-meta">
+          {profile.region}
+          {profile.nameModern && profile.nameModern !== profile.nameHistoric && (
+            <> · modern {profile.nameModern}</>
+          )}
+        </p>
+
+        <ol class="pp-phases" aria-label="Tenure phases">
+          {profile.phases.map((phase) => (
+            <li>
+              <span class="pp-phase-years">{phaseYears(phase)}</span>
+              <span class="pp-phase-status">{readable(phase.status)}</span>
+              {phase.polityId && <span class="pp-phase-polity">{readable(phase.polityId)}</span>}
+            </li>
+          ))}
+        </ol>
+
+        {profile.note && <p class="pp-note">{profile.note}</p>}
+
+        {profile.routes.length > 0 && (
+          <p class="pp-routes">
+            <span class="pp-routes-label">Called by</span>{' '}
+            {profile.routes.map((route, index) => (
+              <>
+                {index > 0 && ', '}
+                <a href={`${routesHref}&route=${encodeURIComponent(route.routeId)}`}>
+                  {route.name}
+                </a>
+              </>
+            ))}
+          </p>
+        )}
+
+        <a class="pp-atlas" href={profile.atlasHref}>
+          Open in the atlas →
+        </a>
+      </div>
+    </details>
+  ) : (
+    <div class="port-profile port-profile--empty" data-port={portId}>
+      <p class="pp-unavailable">Port profile unavailable</p>
+      <p class="pp-unavailable-detail">No published gazetteer record found.</p>
+    </div>
+  )
+}
+
+<style>
+  .port-profile {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    margin: 1.5rem 0;
+    padding: 0;
+  }
+  .pp-summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 0.75rem;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    list-style: none;
+  }
+  .pp-summary::-webkit-details-marker {
+    display: none;
+  }
+  .pp-summary::before {
+    content: '▸';
+    color: var(--ink-muted);
+    transition: transform 0.15s ease;
+  }
+  .port-profile[open] .pp-summary::before {
+    transform: rotate(90deg);
+  }
+  .pp-name {
+    font-family: var(--font-display, var(--font-serif));
+    font-size: var(--step-1);
+    color: var(--ink);
+  }
+  .pp-alt {
+    font-style: italic;
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+  }
+  .pp-span {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.06em;
+    color: var(--gold);
+  }
+  .pp-body {
+    padding: 0 1rem 1rem;
+    border-top: 1px solid var(--line);
+  }
+  .pp-meta {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.04em;
+    color: var(--ink-muted);
+    margin: 0.75rem 0;
+  }
+  .pp-phases {
+    list-style: none;
+    margin: 0 0 0.75rem;
+    padding: 0;
+    display: grid;
+    gap: 0.35rem;
+  }
+  .pp-phases li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-size: var(--step--1);
+  }
+  .pp-phase-years {
+    font-family: var(--font-mono);
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    min-width: 7.5em;
+  }
+  .pp-phase-status {
+    color: var(--ink);
+    text-transform: capitalize;
+  }
+  .pp-phase-polity {
+    color: var(--ink-muted);
+  }
+  .pp-note {
+    font-size: var(--step--1);
+    color: var(--ink);
+    margin: 0 0 0.75rem;
+  }
+  .pp-routes {
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+    margin: 0 0 0.75rem;
+  }
+  .pp-routes-label {
+    font-family: var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: 0.68rem;
+  }
+  .pp-atlas {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.06em;
+    color: var(--gold);
+  }
+  .pp-atlas:hover {
+    text-decoration: underline;
+  }
+  .port-profile--empty {
+    padding: 0.75rem 1rem;
+  }
+  .pp-unavailable {
+    margin: 0;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .pp-unavailable-detail {
+    margin: 0.25rem 0 0;
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+  }
+</style>
