@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/build-sites-entry.mjs",
     "preview": "astro preview",
     "check": "astro check",
     "lint": "eslint .",
