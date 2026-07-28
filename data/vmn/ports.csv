@@ -35,3 +35,29 @@ syros,Syra,Syros,37.445,24.943,feudatory,1207-01-01,1566-01-01,duchy_archipelago
 paros,Paro,Paros,37.085,25.152,feudatory,1207-01-01,1566-01-01,duchy_archipelago,,Duchy of the Archipelago
 mykonos,Micono,Mykonos,37.445,25.329,feudatory,1207-01-01,1566-01-01,duchy_archipelago,,Held by the Ghisi under Archipelago suzerainty
 milos,Milo,Milos,36.746,24.427,feudatory,1207-01-01,1566-01-01,duchy_archipelago,,Duchy of the Archipelago
+constantinople_quarter,Venetian Quarter,Istanbul,41.017,28.970,commercial_quarter,1082-05-01,1204-04-13,byzantine,LANE1973,Quarter granted by the 1082 chrysobull of Alexios I Komnenos
+constantinople_quarter,Venetian Quarter,Istanbul,41.017,28.970,metropolitan_quarter,1204-04-13,1261-07-25,latin_empire,LANE1973,Expanded jurisdiction under the Latin Empire; not a sovereign colony
+constantinople_quarter,Venetian Quarter,Istanbul,41.017,28.970,commercial_quarter,1261-07-25,1453-05-29,byzantine,LANE1973,Merchant quarter restored after the Byzantine reconquest
+constantinople_latin,Constantinople,Istanbul,41.008,28.978,capital,1204-04-13,1261-07-25,latin_empire,LANE1973,Capital of the Latin Empire
+pera,Pera,Beyoğlu,41.028,28.975,rival_genoese,1261-07-25,1453-05-29,genoa,LANE1973,Principal Genoese concession after the Treaty of Nymphaeum
+galata,Galata,Galata,41.026,28.974,rival_genoese,1267-01-01,1453-05-29,genoa,LANE1973,Genoese concession adjoining Pera
+caffa,Caffa,Feodosia,45.031,35.382,rival_genoese,1266-01-01,1475-06-01,genoa,LANE1973,Genoese Black Sea colony; fell to the Ottomans 1475
+soldaia,Soldaia,Sudak,44.849,34.972,rival_genoese,1365-01-01,1475-06-01,genoa,,Genoese from 1365; fell to the Ottomans 1475
+tana,Tana,Azov,47.112,39.421,trading_post,1332-01-01,1475-01-01,venice,,Venetian fondaco on the Sea of Azov under Golden Horde suzerainty
+trebizond,Trebizond,Trabzon,41.005,39.723,foreign_port,1204-01-01,1461-08-15,empire_trebizond,,Empire of Trebizond; fell to the Ottomans 1461
+sinope,Sinope,Sinop,42.026,35.153,foreign_port,1204-01-01,1461-01-01,various,,Jandarid emirate; annexed by the Ottomans 1461
+samsun,Amisos,Samsun,41.292,36.331,foreign_port,1204-01-01,1461-01-01,various,,Annexed by the Ottomans 1461
+chios,Chios,Chios,38.368,26.136,rival_genoese,1346-01-01,1566-04-17,maona_chios,LANE1973,Governed by the Genoese Maona of Chios; fell to the Ottomans 1566
+famagusta,Famagusta,Gazimağusa,35.125,33.941,foreign_port,1192-01-01,1489-02-26,cyprus,,Lusignan Kingdom of Cyprus; Genoese-held 1373–1464; Venetian from 1489
+limassol,Limisso,Limassol,34.675,33.044,foreign_port,1192-01-01,1489-02-26,cyprus,,Lusignan Kingdom of Cyprus
+kyrenia,Cerines,Kyrenia,35.341,33.317,foreign_port,1192-01-01,1489-02-26,cyprus,,Lusignan Kingdom of Cyprus
+beirut,Beirut,Beirut,33.895,35.478,foreign_port,1291-01-01,1516-08-24,mamluks,,Mamluk port with a Venetian fondaco
+acre,Acre,Acre,32.923,35.069,crusader_port,1104-01-01,1291-05-18,kingdom_jerusalem,,Crusader port of the Kingdom of Jerusalem; fell 1291
+tyre,Tyre,Tyre,33.271,35.196,foreign_port,1124-01-01,1516-08-24,various,,Crusader-held to 1291, then Mamluk
+sidon,Sidon,Sidon,33.560,35.375,foreign_port,1110-01-01,1516-08-24,various,,Crusader-held to 1291, then Mamluk
+alexandria,Alexandria,Alexandria,31.200,29.892,foreign_port,1250-01-01,1517-01-22,mamluks,LANE1973,Principal Mamluk emporium with a Venetian fondaco
+damietta,Damietta,Damietta,31.417,31.813,foreign_port,1250-01-01,1517-01-22,mamluks,,Mamluk Nile-delta port
+messina,Messina,Messina,38.194,15.554,staging,1130-01-01,,sicily,,Galley staging port of the Kingdom of Sicily
+palermo,Palermo,Palermo,38.116,13.361,staging,1130-01-01,,sicily,,Galley staging port of the Kingdom of Sicily
+syracuse,Syracuse,Siracusa,37.059,15.293,staging,1130-01-01,,sicily,,Galley staging port of the Kingdom of Sicily
+trapani,Trapani,Trapani,38.017,12.537,staging,1130-01-01,,sicily,,Galley staging port of the Kingdom of Sicily

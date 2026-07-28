@@ -45,7 +45,7 @@ multiple) statuses.
 | `name_historic` | string | Period name (Ragusa, Modon)                                                                                           |
 | `name_modern`   | string | Modern name (Dubrovnik, Methoni)                                                                                     |
 | `lat`, `lon`    | float  | Harbour location, EPSG:4326. Harbour-accuracy pass in VMN-8.                                                          |
-| `status`        | enum   | Controlled vocab — `metropole` · `capital` · `subject` · `colony` · `protectorate` · `feudatory` · `independent` · `leased` · `contested` · `lost` |
+| `status`        | enum   | Controlled vocab — sovereignty: `metropole` · `capital` · `subject` · `colony` · `protectorate` · `feudatory` · `independent`; tenure/quarter: `commercial_quarter` · `metropolitan_quarter` · `rival_genoese` · `foreign_port` · `trading_post` · `crusader_port` · `leased`; navigational/other: `staging` · `contested` · `lost` |
 | `start_date`    | date   | ISO `YYYY-MM-DD`, required                                                                                            |
 | `end_date`      | date   | ISO `YYYY-MM-DD`; **empty = open-ended**                                                                              |
 | `polity_id`     | string | Holding power slug (`venice`, `ragusa`)                                                                               |
@@ -163,3 +163,34 @@ source, notes`. One row per possession phase; expands into
   named as `polity_id` only where it exercised direct sovereignty — Crete, the Morea
   fortresses (Modon, Coron, Nauplia, Argos), Negroponte, and Tino after 1390. This
   adds `feudatory` to the controlled vocab (§5.2) and to the atlas graduation ramp.
+
+- **D8 — Quarter vs. colony: merchant enclaves and rivals are not Venetian
+  territory (KAN-151).** Constantinople, the Black Sea, the Levant and Egypt were
+  reached through **extraterritorial enclaves under a host sovereign**, not through
+  administered colonies. The legal distinction is carried in `status`, with
+  `polity_id` naming the actual sovereign (not Venice):
+  - `commercial_quarter` — merchant enclave under host sovereignty (the Venetian
+    Quarter in Constantinople from the 1082 chrysobull of Alexios I; fondachi at
+    Alexandria and Beirut).
+  - `metropolitan_quarter` — expanded jurisdiction during Latin rule (Constantinople
+    1204–1261) but still not a sovereign colony.
+  - `rival_genoese` — a Genoese colony/concession, not Venetian: **Pera/Galata**
+    (Genoa's principal concession after the 1261 Treaty of Nymphaeum), **Caffa**,
+    **Soldaia**, **Chios** (Maona of Chios).
+  - `foreign_port` — independent or allied port where Venice held trading privileges
+    (Trebizond, Cyprus ports, Beirut, Alexandria, Damietta).
+  - `staging` — a logistical waypoint on the galley routes (Messina, Palermo,
+    Syracuse, Trapani).
+
+  Constantinople is modelled as **three phased rows on one `port_id`**
+  (`constantinople_quarter`): `commercial_quarter` 1082–1204 (byzantine),
+  `metropolitan_quarter` 1204–1261 (latin_empire), `commercial_quarter` 1261–1453
+  (byzantine); the Latin-Empire capital itself is a separate `constantinople_latin`
+  row. Basis: LANE1973 (the chrysobull, the Fourth Crusade partition, the
+  Genoese rivalry and Treaty of Nymphaeum).
+
+  **Two node-table statuses fall outside the seven-term legend and are retained as
+  distinct pending review:** `trading_post` (Tana — a Venetian fondaco under Golden
+  Horde suzerainty) and `crusader_port` (Acre — Kingdom of Jerusalem, fell 1291).
+  They could fold into `commercial_quarter` / `foreign_port` respectively if a
+  tighter enum is preferred.
