@@ -39,19 +39,19 @@ Authority table [`data/vmn/ports.csv`](../../data/vmn/ports.csv). One row per
 **status phase**; the same `port_id` recurs for a place that changes (or holds
 multiple) statuses.
 
-| Field           | Type   | Notes                                                                                                                  |
-| --------------- | ------ | -------------------------------------------------------------------------------------------------------------------- |
-| `port_id`       | string | Stable slug, **repeats across phases** (`venice`, `zara`). Join key for voyages/charters/offices.                    |
-| `name_historic` | string | Period name (Ragusa, Modon)                                                                                           |
-| `name_modern`   | string | Modern name (Dubrovnik, Methoni)                                                                                     |
-| `lat`, `lon`    | float  | Harbour location, EPSG:4326. Harbour-accuracy pass done in VMN-8 (city/harbour points verified; Dubrovnik moved to the old port).  |
+| Field           | Type   | Notes                                                                                                                                                                                                                                                                                                                               |
+| --------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `port_id`       | string | Stable slug, **repeats across phases** (`venice`, `zara`). Join key for voyages/charters/offices.                                                                                                                                                                                                                                   |
+| `name_historic` | string | Period name (Ragusa, Modon)                                                                                                                                                                                                                                                                                                         |
+| `name_modern`   | string | Modern name (Dubrovnik, Methoni)                                                                                                                                                                                                                                                                                                    |
+| `lat`, `lon`    | float  | Harbour location, EPSG:4326. Harbour-accuracy pass done in VMN-8 (city/harbour points verified; Dubrovnik moved to the old port).                                                                                                                                                                                                   |
 | `status`        | enum   | Controlled vocab — sovereignty: `metropole` · `capital` · `subject` · `colony` · `protectorate` · `feudatory` · `independent`; tenure/quarter: `commercial_quarter` · `metropolitan_quarter` · `rival_genoese` · `foreign_port` · `trading_post` · `crusader_port` · `leased`; navigational/other: `staging` · `contested` · `lost` |
-| `start_date`    | date   | ISO `YYYY-MM-DD`, required                                                                                            |
-| `end_date`      | date   | ISO `YYYY-MM-DD`; **empty = open-ended**                                                                              |
-| `polity_id`     | string | Holding power slug (`venice`, `ragusa`)                                                                               |
-| `source_keys`   | string | Uppercase, `;`-separated keys into `sources.csv`                                                                      |
-| `pleiades_id`   | string | Pleiades place id (numeric), **optional** — populated only where it disambiguates a classical port (VMN-8). Empty otherwise. |
-| `notes`         | string | Free text; flags judgment calls                                                                                       |
+| `start_date`    | date   | ISO `YYYY-MM-DD`, required                                                                                                                                                                                                                                                                                                          |
+| `end_date`      | date   | ISO `YYYY-MM-DD`; **empty = open-ended**                                                                                                                                                                                                                                                                                            |
+| `polity_id`     | string | Holding power slug (`venice`, `ragusa`)                                                                                                                                                                                                                                                                                             |
+| `source_keys`   | string | Uppercase, `;`-separated keys into `sources.csv`                                                                                                                                                                                                                                                                                    |
+| `pleiades_id`   | string | Pleiades place id (numeric), **optional** — populated only where it disambiguates a classical port (VMN-8). Empty otherwise.                                                                                                                                                                                                        |
+| `notes`         | string | Free text; flags judgment calls                                                                                                                                                                                                                                                                                                     |
 
 **Target:** 50–70 ports, each status phase a separate row.
 
@@ -97,7 +97,7 @@ pipeline.
 | `id`                      | string | `rte-` slug                                                                             |
 | `name`                    | string | e.g. Muda di Romania                                                                    |
 | `route_type`              | enum   | `muda` (state galley convoy) · `private` (unarmed round-ship trade)                     |
-| `waypoints`               | string | Ordered `port_id`/`waypoint_id`s, **pipe-separated** — join key to ports/waypoints       |
+| `waypoints`               | string | Ordered `port_id`/`waypoint_id`s, **pipe-separated** — join key to ports/waypoints      |
 | `commodities`             | string | Pipe-separated tags: `grain\|wine\|slaves\|silk\|spices\|cotton\|wax\|fur\|salt\|sugar` |
 | `valid_from` / `valid_to` | int    | Convoy line operating window                                                            |
 | `source`, `notes`         | string | Provenance                                                                              |

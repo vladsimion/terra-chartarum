@@ -17,11 +17,11 @@ _Venetian Maritime Network, c.1400 — Dataset & Essay Enrichment_.
 `make vmn` runs `scripts/vmn/build.py`, which validates the authority-table CSVs
 and writes the cloud-native FlatGeobuf assets the atlas renders:
 
-| Stage       | Ticket | Input             | Output                          | Status |
-| ----------- | ------ | ----------------- | ------------------------------- | ------ |
-| ports       | VMN-9  | `ports.csv`       | `public/geo/venetian-ports.fgb` | live   |
-| routes      | VMN-13 | `routes.csv`      | `public/geo/venetian-routes.fgb` | stub   |
-| possessions | VMN-19 | `possessions.csv` | `public/geo/venetian-possessions.fgb` | stub |
+| Stage       | Ticket | Input             | Output                                | Status |
+| ----------- | ------ | ----------------- | ------------------------------------- | ------ |
+| ports       | VMN-9  | `ports.csv`       | `public/geo/venetian-ports.fgb`       | live   |
+| routes      | VMN-13 | `routes.csv`      | `public/geo/venetian-routes.fgb`      | stub   |
+| possessions | VMN-19 | `possessions.csv` | `public/geo/venetian-possessions.fgb` | stub   |
 
 The ports stage projects each authority-table phase to a Point feature, mapping
 ISO `start_date`/`end_date` to INTEGER `valid_from`/`valid_to` years (empty end →
