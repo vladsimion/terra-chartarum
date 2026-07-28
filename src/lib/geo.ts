@@ -41,7 +41,7 @@ export const GeoLayerSchema = z.object({
   // (9999 = open-ended) rather than toggling the whole layer by the envelope above.
   perFeatureTime: z.boolean().default(false),
   // Graduated point symbols keyed on a categorical feature field (VMN-20 / B3):
-  // circle-radius by value, e.g. ports sized by `type`.
+  // circle-radius by value, e.g. ports sized by `status`.
   graduate: z
     .object({
       field: z.string(),
@@ -183,8 +183,8 @@ const RAW: unknown[] = [
     defaultOn: false,
   },
   // Venetian Maritime Network, c.1400 (VMN). Three per-geometry FGB layers per the
-  // frozen data dictionary (VMN-3) and the VMN-2 render findings: ports graduated by
-  // type, routes dashed by route_type, possessions as phased fills. The .fgb binaries
+  // frozen data dictionary (VMN-3, authority-table model): ports graduated by
+  // status, routes dashed by route_type, possessions as phased fills. The .fgb binaries
   // are produced by the compilation tickets (VMN-9/13/19); until an asset is on disk
   // the atlas shows the layer as pending. Styling + loader capability lands in VMN-20.
   {
@@ -193,7 +193,7 @@ const RAW: unknown[] = [
     secondaryRooms: ['border'],
     title: 'Venetian maritime ports, c.1200–1500',
     description:
-      'Stato da màr nodes — colonies, trading quarters, staging calls and Genoese rivals — graduated by type, each status phase a separate feature.',
+      'Stato da màr nodes — the metropole and its capital, subject cities, colonies and independent rivals — graduated by status, each phase a separate feature.',
     kind: 'vector',
     format: 'flatgeobuf',
     url: '/geo/venetian-ports.fgb',
@@ -207,14 +207,17 @@ const RAW: unknown[] = [
     color: '#e2a93f',
     perFeatureTime: true,
     graduate: {
-      field: 'type',
+      field: 'status',
       radius: {
         metropole: 9,
+        capital: 8,
         colony: 7,
-        trading_quarter: 6,
+        protectorate: 6,
+        subject: 5,
         independent: 5,
-        rival_genoese: 5,
-        staging: 4,
+        leased: 4,
+        contested: 4,
+        lost: 3,
       },
       fallback: 4,
     },

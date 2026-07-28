@@ -4,11 +4,11 @@ import { circleRadiusExpression, temporalFilter, withTemporal, dashSubLayers } f
 describe('circleRadiusExpression (VMN-20 graduated ports, B3)', () => {
   it('builds a match on the field with a trailing fallback', () => {
     const expr = circleRadiusExpression({
-      field: 'type',
-      radius: { metropole: 9, staging: 4 },
+      field: 'status',
+      radius: { metropole: 9, subject: 5 },
       fallback: 4,
     });
-    expect(expr).toEqual(['match', ['get', 'type'], 'metropole', 9, 'staging', 4, 4]);
+    expect(expr).toEqual(['match', ['get', 'status'], 'metropole', 9, 'subject', 5, 4]);
   });
 });
 

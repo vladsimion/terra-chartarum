@@ -20,9 +20,9 @@ describe('VMN atlas layers (VMN-20 registry entries)', () => {
     for (const id of ids) expect(byId.get(id)?.perFeatureTime).toBe(true);
   });
 
-  it('graduates ports by type and dashes routes by route_type (B3)', () => {
+  it('graduates ports by status and dashes routes by route_type (B3)', () => {
     expect(byId.get('venetian-ports')?.geometry).toBe('circle');
-    expect(byId.get('venetian-ports')?.graduate?.field).toBe('type');
+    expect(byId.get('venetian-ports')?.graduate?.field).toBe('status');
     expect(byId.get('venetian-routes')?.geometry).toBe('line');
     expect(byId.get('venetian-routes')?.dash?.field).toBe('route_type');
     expect(byId.get('venetian-possessions')?.geometry).toBe('fill');
