@@ -65,6 +65,7 @@ npm run dev        # http://localhost:4321
 npm run build      # -> dist/ (portable static)
 npm run preview    # serve the build
 npm run check      # astro check (types)
+npm run geo:validate # verify published GIS assets and release metadata
 ```
 
 > If your global npm cache is sandboxed, use:
@@ -80,6 +81,10 @@ This scaffolds a native MDX essay + placeholder cover from `starter/`. Edit the
 frontmatter and body, then it appears automatically in the gallery, atlas
 timeline, and facets — no registration step. Full guide in
 [`starter/README.md`](starter/README.md).
+
+Historical GIS assets are provenance-tracked, integrity-checked and served at
+content-versioned URLs. See the [geo-layer publication guide](docs/geo-layers.md)
+for the release and Atlas integration contract.
 
 ## Roadmap
 

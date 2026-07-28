@@ -49,6 +49,9 @@ jobs:
       - name: Unit tests (Vitest)
         run: npm test
 
+      - name: Geo release manifest and asset QA
+        run: npm run geo:validate
+
       - name: Build (static output)
         run: npm run build
 
@@ -120,8 +123,9 @@ jobs:
           python-version: '3.12'
 
       - name: Install pyogrio + geometry dependencies
-        # pyogrio ships a manylinux wheel bundling GDAL, so the FlatGeobuf
-        # reader needs no system GDAL/PROJ (mirrors `make vmn-venv`).
+        # KAN-208: Shapely is an explicit runtime dependency of the route and
+        # coastline checks; keep this aligned with `make vmn-venv`.
+        # pyogrio ships a manylinux wheel bundling GDAL, so no system GDAL/PROJ.
         run: pip install pyogrio numpy shapely
 
       - name: Validate compiled FGB artifacts

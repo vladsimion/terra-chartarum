@@ -15,6 +15,7 @@ import { join } from 'node:path';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { getCorpusCore, corpusYearRange } from '../../lib/corpus';
 import { getGeoLayers } from '../../lib/geo';
+import { versionedGeoUrl } from '../../lib/geo-release';
 import { coveragePolygons } from '../../lib/coverage';
 import { getToponyms, toponymNames } from '../../lib/toponyms';
 import { getEssays, formatYear } from '../../lib/registry';
@@ -71,7 +72,7 @@ const payload = {
   })),
   layers: layerMeta.map((l) => ({
     id: l.id,
-    url: l.url,
+    url: versionedGeoUrl(l),
     format: l.format,
     geometry: l.geometry,
     color: l.color,
