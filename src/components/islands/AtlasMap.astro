@@ -156,22 +156,34 @@ const payload = {
           time-slider; layers awaiting a sourced dataset are marked pending.
         </p>
         {layerMeta.map((l) => (
-          <label
-            class:list={['am-layer', { 'is-pending': !l.available }]}
-            title={`${l.description} — ${l.source} (${l.license})`}
-          >
-            <input
-              type="checkbox"
-              data-layer={l.id}
-              checked={l.defaultOn && l.available}
-              disabled={!l.available}
-            />
-            <span>{l.title}</span>
-            <span class="am-layer-meta">
-              {l.format} · {formatYear(l.yearFrom)}–{formatYear(l.yearTo)}
-              {!l.available && ' · pending'}
-            </span>
-          </label>
+          <div class="am-layer-row">
+            <label
+              class:list={['am-layer', { 'is-pending': !l.available }]}
+              title={`${l.description} — ${l.source} (${l.license})`}
+            >
+              <input
+                type="checkbox"
+                data-layer={l.id}
+                checked={l.defaultOn && l.available}
+                disabled={!l.available}
+              />
+              <span>{l.title}</span>
+              <span class="am-layer-meta">
+                {l.format} · {formatYear(l.yearFrom)}–{formatYear(l.yearTo)}
+                {!l.available && ' · pending'}
+              </span>
+            </label>
+            {/* Reverse deep link (VMN-28): jump from a layer back to the essay it illustrates. */}
+            {(l.essaySlugs ?? []).length > 0 && (
+              <p class="am-layer-essays">
+                {(l.essaySlugs ?? [])
+                  .filter((slug) => essayMeta[slug])
+                  .map((slug) => (
+                    <a href={`/essays/${slug}/`}>Read: {essayMeta[slug]?.title} →</a>
+                  ))}
+              </p>
+            )}
+          </div>
         ))}
       </fieldset>
     )
@@ -342,6 +354,9 @@ const payload = {
     let portPopup: MLPopup | null = null;
     let portPopupPinned = false;
     let styleReady = false;
+    // Decoded venetian-ports features, retained so a ?port= deep link can fly to a
+    // port and open its popover without re-fetching the layer (VMN-28).
+    let portFeatures: GeoJSON.Feature[] = [];
     const activeLayers = new Set<string>();
     const layerId = (id: string) => `geolyr-${id}`;
     const sourceId = (id: string) => `geosrc-${id}`;
@@ -556,7 +571,10 @@ const payload = {
           }
           if (!map || map.getSource(src)) return;
           map.addSource(src, { type: 'geojson', data: { type: 'FeatureCollection', features } });
-          if (l.id === 'venetian-ports') setPortRegions(features);
+          if (l.id === 'venetian-ports') {
+            setPortRegions(features);
+            portFeatures = features;
+          }
         } catch {
           return; // asset missing or malformed — leave the layer pending
         }
@@ -698,6 +716,7 @@ const payload = {
           }
         }
         syncLayerTime(Number(yearIn.value));
+        applyDeepLink();
       });
     }
 
@@ -709,6 +728,71 @@ const payload = {
       }
     };
     topoCheck?.addEventListener('change', () => setTopoVisible(topoCheck.checked));
+
+    // Fly to a Venetian port and open its popover, choosing the phase valid at the
+    // current cutoff (VMN-28). Requires the ports layer to be loaded first.
+    const focusPort = (portId: string) => {
+      if (!map || !PopupCtor) return;
+      const matches = portFeatures.filter(
+        (feature) => String(feature.properties?.port_id) === portId,
+      );
+      if (!matches.length) return;
+      const cutoff = Number(yearIn.value);
+      const chosen =
+        matches.find(
+          (feature) =>
+            Number(feature.properties?.valid_from) <= cutoff &&
+            cutoff <= Number(feature.properties?.valid_to),
+        ) ?? matches[0];
+      if (chosen.geometry.type !== 'Point') return;
+      const coords = chosen.geometry.coordinates as [number, number];
+      const open = () => {
+        map!.flyTo({ center: coords, zoom: 5.5 });
+        portPopup?.remove();
+        portPopupPinned = true;
+        portPopup = new PopupCtor!({ offset: 10, closeButton: true, closeOnClick: true })
+          .setLngLat(coords)
+          .setHTML(portPopupHtml((chosen.properties ?? {}) as Record<string, unknown>))
+          .addTo(map!);
+        portPopup.on('close', () => {
+          portPopupPinned = false;
+        });
+      };
+      if (styleReady) open();
+      else map.once('load', open);
+    };
+
+    // Query-param deep links (VMN-28): /atlas?year=<n>&layers=<a,b>&port=<id>. A
+    // ?port implies the ports layer. Runs once, after the style is ready so layers
+    // and the port popover can attach.
+    const applyDeepLink = async () => {
+      const params = new URLSearchParams(location.search);
+      const yearParam = Number(params.get('year'));
+      if (Number.isFinite(yearParam) && params.get('year')) {
+        yearIn.value = String(
+          Math.max(Number(yearIn.min), Math.min(Number(yearIn.max), yearParam)),
+        );
+      }
+      const portId = params.get('port');
+      const wanted = new Set(
+        (params.get('layers') ?? '')
+          .split(',')
+          .map((id) => id.trim())
+          .filter(Boolean),
+      );
+      if (portId) wanted.add('venetian-ports');
+      for (const id of wanted) {
+        const cb = layerToggles.find((toggle) => toggle.dataset.layer === id);
+        if (cb && !cb.disabled && !cb.checked) {
+          cb.checked = true;
+          activeLayers.add(id);
+          const l = geoLayers.find((x) => x.id === id);
+          if (l) await addGeoLayer(l);
+        }
+      }
+      apply();
+      if (portId) focusPort(portId);
+    };
 
     // Deep-link support: /atlas/#<map-id> flies to and opens that pin (KAN-68);
     // /atlas/#topo-<id> reveals the concordance set and opens that place (KAN-75).
@@ -797,6 +881,9 @@ const payload = {
     yearIn.addEventListener('input', apply);
     regionSel.addEventListener('change', apply);
     apply();
+    // In the no-WebGL fallback there is no map 'load' event to drive the deep link,
+    // so honour at least the ?year= param here (layers/port need the GL map).
+    if (!map) applyDeepLink();
   }
 
   const boot = () =>
@@ -1025,6 +1112,25 @@ const payload = {
     font-family: var(--font-mono);
     font-size: 0.62rem;
     color: var(--ink-muted);
+  }
+  .am-layer-row {
+    display: grid;
+    gap: 0.15rem;
+  }
+  .am-layer-essays {
+    margin: 0 0 0 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem 0.9rem;
+  }
+  .am-layer-essays a {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.04em;
+    color: var(--gold);
+  }
+  .am-layer-essays a:hover {
+    text-decoration: underline;
   }
 
   .am-list {

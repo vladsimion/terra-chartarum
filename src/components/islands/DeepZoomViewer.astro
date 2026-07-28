@@ -10,19 +10,24 @@
  * catalogue pages ship zero extra bytes.
  *
  * `tileSource` is either a DeepZoom .dzi (scripts/build-map-tiles.mjs output) or
- * an IIIF info.json; OpenSeadragon auto-detects which from the string.
+ * an IIIF info.json; OpenSeadragon auto-detects which from the string. For an
+ * untiled single image (e.g. an external high-resolution scan with no tile
+ * pyramid), pass `image` instead: OpenSeadragon opens it as a plain-image source
+ * and still gives full pan/zoom, just without progressive tiling.
  */
 interface Props {
-  tileSource: string;
+  tileSource?: string;
+  /** Untiled single-image source URL — pan/zoom without a tile pyramid. */
+  image?: string;
   src: string;
   alt: string;
   credit?: string;
   license?: string;
 }
-const { tileSource, src, alt, credit, license } = Astro.props;
+const { tileSource, image, src, alt, credit, license } = Astro.props;
 ---
 
-<figure class="dzv" data-dzv data-tilesource={tileSource}>
+<figure class="dzv" data-dzv data-tilesource={tileSource} data-image={image}>
   <div class="dzv-stage">
     <img class="dzv-img" src={src} alt={alt} loading="lazy" decoding="async" />
     <div class="dzv-viewer" data-dzv-viewer aria-label={`High-resolution view of ${alt}`} hidden>
@@ -51,10 +56,11 @@ const { tileSource, src, alt, credit, license } = Astro.props;
     root.dataset.dzvReady = 'true';
 
     const tileSource = root.dataset.tilesource;
+    const image = root.dataset.image;
     const viewerEl = root.querySelector<HTMLElement>('[data-dzv-viewer]');
     const img = root.querySelector<HTMLImageElement>('.dzv-img');
     const openBtn = root.querySelector<HTMLButtonElement>('[data-dzv-open]');
-    if (!tileSource || !viewerEl || !img || !openBtn) return;
+    if ((!tileSource && !image) || !viewerEl || !img || !openBtn) return;
 
     let viewer: OpenSeadragonNS.Viewer | null = null;
     let launching = false;
@@ -67,9 +73,11 @@ const { tileSource, src, alt, credit, license } = Astro.props;
       try {
         const { default: OpenSeadragon } = await import('openseadragon');
         viewerEl!.hidden = false;
+        // An untiled `image` opens as a plain-image source (full pan/zoom, no
+        // pyramid); otherwise OpenSeadragon auto-detects .dzi vs IIIF from the URL.
         viewer = OpenSeadragon({
           element: viewerEl!,
-          tileSources: tileSource!,
+          tileSources: image ? { type: 'image', url: image } : tileSource!,
           prefixUrl: '',
           showNavigator: true,
           navigatorPosition: 'BOTTOM_RIGHT',

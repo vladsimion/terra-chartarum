@@ -1,0 +1,289 @@
+---
+/**
+ * ContractionSequence (VMN-27 / KAN-171)
+ *
+ * A scrubbable sequence of the stato da màr's rise and contraction, rendered
+ * directly from the published possessions layer (public/geo/venetian-possessions.fgb
+ * via src/lib/vmn.ts). Every phased extent is projected to an SVG path at BUILD
+ * time and tagged with its valid_from/valid_to; a zero-dependency client scrubber
+ * steps through the frame years, showing the phases valid at each — the same
+ * inclusive temporal reveal the atlas uses. No geometry is hand-drawn or
+ * duplicated: this is the compiled layer, re-projected.
+ *
+ * A muted Natural Earth land backdrop (public/geo/ne_110m_land.geojson) gives the
+ * eastern-Mediterranean geography its shape; only rings overlapping the frame are
+ * kept so the payload stays small.
+ */
+import type { FeatureCollection, MultiPolygon } from 'geojson';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { getPossessionPhases, OPEN_ENDED } from '../../lib/vmn';
+
+interface Props {
+  /** Frame years to step through; each shows the phases valid at that year. */
+  years?: number[];
+  /** Optional per-year captions keyed by year; else a data-driven list is used. */
+  captions?: Record<number, string>;
+  caption?: string;
+}
+
+const {
+  years = [1204, 1261, 1386, 1409, 1453, 1489, 1571, 1669, 1718, 1797],
+  captions = {},
+  caption,
+} = Astro.props;
+
+const phases = await getPossessionPhases();
+
+// ---- Projection frame -------------------------------------------------------
+// Union bbox of every possession, padded, so the viewport is stable across
+// frames. Venice (12.34E, 45.44N) is folded in as a fixed northern anchor.
+let minLon = 12.3;
+let maxLon = 12.4;
+let minLat = 45.4;
+let maxLat = 45.5;
+const eat = (lon: number, lat: number) => {
+  if (lon < minLon) minLon = lon;
+  if (lon > maxLon) maxLon = lon;
+  if (lat < minLat) minLat = lat;
+  if (lat > maxLat) maxLat = lat;
+};
+for (const phase of phases) {
+  for (const polygon of phase.geometry.coordinates) {
+    for (const ring of polygon) {
+      for (const [lon, lat] of ring) eat(lon, lat);
+    }
+  }
+}
+// Pad ~8% on each side.
+const padLon = (maxLon - minLon) * 0.08;
+const padLat = (maxLat - minLat) * 0.08;
+minLon -= padLon;
+maxLon += padLon;
+minLat -= padLat;
+maxLat += padLat;
+
+const midLat = (minLat + maxLat) / 2;
+const kx = Math.cos((midLat * Math.PI) / 180); // longitude compression at mid-latitude
+const projW = (maxLon - minLon) * kx;
+const projH = maxLat - minLat;
+const VW = 1000;
+const scale = VW / projW;
+const VH = Math.round(projH * scale);
+
+const project = (lon: number, lat: number): [number, number] => [
+  Math.round((lon - minLon) * kx * scale * 10) / 10,
+  Math.round((maxLat - lat) * scale * 10) / 10,
+];
+
+const ringPath = (ring: number[][]): string =>
+  ring.map(([lon, lat], i) => `${i === 0 ? 'M' : 'L'}${project(lon, lat).join(' ')}`).join(' ') +
+  'Z';
+const multiPath = (geometry: MultiPolygon): string =>
+  geometry.coordinates.flatMap((polygon) => polygon.map(ringPath)).join(' ');
+
+// ---- Land backdrop ----------------------------------------------------------
+const landRaw = await readFile(
+  join(process.cwd(), 'public', 'geo', 'ne_110m_land.geojson'),
+  'utf-8',
+);
+const land = JSON.parse(landRaw) as FeatureCollection;
+const overlapsFrame = (ring: number[][]): boolean =>
+  ring.some(([lon, lat]) => lon >= minLon && lon <= maxLon && lat >= minLat && lat <= maxLat);
+const landPaths: string[] = [];
+for (const feature of land.features) {
+  const geometry = feature.geometry;
+  const polygons =
+    geometry.type === 'Polygon'
+      ? [geometry.coordinates]
+      : geometry.type === 'MultiPolygon'
+        ? geometry.coordinates
+        : [];
+  for (const polygon of polygons) {
+    if (polygon.some(overlapsFrame)) landPaths.push(polygon.map(ringPath).join(' '));
+  }
+}
+
+// ---- Frames -----------------------------------------------------------------
+// A phase with the open-ended sentinel stays visible at every later year.
+const activeAt = (year: number) =>
+  phases.filter((phase) => phase.validFrom <= year && year <= phase.validTo);
+const frameCaption = (year: number): string => {
+  if (captions[year]) return captions[year];
+  const names = [...new Set(activeAt(year).map((phase) => phase.name))];
+  return names.length ? names.join(' · ') : 'No held territory';
+};
+const frames = years.map((year) => ({ year, caption: frameCaption(year) }));
+const yearsAttr = years.join(',');
+const statusClass = (status: string) => `cs-${status.replaceAll('_', '-')}`;
+---
+
+<figure class="contraction" data-contraction data-years={yearsAttr} data-open-ended={OPEN_ENDED}>
+  <svg
+    class="cs-map"
+    viewBox={`0 0 ${VW} ${VH}`}
+    role="img"
+    aria-label="Territorial extent of the Venetian stato da màr over time"
+    preserveAspectRatio="xMidYMid meet"
+  >
+    <g class="cs-land">
+      {landPaths.map((d) => <path d={d} />)}
+    </g>
+    <g class="cs-possessions">
+      {
+        phases.map((phase) => (
+          <path
+            d={multiPath(phase.geometry)}
+            class={statusClass(phase.status)}
+            data-from={phase.validFrom}
+            data-to={phase.validTo}
+          >
+            <title>
+              {phase.name} · {phase.validFrom}–
+              {phase.validTo === OPEN_ENDED ? 'present' : phase.validTo}
+            </title>
+          </path>
+        ))
+      }
+    </g>
+  </svg>
+
+  <div class="cs-controls">
+    <input
+      class="cs-scrub"
+      type="range"
+      min="0"
+      max={years.length - 1}
+      value="0"
+      step="1"
+      aria-label="Year"
+      list="cs-ticks"
+    />
+    <datalist id="cs-ticks">
+      {years.map((_, i) => <option value={i} />)}
+    </datalist>
+    <div class="cs-readout">
+      <output class="cs-year">{years[0]}</output>
+      <span class="cs-caption">{frames[0].caption}</span>
+    </div>
+  </div>
+
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<script>
+  function initContraction(root: HTMLElement) {
+    if (root.dataset.contractionReady) return;
+    root.dataset.contractionReady = '1';
+
+    const years = (root.dataset.years ?? '').split(',').map(Number).filter(Boolean);
+    const scrub = root.querySelector<HTMLInputElement>('.cs-scrub');
+    const yearOut = root.querySelector<HTMLOutputElement>('.cs-year');
+    const captionEl = root.querySelector<HTMLElement>('.cs-caption');
+    const paths = Array.from(root.querySelectorAll<SVGPathElement>('.cs-possessions path'));
+    if (!scrub || !yearOut || !captionEl) return;
+
+    // Recompute the caption client-side from the phases active at the frame year,
+    // reading each path's <title> (name · span) — the same data-driven list the
+    // server rendered for the first frame.
+    const render = (index: number) => {
+      const year = years[index];
+      yearOut.textContent = String(year);
+      const active: string[] = [];
+      for (const path of paths) {
+        const from = Number(path.dataset.from);
+        const to = Number(path.dataset.to);
+        const on = from <= year && year <= to;
+        path.classList.toggle('cs-on', on);
+        if (on) {
+          const name = path.querySelector('title')?.textContent?.split(' · ')[0]?.trim();
+          if (name && !active.includes(name)) active.push(name);
+        }
+      }
+      captionEl.textContent = active.length ? active.join(' · ') : 'No held territory';
+    };
+
+    scrub.addEventListener('input', () => render(Number(scrub.value)));
+    render(0);
+  }
+
+  const boot = () =>
+    document
+      .querySelectorAll<HTMLElement>('[data-contraction]')
+      .forEach((el) => initContraction(el));
+  boot();
+  document.addEventListener('astro:page-load', boot);
+</script>
+
+<style>
+  .contraction {
+    margin: 2.5rem 0;
+    display: grid;
+    gap: 0.9rem;
+  }
+  .cs-map {
+    width: 100%;
+    height: auto;
+    display: block;
+    background: var(--canvas);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+  .cs-land path {
+    fill: color-mix(in srgb, var(--ink) 8%, transparent);
+    stroke: var(--line);
+    stroke-width: 0.6;
+  }
+  /* Possessions are hidden until the scrubber marks the ones valid at the frame. */
+  .cs-possessions path {
+    fill: transparent;
+    stroke: transparent;
+    stroke-width: 0.8;
+    transition:
+      fill 0.35s ease,
+      stroke 0.35s ease;
+  }
+  .cs-possessions path.cs-on {
+    stroke: color-mix(in srgb, var(--gold) 70%, var(--ink));
+  }
+  .cs-possessions path.cs-direct-rule.cs-on {
+    fill: color-mix(in srgb, var(--gold) 45%, transparent);
+  }
+  .cs-possessions path.cs-protectorate.cs-on {
+    fill: color-mix(in srgb, var(--gold) 26%, transparent);
+  }
+  .cs-possessions path.cs-condominium.cs-on {
+    fill: color-mix(in srgb, #6db3c2 30%, transparent);
+  }
+  .cs-possessions path.cs-contested.cs-on {
+    fill: color-mix(in srgb, #9c5b52 32%, transparent);
+  }
+  .cs-controls {
+    display: grid;
+    gap: 0.5rem;
+  }
+  .cs-scrub {
+    width: 100%;
+    accent-color: var(--gold);
+  }
+  .cs-readout {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+  .cs-year {
+    font-family: var(--font-mono);
+    font-size: var(--step-1);
+    color: var(--gold);
+    letter-spacing: 0.04em;
+  }
+  .cs-caption {
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+  }
+  .contraction figcaption {
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+    font-style: italic;
+  }
+</style>
