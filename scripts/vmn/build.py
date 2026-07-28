@@ -18,6 +18,7 @@ index automatically. Run inside the project venv:
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 import struct
 import sys
@@ -30,10 +31,14 @@ GEO_OUT = REPO / "public" / "geo"
 PORTS_CSV = DATA_DIR / "ports.csv"
 WAYPOINTS_CSV = DATA_DIR / "waypoints.csv"
 ROUTES_CSV = DATA_DIR / "routes.csv"
+ROUTE_PATHS_GEOJSON = DATA_DIR / "routes-paths.geojson"
 EVENTS_CSV = DATA_DIR / "events.csv"
 POSSESSIONS_GEOJSON = DATA_DIR / "possessions.geojson"
 SOURCES_CSV = DATA_DIR / "sources.csv"
-LAND_GEOJSON = REPO / "public" / "geo" / "ne_110m_land.geojson"
+BASE_DATA_DIR = DATA_DIR / "base"
+BASE_DATA_MANIFEST = BASE_DATA_DIR / "manifest.json"
+LAND_GEOJSON = BASE_DATA_DIR / "ne_10m_land.geojson"
+COASTLINE_GEOJSON = BASE_DATA_DIR / "ne_10m_coastline.geojson"
 PORTS_FGB = GEO_OUT / "venetian-ports.fgb"
 ROUTES_FGB = GEO_OUT / "venetian-routes.fgb"
 POSSESSIONS_FGB = GEO_OUT / "venetian-possessions.fgb"
@@ -79,6 +84,31 @@ def read_csv(path: Path) -> tuple[list[str], list[dict[str, str]]]:
     with path.open(newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         return list(reader.fieldnames or []), list(reader)
+
+
+def verify_base_data() -> list[str]:
+    """Lock the clipping base to the versioned Natural Earth manifest (VMN-4)."""
+    if not BASE_DATA_MANIFEST.exists():
+        return [f"missing base-data manifest: {BASE_DATA_MANIFEST.relative_to(REPO)}"]
+    with BASE_DATA_MANIFEST.open(encoding="utf-8") as f:
+        manifest = json.load(f)
+
+    errors: list[str] = []
+    files = manifest.get("files", {})
+    for path in (LAND_GEOJSON, COASTLINE_GEOJSON):
+        entry = files.get(path.name)
+        if not path.exists():
+            errors.append(f"missing pinned base data: {path.relative_to(REPO)}")
+            continue
+        if not entry or not entry.get("sha256"):
+            errors.append(f"missing checksum in base-data manifest: {path.name}")
+            continue
+        actual = hashlib.sha256(path.read_bytes()).hexdigest()
+        if actual != entry["sha256"]:
+            errors.append(
+                f"checksum mismatch for {path.name}: expected {entry['sha256']}, got {actual}"
+            )
+    return errors
 
 
 def iso_year(value: str, *, field: str, row: int, errors: list[str]) -> int | None:
@@ -304,7 +334,7 @@ def build_ports() -> int:
 def build_routes() -> int:
     import numpy as np
     from pyogrio.raw import write
-    from shapely.geometry import LineString
+    from shapely.geometry import shape
 
     _, port_rows = read_csv(PORTS_CSV)
     _, waypoint_rows = read_csv(WAYPOINTS_CSV)
@@ -321,6 +351,39 @@ def build_routes() -> int:
         )
 
     errors = validate_routes(header, rows, set(coords), source_keys)
+
+    with ROUTE_PATHS_GEOJSON.open(encoding="utf-8") as f:
+        path_data = json.load(f)
+    paths = {}
+    route_rows = {row["route_id"].strip(): row for row in rows}
+    for index, feature in enumerate(path_data.get("features", []), start=1):
+        properties = feature.get("properties") or {}
+        route_id_value = str(properties.get("route_id") or "").strip()
+        if not route_id_value:
+            errors.append(f"route path feature {index}: missing route_id")
+            continue
+        if route_id_value in paths:
+            errors.append(f"route path feature {index}: duplicate route_id '{route_id_value}'")
+            continue
+        if route_id_value not in route_rows:
+            errors.append(f"route path feature {index}: unknown route_id '{route_id_value}'")
+            continue
+        path_geometry = shape(feature.get("geometry"))
+        if path_geometry.geom_type != "LineString" or not path_geometry.is_valid:
+            errors.append(
+                f"route path feature {index}: '{route_id_value}' must be a valid LineString"
+            )
+            continue
+        expected_refs = route_rows[route_id_value]["waypoints"].strip()
+        if properties.get("waypoints") != expected_refs:
+            errors.append(
+                f"route path feature {index}: '{route_id_value}' waypoints do not match routes.csv"
+            )
+        paths[route_id_value] = path_geometry
+
+    missing_paths = sorted(set(route_rows) - set(paths))
+    if missing_paths:
+        errors.append(f"route paths missing route_id(s): {', '.join(missing_paths)}")
     if errors:
         print(f"VMN routes: {len(errors)} validation error(s):", file=sys.stderr)
         for error in errors:
@@ -331,8 +394,7 @@ def build_routes() -> int:
     route_id, name, route_type, waypoints, commodities = [], [], [], [], []
     valid_from, valid_to, provenance, notes = [], [], [], []
     for idx, r in enumerate(rows):
-        refs = r["waypoints"].strip().split("|")
-        geometry[idx] = LineString([coords[ref] for ref in refs]).wkb
+        geometry[idx] = paths[r["route_id"].strip()].wkb
         route_id.append(r["route_id"].strip())
         name.append(r["name"].strip())
         route_type.append(r["route_type"].strip())
@@ -486,13 +548,19 @@ def main() -> int:
     print("VMN pipeline")
     print(f"  data dir : {DATA_DIR}")
     required = [
-        PORTS_CSV, WAYPOINTS_CSV, ROUTES_CSV, EVENTS_CSV, POSSESSIONS_GEOJSON,
-        SOURCES_CSV, LAND_GEOJSON,
+        PORTS_CSV, WAYPOINTS_CSV, ROUTES_CSV, ROUTE_PATHS_GEOJSON, EVENTS_CSV,
+        POSSESSIONS_GEOJSON, SOURCES_CSV, BASE_DATA_MANIFEST, LAND_GEOJSON,
+        COASTLINE_GEOJSON,
     ]
     missing = [path for path in required if not path.exists()]
     if missing:
         for path in missing:
             print(f"  missing  : {path}", file=sys.stderr)
+        return 1
+    base_errors = verify_base_data()
+    if base_errors:
+        for error in base_errors:
+            print(f"  base data: {error}", file=sys.stderr)
         return 1
     for builder in (build_ports, build_routes, build_possessions):
         if builder() != 0:

@@ -119,10 +119,10 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install pyogrio + numpy
+      - name: Install pyogrio + geometry dependencies
         # pyogrio ships a manylinux wheel bundling GDAL, so the FlatGeobuf
         # reader needs no system GDAL/PROJ (mirrors `make vmn-venv`).
-        run: pip install pyogrio numpy
+        run: pip install pyogrio numpy shapely
 
       - name: Validate compiled FGB artifacts
         run: python scripts/vmn/validate.py

@@ -64,6 +64,23 @@ const entries = getFullBibliography().map((b) => ({
       }
     </ol>
     <p id="empty" class="empty" hidden>No sources match that filter.</p>
+
+    <aside class="dataset-docs" aria-labelledby="vmn-docs-title">
+      <h2 id="vmn-docs-title">Venetian Maritime Network dataset</h2>
+      <p>
+        Feature-level citations resolve through the published VMN{' '}
+        <a href="https://github.com/vladsimion/terra-chartarum/blob/main/docs/vmn/source-log.md">
+          source log
+        </a>
+        . Field meanings, controlled vocabularies and temporal conventions are recorded in the{' '}
+        <a
+          href="https://github.com/vladsimion/terra-chartarum/blob/main/docs/vmn/data-dictionary.md"
+        >
+          data dictionary
+        </a>
+        .
+      </p>
+    </aside>
   </section>
 </PortalLayout>
 
@@ -170,5 +187,21 @@ const entries = getFullBibliography().map((b) => ({
     color: var(--ink-muted);
     font-style: italic;
     padding: 2rem 0;
+  }
+  .dataset-docs {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+  .dataset-docs h2 {
+    margin: 0 0 0.5rem;
+    font-size: var(--step-1);
+  }
+  .dataset-docs p {
+    margin: 0;
+    color: var(--ink-muted);
+  }
+  .dataset-docs a {
+    color: var(--gold);
   }
 </style>

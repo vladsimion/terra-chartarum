@@ -66,6 +66,10 @@ import DeepZoomViewer from '../../components/islands/DeepZoomViewer.astro';
 import PortProfilePopover from '../../components/islands/PortProfilePopover.astro';
 import ContractionSequence from '../../components/islands/ContractionSequence.astro';
 import Section from '../../components/Section.astro';
+import { getVmnAtlasLink } from '../../lib/vmn-atlas-links';
+
+export const rottaAtlasHref = getVmnAtlasLink('rotta_spine')?.href ?? '/atlas';
+export const contractionAtlasHref = getVmnAtlasLink('contraction_1500')?.href ?? '/atlas';
 
 <p class="essay-kicker">
   Venezia · una repubblica di armatori — <strong>la rotta</strong> · Sicilia · un regno posseduto —{' '}
@@ -186,7 +190,8 @@ Morea, and out across the Levant. Each call was a node with a name, a season, an
 governor; the water between them was the subject. Walk the spine below, north to south
 and west to east, and every card opens the same gazetteer the atlas map renders — the
 route made legible one harbour at a time.
-[See the whole spine lit on the atlas](/atlas?layers=venetian-ports,venetian-routes&year=1450).
+
+<a href={rottaAtlasHref}>See the whole spine lit on the atlas.</a>
 
 The head of the system is the lagoon itself — the only node the Republic drew as a
 portrait rather than a waypoint, because from here the sea is not crossed but _begun_.
@@ -401,7 +406,8 @@ Set this against the harbour spine in §2 and the two readings converge: the net
 only ever as long as the fortresses that anchored it. When Modon and Coron fell in 1500,
 when Negroponte fell in 1470, when Candia was finally lost in 1669, the _rotta_ did not
 merely shorten on the map — it lost the nodes that made it computable at all.
-[Open the possessions and ports together on the atlas](/atlas?layers=venetian-possessions,venetian-ports&year=1500).
+
+<a href={contractionAtlasHref}>Open the possessions and ports together on the atlas.</a>
 
 </Section>
 

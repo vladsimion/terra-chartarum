@@ -1,0 +1,15 @@
+beat_id,target_type,target_id,year,layer_ids,display_mode
+rotta_spine,route,muda_romania,1450,venetian-ports|venetian-routes,highlight
+port_venice,port,venice,1450,venetian-ports|venetian-routes,popup
+port_zara,port,zara,1450,venetian-ports|venetian-routes,popup
+port_ragusa,port,ragusa,1450,venetian-ports|venetian-routes,popup
+port_corfu,port,corfu,1450,venetian-ports|venetian-routes,popup
+port_modon,port,modon,1450,venetian-ports|venetian-routes,popup
+port_coron,port,coron,1450,venetian-ports|venetian-routes,popup
+port_candia,port,candia,1450,venetian-ports|venetian-routes,popup
+port_negroponte,port,negroponte,1450,venetian-ports|venetian-routes,popup
+port_malvasia,port,malvasia,1470,venetian-ports|venetian-routes,popup
+port_chios,port,chios,1450,venetian-ports|venetian-routes,popup
+port_constantinople_quarter,port,constantinople_quarter,1450,venetian-ports|venetian-routes,popup
+port_alexandria,port,alexandria,1450,venetian-ports|venetian-routes,popup
+contraction_1500,possession,morea,1500,venetian-possessions|venetian-ports,highlight

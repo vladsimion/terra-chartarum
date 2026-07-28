@@ -18,6 +18,7 @@ import { getGeoLayers } from '../../lib/geo';
 import { coveragePolygons } from '../../lib/coverage';
 import { getToponyms, toponymNames } from '../../lib/toponyms';
 import { getEssays, formatYear } from '../../lib/registry';
+import { getVmnAtlasLinks } from '../../lib/vmn-atlas-links';
 
 // Only the atlas-critical projection ships to the client — rich catalogue
 // metadata (provenance, bibliography, imagery) stays server-side (KAN-66).
@@ -80,8 +81,19 @@ const payload = {
     perFeatureTime: l.perFeatureTime,
     graduate: l.graduate ?? null,
     dash: l.dash ?? null,
+    essayLinks: l.essayLinks.map((link) => ({
+      href: `/essays/${link.slug}/#${link.sectionId}`,
+      label: link.label,
+    })),
     available: l.available,
     defaultOn: l.defaultOn && l.available,
+  })),
+  vmnLinks: getVmnAtlasLinks().map(({ beatId, targetType, targetId, year, layerIds }) => ({
+    beatId,
+    targetType,
+    targetId,
+    year,
+    layerIds,
   })),
   coverage,
   toponyms,
@@ -174,13 +186,33 @@ const payload = {
               </span>
             </label>
             {/* Reverse deep link (VMN-28): jump from a layer back to the essay it illustrates. */}
-            {(l.essaySlugs ?? []).length > 0 && (
+            {l.essayLinks.length > 0 ? (
               <p class="am-layer-essays">
-                {(l.essaySlugs ?? [])
-                  .filter((slug) => essayMeta[slug])
-                  .map((slug) => (
-                    <a href={`/essays/${slug}/`}>Read: {essayMeta[slug]?.title} →</a>
-                  ))}
+                {l.essayLinks.map((link) => (
+                  <a href={`/essays/${link.slug}/#${link.sectionId}`}>
+                    Read passage: {link.label} →
+                  </a>
+                ))}
+              </p>
+            ) : (
+              (l.essaySlugs ?? []).length > 0 && (
+                <p class="am-layer-essays">
+                  {(l.essaySlugs ?? [])
+                    .filter((slug) => essayMeta[slug])
+                    .map((slug) => (
+                      <a href={`/essays/${slug}/`}>Read: {essayMeta[slug]?.title} →</a>
+                    ))}
+                </p>
+              )
+            )}
+            {l.documentationLinks.length > 0 && (
+              <p class="am-layer-docs">
+                {l.documentationLinks.map((doc, index) => (
+                  <>
+                    {index > 0 && <span aria-hidden="true"> · </span>}
+                    <a href={doc.href}>{doc.label}</a>
+                  </>
+                ))}
               </p>
             )}
           </div>
@@ -227,6 +259,11 @@ const payload = {
     type GraduateHint,
     type DashHint,
   } from '../../lib/geo-style';
+  import {
+    parseVmnAtlasState,
+    resolveVmnBeatState,
+    type VmnBeatState,
+  } from '../../lib/vmn-atlas-state';
 
   // Register the pmtiles:// protocol at most once across page-load re-inits.
   let protocolRegistered = false;
@@ -256,6 +293,7 @@ const payload = {
     perFeatureTime: boolean;
     graduate: GraduateHint | null;
     dash: DashHint | null;
+    essayLinks: { href: string; label: string }[];
     available: boolean;
     defaultOn: boolean;
   };
@@ -289,13 +327,17 @@ const payload = {
     const parsed = JSON.parse(dataEl.textContent || '{}') as {
       corpus: Pt[];
       layers?: LayerMeta[];
+      vmnLinks?: VmnBeatState[];
       coverage?: Coverage[];
       toponyms?: Toponym[];
     };
     const corpus = parsed.corpus ?? [];
     const geoLayers = parsed.layers ?? [];
+    const vmnLinks = parsed.vmnLinks ?? [];
     const coverage = parsed.coverage ?? [];
     const toponyms = parsed.toponyms ?? [];
+    const reverseEssayLink = (layer: string) =>
+      geoLayers.find((candidate) => candidate.id === layer)?.essayLinks[0];
 
     // Ray-casting point-in-ring, inlined (no turf.js) for the footprint filter.
     const pointInRing = (x: number, y: number, ring: [number, number][]) => {
@@ -352,11 +394,16 @@ const payload = {
     let map: MLMap | null = null;
     let PopupCtor: (typeof import('maplibre-gl'))['Popup'] | null = null;
     let portPopup: MLPopup | null = null;
+    let targetPopup: MLPopup | null = null;
     let portPopupPinned = false;
     let styleReady = false;
-    // Decoded venetian-ports features, retained so a ?port= deep link can fly to a
-    // port and open its popover without re-fetching the layer (VMN-28).
+    // Decoded VMN features, retained so ID-only deep links can focus their target
+    // without re-fetching or duplicating geometry in the essay (KAN-190/191).
     let portFeatures: GeoJSON.Feature[] = [];
+    let routeFeatures: GeoJSON.Feature[] = [];
+    let possessionFeatures: GeoJSON.Feature[] = [];
+    let focusedRouteId = '';
+    let focusedTerritoryId = '';
     const activeLayers = new Set<string>();
     const layerId = (id: string) => `geolyr-${id}`;
     const sourceId = (id: string) => `geosrc-${id}`;
@@ -396,6 +443,7 @@ const payload = {
       const notes = properties.notes
         ? `<span class="am-pop-blurb">${escapeHtml(properties.notes)}</span>`
         : '';
+      const essayLink = reverseEssayLink('venetian-ports');
       return (
         `<div class="am-pop am-port-pop">` +
         `<span class="am-pop-year">${dates}</span>` +
@@ -406,6 +454,11 @@ const payload = {
         )}</span>` +
         `<span class="am-pop-meta">Polity: ${escapeHtml(readable(properties.polity_id))}</span>` +
         notes +
+        (essayLink
+          ? `<a class="am-pop-link" href="${escapeHtml(essayLink.href)}">${escapeHtml(
+              essayLink.label,
+            )} →</a>`
+          : '') +
         `</div>`
       );
     };
@@ -575,6 +628,8 @@ const payload = {
             setPortRegions(features);
             portFeatures = features;
           }
+          if (l.id === 'venetian-routes') routeFeatures = features;
+          if (l.id === 'venetian-possessions') possessionFeatures = features;
         } catch {
           return; // asset missing or malformed — leave the layer pending
         }
@@ -598,12 +653,44 @@ const payload = {
       if (!map) return;
       layerCleanups.get(id)?.();
       layerCleanups.delete(id);
+      const focusId = `${layerId(id)}--focus`;
+      if (map.getLayer(focusId)) map.removeLayer(focusId);
       for (const p of parts.get(id) ?? []) {
         if (map.getLayer(p.id)) map.removeLayer(p.id);
       }
       if (map.getSource(sourceId(id))) map.removeSource(sourceId(id));
       parts.delete(id);
-      if (id === 'venetian-ports') regionSel.disabled = true;
+      if (id === 'venetian-ports') {
+        portFeatures = [];
+        regionSel.disabled = true;
+      }
+      if (id === 'venetian-routes') {
+        routeFeatures = [];
+        focusedRouteId = '';
+        targetPopup?.remove();
+      }
+      if (id === 'venetian-possessions') {
+        possessionFeatures = [];
+        focusedTerritoryId = '';
+        targetPopup?.remove();
+      }
+    };
+
+    const syncTargetHighlights = (cutoff: number) => {
+      if (!map) return;
+      const targets: [string, string, string][] = [
+        ['venetian-routes', 'route_id', focusedRouteId],
+        ['venetian-possessions', 'territory', focusedTerritoryId],
+      ];
+      for (const [id, field, value] of targets) {
+        const focusId = `${layerId(id)}--focus`;
+        if (value && map.getLayer(focusId)) {
+          map.setFilter(
+            focusId,
+            withTemporal(['==', ['get', field], value], cutoff) as FilterSpecification,
+          );
+        }
+      }
     };
 
     // Timeline sync. The layer envelope (registry yearFrom/yearTo) still gates
@@ -626,6 +713,7 @@ const payload = {
           }
         }
       }
+      syncTargetHighlights(cutoff);
     };
 
     if (mapEl.isConnected) {
@@ -745,6 +833,7 @@ const payload = {
             cutoff <= Number(feature.properties?.valid_to),
         ) ?? matches[0];
       if (chosen.geometry.type !== 'Point') return;
+      root.dataset.atlasTarget = `port:${portId}`;
       const coords = chosen.geometry.coordinates as [number, number];
       const open = () => {
         map!.flyTo({ center: coords, zoom: 5.5 });
@@ -762,25 +851,108 @@ const payload = {
       else map.once('load', open);
     };
 
-    // Query-param deep links (VMN-28): /atlas?year=<n>&layers=<a,b>&port=<id>. A
-    // ?port implies the ports layer. Runs once, after the style is ready so layers
-    // and the port popover can attach.
+    const featureBounds = (
+      feature: GeoJSON.Feature,
+    ): [[number, number], [number, number]] | null => {
+      let minLongitude = Infinity;
+      let minLatitude = Infinity;
+      let maxLongitude = -Infinity;
+      let maxLatitude = -Infinity;
+      const collect = (value: unknown) => {
+        if (
+          Array.isArray(value) &&
+          value.length >= 2 &&
+          typeof value[0] === 'number' &&
+          typeof value[1] === 'number'
+        ) {
+          minLongitude = Math.min(minLongitude, value[0]);
+          minLatitude = Math.min(minLatitude, value[1]);
+          maxLongitude = Math.max(maxLongitude, value[0]);
+          maxLatitude = Math.max(maxLatitude, value[1]);
+          return;
+        }
+        if (Array.isArray(value)) value.forEach(collect);
+      };
+      collect(
+        feature.geometry && 'coordinates' in feature.geometry ? feature.geometry.coordinates : [],
+      );
+      if (!Number.isFinite(minLongitude)) return null;
+      return [
+        [minLongitude, minLatitude],
+        [maxLongitude, maxLatitude],
+      ];
+    };
+
+    const focusLineTarget = (
+      sourceLayerId: 'venetian-routes' | 'venetian-possessions',
+      features: GeoJSON.Feature[],
+      field: 'route_id' | 'territory',
+      value: string,
+    ) => {
+      if (!map) return;
+      const feature = features.find((candidate) => String(candidate.properties?.[field]) === value);
+      if (!feature) return;
+      root.dataset.atlasTarget =
+        sourceLayerId === 'venetian-routes' ? `route:${value}` : `territory:${value}`;
+      if (sourceLayerId === 'venetian-routes') focusedRouteId = value;
+      else focusedTerritoryId = value;
+      const focusId = `${layerId(sourceLayerId)}--focus`;
+      const filter = withTemporal(
+        ['==', ['get', field], value],
+        Number(yearIn.value),
+      ) as FilterSpecification;
+      if (!map.getLayer(focusId)) {
+        map.addLayer({
+          id: focusId,
+          type: 'line',
+          source: sourceId(sourceLayerId),
+          filter,
+          paint: {
+            'line-color': '#f4d06f',
+            'line-width': sourceLayerId === 'venetian-routes' ? 4 : 2.5,
+            'line-opacity': 1,
+          },
+        });
+      } else {
+        map.setFilter(focusId, filter);
+      }
+      const bounds = featureBounds(feature);
+      if (bounds) {
+        map.fitBounds(bounds, { padding: 72, maxZoom: 6 });
+        const essayLink = reverseEssayLink(sourceLayerId);
+        if (PopupCtor && essayLink) {
+          targetPopup?.remove();
+          targetPopup = new PopupCtor({ offset: 8, closeButton: true, closeOnClick: true })
+            .setLngLat([(bounds[0][0] + bounds[1][0]) / 2, (bounds[0][1] + bounds[1][1]) / 2])
+            .setHTML(
+              `<div class="am-pop am-target-pop">` +
+                `<span class="am-pop-year">${sourceLayerId === 'venetian-routes' ? 'Route' : 'Territory'}</span>` +
+                `<strong class="am-pop-title">${escapeHtml(readable(value))}</strong>` +
+                `<a class="am-pop-link" href="${escapeHtml(essayLink.href)}">${escapeHtml(
+                  essayLink.label,
+                )} →</a></div>`,
+            )
+            .addTo(map);
+        }
+      }
+    };
+
+    // Query-param deep links (KAN-189/190/191):
+    // /atlas?year=<n>&zoom=<n>&layers=<a,b>&beat=<id>&port|route|territory=<id>.
+    // Target params imply their required layer and are resolved only by dataset ID.
     const applyDeepLink = async () => {
-      const params = new URLSearchParams(location.search);
-      const yearParam = Number(params.get('year'));
-      if (Number.isFinite(yearParam) && params.get('year')) {
+      const state = resolveVmnBeatState(parseVmnAtlasState(location.search), vmnLinks);
+      delete root.dataset.atlasTarget;
+      targetPopup?.remove();
+      if (state.year !== undefined) {
         yearIn.value = String(
-          Math.max(Number(yearIn.min), Math.min(Number(yearIn.max), yearParam)),
+          Math.max(Number(yearIn.min), Math.min(Number(yearIn.max), state.year)),
         );
       }
-      const portId = params.get('port');
-      const wanted = new Set(
-        (params.get('layers') ?? '')
-          .split(',')
-          .map((id) => id.trim())
-          .filter(Boolean),
-      );
-      if (portId) wanted.add('venetian-ports');
+      const wanted = new Set(state.layers ?? []);
+      if (state.port) wanted.add('venetian-ports');
+      if (state.route) wanted.add('venetian-routes');
+      if (state.territory) wanted.add('venetian-possessions');
       for (const id of wanted) {
         const cb = layerToggles.find((toggle) => toggle.dataset.layer === id);
         if (cb && !cb.disabled && !cb.checked) {
@@ -791,7 +963,16 @@ const payload = {
         }
       }
       apply();
-      if (portId) focusPort(portId);
+      if (state.zoom !== undefined && map) {
+        map.setZoom(Math.max(0, Math.min(18, state.zoom)));
+      }
+      if (state.port) focusPort(state.port);
+      if (state.route) {
+        focusLineTarget('venetian-routes', routeFeatures, 'route_id', state.route);
+      }
+      if (state.territory) {
+        focusLineTarget('venetian-possessions', possessionFeatures, 'territory', state.territory);
+      }
     };
 
     // Deep-link support: /atlas/#<map-id> flies to and opens that pin (KAN-68);
@@ -1122,6 +1303,18 @@ const payload = {
     display: flex;
     flex-wrap: wrap;
     gap: 0.2rem 0.9rem;
+  }
+  .am-layer-docs {
+    margin: 0.15rem 0 0 1.55rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--ink-muted);
+  }
+  .am-layer-docs a {
+    color: var(--ink-muted);
+  }
+  .am-layer-docs a:hover {
+    color: var(--gold);
   }
   .am-layer-essays a {
     font-family: var(--font-mono);

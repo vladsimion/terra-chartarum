@@ -1,0 +1,19 @@
+{
+  "dataset": "Natural Earth Vector",
+  "release": "v5.1.1",
+  "commit": "9380cca83db5f9aef52d5e762765100745f84b27",
+  "license": "Public Domain",
+  "source": "https://github.com/nvkelso/natural-earth-vector",
+  "files": {
+    "ne_10m_land.geojson": {
+      "themeVersion": "5.1.1",
+      "sha256": "1ac90796408bc6ad6911d69448485d3c4dbf2190370080368a09976e1c9f7416",
+      "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/9380cca83db5f9aef52d5e762765100745f84b27/geojson/ne_10m_land.geojson"
+    },
+    "ne_10m_coastline.geojson": {
+      "themeVersion": "4.1.0",
+      "sha256": "6f75ae0e0de157b14946e2255eb1f5486d9a13819032e26d4610852d296788f6",
+      "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/9380cca83db5f9aef52d5e762765100745f84b27/geojson/ne_10m_coastline.geojson"
+    }
+  }
+}

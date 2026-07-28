@@ -18,7 +18,8 @@ vmn-venv:
 	$(VMN_PY) -m pip install --quiet --upgrade pip
 	$(VMN_PY) -m pip install --quiet pyogrio numpy shapely
 
-# VMN dataset build. Compiles data/vmn/*.csv -> public/geo/venetian-*.fgb
+# VMN dataset build. Verifies the pinned Natural Earth 1:10m land/coastline
+# checksums, then compiles data/vmn sources -> public/geo/venetian-*.fgb
 # (ports live, VMN-9; routes/possessions land with VMN-13 / VMN-19). Requires
 # the venv from `make vmn-venv`.
 vmn:

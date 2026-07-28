@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { geojson } from 'flatgeobuf';
@@ -13,6 +14,19 @@ async function readFgb(name: string): Promise<GeoJSON.Feature[]> {
 }
 
 describe('VMN compiled datasets', () => {
+  it('pins the Natural Earth 1:10m clipping base by release and checksum', async () => {
+    const base = join(process.cwd(), 'data', 'vmn', 'base');
+    const manifest = JSON.parse(await readFile(join(base, 'manifest.json'), 'utf8')) as {
+      release: string;
+      files: Record<string, { sha256: string }>;
+    };
+    expect(manifest.release).toBe('v5.1.1');
+    for (const name of ['ne_10m_land.geojson', 'ne_10m_coastline.geojson']) {
+      const bytes = await readFile(join(base, name));
+      expect(createHash('sha256').update(bytes).digest('hex')).toBe(manifest.files[name].sha256);
+    }
+  });
+
   it('locks the enriched port migration to 86 phases / 70 stable ports', async () => {
     const features = await readFgb('venetian-ports.fgb');
     const ids = new Set(features.map((feature) => String(feature.properties?.port_id)));

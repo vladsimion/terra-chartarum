@@ -27,8 +27,18 @@ export const GeoLayerSchema = z.object({
   source: z.string(),
   license: z.string(),
   attribution: z.string(),
+  documentationLinks: z.array(z.object({ label: z.string(), href: z.string().url() })).default([]),
   gazetteerIds: z.array(z.string()).optional(),
   essaySlugs: z.array(z.string()).optional(),
+  essayLinks: z
+    .array(
+      z.object({
+        slug: z.string(),
+        sectionId: z.string(),
+        label: z.string(),
+      }),
+    )
+    .default([]),
   defaultOn: z.boolean().default(false),
   // Render hints consumed by the MapLibre pipeline (ATLAS-EG3; extended VMN-20).
   // `circle` = graduated point symbols (ports); see `graduate` below.
@@ -201,7 +211,28 @@ const RAW: unknown[] = [
     source: "Terra Chartarum (compiled) — Lane 1973; O'Connell 2009",
     license: 'CC BY',
     attribution: "Terra Chartarum; after Lane and O'Connell",
+    documentationLinks: [
+      {
+        label: 'Data dictionary',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/vmn/data-dictionary.md',
+      },
+      {
+        label: 'Source log',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/vmn/source-log.md',
+      },
+      {
+        label: 'Deep-link guide',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/vmn/deep-links.md',
+      },
+    ],
     essaySlugs: ['venice-sicily'],
+    essayLinks: [
+      {
+        slug: 'venice-sicily',
+        sectionId: 'rotta',
+        label: 'The route, harbour by harbour',
+      },
+    ],
     geometry: 'circle',
     color: '#e2a93f',
     perFeatureTime: true,
@@ -245,7 +276,28 @@ const RAW: unknown[] = [
     source: 'Terra Chartarum (compiled) — Lane 1973',
     license: 'CC BY',
     attribution: 'Terra Chartarum; after Lane',
+    documentationLinks: [
+      {
+        label: 'Data dictionary',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/vmn/data-dictionary.md',
+      },
+      {
+        label: 'Source log',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/vmn/source-log.md',
+      },
+      {
+        label: 'Deep-link guide',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/vmn/deep-links.md',
+      },
+    ],
     essaySlugs: ['venice-sicily'],
+    essayLinks: [
+      {
+        slug: 'venice-sicily',
+        sectionId: 'rotta',
+        label: 'The route, harbour by harbour',
+      },
+    ],
     geometry: 'line',
     color: '#6db3c2',
     perFeatureTime: true,
@@ -273,7 +325,28 @@ const RAW: unknown[] = [
     source: "Terra Chartarum (compiled) — Lane 1973; O'Connell 2009",
     license: 'CC BY',
     attribution: "Terra Chartarum; after Lane and O'Connell",
+    documentationLinks: [
+      {
+        label: 'Data dictionary',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/vmn/data-dictionary.md',
+      },
+      {
+        label: 'Source log',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/vmn/source-log.md',
+      },
+      {
+        label: 'Deep-link guide',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/vmn/deep-links.md',
+      },
+    ],
     essaySlugs: ['venice-sicily'],
+    essayLinks: [
+      {
+        slug: 'venice-sicily',
+        sectionId: 'contrazione',
+        label: 'The sea-state, drawn and undrawn',
+      },
+    ],
     geometry: 'fill',
     color: '#9c5b52',
     perFeatureTime: true,

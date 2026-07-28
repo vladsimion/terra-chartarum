@@ -10,13 +10,14 @@ Spec §8 check families:
   * Geometry      — valid, correct type per file, EPSG:4326, bbox within window
   * Time          — valid_from <= valid_to; phases non-overlapping where required
   * Referential   — routes' waypoints resolve to a port whose lifespan overlaps
-  * Coastline     — possessions subseteq Natural Earth land (+1 km buffer)
+  * Coastline     — possessions stay on land; route interiors stay at sea
   * Provenance    — every feature's source_keys resolve in sources.csv
 
 This validates the *derived* artifacts, complementing the CSV-level validation in
 build.py. Route references are checked against port lifespans and time-neutral
-waypoints. Possessions are checked against Natural Earth land with an approximate
-one-kilometre WGS84 tolerance.
+waypoints; their ordered anchors must occur on the path and the path must not
+cross 1:10m land outside short harbour-approach circles. Possessions are checked
+against Natural Earth land with an approximate one-kilometre WGS84 tolerance.
 
 Ports may carry temporally overlapping phases by design (decision D2: Venice is
 `metropole` + `capital` at once), so the non-overlap rule is scoped to layers
@@ -35,6 +36,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build import (  # noqa: E402
     LAND_GEOJSON,
     OPEN_ENDED,
+    PORTS_CSV,
     POSSESSION_STATUS_VOCAB,
     ROUTE_TYPE_VOCAB,
     SOURCES_CSV,
@@ -53,6 +55,11 @@ LON_MIN, LON_MAX = -10.0, 42.0
 LAT_MIN, LAT_MAX = 28.0, 54.0
 
 SLUG = re.compile(r"^[a-z0-9_]+$")
+
+# Natural Earth 1:10m does not resolve every lagoon mouth or narrow harbour
+# channel. Exempt only the final 0.05° (roughly 4–5 km in this region) around
+# declared route anchors; every other metre of each path must remain off land.
+ROUTE_ANCHOR_TOLERANCE = 0.05
 
 
 class Layer:
@@ -229,13 +236,33 @@ def check_provenance(layer: Layer, fields, source_keys: set[str], errors: list[s
                 errors.append(f"{layer.name} row {i}: source key '{k}' not in sources.csv")
 
 
-def check_route_references(fields, errors: list[str]) -> None:
+def check_route_references(fields, geometry, errors: list[str]) -> None:
+    import json
+
+    from shapely import from_wkb
+    from shapely.geometry import Point, shape
+    from shapely.ops import unary_union
+
     port_path = GEO_OUT / "venetian-ports.fgb"
     if not port_path.exists() or "waypoints" not in fields:
         return
     _, port_fields, _ = read_fgb(port_path)
+    _, port_rows = read_csv(PORTS_CSV)
     _, waypoint_rows = read_csv(WAYPOINTS_CSV)
     waypoint_ids = {row["waypoint_id"].strip() for row in waypoint_rows}
+    coordinates: dict[str, tuple[float, float]] = {}
+    for row in port_rows:
+        coordinates.setdefault(
+            row["port_id"].strip(), (float(row["lon"]), float(row["lat"]))
+        )
+    for row in waypoint_rows:
+        coordinates.setdefault(
+            row["waypoint_id"].strip(), (float(row["lon"]), float(row["lat"]))
+        )
+
+    with LAND_GEOJSON.open(encoding="utf-8") as f:
+        land_data = json.load(f)
+    land = unary_union([shape(feature["geometry"]) for feature in land_data["features"]])
 
     port_spans: dict[str, list[tuple[int, int]]] = {}
     for i, port_id in enumerate(port_fields["port_id"]):
@@ -244,9 +271,11 @@ def check_route_references(fields, errors: list[str]) -> None:
         )
 
     for i, raw in enumerate(fields["waypoints"]):
+        route_id = str(fields["route_id"][i])
         route_from = int(fields["valid_from"][i])
         route_to = int(fields["valid_to"][i])
-        for ref in str(raw).split("|"):
+        refs = str(raw).split("|")
+        for ref in refs:
             if ref in waypoint_ids:
                 continue
             spans = port_spans.get(ref)
@@ -258,6 +287,31 @@ def check_route_references(fields, errors: list[str]) -> None:
                     f"routes row {i}: port '{ref}' has no lifespan overlapping "
                     f"[{route_from},{route_to}]"
                 )
+
+        path = from_wkb(geometry[i])
+        anchors = []
+        positions = []
+        for ref in refs:
+            coordinate = coordinates.get(ref)
+            if coordinate is None:
+                continue
+            anchor = Point(coordinate)
+            anchors.append(anchor)
+            if path.distance(anchor) > 1e-8:
+                errors.append(f"route '{route_id}': path does not visit waypoint '{ref}'")
+            positions.append(path.project(anchor))
+        if positions != sorted(positions):
+            errors.append(f"route '{route_id}': path visits waypoints out of order")
+
+        approach_zones = unary_union(
+            [anchor.buffer(ROUTE_ANCHOR_TOLERANCE) for anchor in anchors]
+        )
+        crossing = path.difference(approach_zones).intersection(land)
+        if crossing.length > 1e-8:
+            errors.append(
+                f"route '{route_id}': path crosses 1:10m land outside harbour "
+                f"approaches ({crossing.length:.6f}°)"
+            )
 
 
 def check_coastline(geometry, errors: list[str]) -> None:
@@ -289,7 +343,7 @@ def validate_layer(layer: Layer, source_keys: set[str], errors: list[str]) -> st
     check_time(layer, fields, errors)
     check_provenance(layer, fields, source_keys, errors)
     if layer.waypoint_field:
-        check_route_references(fields, errors)
+        check_route_references(fields, geometry, errors)
     if layer.coastline_clip:
         check_coastline(geometry, errors)
     return f"{info['features']} features checked"
