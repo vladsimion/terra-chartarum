@@ -11,6 +11,7 @@ test-results/
 node_modules/
 .npm-cache/
 .venv/
+__pycache__/
 
 # logs / env
 *.log
