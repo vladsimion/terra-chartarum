@@ -4,7 +4,7 @@
 # out-of-band data pipelines that are not part of the Astro build — currently the
 # Venetian Maritime Network (VMN) GIS dataset compilation (KAN-145).
 
-.PHONY: vmn vmn-venv
+.PHONY: vmn vmn-venv vmn-validate
 
 VMN_VENV := .venv
 VMN_PY := $(VMN_VENV)/bin/python
@@ -23,3 +23,10 @@ vmn-venv:
 # the venv from `make vmn-venv`.
 vmn:
 	$(VMN_PY) scripts/vmn/build.py
+
+# VMN QA gate (VMN-21). Validates the compiled public/geo/venetian-*.fgb
+# artifacts against the dataset spec §8 (schema/geometry/time/provenance; the
+# referential & coastline families activate as routes/possessions land). Run
+# after `make vmn`; also runs in CI. Requires the venv from `make vmn-venv`.
+vmn-validate:
+	$(VMN_PY) scripts/vmn/validate.py
