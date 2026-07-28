@@ -31,6 +31,7 @@ metaScores:
 import RadarChart from '../../components/islands/RadarChart.astro';
 import AdaptiveTimeline from '../../components/islands/AdaptiveTimeline.astro';
 import CompareSlider from '../../components/islands/CompareSlider.astro';
+import Scrollytelling from '../../components/islands/Scrollytelling.astro';
 
 Write your essay in Markdown/MDX here. Import only the islands you need (unused
 imports can be deleted). See `src/content/essays/starter-example.mdx` for a fully

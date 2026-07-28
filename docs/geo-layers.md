@@ -28,6 +28,20 @@ binary cannot be confused with the previous release.
 4. Run `npm run geo:manifest`, `npm run geo:validate` and the relevant format
    validator.
 
+For FlatGeobuf, the shared converter reprojects to EPSG:4326, drops extra
+coordinate dimensions, repairs invalid geometry and writes a spatial index:
+
+```sh
+npm run build-geo-layer -- \
+  --input data/source.gpkg \
+  --out source.fgb \
+  --simplify 0.0001
+```
+
+Simplification is opt-in because its defensible tolerance depends on the source
+scale. PMTiles inputs must first be normalised GeoJSON; Tippecanoe then applies
+its zoom-aware density controls.
+
 `AtlasMap.astro` sends the content-addressed manifest URL to MapLibre. GeoJSON
 loads directly. FlatGeobuf is decoded in a worker-friendly dynamic import and
 PMTiles registers its protocol lazily. A missing file disables its toggle; a

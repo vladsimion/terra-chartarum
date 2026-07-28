@@ -98,3 +98,30 @@ test.describe('flow: gallery search', () => {
     await expect(firstCard).toBeVisible();
   });
 });
+
+test.describe('flow: atlas context and timeline sync', () => {
+  test('essay and time selections stay aligned across map controls and timeline', async ({
+    page,
+  }) => {
+    await page.goto('/atlas/');
+
+    const essay = page.getByRole('combobox', { name: 'Filter by essay' });
+    const first = essay.locator('option').nth(1);
+    const slug = (await first.getAttribute('value')) ?? '';
+    const title = (await first.textContent()) ?? '';
+    expect(slug).toBeTruthy();
+    await essay.selectOption(slug);
+
+    await expect(page.locator('.am-context-title')).toHaveText(title);
+    await expect(page).toHaveURL(new RegExp(`[?&]essay=${slug}(?:&|$)`));
+    await expect(page.locator(`[data-atlas-track][data-essay="${slug}"]`)).toHaveClass(
+      /is-selected/,
+    );
+
+    const year = page.getByRole('slider', { name: 'Reveal through' });
+    const minimum = (await year.getAttribute('min')) ?? '-6000';
+    await year.fill(minimum);
+    await expect(page).toHaveURL(new RegExp(`[?&]year=${minimum}(?:&|$)`));
+    await expect(page.locator('[data-atlas-track][data-revealed="false"]').first()).toBeAttached();
+  });
+});

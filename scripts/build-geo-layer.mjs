@@ -14,7 +14,7 @@
  *   npm run build-geo-layer -- --input data/roman-provinces.geojson \
  *     --out roman-empire-117.pmtiles --layer provinces
  *   npm run build-geo-layer -- --input data/venetian-network.gpkg \
- *     --out venetian-network-1400.fgb
+ *     --out venetian-network-1400.fgb --simplify 0.0001
  *
  * Anything after a lone `--` is passed straight through to the underlying tool
  * (e.g. `-- -- -z8 --drop-densest-as-needed` for tippecanoe tuning).
@@ -61,6 +61,8 @@ function die(msg) {
 const input = arg('input');
 const out = arg('out');
 const layer = arg('layer');
+const targetCrs = arg('target-crs') ?? 'EPSG:4326';
+const simplify = arg('simplify');
 
 if (!input || !out) {
   die(
@@ -68,6 +70,9 @@ if (!input || !out) {
   );
 }
 if (!(await exists(input))) die(`Input not found: ${input}`);
+if (simplify !== undefined && (!Number.isFinite(Number(simplify)) || Number(simplify) <= 0)) {
+  die('--simplify must be a positive tolerance in target-CRS units.');
+}
 
 const ext = extname(out).toLowerCase();
 const outPath = join(geoDir, out);
@@ -99,7 +104,24 @@ if (ext === '.pmtiles') {
     die('ogr2ogr not found on PATH. Install GDAL: brew install gdal');
   }
   if (layer) console.warn('Note: --layer is ignored for FlatGeobuf output.');
-  args = ['-f', 'FlatGeobuf', outPath, input, ...passthrough()];
+  // Normalise every published vector to a two-dimensional, valid EPSG:4326
+  // geometry with an on-disk spatial index. Optional simplification is explicit
+  // because a defensible tolerance depends on source scale.
+  args = [
+    '-f',
+    'FlatGeobuf',
+    '-t_srs',
+    targetCrs,
+    '-dim',
+    'XY',
+    '-makevalid',
+    '-lco',
+    'SPATIAL_INDEX=YES',
+    ...(simplify ? ['-simplify', simplify] : []),
+    ...passthrough(),
+    outPath,
+    input,
+  ];
   cmd = 'ogr2ogr';
 } else {
   die(`Unsupported output extension "${ext}". Use .pmtiles (tippecanoe) or .fgb (ogr2ogr).`);
