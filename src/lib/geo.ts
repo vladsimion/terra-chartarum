@@ -216,6 +216,7 @@ const RAW: unknown[] = [
         subject: 5,
         independent: 5,
         leased: 4,
+        feudatory: 4,
         contested: 4,
         lost: 3,
       },
