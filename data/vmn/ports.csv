@@ -16,3 +16,22 @@ corfu,Corfu,Corfu,39.624,19.922,subject,1386-01-01,1797-05-12,venice,,
 lepanto,Lepanto,Nafpaktos,38.399,21.827,subject,1407-01-01,1499-08-29,venice,,Lost to the Ottomans 1499
 cephalonia,Cephalonia,Kefalonia,38.176,20.489,subject,1500-12-24,1797-05-12,venice,,
 zante,Zante,Zakynthos,37.787,20.899,subject,1485-01-01,1797-05-12,venice,,
+candia,Candia,Heraklion,35.339,25.133,capital,1211-01-01,1669-09-27,venice,LANE1973,Capital of the Regno di Candia; fell after the 21-year siege
+canea,Canea,Chania,35.516,24.019,subject,1252-01-01,1645-08-22,venice,,Refounded by Venice 1252; fell to the Ottomans 1645
+rettimo,Rettimo,Rethymno,35.366,24.482,subject,1211-01-01,1646-11-13,venice,,
+sitia,Sitia,Sitia,35.208,26.104,subject,1211-01-01,1651-01-01,venice,,Razed and abandoned 1651
+kissamos,Cissamo,Kissamos,35.495,23.655,subject,1211-01-01,1645-08-22,venice,,Western Crete
+ierapetra,Hierapetra,Ierapetra,35.011,25.737,subject,1211-01-01,1647-01-01,venice,,Southern Crete
+modon,Modon,Methoni,36.818,21.703,subject,1207-01-01,1500-08-09,venice,LANE1973,One of the "two eyes of the Republic"; fell to the Ottomans 1500
+coron,Coron,Koroni,36.795,21.955,subject,1207-01-01,1500-08-15,venice,LANE1973,Sister fortress to Modon; surrendered days after it
+nauplia,Nauplia,Nafplio,37.567,22.807,subject,1389-01-01,1540-01-01,venice,,Acquired 1388/89; ceded to the Ottomans 1540
+argos,Argos,Argos,37.633,22.719,subject,1394-01-01,1463-01-01,venice,,Acquired 1394; lost to the Ottomans 1463
+negroponte,Negroponte,Chalkida,38.464,23.594,subject,1390-01-01,1470-07-12,venice,LANE1973,Venetian bailo from 1209; full sovereignty consolidated late 14th c.; fell 1470
+tino,Tino,Tinos,37.539,25.162,subject,1390-01-01,1715-06-05,venice,,Direct Venetian rule from 1390; longest-held Aegean island
+naxos,Naxos,Naxos,37.107,25.376,feudatory,1207-01-01,1566-01-01,duchy_archipelago,,Seat of the Duchy of the Archipelago; Ottoman annexation 1566
+andros,Andros,Andros,37.834,24.935,feudatory,1207-01-01,1566-01-01,duchy_archipelago,,Duchy of the Archipelago
+santorini,Santorini,Thera,36.416,25.432,feudatory,1207-01-01,1566-01-01,duchy_archipelago,,Duchy of the Archipelago
+syros,Syra,Syros,37.445,24.943,feudatory,1207-01-01,1566-01-01,duchy_archipelago,,Duchy of the Archipelago
+paros,Paro,Paros,37.085,25.152,feudatory,1207-01-01,1566-01-01,duchy_archipelago,,Duchy of the Archipelago
+mykonos,Micono,Mykonos,37.445,25.329,feudatory,1207-01-01,1566-01-01,duchy_archipelago,,Held by the Ghisi under Archipelago suzerainty
+milos,Milo,Milos,36.746,24.427,feudatory,1207-01-01,1566-01-01,duchy_archipelago,,Duchy of the Archipelago

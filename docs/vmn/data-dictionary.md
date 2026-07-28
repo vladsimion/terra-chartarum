@@ -45,7 +45,7 @@ multiple) statuses.
 | `name_historic` | string | Period name (Ragusa, Modon)                                                                                           |
 | `name_modern`   | string | Modern name (Dubrovnik, Methoni)                                                                                     |
 | `lat`, `lon`    | float  | Harbour location, EPSG:4326. Harbour-accuracy pass in VMN-8.                                                          |
-| `status`        | enum   | Controlled vocab — `metropole` · `capital` · `subject` · `colony` · `protectorate` · `independent` · `leased` · `contested` · `lost` |
+| `status`        | enum   | Controlled vocab — `metropole` · `capital` · `subject` · `colony` · `protectorate` · `feudatory` · `independent` · `leased` · `contested` · `lost` |
 | `start_date`    | date   | ISO `YYYY-MM-DD`, required                                                                                            |
 | `end_date`      | date   | ISO `YYYY-MM-DD`; **empty = open-ended**                                                                              |
 | `polity_id`     | string | Holding power slug (`venice`, `ragusa`)                                                                               |
@@ -153,3 +153,13 @@ source, notes`. One row per possession phase; expands into
   §5.1 for FGB numeric-field compatibility (no nullable-int ambiguity across
   pyogrio/GDAL). In the authority tables an open range is an **empty `end_date`**;
   the `9999` sentinel appears only after the pipeline's ISO→integer projection (D4).
+
+- **D7 — Duchy of the Archipelago is a feudatory, not a Venetian colony (KAN-150).**
+  The Cyclades duchy was founded by Venetian nobles after 1204 and acknowledged
+  Venetian suzerainty in diplomatic/commercial matters, but was ruled by the Sanudo
+  then Crispo dynasties as a **separate feudal polity**, not administered like the
+  Stato da Màr. Its islands (Naxos, Andros, Santorini, Syros, Paros, Mykonos, Milos)
+  carry `polity_id = duchy_archipelago` and the new `status = feudatory`. Venice is
+  named as `polity_id` only where it exercised direct sovereignty — Crete, the Morea
+  fortresses (Modon, Coron, Nauplia, Argos), Negroponte, and Tino after 1390. This
+  adds `feudatory` to the controlled vocab (§5.2) and to the atlas graduation ramp.
