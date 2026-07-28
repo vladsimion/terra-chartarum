@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { circleRadiusExpression, temporalFilter, withTemporal, dashSubLayers } from './geo-style';
+import {
+  circleRadiusExpression,
+  temporalFilter,
+  withTemporal,
+  withRegion,
+  dashSubLayers,
+} from './geo-style';
 
 describe('circleRadiusExpression (VMN-20 graduated ports, B3)', () => {
   it('builds a match on the field with a trailing fallback', () => {
@@ -39,6 +45,20 @@ describe('withTemporal', () => {
 
   it('returns the bare temporal filter when there is no base filter', () => {
     expect(withTemporal(null, 1400)).toEqual(temporalFilter(1400));
+  });
+});
+
+describe('withRegion', () => {
+  it('combines the port region with the temporal filter', () => {
+    expect(withRegion(temporalFilter(1400), 'Dalmatia')).toEqual([
+      'all',
+      temporalFilter(1400),
+      ['==', ['get', 'region'], 'Dalmatia'],
+    ]);
+  });
+
+  it('leaves the existing filter unchanged when all regions are selected', () => {
+    expect(withRegion(temporalFilter(1400), '')).toEqual(temporalFilter(1400));
   });
 });
 

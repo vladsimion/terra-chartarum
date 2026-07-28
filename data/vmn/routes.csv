@@ -1,0 +1,8 @@
+route_id,name,route_type,waypoints,commodities,start_date,end_date,source_keys,notes
+muda_romania,Muda di Romania,muda,venice|zara|ragusa|modon|negroponte|constantinople_quarter|trebizond|tana,spices|silk|wax|fur,1332-01-01,1453-05-29,LANE1973,Schematic convoy spine through documented ports; not a claim of a single immutable track.
+muda_alexandria,Muda di Alessandria,muda,venice|ragusa|corfu|modon|candia|alexandria,spices|cotton|sugar,1300-01-01,1500-12-31,LANE1973,Schematic convoy spine through the Adriatic and Cretan staging system.
+muda_syria,Muda di Siria,muda,venice|corfu|modon|candia|famagusta|beirut,spices|silk|cotton|sugar,1300-01-01,1500-12-31,LANE1973,Schematic Beirut and Syrian-market branch.
+muda_cyprus,Muda di Cipro,muda,venice|modon|candia|famagusta,wine|sugar|cotton,1300-01-01,1500-12-31,LANE1973,Schematic Cyprus convoy branch.
+muda_dalmatia,Muda di Dalmazia,muda,venice|zara|sebenico|trau|spalato|ragusa|corfu,grain|wine|salt,1409-01-01,1500-12-31,LANE1973;OCONNELL2009,Schematic coastal service linking Venetian Dalmatia.
+private_adriatic,Adriatic round-ship trade,private,venice|pola|zara|pelagosa|ragusa|capo_d_otranto|corfu,grain|wine|salt,1200-01-01,1500-12-31,LANE1973,Representative private navigation corridor rather than a scheduled muda.
+private_aegean,Aegean round-ship trade,private,venice|modon|coron|negroponte|tino|naxos|candia,wine|cotton|wax,1207-01-01,1500-12-31,LANE1973,Representative private navigation corridor through Venetian and feudatory ports.

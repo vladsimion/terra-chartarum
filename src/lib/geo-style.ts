@@ -41,6 +41,13 @@ export function withTemporal(baseFilter: unknown | null, cutoff: number): unknow
   return baseFilter ? ['all', baseFilter, t] : t;
 }
 
+/** Add an optional exact-match region facet to an existing feature filter. */
+export function withRegion(baseFilter: unknown | null, region: string): unknown | null {
+  if (!region) return baseFilter;
+  const r = ['==', ['get', 'region'], region];
+  return baseFilter ? ['all', baseFilter, r] : r;
+}
+
 /**
  * One dashed sub-layer spec per `field` value. `line-dasharray` is not a
  * data-driven paint property in MapLibre, so a dashed-by-field line is split into

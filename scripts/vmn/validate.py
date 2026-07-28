@@ -14,10 +14,9 @@ Spec §8 check families:
   * Provenance    — every feature's source_keys resolve in sources.csv
 
 This validates the *derived* artifacts, complementing the CSV-level validation in
-build.py. Only layers whose ``.fgb`` is on disk are checked; routes/possessions
-land with VMN-13 / VMN-19, at which point this gate covers them automatically.
-The referential and coastline families need the routes/possessions data to test
-against, so they are implemented alongside those tickets (flagged PENDING here).
+build.py. Route references are checked against port lifespans and time-neutral
+waypoints. Possessions are checked against Natural Earth land with an approximate
+one-kilometre WGS84 tolerance.
 
 Ports may carry temporally overlapping phases by design (decision D2: Venice is
 `metropole` + `capital` at once), so the non-overlap rule is scoped to layers
@@ -33,7 +32,16 @@ from pathlib import Path
 # Reuse the build pipeline's single-source-of-truth constants so the gate can
 # never drift from what the compiler writes.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build import OPEN_ENDED, SOURCES_CSV, STATUS_VOCAB, read_csv  # noqa: E402
+from build import (  # noqa: E402
+    LAND_GEOJSON,
+    OPEN_ENDED,
+    POSSESSION_STATUS_VOCAB,
+    ROUTE_TYPE_VOCAB,
+    SOURCES_CSV,
+    STATUS_VOCAB,
+    WAYPOINTS_CSV,
+    read_csv,
+)
 
 REPO = Path(__file__).resolve().parents[2]
 GEO_OUT = REPO / "public" / "geo"
@@ -58,8 +66,9 @@ class Layer:
         required_fields: list[str],
         id_field: str,
         *,
-        status_field: str | None = None,
-        phases_disjoint: bool = False,
+        vocab_field: str | None = None,
+        vocab: frozenset[str] | None = None,
+        phases_disjoint_field: str | None = None,
         coastline_clip: bool = False,
         waypoint_field: str | None = None,
     ) -> None:
@@ -68,8 +77,9 @@ class Layer:
         self.geometry_type = geometry_type
         self.required_fields = required_fields
         self.id_field = id_field
-        self.status_field = status_field
-        self.phases_disjoint = phases_disjoint
+        self.vocab_field = vocab_field
+        self.vocab = vocab
+        self.phases_disjoint_field = phases_disjoint_field
         self.coastline_clip = coastline_clip
         self.waypoint_field = waypoint_field
 
@@ -79,9 +89,13 @@ LAYERS = [
         "ports",
         "venetian-ports.fgb",
         "Point",
-        ["port_id", "name", "status", "valid_from", "valid_to", "source_keys"],
+        [
+            "port_id", "name", "name_local", "region", "status", "valid_from",
+            "valid_to", "source_keys",
+        ],
         "port_id",
-        status_field="status",
+        vocab_field="status",
+        vocab=STATUS_VOCAB,
         # D2: a port may hold two statuses at once — phases are NOT disjoint.
     ),
     Layer(
@@ -90,16 +104,23 @@ LAYERS = [
         "LineString",
         ["route_id", "name", "route_type", "valid_from", "valid_to", "source_keys"],
         "route_id",
-        waypoint_field="waypoints",  # referential check lands with VMN-13
+        vocab_field="route_type",
+        vocab=ROUTE_TYPE_VOCAB,
+        waypoint_field="waypoints",
     ),
     Layer(
         "possessions",
         "venetian-possessions.fgb",
         "MultiPolygon",
-        ["possession_id", "name", "valid_from", "valid_to", "source_keys"],
+        [
+            "possession_id", "territory", "name", "status", "valid_from", "valid_to",
+            "source_keys",
+        ],
         "possession_id",
-        phases_disjoint=True,  # possessions can't overlap themselves in time
-        coastline_clip=True,  # coastline check lands with VMN-19
+        vocab_field="status",
+        vocab=POSSESSION_STATUS_VOCAB,
+        phases_disjoint_field="territory",
+        coastline_clip=True,
     ),
 ]
 
@@ -129,10 +150,13 @@ def check_schema(layer: Layer, info, fields, errors: list[str]) -> None:
             if not SLUG.match(s):
                 errors.append(f"{layer.name} row {i}: id '{s}' is not slug-shaped")
 
-    if layer.status_field and layer.status_field in fields:
-        for i, v in enumerate(fields[layer.status_field]):
-            if str(v) not in STATUS_VOCAB:
-                errors.append(f"{layer.name} row {i}: status '{v}' not in controlled vocab")
+    if layer.vocab_field and layer.vocab and layer.vocab_field in fields:
+        for i, value in enumerate(fields[layer.vocab_field]):
+            if str(value) not in layer.vocab:
+                errors.append(
+                    f"{layer.name} row {i}: {layer.vocab_field} '{value}' "
+                    "not in controlled vocab"
+                )
 
     # Uniqueness of (id, valid_from) — the derived form of the (id, start_date) key.
     if ids is not None and "valid_from" in fields:
@@ -178,8 +202,8 @@ def check_time(layer: Layer, fields, errors: list[str]) -> None:
         if int(vf[i]) > int(vt[i]):
             errors.append(f"{layer.name} row {i}: valid_from {vf[i]} > valid_to {vt[i]}")
 
-    if layer.phases_disjoint and layer.id_field in fields:
-        ids = fields[layer.id_field]
+    if layer.phases_disjoint_field and layer.phases_disjoint_field in fields:
+        ids = fields[layer.phases_disjoint_field]
         phases: dict[str, list[tuple[int, int]]] = {}
         for i in range(len(ids)):
             phases.setdefault(str(ids[i]), []).append((int(vf[i]), int(vt[i])))
@@ -205,6 +229,56 @@ def check_provenance(layer: Layer, fields, source_keys: set[str], errors: list[s
                 errors.append(f"{layer.name} row {i}: source key '{k}' not in sources.csv")
 
 
+def check_route_references(fields, errors: list[str]) -> None:
+    port_path = GEO_OUT / "venetian-ports.fgb"
+    if not port_path.exists() or "waypoints" not in fields:
+        return
+    _, port_fields, _ = read_fgb(port_path)
+    _, waypoint_rows = read_csv(WAYPOINTS_CSV)
+    waypoint_ids = {row["waypoint_id"].strip() for row in waypoint_rows}
+
+    port_spans: dict[str, list[tuple[int, int]]] = {}
+    for i, port_id in enumerate(port_fields["port_id"]):
+        port_spans.setdefault(str(port_id), []).append(
+            (int(port_fields["valid_from"][i]), int(port_fields["valid_to"][i]))
+        )
+
+    for i, raw in enumerate(fields["waypoints"]):
+        route_from = int(fields["valid_from"][i])
+        route_to = int(fields["valid_to"][i])
+        for ref in str(raw).split("|"):
+            if ref in waypoint_ids:
+                continue
+            spans = port_spans.get(ref)
+            if not spans:
+                errors.append(f"routes row {i}: waypoint '{ref}' does not resolve")
+                continue
+            if not any(port_from <= route_to and port_to >= route_from for port_from, port_to in spans):
+                errors.append(
+                    f"routes row {i}: port '{ref}' has no lifespan overlapping "
+                    f"[{route_from},{route_to}]"
+                )
+
+
+def check_coastline(geometry, errors: list[str]) -> None:
+    import json
+
+    from shapely import from_wkb
+    from shapely.geometry import shape
+    from shapely.ops import unary_union
+
+    with LAND_GEOJSON.open(encoding="utf-8") as f:
+        land_data = json.load(f)
+    land = unary_union([shape(feature["geometry"]) for feature in land_data["features"]])
+    tolerance = land.buffer(0.01)  # approximately 1 km at Mediterranean latitudes
+    for i, raw in enumerate(geometry):
+        feature = from_wkb(raw)
+        if not feature.is_valid:
+            errors.append(f"possessions row {i}: invalid geometry")
+        if not feature.difference(tolerance).is_empty:
+            errors.append(f"possessions row {i}: geometry extends beyond coastline tolerance")
+
+
 def validate_layer(layer: Layer, source_keys: set[str], errors: list[str]) -> str:
     if not layer.path.exists():
         return "pending (asset not built)"
@@ -214,14 +288,11 @@ def validate_layer(layer: Layer, source_keys: set[str], errors: list[str]) -> st
     check_geometry(layer, info, geometry, errors)
     check_time(layer, fields, errors)
     check_provenance(layer, fields, source_keys, errors)
-
-    pending = []
     if layer.waypoint_field:
-        pending.append("referential (VMN-13)")
+        check_route_references(fields, errors)
     if layer.coastline_clip:
-        pending.append("coastline (VMN-19)")
-    suffix = f"; deferred: {', '.join(pending)}" if pending else ""
-    return f"{info['features']} features checked{suffix}"
+        check_coastline(geometry, errors)
+    return f"{info['features']} features checked"
 
 
 def main() -> int:

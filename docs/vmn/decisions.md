@@ -5,6 +5,12 @@ atlas rendering pipeline as they exist in this repo, to freeze spec §5 field
 names and flag blockers for D4/D5 (KAN-146). Everything below is grounded in
 current code, not the dataset spec's assumptions.
 
+**Implementation status (July 2026):** the original B1–B3 integration blockers
+are resolved. The atlas lazily decodes FlatGeobuf, filters phased features by the
+time slider, renders graduated ports/dashed routes/coastline-clipped possessions,
+and offers port detail and region filtering. The findings below retain the spike's
+rationale while describing the implemented outcome.
+
 ## What was inspected
 
 | Artifact             | Location                                                         |
@@ -36,42 +42,26 @@ current code, not the dataset spec's assumptions.
    VMN's Point / MultiPolygon / LineString-per-file rule (§5.1) is consistent
    with, and stricter than, what the pipeline needs.
 
-5. **Registry schema = the field contract the renderer actually enforces**
+5. **Registry schema = the layer contract the renderer enforces**
    (`GeoLayerSchema`): `id, title, description, kind, format, url, crs, yearFrom,
 yearTo, source, license, attribution, gazetteerIds?, essaySlugs?, defaultOn,
-geometry ∈ {line,fill}, color, sourceLayer?, room?, secondaryRooms,
-roomAnchor`. Each of the three VMN layers must parse as one of these.
+geometry ∈ {line,fill,circle}, color, sourceLayer?, room?, secondaryRooms,
+roomAnchor`, plus optional per-feature styling hints. Each VMN layer parses
+   through this contract.
 
-## Blocking issues (must resolve before D4/D5 flip)
+## Resolved integration issues
 
-- **B1 — No FlatGeobuf loader in the map pipeline.** `addGeoLayer` handles only
-  `geojson` (→ `addSource type:'geojson'`) and `pmtiles` (→ vector source via the
-  `pmtiles://` protocol); **`flatgeobuf` hits the `else { return; }` branch**
-  (commented "flatgeobuf/cog need a dedicated loader"). VMN's `.fgb` outputs will
-  **not render** until either (a) an FGB→GeoJSON/source loader is added to
-  `AtlasMap`, or (b) VMN also emits GeoJSON siblings for the browser while FGB
-  stays the canonical/QA artifact. **Recommendation:** keep FGB as the canonical
-  pipeline output (QA, provenance, determinism) and add a lightweight FGB client
-  loader, tracked as its own ticket feeding VMN-20/D5. This is the single hardest
-  dependency for going live.
+- **B1 — FlatGeobuf loading: resolved.** `addGeoLayer` lazily imports the
+  FlatGeobuf decoder only when an FGB layer is toggled, streams its features into
+  a MapLibre GeoJSON source, and leaves FGB as the canonical QA artifact.
 
-- **B2 — Time filtering is whole-layer, not per-feature.** `syncLayerTime` only
-  toggles a layer's `visibility` when the registry `yearFrom <= cutoff`; it never
-  reads a feature's dates and never hides after `yearTo`. VMN's phased model
-  (§5.1 — a place's changing status = multiple features with disjoint
-  `valid_from`/`valid_to`) and the E3 contraction sequence (1204→1797 revealing
-  possessions individually) **require a per-feature MapLibre filter** on
-  `valid_from`/`valid_to` vs the slider cutoff. Freeze the field names now
-  (`valid_from`, `valid_to`, integer years, open-ended sentinel `9999`); the
-  per-feature filter is a renderer enhancement for D5.
+- **B2 — Per-feature time filtering: resolved.** `syncLayerTime` composes the
+  layer's base style filter with inclusive `valid_from`/`valid_to` expressions.
+  The port region facet composes with the same temporal filter.
 
-- **B3 — `geometry` enum has no point/graduated option; no data-driven styling.**
-  `GeoLayerSchema.geometry` is `{line, fill}` only, and `addGeoLayer` applies a
-  single flat paint (fill: `l.color` @ 0.22 opacity; line: `l.color`, width 1.2).
-  VMN needs **ports as graduated Point symbols by `type`** and **routes dashed by
-  `route_type`** (§9). That needs (a) a `circle`/point geometry branch, and (b)
-  data-driven paint expressions keyed on feature fields. Extend the schema +
-  renderer alongside B1.
+- **B3 — Data-driven styling: resolved.** The schema accepts `circle`; ports
+  graduate by `status`, routes split into solid/dashed sublayers by `route_type`,
+  and possessions render as phased fills.
 
 ## Field-name freeze recommendation
 
@@ -79,10 +69,11 @@ Because the current renderer consumes **no** per-feature fields, §5 per-feature
 names are unconstrained by existing code and should be frozen to the spec + FGB /
 pyogrio conventions, ready for the B2/B3 renderer work:
 
-- **Common:** `id` (slug — `prt-`, `pos-`, `rte-`), `name`, `valid_from`,
-  `valid_to` (inclusive int years; open-ended = `9999`), `source` (→
+- **Common:** stable layer-specific id, `name`, `valid_from`,
+  `valid_to` (inclusive int years; open-ended = `9999`), `source_keys` (→
   `data/vmn/sources.csv` key), `notes`.
-- **Ports (Point):** add `type` (drives graduated symbol), name triple fields.
+- **Ports (Point):** `port_id`, `status` (drives graduated symbol), historic /
+  modern / local names, and `region`.
 - **Possessions (MultiPolygon):** phase captured by disjoint `valid_from`/`valid_to`
   features, **not** a mutable status field (§5.1).
 - **Routes (LineString):** add `route_type` (drives dash style), `waypoints`,
@@ -95,7 +86,7 @@ Registry-level (per `GeoLayerSchema`): three entries replacing the single pendin
 
 ## Verdict
 
-§5 field names can be frozen as above (VMN-3). Going **live** on the map is gated
-on **B1** (FGB loader) with **B2**/**B3** required for the phased time behaviour
-and ports/routes styling — none of which block data compilation, but all of which
-block the D5 registry flip. Flag B1–B3 into the VMN-20/D5 tickets.
+The three geometry-specific FGB layers are live and validated. The compilation
+gate now covers schema, geometry, temporal ranges, provenance, route references,
+and coastline containment; the atlas consumes the same frozen fields for
+interaction, filtering, and styling.

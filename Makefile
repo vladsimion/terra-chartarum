@@ -16,7 +16,7 @@ VMN_PY := $(VMN_VENV)/bin/python
 vmn-venv:
 	python3 -m venv $(VMN_VENV)
 	$(VMN_PY) -m pip install --quiet --upgrade pip
-	$(VMN_PY) -m pip install --quiet pyogrio numpy
+	$(VMN_PY) -m pip install --quiet pyogrio numpy shapely
 
 # VMN dataset build. Compiles data/vmn/*.csv -> public/geo/venetian-*.fgb
 # (ports live, VMN-9; routes/possessions land with VMN-13 / VMN-19). Requires

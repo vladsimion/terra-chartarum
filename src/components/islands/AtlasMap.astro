@@ -102,6 +102,9 @@ const payload = {
       <option value="">All essays</option>
       {essays.map((e) => <option value={e.slug}>{e.data.title}</option>)}
     </select>
+    <select class="am-region" aria-label="Filter Venetian ports by region" disabled>
+      <option value="">All port regions</option>
+    </select>
     {
       coverage.length > 0 && (
         <select class="am-covers" aria-label="Show only maps depicted within another map's extent">
@@ -201,10 +204,13 @@ const payload = {
     Marker as MLMarker,
     AddLayerObject,
     FilterSpecification,
+    MapLayerMouseEvent,
+    Popup as MLPopup,
   } from 'maplibre-gl';
   import {
     circleRadiusExpression,
     withTemporal,
+    withRegion,
     dashSubLayers,
     type GraduateHint,
     type DashHint,
@@ -294,6 +300,7 @@ const payload = {
 
     const search = root.querySelector<HTMLInputElement>('.am-search')!;
     const essaySel = root.querySelector<HTMLSelectElement>('.am-essay')!;
+    const regionSel = root.querySelector<HTMLSelectElement>('.am-region')!;
     const coversSel = root.querySelector<HTMLSelectElement>('.am-covers');
     const yearIn = root.querySelector<HTMLInputElement>('.am-year')!;
     const yearOut = root.querySelector<HTMLOutputElement>('.am-year-out')!;
@@ -331,6 +338,9 @@ const payload = {
     const topoMarkers: { topo: Toponym; marker: MLMarker }[] = [];
 
     let map: MLMap | null = null;
+    let PopupCtor: (typeof import('maplibre-gl'))['Popup'] | null = null;
+    let portPopup: MLPopup | null = null;
+    let portPopupPinned = false;
     let styleReady = false;
     const activeLayers = new Set<string>();
     const layerId = (id: string) => `geolyr-${id}`;
@@ -341,6 +351,107 @@ const payload = {
     // each sub-layer's own base filter so the temporal reveal can AND onto it.
     type Part = { id: string; baseFilter: unknown | null };
     const parts = new Map<string, Part[]>();
+    const layerCleanups = new Map<string, () => void>();
+
+    const escapeHtml = (value: unknown) => {
+      const replacements: Record<string, string> = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+      };
+      return String(value ?? '').replace(/[&<>"']/g, (char) => replacements[char]);
+    };
+
+    const readable = (value: unknown) => String(value ?? '').replaceAll('_', ' ');
+
+    const portPopupHtml = (properties: Record<string, unknown>) => {
+      const historic = escapeHtml(properties.name);
+      const modern = escapeHtml(properties.name_modern);
+      const local = escapeHtml(properties.name_local);
+      const alternateNames = [local, modern]
+        .filter(
+          (name, index, values) => name && name !== historic && values.indexOf(name) === index,
+        )
+        .join(' · ');
+      const dates = `${escapeHtml(properties.valid_from)}–${
+        Number(properties.valid_to) === 9999 ? 'present' : escapeHtml(properties.valid_to)
+      }`;
+      const notes = properties.notes
+        ? `<span class="am-pop-blurb">${escapeHtml(properties.notes)}</span>`
+        : '';
+      return (
+        `<div class="am-pop am-port-pop">` +
+        `<span class="am-pop-year">${dates}</span>` +
+        `<strong class="am-pop-title">${historic}</strong>` +
+        (alternateNames ? `<span class="am-pop-names">${alternateNames}</span>` : '') +
+        `<span class="am-pop-meta">${escapeHtml(properties.region)} · ${escapeHtml(
+          readable(properties.status),
+        )}</span>` +
+        `<span class="am-pop-meta">Polity: ${escapeHtml(readable(properties.polity_id))}</span>` +
+        notes +
+        `</div>`
+      );
+    };
+
+    const setPortRegions = (features: GeoJSON.Feature[]) => {
+      const selected = regionSel.value;
+      const regions = [
+        ...new Set(
+          features
+            .map((feature) => String(feature.properties?.region ?? '').trim())
+            .filter(Boolean),
+        ),
+      ].sort((a, b) => a.localeCompare(b));
+      regionSel.replaceChildren(new Option('All port regions', ''));
+      for (const region of regions) regionSel.add(new Option(region, region));
+      regionSel.value = regions.includes(selected) ? selected : '';
+      regionSel.disabled = false;
+    };
+
+    const bindPortInteractions = (renderLayerId: string) => {
+      if (!map || !PopupCtor) return;
+      const show = (event: MapLayerMouseEvent, pinned: boolean) => {
+        const feature = event.features?.[0];
+        if (!feature || feature.geometry.type !== 'Point' || !map || !PopupCtor) return;
+        portPopup?.remove();
+        portPopupPinned = pinned;
+        portPopup = new PopupCtor({
+          offset: 10,
+          closeButton: pinned,
+          closeOnClick: pinned,
+        })
+          .setLngLat(feature.geometry.coordinates as [number, number])
+          .setHTML(portPopupHtml((feature.properties ?? {}) as Record<string, unknown>))
+          .addTo(map);
+        portPopup.on('close', () => {
+          portPopupPinned = false;
+        });
+      };
+      const enter = (event: MapLayerMouseEvent) => {
+        if (!map) return;
+        map.getCanvas().style.cursor = 'pointer';
+        if (!portPopupPinned) show(event, false);
+      };
+      const leave = () => {
+        if (!map) return;
+        map.getCanvas().style.cursor = '';
+        if (!portPopupPinned) portPopup?.remove();
+      };
+      const click = (event: MapLayerMouseEvent) => show(event, true);
+      map.on('mouseenter', renderLayerId, enter);
+      map.on('mouseleave', renderLayerId, leave);
+      map.on('click', renderLayerId, click);
+      layerCleanups.set('venetian-ports', () => {
+        map?.off('mouseenter', renderLayerId, enter);
+        map?.off('mouseleave', renderLayerId, leave);
+        map?.off('click', renderLayerId, click);
+        portPopup?.remove();
+        portPopup = null;
+        portPopupPinned = false;
+      });
+    };
 
     // Build the MapLibre render layer(s) for a GeoLayer from its geometry + hints.
     const buildParts = (
@@ -445,6 +556,7 @@ const payload = {
           }
           if (!map || map.getSource(src)) return;
           map.addSource(src, { type: 'geojson', data: { type: 'FeatureCollection', features } });
+          if (l.id === 'venetian-ports') setPortRegions(features);
         } catch {
           return; // asset missing or malformed — leave the layer pending
         }
@@ -458,16 +570,22 @@ const payload = {
         l.id,
         built.map((b) => ({ id: b.layer.id as string, baseFilter: b.baseFilter })),
       );
+      if (l.id === 'venetian-ports' && built[0]) {
+        bindPortInteractions(built[0].layer.id as string);
+      }
       syncLayerTime(Number(yearIn.value));
     };
 
     const removeGeoLayer = (id: string) => {
       if (!map) return;
+      layerCleanups.get(id)?.();
+      layerCleanups.delete(id);
       for (const p of parts.get(id) ?? []) {
         if (map.getLayer(p.id)) map.removeLayer(p.id);
       }
       if (map.getSource(sourceId(id))) map.removeSource(sourceId(id));
       parts.delete(id);
+      if (id === 'venetian-ports') regionSel.disabled = true;
     };
 
     // Timeline sync. The layer envelope (registry yearFrom/yearTo) still gates
@@ -483,7 +601,10 @@ const payload = {
           if (!map.getLayer(p.id)) continue;
           map.setLayoutProperty(p.id, 'visibility', envelopeVisible ? 'visible' : 'none');
           if (l.perFeatureTime) {
-            map.setFilter(p.id, withTemporal(p.baseFilter, cutoff) as FilterSpecification);
+            const temporal = withTemporal(p.baseFilter, cutoff);
+            const filtered =
+              l.id === 'venetian-ports' ? withRegion(temporal, regionSel.value) : temporal;
+            map.setFilter(p.id, filtered as FilterSpecification);
           }
         }
       }
@@ -495,6 +616,7 @@ const payload = {
         import('maplibre-gl'),
         import('pmtiles'),
       ]);
+      PopupCtor = maplibregl.Popup;
       if (!protocolRegistered) {
         maplibregl.addProtocol('pmtiles', new Protocol().tile);
         protocolRegistered = true;
@@ -673,6 +795,7 @@ const payload = {
     essaySel.addEventListener('change', apply);
     coversSel?.addEventListener('change', apply);
     yearIn.addEventListener('input', apply);
+    regionSel.addEventListener('change', apply);
     apply();
   }
 
@@ -700,6 +823,7 @@ const payload = {
   }
   .am-search,
   .am-essay,
+  .am-region,
   .am-covers {
     background: var(--panel);
     border: 1px solid var(--line);
@@ -842,6 +966,14 @@ const payload = {
   :global(.am-pop-blurb) {
     font-size: var(--step--1);
     color: var(--ink-muted);
+  }
+  :global(.am-pop-names),
+  :global(.am-pop-meta) {
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+  }
+  :global(.am-pop-names) {
+    font-style: italic;
   }
   :global(.am-pop-link) {
     font-family: var(--font-mono);

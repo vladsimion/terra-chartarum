@@ -1,0 +1,12 @@
+territory,name,status,start_date,end_date,source_keys,notes
+crete,Regno di Candia,direct_rule,1211-01-01,1669-09-27,LANE1973;OCONNELL2009,Generalized territorial extent clipped to Natural Earth land.
+corfu,Corfu,protectorate,1386-01-01,1387-01-01,LANE1973;OCONNELL2009,Initial protection phase before direct rule.
+corfu,Corfu,direct_rule,1387-01-01,1797-05-12,LANE1973;OCONNELL2009,Generalized territorial extent clipped to Natural Earth land.
+dalmatia,Venetian Dalmatia,contested,1409-07-09,1420-01-01,LANE1973;OCONNELL2009,Consolidation phase after the purchase of Dalmatian rights.
+dalmatia,Venetian Dalmatia,direct_rule,1420-01-01,1797-05-12,LANE1973;OCONNELL2009,Generalized coastal extent; not a cadastral boundary.
+negroponte,Negroponte,condominium,1209-01-01,1390-01-01,LANE1973;OCONNELL2009,Venetian jurisdiction within the divided feudal island.
+negroponte,Negroponte,direct_rule,1390-01-01,1470-07-12,LANE1973;OCONNELL2009,Full-sovereignty phase ending with the Ottoman conquest.
+morea,Venetian Morea,direct_rule,1207-01-01,1500-08-15,LANE1973;OCONNELL2009,Generalized envelope of principal fortress holdings; not continuous rule over the peninsula.
+morea,Kingdom of the Morea,direct_rule,1685-08-11,1715-09-07,LANE1973;OCONNELL2009,Second Venetian phase after the Morean War.
+cyprus,Kingdom of Cyprus,direct_rule,1489-02-26,1571-08-01,LANE1973;OCONNELL2009,Venetian kingdom phase.
+albania_veneta,Albania Veneta,direct_rule,1392-01-01,1571-08-01,LANE1973;OCONNELL2009,Generalized coastal holdings around the southern Adriatic.

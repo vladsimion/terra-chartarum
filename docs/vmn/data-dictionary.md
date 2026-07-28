@@ -44,6 +44,8 @@ multiple) statuses.
 | `port_id`       | string | Stable slug, **repeats across phases** (`venice`, `zara`). Join key for voyages/charters/offices.                                                                                                                                                                                                                                   |
 | `name_historic` | string | Period name (Ragusa, Modon)                                                                                                                                                                                                                                                                                                         |
 | `name_modern`   | string | Modern name (Dubrovnik, Methoni)                                                                                                                                                                                                                                                                                                    |
+| `name_local`    | string | Local-language display name, including diacritics (`Poreč`, `Methóni`).                                                                                                                                                                                                                                                             |
+| `region`        | string | Editorial geographic grouping (`Dalmatia`, `Morea`, `Black Sea`).                                                                                                                                                                                                                                                                   |
 | `lat`, `lon`    | float  | Harbour location, EPSG:4326. Harbour-accuracy pass done in VMN-8 (city/harbour points verified; Dubrovnik moved to the old port).                                                                                                                                                                                                   |
 | `status`        | enum   | Controlled vocab — sovereignty: `metropole` · `capital` · `subject` · `colony` · `protectorate` · `feudatory` · `independent`; tenure/quarter: `commercial_quarter` · `metropolitan_quarter` · `rival_genoese` · `foreign_port` · `trading_post` · `crusader_port` · `leased`; navigational/other: `staging` · `contested` · `lost` |
 | `start_date`    | date   | ISO `YYYY-MM-DD`, required                                                                                                                                                                                                                                                                                                          |
@@ -53,11 +55,12 @@ multiple) statuses.
 | `pleiades_id`   | string | Pleiades place id (numeric), **optional** — populated only where it disambiguates a classical port (VMN-8). Empty otherwise.                                                                                                                                                                                                        |
 | `notes`         | string | Free text; flags judgment calls                                                                                                                                                                                                                                                                                                     |
 
-**Target:** 50–70 ports, each status phase a separate row.
+**Current coverage:** 70 ports / 86 status phases.
 
 **Derived FGB:** the pipeline (VMN-9) emits one Point feature per row, projecting
 `start_date`/`end_date` to integer `valid_from`/`valid_to` (`9999` = open) and
-carrying `port_id`, `name_historic`→`name`, `status`, `polity_id`, provenance. The
+carrying `port_id`, `name_historic`→`name`, `name_local`, `region`, `status`,
+`polity_id`, and provenance. The
 atlas registry graduates the point radius by **`status`** (see `src/lib/geo.ts`).
 
 ## `waypoints.csv` (§5.2a)
@@ -79,50 +82,48 @@ or a `waypoint_id`.
 
 | Field                     | Type   | Notes                                                                                                                  |
 | ------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------- |
-| `id`                      | string | `pos-` slug incl. phase year                                                                                           |
+| `possession_id`           | string | Stable territory slug plus phase year (`crete_1211`)                                                                   |
 | `territory`               | string | Stable territory slug (`crete`, `corfu`, `dalmatia`, `negroponte`, `morea`, `cyprus`, `ionian`, `terraferma` optional) |
 | `name`                    | string | Display name (Regno di Candia)                                                                                         |
 | `status`                  | enum   | `direct_rule` · `protectorate` · `condominium` · `contested`                                                           |
-| `valid_from` / `valid_to` | int    | From `events.csv` expansion                                                                                            |
-| `source`, `notes`         | string | Provenance; `notes` must flag judgment calls                                                                           |
+| `valid_from` / `valid_to` | int    | Derived from ISO dates in `events.csv`                                                                                 |
+| `source_keys`, `notes`    | string | Provenance; `notes` must flag judgment calls                                                                           |
 
 **Geometry rule:** _never digitize coastline._ Draw generous inland/offshore
-extent polygons, then clip via intersection with Natural Earth land (10m) in the
+extent polygons, then clip via intersection with the bundled Natural Earth land in the
 pipeline.
 
 ## `venetian-routes.fgb` — LineString (§5.4)
 
 | Field                     | Type   | Notes                                                                                   |
 | ------------------------- | ------ | --------------------------------------------------------------------------------------- |
-| `id`                      | string | `rte-` slug                                                                             |
+| `route_id`                | string | Stable slug (`muda_romania`)                                                            |
 | `name`                    | string | e.g. Muda di Romania                                                                    |
 | `route_type`              | enum   | `muda` (state galley convoy) · `private` (unarmed round-ship trade)                     |
 | `waypoints`               | string | Ordered `port_id`/`waypoint_id`s, **pipe-separated** — join key to ports/waypoints      |
 | `commodities`             | string | Pipe-separated tags: `grain\|wine\|slaves\|silk\|spices\|cotton\|wax\|fur\|salt\|sugar` |
 | `valid_from` / `valid_to` | int    | Convoy line operating window                                                            |
-| `source`, `notes`         | string | Provenance                                                                              |
+| `source_keys`, `notes`    | string | Provenance                                                                              |
 
-**Target:** the documented _mude_ — Romania/Black Sea, Alexandria, Beirut/Syria,
-Cyprus, Barbary, Aigues-Mortes/Provence, Flanders–London — 6–8 linestrings routed
-through actual staging ports.
+**Current coverage:** seven documented/schematic route spines: five state galley
+convoys and two representative private round-ship corridors. Each is routed through
+authority-table ports and time-neutral waypoints.
 
 ## Supporting non-spatial tables (§5.5)
 
-- **`events.csv`** — `territory, status, from_year, to_year, event_from, event_to,
-source, notes`. One row per possession phase; expands into
-  `venetian-possessions.fgb`. **Seed dates are starting values, to be verified
-  against Lane & O'Connell in VMN-10** — treat as unfrozen until then.
+- **`events.csv`** —
+  `territory,name,status,start_date,end_date,source_keys,notes`. One row per
+  possession phase; expands the generalized traces in `possessions.geojson` into
+  coastline-clipped `venetian-possessions.fgb` features.
 - **`sources.csv`** — `key, citation, url, license`. Seeded in KAN-145.
 - **`commodities.csv`** — `tag, label, direction, note` (reserved for VMN-E7).
 
 ## Decisions & deviations from spec
 
-- **D1 — Canonical format is FlatGeobuf; a browser loader is still required.**
-  The live reference layer (Roman Empire AD 117) is GeoJSON, and `AtlasMap`'s
-  `addGeoLayer` cannot yet consume `flatgeobuf` (decisions.md **B1**). FGB remains
-  the canonical, deterministic pipeline output (QA, provenance); rendering on the
-  map is gated on adding an FGB loader (or emitting GeoJSON siblings). Does **not**
-  block data compilation.
+- **D1 — Canonical format is FlatGeobuf.** `AtlasMap` lazily loads the FlatGeobuf
+  decoder when a VMN layer is toggled, converts the streamed features into a
+  MapLibre GeoJSON source, and applies per-feature temporal/style filters. FGB
+  remains the canonical deterministic pipeline output for QA and provenance.
 
 - **D2 — a row is one phase; a place is the set of rows sharing its id.** A
   changing place becomes **multiple rows with the same `port_id`**, each carrying one
@@ -216,3 +217,11 @@ source, notes`. One row per possession phase; expands into
   (Genoese, fell to Ottomans 1475), Tana (Venetian fondaco under the Golden Horde),
   and Acre (crusader port, fell 1291) — all statuses, polities and dates confirmed
   against Lane 1973 / O'Connell 2009 / Shepherd 1911. No corrections required.
+
+- **D10 — Enriched port migration and `bailiwick` normalization.** The enriched
+  port source expands the authority table to 70 stable ports / 86 phases and adds
+  `name_local` and `region`. Source ids lose the legacy `prt-` prefix on import,
+  preserving the stable authority ids established in D5. Its single `bailiwick`
+  value (Negroponte, 1209–1390) is normalized to `subject`: a bailiwick is an
+  administrative jurisdiction, while this field models sovereignty/tenure. The
+  phase note retains the original bailo/bailiwick distinction.

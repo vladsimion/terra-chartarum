@@ -184,9 +184,8 @@ const RAW: unknown[] = [
   },
   // Venetian Maritime Network, c.1400 (VMN). Three per-geometry FGB layers per the
   // frozen data dictionary (VMN-3, authority-table model): ports graduated by
-  // status, routes dashed by route_type, possessions as phased fills. The .fgb binaries
-  // are produced by the compilation tickets (VMN-9/13/19); until an asset is on disk
-  // the atlas shows the layer as pending. Styling + loader capability lands in VMN-20.
+  // status, routes dashed by route_type, possessions as phased fills. The compilation
+  // pipeline produces and validates all three binaries; AtlasMap lazily decodes them.
   {
     id: 'venetian-ports',
     room: 'road',
