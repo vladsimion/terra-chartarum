@@ -44,12 +44,13 @@ multiple) statuses.
 | `port_id`       | string | Stable slug, **repeats across phases** (`venice`, `zara`). Join key for voyages/charters/offices.                    |
 | `name_historic` | string | Period name (Ragusa, Modon)                                                                                           |
 | `name_modern`   | string | Modern name (Dubrovnik, Methoni)                                                                                     |
-| `lat`, `lon`    | float  | Harbour location, EPSG:4326. Harbour-accuracy pass in VMN-8.                                                          |
+| `lat`, `lon`    | float  | Harbour location, EPSG:4326. Harbour-accuracy pass done in VMN-8 (city/harbour points verified; Dubrovnik moved to the old port).  |
 | `status`        | enum   | Controlled vocab — sovereignty: `metropole` · `capital` · `subject` · `colony` · `protectorate` · `feudatory` · `independent`; tenure/quarter: `commercial_quarter` · `metropolitan_quarter` · `rival_genoese` · `foreign_port` · `trading_post` · `crusader_port` · `leased`; navigational/other: `staging` · `contested` · `lost` |
 | `start_date`    | date   | ISO `YYYY-MM-DD`, required                                                                                            |
 | `end_date`      | date   | ISO `YYYY-MM-DD`; **empty = open-ended**                                                                              |
 | `polity_id`     | string | Holding power slug (`venice`, `ragusa`)                                                                               |
 | `source_keys`   | string | Uppercase, `;`-separated keys into `sources.csv`                                                                      |
+| `pleiades_id`   | string | Pleiades place id (numeric), **optional** — populated only where it disambiguates a classical port (VMN-8). Empty otherwise. |
 | `notes`         | string | Free text; flags judgment calls                                                                                       |
 
 **Target:** 50–70 ports, each status phase a separate row.
@@ -194,3 +195,24 @@ source, notes`. One row per possession phase; expands into
   Horde suzerainty) and `crusader_port` (Acre — Kingdom of Jerusalem, fell 1291).
   They could fold into `commercial_quarter` / `foreign_port` respectively if a
   tighter enum is preferred.
+
+- **D9 — Geocode & review pass (KAN-152).** Second pass over the compiled 62-row
+  table. **Coordinates:** every row's `lat`/`lon` verified against its harbour;
+  points were already harbour-adjacent to three decimals, so the only correction was
+  Dubrovnik (`ragusa`), moved from a city-centroid point ~1.4 km NW to the walled
+  **old port** (42.640, 18.111). **Sourcing:** confirmed **zero unsourced phases**
+  (all 62 rows carry `source_keys`). **Pleiades ids** added a new optional
+  `pleiades_id` column, populated **only where a numeric id was verified against
+  pleiades.stoa.org and disambiguates the port** — 9 rows: `durazzo` 573193,
+  `corfu` 530835, `negroponte` 530827, `canea` 465938, `paros` 599867, `milos`
+  570474, `trebizond` 229599, `sinope` 857321, `alexandria` 727070. Left blank
+  where verification was ambiguous, to avoid fabricated ids; two look-alike traps
+  were explicitly rejected — Pleiades 462386 is **Sicilian** Naxos (not the Cycladic
+  duchy seat) and 727120 is **Egyptian** Thonis-Herakleion (not Cretan Candia).
+  **Spot-check (10 ports vs. literature):** Venice (metropole 697 / capital
+  1204–1797, Lane), Zara (Treaty of Zara 1409, O'Connell), Candia (Regno capital,
+  fell after the 21-yr siege 1669), Modon & Coron (the "two eyes", fell 1500),
+  Negroponte (fell 1470), Ragusa (independent tributary, not Venetian), Caffa
+  (Genoese, fell to Ottomans 1475), Tana (Venetian fondaco under the Golden Horde),
+  and Acre (crusader port, fell 1291) — all statuses, polities and dates confirmed
+  against Lane 1973 / O'Connell 2009 / Shepherd 1911. No corrections required.
