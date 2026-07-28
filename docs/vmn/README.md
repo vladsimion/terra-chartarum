@@ -6,11 +6,11 @@ _Venetian Maritime Network, c.1400 — Dataset & Essay Enrichment_.
 
 ## Layout
 
-| Path           | Holds                                                                                                                |
-| -------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `data/vmn/`    | Source CSVs (`ports.csv`, `routes.csv`, `events.csv`, …), traced GeoJSON, and the compiled `venetian-*.fgb` outputs. |
-| `scripts/vmn/` | The `build.py` pipeline and `validate.py` QA gate.                                                                   |
-| `docs/vmn/`    | This README, plus `decisions.md` (VMN-2) and `data-dictionary.md` (VMN-3) as they are produced.                      |
+| Path           | Holds                                                                                                            |
+| -------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `data/vmn/`    | Source CSVs, ID-only Atlas links, pinned 1:10m base data, traced GeoJSON, and compiled `venetian-*.fgb` outputs. |
+| `scripts/vmn/` | The `build.py` pipeline and `validate.py` QA gate.                                                               |
+| `docs/vmn/`    | This README, plus `decisions.md` (VMN-2) and `data-dictionary.md` (VMN-3) as they are produced.                  |
 
 ## Pipeline
 
@@ -40,7 +40,10 @@ as the served asset.
 The writer is GDAL's FlatGeobuf driver via
 [`pyogrio`](https://pyogrio.readthedocs.io/) — whose wheel bundles GDAL, so no
 system GDAL/PROJ is needed. Shapely builds route geometry and clips generalized
-possession traces to Natural Earth land. Bootstrap the venv once, then build:
+possession traces to the checksummed Natural Earth 1:10m land layer in
+`data/vmn/base/`. Its release, source URLs, per-theme versions and SHA-256 hashes
+are pinned in `data/vmn/base/manifest.json`; the build aborts if either the land
+or matching coastline file drifts. Bootstrap the venv once, then build:
 
 ```sh
 make vmn-venv   # one-time: creates .venv, installs pyogrio + numpy + shapely
@@ -79,4 +82,6 @@ make vmn-validate   # validates public/geo/venetian-*.fgb against spec §8
 
 Every compiled feature carries `source_keys` resolving into
 [`data/vmn/sources.csv`](../../data/vmn/sources.csv). See the spec §8 for the
-full QA/validation rules the gate enforces.
+full QA/validation rules the gate enforces. The human-readable provenance and
+publication policy are in [`source-log.md`](source-log.md); release screenshots
+follow [`visual-qa.md`](visual-qa.md).

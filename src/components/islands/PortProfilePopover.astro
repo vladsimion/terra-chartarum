@@ -13,6 +13,7 @@
  * temporal filter keys on (src/lib/geo-style.ts).
  */
 import { getPortProfile, OPEN_ENDED, type PortPhase } from '../../lib/vmn';
+import { getPortAtlasLink } from '../../lib/vmn-atlas-links';
 
 interface Props {
   /** Gazetteer id (data/vmn/ports.csv `port_id`), e.g. "zara". */
@@ -25,6 +26,7 @@ interface Props {
 
 const { portId, label, open = false } = Astro.props;
 const profile = await getPortProfile(portId);
+const atlasLink = getPortAtlasLink(portId);
 
 const readable = (value: string) => value.replaceAll('_', ' ');
 const phaseYears = (phase: PortPhase) =>
@@ -89,7 +91,7 @@ const routesHref = profile
           </p>
         )}
 
-        <a class="pp-atlas" href={profile.atlasHref}>
+        <a class="pp-atlas" href={atlasLink?.href ?? profile.atlasHref}>
           Open in the atlas →
         </a>
       </div>

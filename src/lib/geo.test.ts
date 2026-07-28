@@ -31,4 +31,13 @@ describe('VMN atlas layers (VMN-20 registry entries)', () => {
   it('replaces the single pending placeholder', () => {
     expect(byId.has('venetian-maritime-1400')).toBe(false);
   });
+
+  it('publishes the data dictionary and source log from every VMN layer', () => {
+    for (const id of ids) {
+      expect(byId.get(id)?.documentationLinks.map((link) => link.label)).toEqual([
+        'Data dictionary',
+        'Source log',
+      ]);
+    }
+  });
 });

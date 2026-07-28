@@ -18,6 +18,7 @@ index automatically. Run inside the project venv:
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 import struct
 import sys
@@ -33,7 +34,10 @@ ROUTES_CSV = DATA_DIR / "routes.csv"
 EVENTS_CSV = DATA_DIR / "events.csv"
 POSSESSIONS_GEOJSON = DATA_DIR / "possessions.geojson"
 SOURCES_CSV = DATA_DIR / "sources.csv"
-LAND_GEOJSON = REPO / "public" / "geo" / "ne_110m_land.geojson"
+BASE_DATA_DIR = DATA_DIR / "base"
+BASE_DATA_MANIFEST = BASE_DATA_DIR / "manifest.json"
+LAND_GEOJSON = BASE_DATA_DIR / "ne_10m_land.geojson"
+COASTLINE_GEOJSON = BASE_DATA_DIR / "ne_10m_coastline.geojson"
 PORTS_FGB = GEO_OUT / "venetian-ports.fgb"
 ROUTES_FGB = GEO_OUT / "venetian-routes.fgb"
 POSSESSIONS_FGB = GEO_OUT / "venetian-possessions.fgb"
@@ -79,6 +83,31 @@ def read_csv(path: Path) -> tuple[list[str], list[dict[str, str]]]:
     with path.open(newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         return list(reader.fieldnames or []), list(reader)
+
+
+def verify_base_data() -> list[str]:
+    """Lock the clipping base to the versioned Natural Earth manifest (VMN-4)."""
+    if not BASE_DATA_MANIFEST.exists():
+        return [f"missing base-data manifest: {BASE_DATA_MANIFEST.relative_to(REPO)}"]
+    with BASE_DATA_MANIFEST.open(encoding="utf-8") as f:
+        manifest = json.load(f)
+
+    errors: list[str] = []
+    files = manifest.get("files", {})
+    for path in (LAND_GEOJSON, COASTLINE_GEOJSON):
+        entry = files.get(path.name)
+        if not path.exists():
+            errors.append(f"missing pinned base data: {path.relative_to(REPO)}")
+            continue
+        if not entry or not entry.get("sha256"):
+            errors.append(f"missing checksum in base-data manifest: {path.name}")
+            continue
+        actual = hashlib.sha256(path.read_bytes()).hexdigest()
+        if actual != entry["sha256"]:
+            errors.append(
+                f"checksum mismatch for {path.name}: expected {entry['sha256']}, got {actual}"
+            )
+    return errors
 
 
 def iso_year(value: str, *, field: str, row: int, errors: list[str]) -> int | None:
@@ -487,12 +516,17 @@ def main() -> int:
     print(f"  data dir : {DATA_DIR}")
     required = [
         PORTS_CSV, WAYPOINTS_CSV, ROUTES_CSV, EVENTS_CSV, POSSESSIONS_GEOJSON,
-        SOURCES_CSV, LAND_GEOJSON,
+        SOURCES_CSV, BASE_DATA_MANIFEST, LAND_GEOJSON, COASTLINE_GEOJSON,
     ]
     missing = [path for path in required if not path.exists()]
     if missing:
         for path in missing:
             print(f"  missing  : {path}", file=sys.stderr)
+        return 1
+    base_errors = verify_base_data()
+    if base_errors:
+        for error in base_errors:
+            print(f"  base data: {error}", file=sys.stderr)
         return 1
     for builder in (build_ports, build_routes, build_possessions):
         if builder() != 0:

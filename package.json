@@ -13,6 +13,7 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "test:vmn-visual": "playwright test e2e/vmn-visual.spec.ts --project=chromium",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "create-essay": "node scripts/create-essay.mjs",

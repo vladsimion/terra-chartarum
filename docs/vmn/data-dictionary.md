@@ -91,7 +91,9 @@ or a `waypoint_id`.
 
 **Geometry rule:** _never digitize coastline._ Draw generous inland/offshore
 extent polygons, then clip via intersection with the bundled Natural Earth land in the
-pipeline.
+pipeline. The clipping base is Natural Earth 1:10m land, release `v5.1.1`, pinned
+with the matching coastline and SHA-256 checksums in
+`data/vmn/base/manifest.json`.
 
 ## `venetian-routes.fgb` — LineString (§5.4)
 
@@ -116,6 +118,10 @@ authority-table ports and time-neutral waypoints.
   possession phase; expands the generalized traces in `possessions.geojson` into
   coastline-clipped `venetian-possessions.fgb` features.
 - **`sources.csv`** — `key, citation, url, license`. Seeded in KAN-145.
+- **`atlas_links.csv`** — ID-only essay-beat → Atlas state mappings. Each row
+  carries a `port`, `route`, or `possession` target id, year, pipe-separated
+  layer ids, and a `popup`/`highlight` display mode; it contains no geometry or
+  copied display prose.
 - **`commodities.csv`** — `tag, label, direction, note` (reserved for VMN-E7).
 
 ## Decisions & deviations from spec

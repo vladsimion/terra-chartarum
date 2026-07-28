@@ -27,6 +27,7 @@ export const GeoLayerSchema = z.object({
   source: z.string(),
   license: z.string(),
   attribution: z.string(),
+  documentationLinks: z.array(z.object({ label: z.string(), href: z.string().url() })).default([]),
   gazetteerIds: z.array(z.string()).optional(),
   essaySlugs: z.array(z.string()).optional(),
   defaultOn: z.boolean().default(false),
@@ -201,6 +202,16 @@ const RAW: unknown[] = [
     source: "Terra Chartarum (compiled) — Lane 1973; O'Connell 2009",
     license: 'CC BY',
     attribution: "Terra Chartarum; after Lane and O'Connell",
+    documentationLinks: [
+      {
+        label: 'Data dictionary',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/vmn/data-dictionary.md',
+      },
+      {
+        label: 'Source log',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/vmn/source-log.md',
+      },
+    ],
     essaySlugs: ['venice-sicily'],
     geometry: 'circle',
     color: '#e2a93f',
@@ -245,6 +256,16 @@ const RAW: unknown[] = [
     source: 'Terra Chartarum (compiled) — Lane 1973',
     license: 'CC BY',
     attribution: 'Terra Chartarum; after Lane',
+    documentationLinks: [
+      {
+        label: 'Data dictionary',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/vmn/data-dictionary.md',
+      },
+      {
+        label: 'Source log',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/vmn/source-log.md',
+      },
+    ],
     essaySlugs: ['venice-sicily'],
     geometry: 'line',
     color: '#6db3c2',
@@ -273,6 +294,16 @@ const RAW: unknown[] = [
     source: "Terra Chartarum (compiled) — Lane 1973; O'Connell 2009",
     license: 'CC BY',
     attribution: "Terra Chartarum; after Lane and O'Connell",
+    documentationLinks: [
+      {
+        label: 'Data dictionary',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/vmn/data-dictionary.md',
+      },
+      {
+        label: 'Source log',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/vmn/source-log.md',
+      },
+    ],
     essaySlugs: ['venice-sicily'],
     geometry: 'fill',
     color: '#9c5b52',
