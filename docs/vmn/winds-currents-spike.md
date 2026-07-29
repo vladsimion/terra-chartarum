@@ -1,4 +1,4 @@
-# VMN-31 — winds, currents and shipping-distance source hunt
+# VMN-31 - winds, currents and shipping-distance source hunt
 
 Decision: **no-go for a medieval route-cost layer; conditional go for a clearly
 labelled climate-model context experiment only.**

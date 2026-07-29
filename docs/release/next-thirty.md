@@ -6,7 +6,7 @@ favours unblocked work with repository-verifiable acceptance criteria. Tickets
 that require unavailable scholarly editions or new rights clearance are not
 represented as complete.
 
-## Batch 1 — geo delivery contract
+## Batch 1 - geo delivery contract
 
 Tickets: KAN-208, KAN-209, KAN-210, KAN-211, KAN-212.
 
@@ -25,7 +25,7 @@ consumers of the new delivery contract. KAN-217 joined them because it supplied
 the lowest-cost regression gate for the shared UI work. Standalone VMN embeds
 remained behind the common platform.
 
-## Batch 2 — unified Atlas interaction surface
+## Batch 2 - unified Atlas interaction surface
 
 Tickets: KAN-213, KAN-214, KAN-215, KAN-216, KAN-217.
 
@@ -48,7 +48,7 @@ platform work. KAN-218/219 supplied the extraction and API guardrails, while
 KAN-175 stayed a no-build source-hunt spike. This deliberately unparked the
 small VMN-E7 slice without unblocking unsupported data claims.
 
-## Batch 3 — reusable patterns and standalone VMN exploration
+## Batch 3 - reusable patterns and standalone VMN exploration
 
 Tickets: KAN-173, KAN-174, KAN-175, KAN-218, KAN-219.
 
@@ -71,7 +71,7 @@ gazetteer. KAN-193–197 form one regional/phase slice under KAN-151 and could b
 closed with exact authority-table checks; the scholarly chronology and
 georeferencing tickets remained blocked on sources.
 
-## Batch 4 — eastern maritime-node contracts
+## Batch 4 - eastern maritime-node contracts
 
 Tickets: KAN-193, KAN-194, KAN-195, KAN-196, KAN-197.
 
@@ -91,7 +91,7 @@ deliverable because they combine the remaining KAN-151 assembly/count work with
 the first KAN-150 polity distinction. They also make the output gate stronger
 before the final Aegean/Crete/Morea phase audit.
 
-## Batch 5 — staging, typing and assembled-output gates
+## Batch 5 - staging, typing and assembled-output gates
 
 Tickets: KAN-198, KAN-199, KAN-200, KAN-201, KAN-202.
 
@@ -113,7 +113,7 @@ same KAN-150 regional compilation boundary; replacing any of them with
 chronology/georeferencing work would have required unavailable source editions
 or reference plates.
 
-## Batch 6 — Crete, Morea and temporal-phase closure
+## Batch 6 - Crete, Morea and temporal-phase closure
 
 Tickets: KAN-203, KAN-204, KAN-205, KAN-206, KAN-207.
 

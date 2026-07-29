@@ -1,6 +1,6 @@
 ---
 name: New essay proposal
-about: Propose a new native essay for the atlas — seeds a per-essay epic.
+about: Propose a new native essay for the atlas - seeds a per-essay epic.
 title: 'Essay: <working title>'
 labels: ['essay', 'proposal']
 assignees: ''
@@ -15,7 +15,7 @@ definition of done (docs/essay-definition-of-done.md).
 ## The argument
 
 <!-- One paragraph, in site voice: what map(s) does this essay read against the
-grain, and what does it argue? Remember — every map is an argument, not a neutral
+grain, and what does it argue? Remember - every map is an argument, not a neutral
 window. If it only illustrates, it is not yet an essay. -->
 
 ## Room & metadata
@@ -30,7 +30,7 @@ window. If it only illustrates, it is not yet an essay. -->
 ## Corpus & rights
 
 - **Source sheets** (own material vs. external IIIF):
-- **Rights status** — are external sources cleared for use? Flag any unknowns early;
+- **Rights status** - are external sources cleared for use? Flag any unknowns early;
   corpus rights are the most common blocker.
 
 ## Interactive spine

@@ -1,4 +1,4 @@
-# Cities Remember — map corpus and rights log
+# Cities Remember - map corpus and rights log
 
 **Ticket:** KAN-131
 

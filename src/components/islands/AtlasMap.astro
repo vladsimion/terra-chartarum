@@ -21,7 +21,7 @@ import { getToponyms, toponymAuthorityLinks, toponymNames } from '../../lib/topo
 import { getEssays, formatYear } from '../../lib/registry';
 import { getVmnAtlasLinks } from '../../lib/vmn-atlas-links';
 
-// Only the atlas-critical projection ships to the client — rich catalogue
+// Only the atlas-critical projection ships to the client - rich catalogue
 // metadata (provenance, bibliography, imagery) stays server-side (KAN-66).
 const corpus = getCorpusCore();
 const layers = getGeoLayers();
@@ -59,7 +59,7 @@ const essayMeta = Object.fromEntries(
 
 // Toponym concordance (KAN-75): a separate, toggleable pin set of places carrying
 // the ancient / medieval / variant names by which the corpus calls them, with the
-// essays and maps that reference each — resolved here so the popup is self-contained.
+// essays and maps that reference each - resolved here so the popup is self-contained.
 const toponyms = getToponyms().map((t) => ({
   id: t.id,
   modern: t.modern,
@@ -206,7 +206,7 @@ const payload = {
           <div class="am-layer-row">
             <label
               class:list={['am-layer', { 'is-pending': !l.available }]}
-              title={`${l.description} — ${l.source} (${l.license})`}
+              title={`${l.description} - ${l.source} (${l.license})`}
             >
               <input
                 type="checkbox"
@@ -276,7 +276,7 @@ const payload = {
 
 <script>
   // Type-only imports are erased at build, so MapLibre (~785K) and pmtiles are
-  // pulled in lazily via dynamic import() below — only once the map actually
+  // pulled in lazily via dynamic import() below - only once the map actually
   // initializes with WebGL present. Readers without WebGL never download them.
   import type {
     Map as MLMap,
@@ -427,7 +427,7 @@ const payload = {
         .querySelector('.am-stage')
         ?.insertAdjacentHTML(
           'beforeend',
-          '<p class="am-fallback-note">WebGL is unavailable — showing the corpus as a list.</p>',
+          '<p class="am-fallback-note">WebGL is unavailable - showing the corpus as a list.</p>',
         );
       list.classList.add('is-fallback');
       // Geo overlays need the GL map; disable their toggles in the fallback.
@@ -732,7 +732,7 @@ const payload = {
           },
         ];
       }
-      // Line — dashed by a categorical field means one filtered sub-layer per value
+      // Line - dashed by a categorical field means one filtered sub-layer per value
       // (line-dasharray is not a data-driven paint property in MapLibre).
       if (l.dash) {
         return dashSubLayers(l.dash).map((s) => {
@@ -770,7 +770,7 @@ const payload = {
     // Attach a GeoLayer's source + render layer(s) to the map. GeoJSON loads
     // directly; PMTiles goes through the registered pmtiles:// protocol; FlatGeobuf
     // is fetched and deserialized to a GeoJSON source via a lazily-loaded decoder
-    // (VMN-2 blocker B1) — the decoder chunk only ships when an FGB layer is toggled.
+    // (VMN-2 blocker B1) - the decoder chunk only ships when an FGB layer is toggled.
     const addGeoLayer = async (l: LayerMeta) => {
       if (!map || !styleReady || map.getSource(sourceId(l.id))) return;
       const src = sourceId(l.id);
@@ -798,7 +798,7 @@ const payload = {
           if (l.id === 'venetian-routes') routeFeatures = features;
           if (l.id === 'venetian-possessions') possessionFeatures = features;
         } catch {
-          return; // asset missing or malformed — leave the layer pending
+          return; // asset missing or malformed - leave the layer pending
         }
       } else {
         return; // cog needs a dedicated raster loader
@@ -933,12 +933,12 @@ const payload = {
           .addTo(map);
       }
 
-      // Toponym pins — a distinct marker set with multi-name popups, hidden until
+      // Toponym pins - a distinct marker set with multi-name popups, hidden until
       // the reader toggles them on (or a #topo-<id> deep-link requests one).
       for (const topo of toponyms) {
         const el = document.createElement('button');
         el.className = 'am-topo-pin';
-        el.setAttribute('aria-label', `${topo.modern} — historical names`);
+        el.setAttribute('aria-label', `${topo.modern} - historical names`);
         const names = topo.historical.length
           ? `<ul class="am-topo-names">${topo.historical.map((n) => `<li>${n}</li>`).join('')}</ul>`
           : '';
@@ -1443,7 +1443,7 @@ const payload = {
     transform: scale(1.35);
   }
 
-  /* Concordance pins — a diamond in a cooler hue, distinct from the round corpus pins. */
+  /* Concordance pins - a diamond in a cooler hue, distinct from the round corpus pins. */
   :global(.am-topo-pin) {
     width: 0.8rem;
     height: 0.8rem;

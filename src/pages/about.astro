@@ -2,7 +2,7 @@
 // About / site manifesto (TC-401 / KAN-103).
 //
 // Charter decision D4: the two framing arguments once planned as standalone
-// essays — "Every Map Is an Argument" and "The Seduction of Precision" — are
+// essays - "Every Map Is an Argument" and "The Seduction of Precision" - are
 // absorbed here as the site's curatorial statement, so they never appear as
 // separate essays. This page also introduces the seven-room cosmography and
 // links each room individually.
@@ -23,7 +23,7 @@ const essays = await getEssays();
       <strong>Terra Chartarum</strong> gathers a growing family of interactive visual essays about the
       history and politics of cartography. Each essay is an immersive, self-contained piece with its own
       art direction; the portal gives them a shared front door, a common navigation, and a cross-essay
-      atlas — so several experiments read as one publication rather than several tabs.
+      atlas - so several experiments read as one publication rather than several tabs.
     </p>
     <p>
       This page is also the atlas's manifesto. Two ideas run beneath everything gathered here, and
@@ -34,7 +34,7 @@ const essays = await getEssays();
     <h2>Every map is an argument</h2>
     <p>
       The guiding idea, drawn from J.B. Harley, is that maps are never neutral. A map is not a
-      window onto the world but a made thing — with a maker, a method, and a motive. Every choice to
+      window onto the world but a made thing - with a maker, a method, and a motive. Every choice to
       measure, name, or bound the world is also a choice about what to leave out, and each omission
       is quiet enough to pass for objectivity. To draw a coastline is to decide where land ends; to
       print a border is to turn an argument into a fact; to centre one meridian is to make
@@ -42,7 +42,7 @@ const essays = await getEssays();
       rather than a claim.
     </p>
     <p>
-      Reading maps critically means refusing that disguise — asking, of every sheet, not only
+      Reading maps critically means refusing that disguise - asking, of every sheet, not only
       <em>is it accurate?</em> but <em
         >whose purpose does this accuracy serve, and what does it render invisible?</em
       > The essays make those trade-offs visible; the
@@ -54,20 +54,20 @@ const essays = await getEssays();
       The second idea is a caution about the first. Precision is seductive: a finer grid, a truer
       projection, a more exact survey all feel like pure gains, and for centuries the history of
       cartography has been told as a march toward them. But every gain in accuracy, usability, or
-      control exacts a quiet sacrifice somewhere else — a living, four-dimensional world traded for
+      control exacts a quiet sacrifice somewhere else - a living, four-dimensional world traded for
       a legible surface, a negotiated place fixed into a parcel, a plural name overwritten by a
       single official one. The sharper the map, the more confident its silences.
     </p>
     <p>
       Terra Chartarum does not reject precision; it refuses to mistake it for innocence. We treat
-      the elegant, authoritative map as the one most worth interrogating — because it is the one
+      the elegant, authoritative map as the one most worth interrogating - because it is the one
       whose argument is easiest to miss.
     </p>
 
     <h2>The seven rooms</h2>
     <p>
       To hold these arguments in view, the atlas is arranged not as a list but as a medieval
-      cosmography — <a href="/rooms/">seven rooms</a>, each asking a different question of the
+      cosmography - <a href="/rooms/">seven rooms</a>, each asking a different question of the
       world. Enter a room to read its essays, walk its maps, and see where its borders touch the
       others.
     </p>
@@ -76,7 +76,7 @@ const essays = await getEssays();
         ROOMS.map((room) => (
           <li>
             <a href={`/rooms/${room.slug}/`}>{room.title}</a>
-            <span> — {room.blurb}</span>
+            <span> - {room.blurb}</span>
           </li>
         ))
       }
@@ -88,7 +88,7 @@ const essays = await getEssays();
         essays.map((e) => (
           <li>
             <a href={`/essays/${e.slug}/`}>{e.data.title}</a>
-            <span> — {e.data.subtitle}</span>
+            <span> - {e.data.subtitle}</span>
           </li>
         ))
       }

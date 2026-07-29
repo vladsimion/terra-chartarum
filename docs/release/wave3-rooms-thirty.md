@@ -1,4 +1,4 @@
-# Wave 3 tracking and Rooms platform — 30-ticket release
+# Wave 3 tracking and Rooms platform - 30-ticket release
 
 Date: 2026-07-29
 
@@ -53,11 +53,11 @@ historical verification.
 
 ## Next boundary
 
-1. KAN-229 — normalize the Wave 2 backlog before drafting.
-2. KAN-228 — deliver The Shape of a Civilization and anchor the Earth room.
-3. KAN-226 — Projection and Perspective.
-4. KAN-227 — The Cartography of Empire.
-5. KAN-230 — When Maps Create Countries.
+1. KAN-229 - normalize the Wave 2 backlog before drafting.
+2. KAN-228 - deliver The Shape of a Civilization and anchor the Earth room.
+3. KAN-226 - Projection and Perspective.
+4. KAN-227 - The Cartography of Empire.
+5. KAN-230 - When Maps Create Countries.
 
 KAN-154 remains ahead in raw board rank but is not implementable without the
 specified Lane and O’Connell editions or page excerpts.

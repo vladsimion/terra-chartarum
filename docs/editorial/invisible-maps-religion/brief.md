@@ -1,4 +1,4 @@
-# Invisible Maps of Religion — concept brief
+# Invisible Maps of Religion - concept brief
 
 **Ticket:** KAN-122  
 **Primary room:** The Theatre  

@@ -3,7 +3,7 @@
  * build-map-tiles (ATLAS-805 / KAN-69)
  *
  * Turns a high-resolution scan of a corpus map into a DeepZoom (DZI) tile pyramid
- * for the OpenSeadragon viewer. Uses libvips `dzsave` — fast, streaming, standard
+ * for the OpenSeadragon viewer. Uses libvips `dzsave` - fast, streaming, standard
  * DZI output. Writes public/tiles/<id>.dzi plus public/tiles/<id>_files/, so the
  * viewer can point at the stable tile source `/tiles/<id>.dzi`.
  *

@@ -50,7 +50,7 @@ const filled = template
   .replaceAll('__SLUG__', slug)
   .replaceAll('__TITLE__', title)
   .replaceAll('__SUBTITLE__', 'A working subtitle')
-  .replaceAll('__SUMMARY__', `${title} —`)
+  .replaceAll('__SUMMARY__', `${title} -`)
   .replaceAll('__ERAS__', 'Modern')
   .replaceAll('__REGIONS__', 'Global')
   .replaceAll('__LENSES__', 'Measure, Witness, Use, Cosmos, Power, Silence')

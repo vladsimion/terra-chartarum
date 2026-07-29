@@ -1,4 +1,4 @@
-# Cities Remember — research dossier
+# Cities Remember - research dossier
 
 **Ticket:** KAN-132
 

@@ -1,4 +1,4 @@
-# Launch runbook — Terra Chartarum
+# Launch runbook - Terra Chartarum
 
 Operational checklist for taking the portal from a green `main` to a live
 production deploy, and for handling the first hours after launch. Owner: whoever
@@ -39,7 +39,7 @@ pipeline.
 ## 3. Content & metadata checklist
 
 - [ ] All essays build with a canonical `room` slug (the build fails on a
-      missing or non-canonical slug — a green build already proves this).
+      missing or non-canonical slug - a green build already proves this).
 - [ ] `sitemap-index.xml` is generated and reachable; `public/robots.txt`
       points at it.
 - [ ] `og/` images and per-essay covers resolve (spot-check social cards).
@@ -66,7 +66,7 @@ No `_redirects` file ships, and none is required for launch:
 - The one historical note (`src/content/config.ts`) mentions an old
   `/essays/<slug>/index.html` embed convention. Astro already emits each essay
   at `/essays/<slug>/` (i.e. `/essays/<slug>/index.html`), so that path resolves
-  natively — a redirect would be redundant.
+  natively - a redirect would be redundant.
 - **Do not** add a redirect for anything under `/embed/`. Every legacy essay
   iframes its preserved HTML directly from `/embed/<slug>/index.html`;
   redirecting that path would break the embeds.

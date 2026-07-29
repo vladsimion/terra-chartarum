@@ -23,7 +23,7 @@ const essayAxes = essays.map((e) => ({
 
     <p>
       Each essay keeps its own analytical vocabulary. To let them be compared and discovered
-      together, we add a single <em>meta-lens</em> of six canonical dimensions — not imposed on the essays,
+      together, we add a single <em>meta-lens</em> of six canonical dimensions - not imposed on the essays,
       but excavated from the J.B. Harley critical-cartography spine they already share. It is one interpretive
       frame among many, with its own silences; the crosswalk below is published in full so you can see
       exactly what it keeps and what it flattens.
@@ -41,7 +41,7 @@ const essayAxes = essays.map((e) => ({
       }
     </dl>
 
-    <h2 id="crosswalk-h">Crosswalk — native axes → canonical dimensions</h2>
+    <h2 id="crosswalk-h">Crosswalk - native axes → canonical dimensions</h2>
     <!-- tabindex + region role: when the table overflows its wrapper scrolls, and
          a scrollable region must be reachable by keyboard (WCAG 2.1.1). -->
     <div class="table-wrap" tabindex="0" role="region" aria-labelledby="crosswalk-h">
@@ -65,7 +65,7 @@ const essayAxes = essays.map((e) => ({
                           `${DIMENSION_META[k as CanonicalDimension].label}${w !== 1 ? ` (${w})` : ''}`,
                       )
                       .join(', ')
-                  : '—';
+                  : '-';
                 return (
                   <tr>
                     {i === 0 && (
@@ -88,7 +88,7 @@ const essayAxes = essays.map((e) => ({
 
     <p class="caveat">
       Caveat: Dacia's <em>Sex Lectiones</em> (ordinatio, litterae, restitutio, correctio, rasura, vacat)
-      is a reading <em>method</em>, not a scoring set — only <em>rasura</em> and <em>vacat</em> feed Silence.
+      is a reading <em>method</em>, not a scoring set - only <em>rasura</em> and <em>vacat</em> feed Silence.
       Native scales (1–5, 0–8, categorical) are normalized to 0–1 for any cross-essay radar.
     </p>
 

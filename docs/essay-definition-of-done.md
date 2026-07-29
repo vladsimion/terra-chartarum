@@ -1,4 +1,4 @@
-# Definition of done — a new essay
+# Definition of done - a new essay
 
 An essay is **done** when every box below is checked. This is the shared quality
 bar for merging any new essay into Terra Chartarum; the pull-request template
@@ -14,7 +14,7 @@ not a nicety.
 
 ## Content & voice
 
-- [ ] The essay makes a critical-cartography argument — it reads maps as
+- [ ] The essay makes a critical-cartography argument - it reads maps as
       arguments, not neutral windows (see the manifesto).
 - [ ] British spelling throughout; em-dash-friendly, academic-but-intimate
       register consistent with the family.

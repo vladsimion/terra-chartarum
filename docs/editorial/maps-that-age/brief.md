@@ -1,4 +1,4 @@
-# Maps That Age — concept brief
+# Maps That Age - concept brief
 
 **Ticket:** KAN-113  
 **Primary room:** The Archive  
