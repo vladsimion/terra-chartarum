@@ -57,6 +57,7 @@ metaScores:
 
 import Section from '../../components/Section.astro';
 import AdaptiveTimeline from '../../components/islands/AdaptiveTimeline.astro';
+import CartometryChart from '../../components/islands/CartometryChart.astro';
 import CompareSlider from '../../components/islands/CompareSlider.astro';
 import PlateStateExplorer from '../../components/islands/PlateStateExplorer.astro';
 
@@ -161,15 +162,19 @@ as anchors, and notice how much can change while the first glance continues to s
 >
   <img
     slot="before"
-    src="https://commons.wikimedia.org/wiki/Special:FilePath/Ortelius%20verdenskart%201579%20(12085012186).jpg?width=1600"
+    src="/images/maps-that-age/ortelius-1579.jpg"
     alt="Ortelius Typus Orbis Terrarum printed in 1579 from the first copperplate"
+    width="1600"
+    height="1186"
     loading="lazy"
     decoding="async"
   />
   <img
     slot="after"
-    src="https://commons.wikimedia.org/wiki/Special:FilePath/Typus%20Orbis%20Terrarum.jpg?width=1600"
+    src="/images/maps-that-age/ortelius-1587.jpg"
     alt="Ortelius Typus Orbis Terrarum reproduction catalogued as 1587"
+    width="800"
+    height="588"
     loading="lazy"
     decoding="async"
   />
@@ -389,6 +394,8 @@ state description and visible anchors. â€œThe coastline improved by 2.7 percentâ
 require a declared geographic reference, comparable scans and a definition of
 improvement. This essay does not yet possess that evidence, so it does not manufacture
 the precision.
+
+<CartometryChart />
 
 The accumulating error worth charting first is not deviation from a modern coastline.
 It is the growing distance between the singular catalogue label and the plural object

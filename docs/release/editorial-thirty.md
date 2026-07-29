@@ -70,3 +70,32 @@ and Medium. KAN-119–KAN-121 are now unblocked by the completed essay build and
 Maps That Age through design QA, publication and the evidence export. KAN-122 and
 KAN-123 then start the next required Wave-1 anchor, Invisible Maps of Religion. Its
 “Relates” links are contextual, not blocking dependencies.
+
+## Batch 4 — Maps That Age publication and Religion foundation
+
+**Tickets:** KAN-119, KAN-120, KAN-121, KAN-122, KAN-123.
+
+- Completed design QA for Maps That Age with a code-native cover, generated OG
+  image and local, rights-cleared comparison assets with explicit dimensions.
+- Promoted the essay manifest to publication, recorded five cross-links and
+  strengthened the shared publication validator.
+- Added an eight-record Cartometry export in CSV and JSON plus an accessible chart
+  that keeps every state change traceable to its source record.
+- Approved Invisible Maps of Religion as a deliberately bounded study of medieval
+  European and Byzantine Christian orientation rather than a universal religious
+  typology.
+- Rights-logged a nine-map Religion corpus spanning Madaba, Beatus, itinerary,
+  mappamundi, early print and Bünting examples, with the Hereford Mappa Mundi as
+  the sole hero.
+- Stabilised the shared above-fold font load, removing the essay-page performance
+  regression caused by layout shift.
+
+**Evidence:** editorial QA for all three packages, lint, 109 unit tests, Astro check,
+a 70-page production build, formatting, focused desktop and mobile interaction
+flows, and Lighthouse scores of 98 performance and 100 for accessibility, best
+practices and SEO.
+
+**Reprioritisation:** the live Roadmap still places Invisible Maps of Religion ahead
+of Cities Remember. Jira confirms KAN-124–KAN-128 are all To Do, Medium and
+unblocked, so Batch 5 follows the editorial dependency chain: research → outline →
+draft → interactive build → design QA.

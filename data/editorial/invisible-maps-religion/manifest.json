@@ -1,0 +1,111 @@
+{
+  "slug": "invisible-maps-religion",
+  "title": "Invisible Maps of Religion",
+  "stage": "corpus",
+  "room": "theatre",
+  "secondaryRooms": ["road", "city"],
+  "thesis": "Religious maps do not merely illustrate belief: by centring sacred cities, orienting bodies toward holy directions and turning pilgrimage into a sequence of stations, they organise lived space before political borders or measured distance become the dominant grammar.",
+  "whyThisSite": "Terra Chartarum can compare centred world pictures with itinerary maps and city plans, then use the shared timeline, catalogue and room system to show how cosmology, ritual movement and urban memory produce different but interoperable kinds of sacred geography.",
+  "minimumDraftWords": 3000,
+  "draftPath": "docs/editorial/invisible-maps-religion/draft.md",
+  "contentPath": "src/content/essays/invisible-maps-religion.mdx",
+  "coverPath": "public/covers/invisible-maps-religion.svg",
+  "ogPath": "public/og/invisible-maps-religion.png",
+  "seriesPath": "src/pages/series/invisible-maps.astro",
+  "corpus": [
+    {
+      "id": "religion-madaba",
+      "title": "Madaba mosaic map, Jerusalem detail",
+      "maker": "Unknown Byzantine mosaicists",
+      "year": 570,
+      "holding": "Church of Saint George, Madaba",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Madaba_map.jpg",
+      "rights": "Public-domain sixth-century work and reproduction.",
+      "scanQuality": "1024 × 718 reference image"
+    },
+    {
+      "id": "religion-beatus",
+      "title": "Saint-Sever Beatus world map",
+      "maker": "Stephanus Garsia and workshop",
+      "year": 1050,
+      "holding": "Bibliothèque nationale de France",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Facsimile_of_the_Mappa_mundi_of_Saint-Sever_Beatus.jpg",
+      "rights": "Public-domain manuscript and 1896 facsimile.",
+      "scanQuality": "18984 × 13012 high-resolution facsimile"
+    },
+    {
+      "id": "religion-ebstorf",
+      "title": "Ebstorf world map",
+      "maker": "Unknown",
+      "year": 1235,
+      "holding": "Original lost; public-domain facsimile tradition",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ebstorfer_Weltkarte_2.jpg",
+      "rights": "Public-domain work and faithful reproduction.",
+      "scanQuality": "7849 × 7798 high-resolution facsimile"
+    },
+    {
+      "id": "religion-psalter",
+      "title": "Psalter world map",
+      "maker": "Unknown",
+      "year": 1250,
+      "holding": "British Library, Additional MS 28681, fol. 9r",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Psalter_world_map.jpg",
+      "rights": "Public-domain manuscript and reproduction.",
+      "scanQuality": "1791 × 2543 institutional reference image"
+    },
+    {
+      "id": "religion-matthew-paris",
+      "title": "Itinerary from London toward Jerusalem",
+      "maker": "Matthew Paris",
+      "year": 1255,
+      "holding": "British Library, Royal MS 14 C VII, fol. 2",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Itinerary_by_Matthew_Paris_-_Historia_Anglorum_(1250-1259),_f.2_-_BL_Royal_MS_14_C_VII.jpg",
+      "rights": "British Library released the digitised image under CC0.",
+      "scanQuality": "1316 × 1784 institutional reproduction"
+    },
+    {
+      "id": "hereford",
+      "title": "Hereford Mappa Mundi",
+      "maker": "Richard of Haldingham",
+      "year": 1300,
+      "holding": "Hereford Cathedral",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hereford_Mappa_Mundi.jpg",
+      "rights": "Public-domain work and reproduction.",
+      "scanQuality": "4200 × 4989 high-resolution reproduction",
+      "hero": true
+    },
+    {
+      "id": "religion-to-1472",
+      "title": "T–O map in the first printed Etymologiae",
+      "maker": "After Isidore of Seville; printed by Günther Zainer",
+      "year": 1472,
+      "holding": "Public-domain printed-book reproduction",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:T_and_O_map_Guntherus_Ziner_1472.jpg",
+      "rights": "Public-domain work and faithful reproduction.",
+      "scanQuality": "864 × 864 reference image"
+    },
+    {
+      "id": "religion-rudimentum",
+      "title": "World map in the Rudimentum Novitiorum",
+      "maker": "Lucas Brandis, printer",
+      "year": 1475,
+      "holding": "Library of Congress, Rosenwald Collection",
+      "sourceUrl": "https://www.loc.gov/item/48043282/",
+      "rights": "Public-domain incunable; Library of Congress digital item.",
+      "scanQuality": "Institutional page sequence with IIIF manifest"
+    },
+    {
+      "id": "religion-bunting",
+      "title": "The world in a clover leaf",
+      "maker": "Heinrich Bünting",
+      "year": 1581,
+      "holding": "Public-domain institutional reproduction",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:1581_Clover_Leaf_World_Map_by_Heinrich_Buenting.jpg",
+      "rights": "Public-domain work and faithful reproduction.",
+      "scanQuality": "8638 × 6628 high-resolution reproduction"
+    }
+  ],
+  "bibliography": [],
+  "claims": [],
+  "sections": []
+}

@@ -1,0 +1,9 @@
+stateId,mapId,year,plate,state,plateAgeYears,cumulativeDocumentedInterventions,intervention,evidence,confidence,sourceId,sourceUrl
+"ort1-1","age-ort1-1570","1570","1","1.1","0","1","First documented state","Complete oblique hachuring around the lower Cicero cartouche.","high","vandenbroecke-ort1","https://orteliusmaps.com/book/ort1.html"
+"ort1-2","age-ort1-1575","1575","1","1.3","5","2","Plate repair","Bolt impressions appear at the lower-left corner around a crack.","high","vandenbroecke-ort1","https://orteliusmaps.com/book/ort1.html"
+"ort1-3","age-ort1-1579","1579","1","1.4","9","3","Crack mended; clouds reworked","The crack is less visible and cloud linework has been reworked.","high","vandenbroecke-ort1","https://orteliusmaps.com/book/ort1.html"
+"ort1-4","age-ort1-1584","1584","1","1.5","14","4","Date added amid wear","The date 1584 appears beside Hogenberg’s signature while cartouche hachuring has faded.","high","vandenbroecke-ort1","https://orteliusmaps.com/book/ort1.html"
+"ort2-1","age-ort2-1587","1587","2","2.1","0","5","Replacement plate","A newly cut plate is dated 1586 and retains clouds in the corners.","high","vandenbroecke-ort2","https://orteliusmaps.com/book/ort2.html"
+"ort2-2","age-ort2-1588","1588","2","2.3","1","6","Coastline corrected","The South American coastline is corrected while corner clouds remain.","high","vandenbroecke-ort2","https://orteliusmaps.com/book/ort2.html"
+"ort3-1","age-ort3-1613","1589","3","3.1","0","7","Third plate replaces predecessors","Corrected South America, four corner medallions and no clouds distinguish the plate.","high","vandenbroecke-ort3","https://orteliusmaps.com/book/ort3.html"
+"ort3-2","age-ort3-1613","1613","3","3.2","24","8","Posthumous geographic update","Le Maire Strait is added, the 1587 date is removed and strapwork hachuring changes.","medium","vandenbroecke-ort3","https://orteliusmaps.com/book/ort3.html"

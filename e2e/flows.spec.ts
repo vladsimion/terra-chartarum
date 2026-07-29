@@ -195,5 +195,14 @@ test.describe('flow: Maps That Age interactive build', () => {
     await expect(
       explorer.getByRole('link', { name: 'Open catalogue record' }).first(),
     ).toBeVisible();
+
+    await expect(page.locator('[data-cartometry-chart]')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'CSV' })).toHaveAttribute(
+      'href',
+      '/data/cartometry/maps-that-age.csv',
+    );
+    await expect(
+      page.getByRole('navigation', { name: 'Reading path through The Archive' }),
+    ).toBeVisible();
   });
 });

@@ -152,10 +152,15 @@ const hashForwardScript = `(function () {
   }
   .native-essay {
     padding-block: 3rem;
-    max-width: var(--prose-max);
+    /*
+     * Cap the ch-based measure with a font-independent width. Without the cap,
+     * the fallback font makes this container about 60px wider before the
+     * self-hosted body face arrives, producing a visible layout shift.
+     */
+    max-width: min(var(--prose-max, 44rem), 44rem);
   }
   .essay-room-links {
     padding-block: 1rem 4rem;
-    max-width: var(--prose-max);
+    max-width: min(var(--prose-max, 44rem), 44rem);
   }
 </style>

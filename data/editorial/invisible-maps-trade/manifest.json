@@ -12,6 +12,14 @@
   "coverPath": "public/covers/invisible-maps-trade.svg",
   "ogPath": "public/og/invisible-maps-trade.png",
   "seriesPath": "src/pages/series/invisible-maps.astro",
+  "publishedPath": "src/content/essays/invisible-maps-trade.mdx",
+  "crossLinks": [
+    "/series/invisible-maps/",
+    "/essays/venice-sicily/",
+    "/rooms/road/",
+    "/rooms/border/",
+    "/rooms/city/"
+  ],
   "corpus": [
     {
       "id": "carta-pisana",

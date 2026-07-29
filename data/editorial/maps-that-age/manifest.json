@@ -1,7 +1,7 @@
 {
   "slug": "maps-that-age",
   "title": "Maps That Age",
-  "stage": "build",
+  "stage": "publish",
   "room": "archive",
   "secondaryRooms": ["map", "theatre"],
   "thesis": "Maps do not simply become old: printing plates accumulate repairs, recut borders and altered names, while later states preserve inherited geometries that make political change look continuous. Reading successive states exposes age as an editorial process rather than a date.",
@@ -11,7 +11,17 @@
   "contentPath": "src/content/essays/maps-that-age.mdx",
   "coverPath": "public/covers/maps-that-age.svg",
   "ogPath": "public/og/maps-that-age.png",
-  "seriesPath": "src/pages/series/maps-that-age.astro",
+  "publishedPath": "src/content/essays/maps-that-age.mdx",
+  "crossLinks": [
+    "/essays/speculum/",
+    "/rooms/archive/",
+    "/rooms/theatre/",
+    "/collection/?essay=maps-that-age"
+  ],
+  "cartometryPaths": [
+    "public/data/cartometry/maps-that-age.csv",
+    "public/data/cartometry/maps-that-age.json"
+  ],
   "corpus": [
     {
       "id": "age-ort1-1570",

@@ -144,10 +144,29 @@ function validatePackage(file) {
 
   if (stage >= STAGES.indexOf('publish')) {
     check(
-      existsSync(resolve(ROOT, manifest.seriesPath ?? '')),
-      `${label}: series or editorial index path does not exist`,
+      existsSync(resolve(ROOT, manifest.publishedPath ?? '')),
+      `${label}: published content path does not exist`,
       errors,
     );
+    check(
+      (manifest.crossLinks ?? []).length >= 3,
+      `${label}: publish package has fewer than 3 cross-links`,
+      errors,
+    );
+    if (manifest.seriesPath) {
+      check(
+        existsSync(resolve(ROOT, manifest.seriesPath)),
+        `${label}: series path does not exist`,
+        errors,
+      );
+    }
+    for (const path of manifest.cartometryPaths ?? []) {
+      check(
+        existsSync(resolve(ROOT, path)),
+        `${label}: Cartometry export '${path}' missing`,
+        errors,
+      );
+    }
   }
 
   return errors;
