@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "policyTicket": "KAN-260",
+  "parentTicket": "KAN-12",
+  "styleGuide": "docs/editorial/style-guide.md",
+  "reviewTemplate": "docs/editorial/review-template.md",
+  "requiredCommands": ["npm run editorial:validate", "npm run check", "npm test", "npm run build"],
+  "approvalGate": {
+    "acceptedDecisions": ["approved", "approved-with-notes"],
+    "requiredManifestFields": [
+      "editorialReview.outline",
+      "editorialReview.narrative",
+      "editorialReview.reviewedAt",
+      "editorialReview.notesPath"
+    ],
+    "rule": "An essay at build or later cannot pass editorial validation unless outline and narrative decisions are accepted and the dated notes path resolves."
+  },
+  "holdCriteria": [
+    {
+      "id": "review-blocked",
+      "condition": "Outline or narrative decision is missing or blocked.",
+      "releaseAction": "Hold the essay below build stage; record the blocking notes and follow-up ticket."
+    },
+    {
+      "id": "evidence-unverified",
+      "condition": "A visible claim depends on an invented, inaccessible or unverified quotation, page reference, provenance statement or chronology.",
+      "releaseAction": "Hold the affected claim or essay; do not replace source verification with inferred precision."
+    },
+    {
+      "id": "interaction-misleads",
+      "condition": "An interactive implies measurement, registration, causality or completeness that its data cannot support.",
+      "releaseAction": "Hold Design QA until the interaction or its evidence boundary is corrected."
+    },
+    {
+      "id": "access-regression",
+      "condition": "Keyboard, reduced-motion, text-equivalent, contrast or non-colour meaning checks regress.",
+      "releaseAction": "Hold publication until the automated and manual accessibility checks pass."
+    },
+    {
+      "id": "route-broken",
+      "condition": "Published content, cover, social preview, section anchor or required cross-link does not resolve.",
+      "releaseAction": "Hold publication until the production build and indexing checks pass."
+    }
+  ],
+  "rollbackCriteria": [
+    {
+      "id": "published-factual-error",
+      "condition": "A material factual, citation, rights or provenance error is discovered after publication.",
+      "action": "Remove or correct the affected claim immediately; revert to the last known good content revision when a bounded correction cannot be verified."
+    },
+    {
+      "id": "published-harm",
+      "condition": "A release exposes sensitive location or personal data, or creates a credible safety or privacy risk.",
+      "action": "Unpublish or redact the affected artifact first, then document the decision and verification required for restoration."
+    },
+    {
+      "id": "published-functional-regression",
+      "condition": "The essay route fails, the primary interactive prevents reading, or a release breaks shared navigation.",
+      "action": "Restore the last green build or remove the failing enhancement while preserving the readable essay."
+    }
+  ],
+  "recoveryRule": "A held or rolled-back essay can return only after the blocking criterion has an owner, evidence of correction, an accepted review decision, and a green required-command set."
+}

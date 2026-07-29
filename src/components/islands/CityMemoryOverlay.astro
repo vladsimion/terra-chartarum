@@ -33,16 +33,22 @@
   </div>
 
   <div class="cmo-controls">
-    <label for="city-memory-opacity">Historical map opacity</label>
-    <input
-      id="city-memory-opacity"
-      type="range"
-      min="0"
-      max="100"
-      step="5"
-      value="55"
-      aria-describedby="city-memory-caution"
-    />
+    <div class="cmo-mode" role="group" aria-label="Historical map comparison mode">
+      <button type="button" data-overlay-mode="blend" aria-pressed="true">Blend</button>
+      <button type="button" data-overlay-mode="swipe" aria-pressed="false">Swipe</button>
+    </div>
+    <div class="cmo-range">
+      <label for="city-memory-opacity">Historical layer amount</label>
+      <input
+        id="city-memory-opacity"
+        type="range"
+        min="0"
+        max="100"
+        step="5"
+        value="55"
+        aria-describedby="city-memory-caution"
+      />
+    </div>
   </div>
 
   <figcaption id="city-memory-caution">
@@ -61,11 +67,29 @@
     const layer = root.querySelector<HTMLElement>('.cmo-historic')!;
     const input = root.querySelector<HTMLInputElement>('input[type="range"]')!;
     const output = root.querySelector<HTMLOutputElement>('output')!;
+    const modeButtons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-overlay-mode]'));
+    let mode: 'blend' | 'swipe' = 'blend';
     const render = () => {
-      layer.style.opacity = String(Number(input.value) / 100);
-      output.value = `Historical layer at ${input.value}% opacity.`;
+      if (mode === 'blend') {
+        layer.style.opacity = String(Number(input.value) / 100);
+        layer.style.clipPath = 'none';
+        output.value = `Historical layer at ${input.value}% opacity.`;
+      } else {
+        layer.style.opacity = '1';
+        layer.style.clipPath = `inset(0 ${100 - Number(input.value)}% 0 0)`;
+        output.value = `Historical layer revealed across ${input.value}% of the frame.`;
+      }
     };
     input.addEventListener('input', render);
+    modeButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        mode = button.dataset.overlayMode === 'swipe' ? 'swipe' : 'blend';
+        modeButtons.forEach((candidate) => {
+          candidate.setAttribute('aria-pressed', String(candidate === button));
+        });
+        render();
+      });
+    });
     render();
   }
 
@@ -147,17 +171,42 @@
   }
   .cmo-controls {
     display: grid;
-    grid-template-columns: minmax(10rem, auto) minmax(12rem, 1fr);
-    align-items: center;
+    grid-template-columns: auto minmax(12rem, 1fr);
+    align-items: end;
     gap: 0.75rem;
     font-family: var(--font-mono);
     font-size: var(--step--1);
+  }
+  .cmo-mode {
+    display: flex;
+    gap: 0.35rem;
+  }
+  .cmo-mode button {
+    padding: 0.45rem 0.7rem;
+    border: 1px solid var(--line);
+    border-radius: 0.35rem;
+    color: var(--ink);
+    background: var(--panel);
+    font: inherit;
+    cursor: pointer;
+  }
+  .cmo-mode button[aria-pressed='true'] {
+    border-color: var(--gold);
+    color: var(--canvas);
+    background: var(--gold);
+  }
+  .cmo-range {
+    display: grid;
+    grid-template-columns: minmax(10rem, auto) minmax(12rem, 1fr);
+    align-items: center;
+    gap: 0.75rem;
   }
   input {
     width: 100%;
     accent-color: var(--gold);
   }
-  input:focus-visible {
+  input:focus-visible,
+  button:focus-visible {
     outline: 2px solid var(--ink);
     outline-offset: 4px;
   }
@@ -167,6 +216,9 @@
   }
   @media (max-width: 38rem) {
     .cmo-controls {
+      grid-template-columns: 1fr;
+    }
+    .cmo-range {
       grid-template-columns: 1fr;
     }
   }

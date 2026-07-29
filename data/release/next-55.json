@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "branch": "codex/next-fifty-five",
+  "requestedTicketCount": 55,
+  "batches": [
+    {
+      "batch": 1,
+      "tickets": ["KAN-229", "KAN-228", "KAN-227", "KAN-230", "KAN-226"]
+    },
+    {
+      "batch": 2,
+      "tickets": ["KAN-231", "KAN-232", "KAN-233", "KAN-234", "KAN-235"]
+    },
+    {
+      "batch": 3,
+      "tickets": ["KAN-270", "KAN-271", "KAN-272", "KAN-273", "KAN-274"]
+    },
+    {
+      "batch": 4,
+      "tickets": ["KAN-259", "KAN-275", "KAN-276", "KAN-260", "KAN-12"]
+    },
+    {
+      "batch": 5,
+      "tickets": ["KAN-261", "KAN-262", "KAN-263", "KAN-264", "KAN-10"]
+    },
+    {
+      "batch": 6,
+      "tickets": ["KAN-265", "KAN-266", "KAN-267", "KAN-268", "KAN-269"]
+    },
+    {
+      "batch": 7,
+      "tickets": ["KAN-51", "KAN-46", "KAN-47", "KAN-55", "KAN-11"]
+    },
+    {
+      "batch": 8,
+      "tickets": ["KAN-251", "KAN-252", "KAN-254", "KAN-255", "KAN-256"]
+    },
+    {
+      "batch": 9,
+      "tickets": ["KAN-4", "KAN-5", "KAN-6", "KAN-80", "KAN-81"]
+    },
+    {
+      "batch": 10,
+      "tickets": ["KAN-82", "KAN-83", "KAN-85", "KAN-86", "KAN-87"]
+    },
+    {
+      "batch": 11,
+      "tickets": ["KAN-9", "KAN-84", "KAN-89", "KAN-140", "KAN-154"]
+    }
+  ],
+  "boardOutcomes": {
+    "done": [
+      "KAN-229",
+      "KAN-228",
+      "KAN-227",
+      "KAN-230",
+      "KAN-226",
+      "KAN-231",
+      "KAN-232",
+      "KAN-233",
+      "KAN-234",
+      "KAN-235",
+      "KAN-270",
+      "KAN-271",
+      "KAN-272",
+      "KAN-273",
+      "KAN-274",
+      "KAN-259",
+      "KAN-275",
+      "KAN-276",
+      "KAN-260",
+      "KAN-12",
+      "KAN-261",
+      "KAN-262",
+      "KAN-263",
+      "KAN-264",
+      "KAN-10",
+      "KAN-265",
+      "KAN-266",
+      "KAN-267",
+      "KAN-268",
+      "KAN-269",
+      "KAN-51",
+      "KAN-46",
+      "KAN-47",
+      "KAN-55",
+      "KAN-11",
+      "KAN-251",
+      "KAN-252",
+      "KAN-254",
+      "KAN-255",
+      "KAN-256",
+      "KAN-4",
+      "KAN-5",
+      "KAN-6",
+      "KAN-80",
+      "KAN-81",
+      "KAN-82",
+      "KAN-83",
+      "KAN-85",
+      "KAN-86",
+      "KAN-87",
+      "KAN-9",
+      "KAN-84",
+      "KAN-89"
+    ],
+    "inProgress": ["KAN-140", "KAN-154"],
+    "excludedSourceBlockers": ["KAN-250", "KAN-253"]
+  },
+  "evidenceBoundary": "KAN-140 and KAN-154 remain In Progress. KAN-250 and KAN-253 are excluded from the requested 55 because the exact Lane and O'Connell editions/pages are not available and citations must not be invented."
+}

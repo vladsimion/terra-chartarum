@@ -80,6 +80,12 @@ Ticket-level regional and phase expectations are executable in
 [authority-contract guide](port-authority-contract.md) explains how it protects
 the CSV-to-FlatGeobuf projection.
 
+The source-independent route chronology handoff is documented in
+[`chronology-handoff.md`](chronology-handoff.md). Its executable contract joins
+the seven normalized route sequences, sea paths, first Atlas flip and
+discrepancy ledger while keeping page-level Lane/O’Connell verification
+explicitly blocked rather than fabricating citations.
+
 ```sh
 make vmn-validate   # validates public/geo/venetian-*.fgb against spec §8
 ```

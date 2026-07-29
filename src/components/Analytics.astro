@@ -1,0 +1,23 @@
+---
+import { resolveAnalyticsConfig } from '../lib/analytics';
+
+const config = resolveAnalyticsConfig({
+  provider: import.meta.env.PUBLIC_ANALYTICS_PROVIDER,
+  scriptSrc: import.meta.env.PUBLIC_PLAUSIBLE_SCRIPT_SRC,
+  siteDomain: import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN,
+});
+
+const init = config
+  ? `window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)};plausible.init=plausible.init||function(options){plausible.o=options||{}};plausible.init({captureOnLocalhost:false,hashBasedRouting:false,fileDownloads:false,outboundLinks:false,formSubmissions:false,customProperties:{}});`
+  : '';
+---
+
+{
+  config && (
+    <>
+      <meta name="tc-analytics" content={`plausible-pageviews:${config.siteDomain}`} />
+      <script is:inline async src={config.scriptSrc} data-analytics-provider={config.provider} />
+      <script is:inline set:html={init} />
+    </>
+  )
+}

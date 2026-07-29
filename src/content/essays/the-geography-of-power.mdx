@@ -1,0 +1,221 @@
+---
+title: The Geography of Power
+subtitle: Authority at Street Level
+summary: >-
+  Power is not only a capital or border. Parcels, pipes, permits, schools and
+  transit distribute authority through the city—and their service areas rarely
+  match the clean jurisdiction on the official map.
+cover: /covers/the-geography-of-power.svg
+status: native
+eras: [Early Modern, Industrial, Contemporary]
+regions: [Europe, North America, Global]
+lenses: [Jurisdiction, Infrastructure, Access, Property, Refusal]
+yearFrom: 1748
+yearTo: 2020
+mapCount: 8
+readingMinutes: 8
+accent: '#9a6f7f'
+order: 13
+featured: false
+room: city
+secondaryRooms: [border, map]
+sections:
+  - id: power-has-an-address
+    title: Power has an address
+    room: city
+    secondaryRooms: [border]
+  - id: parcel-makes-a-subject
+    title: The parcel makes a subject
+    room: city
+    secondaryRooms: [map]
+  - id: service-area-is-political
+    title: A service area is political
+    room: city
+    secondaryRooms: [earth]
+  - id: visibility-cuts-both-ways
+    title: Visibility cuts both ways
+    room: map
+    secondaryRooms: [archive]
+  - id: map-power-from-below
+    title: Map power from below
+    room: city
+    secondaryRooms: [road]
+publishedAt: '2026-07-29'
+updatedAt: '2026-07-29'
+metaScores:
+  measure: 0.82
+  witness: 0.74
+  use: 0.86
+  cosmos: 0.44
+  power: 1
+  silence: 0.9
+---
+
+import Section from '../../components/Section.astro';
+import AdaptiveTimeline from '../../components/islands/AdaptiveTimeline.astro';
+
+<p class="essay-kicker">The City · The Border · The Map</p>
+
+# The Geography of Power
+
+## Authority at street level
+
+Maps of political power often begin too far away. Capitals receive stars,
+states receive colours, borders receive thick lines. The image locates formal
+authority, but it says little about how authority reaches a household. Power
+arrives through an address, parcel, school district, utility connection, permit,
+police beat, bus route, flood zone and queue. Its geography is infrastructural.
+
+The city makes this distribution visible because many jurisdictions occupy the
+same block. Property lines, service areas and electoral wards overlap. A person
+may live inside a municipality yet outside a reliable water network; inside a
+school catchment yet beyond a safe walking route; inside a voting district yet
+outside the language in which its procedures are explained. The official line
+and the lived reach of government are related but not identical.
+
+This essay asks how maps make that gap legible without pretending that access
+can be read directly from infrastructure alone.
+
+<Section id="power-has-an-address" title="Power has an address" rooms={['city', 'border']}>
+
+An address is a small administrative map. It places a dwelling inside a street
+sequence, postal system, emergency response grid and property record. To have
+an address is to become findable by services, markets and enforcement. To lack
+one can mean practical exclusion even when a settlement is physically close.
+
+House numbering and street naming appear mundane because their political work
+has become routine. They let officials enumerate residents, issue notices,
+collect fees and coordinate visits. The same legibility helps people claim
+services and organise. Power is not contained in the number; it is enabled by
+the systems that agree to recognise it.
+
+Historical city plans show this transition unevenly. Giambattista Nolli's 1748
+Rome distinguishes public circulation through streets, squares and selected
+interiors. Nineteenth-century cadastral and insurance mapping disaggregates the
+block into parcels, materials and risks. Twentieth-century zoning adds permitted
+uses. Contemporary open data publishes service boundaries as queryable layers.
+Each system answers a different administrative question.
+
+<AdaptiveTimeline
+  from={1700}
+  to={2025}
+  compress={false}
+  ticks={[1750, 1850, 1950, 2025]}
+  caption="Selected mapping regimes overlap; later systems do not erase earlier property and street records."
+  events={[
+    { year: 1748, label: 'Nolli: public Rome' },
+    { year: 1854, label: 'Snow: cholera inquiry' },
+    { year: 1880, label: 'Sanborn urban coverage' },
+    { year: 1916, label: 'New York zoning' },
+    { year: 1935, label: 'Redlining surveys' },
+    { year: 2004, label: 'OpenStreetMap begins' },
+  ]}
+/>
+
+</Section>
+
+<Section id="parcel-makes-a-subject" title="The parcel makes a subject" rooms={['city', 'map']}>
+
+The cadastral parcel translates occupation into a bounded object that can be
+owned, assessed, transferred and disputed. It joins geometry to a legal record.
+Its apparent precision can conceal the negotiations, informal uses and shared
+rights that do not fit the polygon.
+
+Parcel mapping produces a particular urban subject: the registered owner,
+tenant, taxpayer or liable party attached to an address. People who live or
+work outside those categories may become hard to see. Informal extensions,
+collective tenure and seasonal occupation can appear as error against the
+official base.
+
+This does not make cadastral data dispensable. Clear records can protect claims
+and expose unequal concentration. The task is to keep the map's category visible.
+A parcel layer shows recognised property units; it does not show every social
+relation to the land.
+
+Overlaying eviction filings, code enforcement or tax arrears on parcels can
+reveal administrative pressure. Yet such maps also risk turning households into
+problem symbols. Ethical design should aggregate where possible, explain the
+recording process and avoid making vulnerability easier to target.
+
+</Section>
+
+<Section id="service-area-is-political" title="A service area is political" rooms={['city', 'earth']}>
+
+Infrastructure makes jurisdiction tangible. Water pressure, sewer connections,
+electric reliability, tree canopy, clinics and frequent transit distribute
+health and time. Their service areas rarely end at one obvious boundary. They
+follow engineering capacity, historical investment, topography, contracts and
+political choice.
+
+A map of pipes can show where a network exists. It cannot by itself show whether
+water is affordable, safe or continuously supplied. A transit line does not
+measure the reliability of the trip or the safety of the walk to the stop.
+Availability is not access.
+
+The distinction changes mapping practice. Instead of a binary service polygon,
+an access map can combine travel time, schedule, cost, capacity and barriers,
+while keeping each input inspectable. Uncertainty should expand where data is
+old or coverage uneven.
+
+Environmental systems add another scale. Flood zones and heat islands cross
+administrative borders, but mitigation budgets and emergency response do not.
+The geography of risk and the geography of responsibility can therefore diverge.
+Placing both on the same map reveals where jurisdiction becomes an excuse for
+inaction.
+
+</Section>
+
+<Section id="visibility-cuts-both-ways" title="Visibility cuts both ways" rooms={['map', 'archive']}>
+
+Reformers have long used maps to expose hidden conditions. Charles Booth's
+poverty maps, sanitation surveys and disease investigations turned urban
+inequality into evidence that officials could not easily dismiss. Contemporary
+community maps document missing crossings, pollution, displacement and police
+encounters.
+
+But visibility cuts both ways. Booth's categories judged households through an
+observer's social hierarchy. Redlining maps converted racialised assessment into
+an apparatus for disinvestment. Predictive systems can recycle biased records
+as if the density of past enforcement measured the density of harm.
+
+The same technical act—geocoding an address—can support accountability or
+surveillance. Purpose, access and consequence decide the politics. A responsible
+map should record who collected the data, under which definition, and which
+people were exposed by its publication.
+
+Absence also needs interpretation. A blank area in a complaints dataset may
+signal satisfaction, or it may signal language barriers, distrust and lack of
+access to reporting. Silence is not a zero.
+
+</Section>
+
+<Section id="map-power-from-below" title="Map power from below" rooms={['city', 'road']}>
+
+Mapping power from below begins with a journey rather than a jurisdiction.
+How long does it take to reach water, work, school, care or safety? Which gates,
+fares, forms and informal checkpoints interrupt the route? Where does a right
+exist on paper but fail in practice?
+
+Participatory mapping can supply knowledge absent from administrative systems,
+but participation is not a decorative workshop. Contributors need control over
+what is recorded, who can see it and how it will be used. Sensitive paths may
+need deliberate generalisation or omission.
+
+The strongest civic map holds three layers apart: formal responsibility,
+material provision and lived access. Agreement among them is evidence of a
+system working. Disagreement is not noise to smooth away. It identifies the
+geography in which power is negotiated.
+
+Seen at street level, power loses the clean outline of the state map. It becomes
+a field of doors that open, services that arrive, routes that fail and records
+that recognise some people more readily than others. That geography is harder
+to draw—and closer to how authority is lived.
+
+</Section>
+
+### Reading trail
+
+- James C. Scott, _Seeing Like a State_.
+- Laura Kurgan, _Close Up at a Distance_.
+- William Rankin, _After the Map_.
+- Shannon Mattern, _A City Is Not a Computer_.

@@ -17,7 +17,7 @@ import { getCorpusCore, corpusYearRange } from '../../lib/corpus';
 import { getGeoLayers } from '../../lib/geo';
 import { versionedGeoUrl } from '../../lib/geo-release';
 import { coveragePolygons } from '../../lib/coverage';
-import { getToponyms, toponymNames } from '../../lib/toponyms';
+import { getToponyms, toponymAuthorityLinks, toponymNames } from '../../lib/toponyms';
 import { getEssays, formatYear } from '../../lib/registry';
 import { getVmnAtlasLinks } from '../../lib/vmn-atlas-links';
 
@@ -66,7 +66,8 @@ const toponyms = getToponyms().map((t) => ({
   names: toponymNames(t),
   historical: toponymNames(t).slice(1),
   coords: t.coords,
-  pleiadesId: t.pleiadesId ?? null,
+  authorityLinks: toponymAuthorityLinks(t),
+  linkedPlacesUrl: `/geo/toponyms.lpf.json#${encodeURIComponent(t.id)}`,
   essays: t.essaySlugs.map((s) => ({ slug: s, title: essayMeta[s]?.title ?? s })),
   maps: t.mapIds
     .filter((id) => corpusTitle.has(id))
@@ -352,7 +353,8 @@ const payload = {
     names: string[];
     historical: string[];
     coords: [number, number];
-    pleiadesId: string | null;
+    authorityLinks: Array<{ type: 'closeMatch'; identifier: string }>;
+    linkedPlacesUrl: string;
     essays: { slug: string; title: string }[];
     maps: { id: string; title: string }[];
   };
@@ -948,15 +950,22 @@ const payload = {
             (e) => `<a class="am-pop-link" href="/essays/${e.slug}/">${e.title} →</a>`,
           ),
         ].join('');
-        const pleiades = topo.pleiadesId
-          ? `<a class="am-pop-link" href="https://pleiades.stoa.org/places/${topo.pleiadesId}" target="_blank" rel="noopener">Pleiades ↗</a>`
-          : '';
+        const authorityLinks = topo.authorityLinks
+          .map(({ identifier }) => {
+            const label = identifier.includes('pleiades.stoa.org')
+              ? 'Pleiades'
+              : 'World Historical Gazetteer';
+            return `<a class="am-pop-link" href="${identifier}" target="_blank" rel="noopener">${label} ↗</a>`;
+          })
+          .join('');
         const popup = new maplibregl.Popup({ offset: 12, closeButton: false }).setHTML(
           `<div class="am-pop am-topo-pop"><span class="am-pop-year">Place-names</span>` +
             `<strong class="am-pop-title">${topo.modern}</strong>` +
             names +
             links +
-            pleiades +
+            authorityLinks +
+            `<a class="am-pop-link" href="${topo.linkedPlacesUrl}">Linked Places record →</a>` +
+            `<a class="am-pop-link" href="https://pelagios.org/lod/tools-resources" target="_blank" rel="noopener">Pelagios tools ↗</a>` +
             `</div>`,
         );
         const marker = new maplibregl.Marker({ element: el })

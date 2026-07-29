@@ -53,7 +53,175 @@ export const CROSSWALK: Record<string, Partial<Record<CanonicalDimension, number
   CONFINE: { power: 1 },
   CIRCOLAZIONE: { power: 1 },
   IMPOSIZIONE: { power: 1 },
+  // Cities Remember
+  Fragment: { witness: 0.75, silence: 0.5 },
+  View: { witness: 0.5, cosmos: 0.5 },
+  Wall: { power: 0.75, silence: 0.25 },
+  Ground: { measure: 0.5, witness: 0.5 },
+  Risk: { use: 0.5, power: 0.5 },
+  Registration: { measure: 0.5, witness: 0.5 },
+  // Invisible Maps of Religion
+  'Sacred centre': { cosmos: 1, power: 0.25 },
+  Orientation: { cosmos: 0.75, use: 0.25 },
+  Pilgrimage: { use: 0.75, cosmos: 0.25 },
+  Memory: { witness: 0.5, cosmos: 0.5 },
+  Diagram: { cosmos: 0.75, measure: 0.25 },
+  Print: { witness: 0.5, use: 0.5 },
+  // Invisible Maps of Trade
+  Network: { use: 0.75, power: 0.25 },
+  Jurisdiction: { power: 1 },
+  Schedule: { use: 0.75, measure: 0.25 },
+  Labour: { power: 0.75, silence: 0.25 },
+  Commodity: { use: 0.5, power: 0.5 },
+  Silence: { silence: 1 },
+  // Maps That Age
+  Plate: { witness: 0.75, measure: 0.25 },
+  State: { witness: 0.75, measure: 0.25 },
+  Edition: { witness: 0.75, use: 0.25 },
+  Wear: { witness: 1 },
+  Revision: { witness: 0.5, power: 0.5 },
+  Archive: { witness: 0.75, silence: 0.25 },
+  // Wave 2
+  Terrain: { measure: 0.5, witness: 0.5 },
+  Settlement: { witness: 0.5, power: 0.5 },
+  Ecology: { witness: 0.75, silence: 0.25 },
+  Territory: { power: 0.75, measure: 0.25 },
+  Empire: { power: 1 },
+  Administration: { power: 0.75, use: 0.25 },
+  Boundary: { power: 1 },
+  Atlas: { use: 0.5, cosmos: 0.5 },
+  Classification: { cosmos: 0.5, power: 0.5 },
+  Nation: { power: 0.75, cosmos: 0.25 },
+  Survey: { measure: 0.75, power: 0.25 },
+  Schooling: { cosmos: 0.5, power: 0.5 },
+  Repetition: { cosmos: 0.5, power: 0.5 },
+  Projection: { measure: 1 },
+  Perspective: { cosmos: 0.5, measure: 0.5 },
+  Distortion: { measure: 0.75, silence: 0.25 },
+  Scale: { measure: 0.75, use: 0.25 },
+  Viewpoint: { cosmos: 0.5, power: 0.5 },
+  Infrastructure: { use: 0.5, power: 0.5 },
+  Access: { use: 0.75, power: 0.25 },
+  Property: { power: 1 },
+  Refusal: { silence: 0.75, power: 0.25 },
+  Movement: { use: 0.75, witness: 0.25 },
+  Border: { power: 1 },
+  Uncertainty: { witness: 1 },
+  Diaspora: { witness: 0.5, cosmos: 0.25, silence: 0.25 },
+  Landscape: { witness: 0.75, measure: 0.25 },
+  Archaeology: { witness: 1 },
+  Reconstruction: { witness: 0.75, cosmos: 0.25 },
+  Catalogue: { witness: 0.5, cosmos: 0.5 },
+  Taxonomy: { cosmos: 0.5, power: 0.5 },
+  Search: { use: 0.75, power: 0.25 },
+  // Starter example uses the canonical terms as its native demonstration lens.
+  Measure: { measure: 1 },
+  Use: { use: 1 },
+  Power: { power: 1 },
 };
+
+export interface LensAuditEssay {
+  slug: string;
+  lenses: string[];
+  metaScores?: Partial<Record<CanonicalDimension, number>>;
+}
+
+export interface LensCoverageAudit {
+  missingMappings: Array<{ slug: string; axis: string }>;
+  duplicateLabels: Array<{ slug: string; axis: string }>;
+  invalidMappings: Array<{ axis: string; dimension: string; weight: number }>;
+  invalidNormalization: Array<{ slug: string; dimension: CanonicalDimension; value: unknown }>;
+}
+
+export interface MappedNativeAxis {
+  axis: string;
+  mappings: Array<{
+    dimension: CanonicalDimension;
+    label: string;
+    weight: number;
+  }>;
+}
+
+/**
+ * Audit the additive meta-lens contract without requiring Astro's content
+ * runtime. Used by unit tests and by the essay renderer before it exposes the
+ * lens. Native labels stay intact; a mapping may contribute to more than one
+ * canonical dimension.
+ */
+export function auditLensCoverage(essays: LensAuditEssay[]): LensCoverageAudit {
+  const missingMappings: LensCoverageAudit['missingMappings'] = [];
+  const duplicateLabels: LensCoverageAudit['duplicateLabels'] = [];
+  const invalidNormalization: LensCoverageAudit['invalidNormalization'] = [];
+  const seenMappings = new Set<string>();
+  const invalidMappings: LensCoverageAudit['invalidMappings'] = [];
+
+  for (const [axis, mapping] of Object.entries(CROSSWALK)) {
+    for (const [dimension, weight] of Object.entries(mapping)) {
+      const key = `${axis}:${dimension}`;
+      if (
+        seenMappings.has(key) ||
+        typeof weight !== 'number' ||
+        weight === 0 ||
+        Math.abs(weight) > 1
+      ) {
+        invalidMappings.push({ axis, dimension, weight: Number(weight) });
+      }
+      seenMappings.add(key);
+    }
+  }
+
+  for (const essay of essays) {
+    const seenAxes = new Set<string>();
+    for (const axis of essay.lenses) {
+      if (seenAxes.has(axis)) duplicateLabels.push({ slug: essay.slug, axis });
+      seenAxes.add(axis);
+      if (!CROSSWALK[axis] || Object.keys(CROSSWALK[axis]).length === 0) {
+        missingMappings.push({ slug: essay.slug, axis });
+      }
+    }
+
+    for (const dimension of CANONICAL_DIMENSIONS) {
+      const value = essay.metaScores?.[dimension];
+      if (typeof value !== 'number' || !Number.isFinite(value) || value < 0 || value > 1) {
+        invalidNormalization.push({ slug: essay.slug, dimension, value });
+      }
+    }
+  }
+
+  return { missingMappings, duplicateLabels, invalidMappings, invalidNormalization };
+}
+
+export function mappedNativeAxes(lenses: string[]): MappedNativeAxis[] {
+  return lenses.map((axis) => {
+    const mapping = CROSSWALK[axis];
+    if (!mapping || Object.keys(mapping).length === 0) {
+      throw new Error(`Native essay axis '${axis}' has no canonical meta-lens mapping.`);
+    }
+    return {
+      axis,
+      mappings: Object.entries(mapping).map(([dimension, weight]) => ({
+        dimension: dimension as CanonicalDimension,
+        label: DIMENSION_META[dimension as CanonicalDimension].label,
+        weight: weight as number,
+      })),
+    };
+  });
+}
+
+export function assertEssayLensCoverage(essay: LensAuditEssay): void {
+  const audit = auditLensCoverage([essay]);
+  const errors = [
+    ...audit.missingMappings.map(({ axis }) => `unmapped axis '${axis}'`),
+    ...audit.duplicateLabels.map(({ axis }) => `duplicate axis '${axis}'`),
+    ...audit.invalidMappings.map(
+      ({ axis, dimension, weight }) => `invalid ${axis} → ${dimension} weight ${weight}`,
+    ),
+    ...audit.invalidNormalization.map(
+      ({ dimension, value }) => `invalid ${dimension} normalized score ${String(value)}`,
+    ),
+  ];
+  if (errors.length > 0) throw new Error(`${essay.slug}: ${errors.join('; ')}`);
+}
 
 /** All essays, sorted by their explicit `order` then title. */
 export async function getEssays(): Promise<Essay[]> {

@@ -1,5 +1,5 @@
 import type { APIContext } from 'astro';
-import { getToponyms, toponymNames } from '../../lib/toponyms';
+import { getToponyms, toponymAuthorityLinks, toponymNames } from '../../lib/toponyms';
 
 /**
  * Toponym concordance endpoint (KAN-75), in rss.xml.ts style. Emits the authored
@@ -21,6 +21,9 @@ export async function GET(_context: APIContext) {
         variants: t.variants,
         names: toponymNames(t),
         pleiadesId: t.pleiadesId ?? null,
+        whgId: t.whgId ?? null,
+        authorityLinks: toponymAuthorityLinks(t),
+        linkedPlacesUrl: `/geo/toponyms.lpf.json#${encodeURIComponent(t.id)}`,
         essaySlugs: t.essaySlugs,
         mapIds: t.mapIds,
       },

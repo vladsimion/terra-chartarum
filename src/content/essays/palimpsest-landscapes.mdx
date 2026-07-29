@@ -1,0 +1,213 @@
+---
+title: Palimpsest Landscapes
+subtitle: The Ground Keeps Several Times
+summary: >-
+  Roads become field edges, walls become foundations, rivers leave dry
+  channels. Landscape is not a page repeatedly erased but a negotiation among
+  traces that survive at different scales.
+cover: /covers/palimpsest-landscapes.svg
+status: native
+eras: [Ancient, Medieval, Industrial, Contemporary]
+regions: [Europe, Mediterranean, Global]
+lenses: [Landscape, Archaeology, Survey, Memory, Reconstruction]
+yearFrom: -300
+yearTo: 2025
+mapCount: 8
+readingMinutes: 8
+accent: '#8c8063'
+order: 15
+featured: false
+room: archive
+secondaryRooms: [earth, city]
+sections:
+  - id: palimpsest-is-not-metaphor-alone
+    title: Palimpsest is not metaphor alone
+    room: archive
+    secondaryRooms: [earth]
+  - id: trace-changes-with-scale
+    title: A trace changes with scale
+    room: map
+    secondaryRooms: [archive]
+  - id: city-reuses-ground
+    title: The city reuses its ground
+    room: city
+    secondaryRooms: [archive]
+  - id: reconstruction-is-argument
+    title: Reconstruction is an argument
+    room: theatre
+    secondaryRooms: [archive]
+  - id: keep-layers-answerable
+    title: Keep layers answerable
+    room: archive
+    secondaryRooms: [earth, map]
+publishedAt: '2026-07-29'
+updatedAt: '2026-07-29'
+metaScores:
+  measure: 0.76
+  witness: 0.96
+  use: 0.54
+  cosmos: 0.7
+  power: 0.76
+  silence: 0.96
+---
+
+import Section from '../../components/Section.astro';
+import AdaptiveTimeline from '../../components/islands/AdaptiveTimeline.astro';
+
+<p class="essay-kicker">The Archive · The Earth · The City</p>
+
+# Palimpsest Landscapes
+
+## The ground keeps several times
+
+Landscape is often called a palimpsest: a manuscript scraped and written over,
+with earlier text still visible beneath the new. The metaphor is useful because
+it resists the idea that one date owns the ground. It is dangerous because land
+is not a passive page. Rivers move, soil accumulates, buildings are quarried,
+roads are reused, memories attach, and later investigators decide which traces
+to name.
+
+A landscape does not preserve every period equally. Stone survives differently
+from timber. A property boundary can outlast the institution that drew it. A
+ruin may be reconstructed until the reconstruction becomes the most visible
+layer. Absence can result from decay, deliberate demolition, later building or
+the methods of the survey.
+
+The palimpsest is therefore not a stack waiting to be peeled back to an original
+truth. It is a set of interacting traces whose survival and interpretation both
+require explanation.
+
+<Section id="palimpsest-is-not-metaphor-alone" title="Palimpsest is not metaphor alone" rooms={['archive', 'earth']}>
+
+Physical processes produce temporal depth. Floodplains bury surfaces; erosion
+cuts through them. Crop marks reveal buried walls by changing plant growth.
+Soil and moisture make former roads legible from the air. LiDAR can model subtle
+relief beneath woodland. Geophysics detects contrasts without excavation.
+
+Each technique sees a different property. Aerial photography records reflected
+light at a moment. LiDAR estimates surfaces from returned pulses. Magnetometry
+measures local magnetic variation. Excavation exposes stratigraphic relation
+destructively and at limited extent. Combining them can strengthen an
+interpretation, but no composite becomes a direct view through time.
+
+The map should retain those methods as attributes. A line inferred from crop
+marks is not identical to a standing wall surveyed on the ground. Rendering
+both as the same solid stroke turns evidential difference into false
+continuity.
+
+</Section>
+
+<Section id="trace-changes-with-scale" title="A trace changes with scale" rooms={['map', 'archive']}>
+
+At field scale, a bank may be measurable. At regional scale, it becomes part of
+a hypothesised route or boundary. Generalisation is necessary, but it changes
+the claim. Joined fragments can look more certain than the observations from
+which they were assembled.
+
+Historical map regression—comparing dated maps and surveys—adds another kind of
+trace. A road appearing on several editions may record persistence, or it may
+show copying. A missing feature may have vanished from the ground, fallen
+outside the map's purpose, or been omitted by revision.
+
+The timeline below follows recording technologies, not the age of the
+landscapes they study.
+
+<AdaptiveTimeline
+  from={1700}
+  to={2030}
+  compress={false}
+  ticks={[1700, 1800, 1900, 2000, 2030]}
+  caption="Observation methods overlap. New instruments change detectability; they do not make earlier field records irrelevant."
+  events={[
+    { year: 1748, label: 'Measured urban survey' },
+    { year: 1791, label: 'National topographic survey' },
+    { year: 1906, label: 'Aerial archaeology experiments' },
+    { year: 1958, label: 'Systematic rescue archaeology' },
+    { year: 2000, label: 'Airborne LiDAR adoption' },
+    { year: 2015, label: 'Large open point-cloud releases' },
+  ]}
+/>
+
+Scale should be an interface control and a prose warning. Zooming out may hide
+uncertain fragments; zooming in may reveal that an apparently continuous line
+is a reconstruction. A good historical layer changes symbology with scale
+instead of promising the same certainty everywhere.
+
+</Section>
+
+<Section id="city-reuses-ground" title="The city reuses its ground" rooms={['city', 'archive']}>
+
+Cities make palimpsest visible through reuse. Walls become property lines.
+Theatres become housing foundations. Buried watercourses influence streets and
+basements. Demolished fortifications become boulevards or parks. The past does
+not sit beneath the present in tidy layers; it is recruited into it.
+
+Rome's Forma Urbis fragments preserve a Severan marble plan while the city they
+depict has been rebuilt many times. Nolli's eighteenth-century plan records a
+different relation between public interior and street. Modern mapping can align
+fragments, plan and contemporary fabric, but the alignment is interpretive.
+Different surveys, damage and uncertain fragment placement prevent perfect
+registration.
+
+Urban archaeology also reflects planning power. Development-led excavation
+occurs where construction opens ground. Monumental centres receive different
+attention from ordinary housing or industrial outskirts. A density map of
+finds can become a density map of investigation.
+
+The city is not more historical where the database has more points. The
+database is one layer in the palimpsest.
+
+</Section>
+
+<Section id="reconstruction-is-argument" title="Reconstruction is an argument" rooms={['theatre', 'archive']}>
+
+Reconstruction joins fragments into a possible whole. It can make a lost wall,
+coastline or street network understandable. Its persuasive clarity is exactly
+why it needs visible provenance.
+
+A solid polygon suggests observed extent. A hatched one can mark inference; a
+range can show competing positions. Dates should be intervals where evidence
+supports only intervals. Alternate reconstructions should remain switchable
+rather than averaged into a shape no scholar proposed.
+
+Three-dimensional views increase the burden. Texture, light and complete roofs
+can make a hypothesis feel witnessed. A reconstruction should distinguish
+measured geometry, analogous completion and artistic staging. The viewer needs
+to know which parts survive.
+
+This is a theatrical problem in the best sense. Reconstruction stages evidence
+so an absent landscape can be considered. The ethical aim is not to avoid the
+stage. It is to keep the scenery from claiming to be the ruin.
+
+</Section>
+
+<Section id="keep-layers-answerable" title="Keep layers answerable" rooms={['archive', 'earth', 'map']}>
+
+An answerable palimpsest layer carries a source, observation method, date of
+observation, interpreted period, geometry status and confidence. “Confidence”
+should not be a mysterious number; it should resolve to reasons such as
+excavated, surveyed, remotely sensed, documented on a contemporary plan, or
+inferred between fragments.
+
+Comparisons need registration boundaries. A slider between two maps can reveal
+change, but differences in projection, crop and survey precision must not be
+read as changes in the ground. Control points and residual error belong beside
+the visual.
+
+Absence should remain selectable. A demolished structure, a dry channel and an
+unlocated feature are three different states. Deleting all three from the
+current layer reproduces the fantasy that only the visible present is real.
+
+The landscape keeps several times, but not on its own. Materials survive,
+institutions record, communities remember and investigators interpret. A
+palimpsest map is strongest when it shows those acts separately enough that a
+reader can ask how each line came to be there.
+
+</Section>
+
+### Reading trail
+
+- W. G. Hoskins, _The Making of the English Landscape_.
+- D. W. Meinig, “The Beholding Eye.”
+- Laurent Olivier, _The Dark Abyss of Time_.
+- Sarah Parcak, _Archaeology from Space_.

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Projection and Perspective</title>
+  <desc id="desc">A gridded globe opens into several flat projection contracts.</desc>
+  <rect width="1200" height="630" fill="#0a0806"/>
+  <g fill="none" stroke="#668ea0" stroke-width="3">
+    <ellipse cx="320" cy="270" rx="220" ry="180"/>
+    <ellipse cx="320" cy="270" rx="80" ry="180"/><ellipse cx="320" cy="270" rx="150" ry="180"/>
+    <path d="M100 270H540M125 180H515M125 360H515"/>
+    <path d="M600 110C760 170 760 370 600 430M760 110C920 170 920 370 760 430M920 110C1080 170 1080 370 920 430"/>
+    <path d="M600 110H920M600 270H1080M600 430H920" stroke="#d4b87a"/>
+  </g>
+  <text x="72" y="545" fill="#e8dec5" font-family="serif" font-size="54">Projection and Perspective</text>
+  <text x="76" y="585" fill="#668ea0" font-family="monospace" font-size="20" letter-spacing="5">EVERY VIEW HAS A POSITION</text>
+</svg>

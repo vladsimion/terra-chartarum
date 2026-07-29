@@ -145,18 +145,28 @@ const ariaLabel =
     <script>
       // Emphasize a series when its legend button is hovered or keyboard-focused.
       document.querySelectorAll('.radar[data-interactive]').forEach((fig) => {
-        const set = (idx: number | null) => {
-          fig.querySelectorAll<HTMLElement>('.series').forEach((g) => {
-            const i = Number(g.dataset.series);
-            g.style.opacity = idx === null || idx === i ? '1' : '0.22';
+        const applyFocus = () => {
+          const selected = fig.getAttribute('data-focus-series');
+          const selectedIndex = selected === null ? null : Number(selected);
+          fig.querySelectorAll('.series').forEach((g) => {
+            const index = Number(g.getAttribute('data-series'));
+            g.setAttribute('opacity', selectedIndex === null || selectedIndex === index ? '1' : '0.22');
           });
         };
-        fig.querySelectorAll<HTMLElement>('.legend-btn').forEach((btn) => {
-          const i = Number(btn.dataset.series);
-          btn.addEventListener('mouseenter', () => set(i));
-          btn.addEventListener('mouseleave', () => set(null));
-          btn.addEventListener('focus', () => set(i));
-          btn.addEventListener('blur', () => set(null));
+        fig.querySelectorAll('.legend-btn').forEach((btn) => {
+          const index = btn.getAttribute('data-series');
+          const focus = () => {
+            if (index !== null) fig.setAttribute('data-focus-series', index);
+            applyFocus();
+          };
+          const reset = () => {
+            fig.removeAttribute('data-focus-series');
+            applyFocus();
+          };
+          btn.addEventListener('mouseenter', focus);
+          btn.addEventListener('mouseleave', reset);
+          btn.addEventListener('focus', focus);
+          btn.addEventListener('blur', reset);
         });
       });
     </script>

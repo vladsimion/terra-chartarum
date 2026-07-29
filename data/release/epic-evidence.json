@@ -1,0 +1,322 @@
+{
+  "schemaVersion": 1,
+  "status": "repository_verified",
+  "verificationCommands": ["npm run check", "npm test", "npm run build"],
+  "batches": [
+    {
+      "batch": 9,
+      "rationale": "Foundational and room-platform epics whose Jira children are all Done and whose acceptance artifacts remain present in the current release.",
+      "epicKeys": ["KAN-4", "KAN-5", "KAN-6", "KAN-80", "KAN-81"]
+    },
+    {
+      "batch": 10,
+      "rationale": "User-facing room discovery, manifesto, and Wave-1 editorial epics whose Jira children are all Done and whose publication artifacts remain live.",
+      "epicKeys": ["KAN-82", "KAN-83", "KAN-85", "KAN-86", "KAN-87"]
+    },
+    {
+      "batch": 11,
+      "rationale": "Dependency-bearing geo, VMN and Wave-2 parents. KAN-9, KAN-84 and KAN-89 can close; KAN-140 remains In Progress until the explicitly blocked chronology child is resolved.",
+      "epicKeys": ["KAN-9", "KAN-84", "KAN-89", "KAN-140"]
+    }
+  ],
+  "epics": [
+    {
+      "key": "KAN-4",
+      "title": "Foundations",
+      "children": ["KAN-13", "KAN-14", "KAN-15", "KAN-16", "KAN-17", "KAN-176"],
+      "acceptance": [
+        "Project skeleton and TypeScript/Astro tooling are in place.",
+        "Shared design primitives are provided by the global token system.",
+        "Shared content primitives are enforced by the essay collection schema and registry."
+      ],
+      "evidence": [
+        "package.json",
+        "astro.config.mjs",
+        "src/styles/global.css",
+        "src/content/config.ts",
+        "src/lib/registry.ts"
+      ]
+    },
+    {
+      "key": "KAN-5",
+      "title": "Portal Shell & Atlas Landing",
+      "children": ["KAN-18", "KAN-19", "KAN-20", "KAN-21", "KAN-22", "KAN-23"],
+      "acceptance": [
+        "A single publication front door is generated at the root route.",
+        "Header, footer and layout provide consistent portal chrome.",
+        "Atlas and faceted essay landing pages are available through the shared shell."
+      ],
+      "evidence": [
+        "src/pages/index.astro",
+        "src/layouts/PortalLayout.astro",
+        "src/components/Header.astro",
+        "src/components/Footer.astro",
+        "src/pages/atlas.astro",
+        "src/pages/essays/index.astro"
+      ]
+    },
+    {
+      "key": "KAN-6",
+      "title": "Legacy Essay Integration",
+      "children": ["KAN-24", "KAN-25", "KAN-26", "KAN-27", "KAN-28", "KAN-29", "KAN-30", "KAN-31"],
+      "acceptance": [
+        "The four source essays resolve through the shared essay host route.",
+        "Raw legacy applications remain isolated under the embed boundary.",
+        "Publication metadata and shared portal navigation frame every essay."
+      ],
+      "evidence": [
+        "src/pages/essays/[slug].astro",
+        "src/content/essays/cartography.md",
+        "src/content/essays/dacia.md",
+        "src/content/essays/speculum.md",
+        "src/content/essays/venice-sicily.mdx",
+        "public/embed/cartography/index.html",
+        "public/embed/dacia/index.html",
+        "public/embed/speculum/index.html",
+        "public/embed/venice-sicily/index.html"
+      ]
+    },
+    {
+      "key": "KAN-80",
+      "title": "Room Taxonomy & Content Schema",
+      "children": ["KAN-92", "KAN-93", "KAN-94", "KAN-95"],
+      "acceptance": [
+        "The seven-room taxonomy has one canonical data module.",
+        "Essay and section room fields are schema-validated.",
+        "Every published essay and deep-linked section is covered by room tests."
+      ],
+      "evidence": [
+        "src/data/rooms.ts",
+        "src/content/config.ts",
+        "src/data/rooms.test.ts",
+        "src/lib/room-content.test.ts",
+        "src/lib/room-sections.test.ts"
+      ]
+    },
+    {
+      "key": "KAN-81",
+      "title": "Room Landing Pages & Cross-linking",
+      "children": ["KAN-96", "KAN-97", "KAN-98", "KAN-99"],
+      "acceptance": [
+        "A rooms overview and one generated landing route per room are published.",
+        "Each room carries authored introductory copy from the canonical room data.",
+        "Badges, paths and related-content components connect essays and rooms."
+      ],
+      "evidence": [
+        "src/pages/rooms/index.astro",
+        "src/pages/rooms/[slug].astro",
+        "src/components/RoomBadge.astro",
+        "src/components/RoomPath.astro",
+        "src/components/RelatedByRoom.astro"
+      ]
+    },
+    {
+      "key": "KAN-82",
+      "title": "Search, Nav & Design System for Rooms",
+      "children": ["KAN-100", "KAN-101", "KAN-102"],
+      "acceptance": [
+        "Room identity participates in the global search index and search UI.",
+        "All seven rooms have canonical SVG glyphs.",
+        "Rooms are discoverable through the shared footer and About page."
+      ],
+      "evidence": [
+        "src/pages/search-index.json.ts",
+        "src/components/islands/SiteSearch.astro",
+        "src/data/rooms.ts",
+        "src/data/room-glyphs.test.ts",
+        "src/components/Footer.astro",
+        "src/pages/about.astro"
+      ]
+    },
+    {
+      "key": "KAN-83",
+      "title": "Manifesto Expansion (About)",
+      "children": ["KAN-103"],
+      "acceptance": [
+        "About functions as the publication manifesto rather than a placeholder.",
+        "Every Map Is an Argument is represented in the manifesto.",
+        "The Seduction of Precision is represented in the manifesto."
+      ],
+      "evidence": [
+        "src/pages/about.astro",
+        "src/layouts/PortalLayout.astro",
+        "src/pages/colophon.astro"
+      ]
+    },
+    {
+      "key": "KAN-85",
+      "title": "Essay: Invisible Maps of Trade",
+      "children": [
+        "KAN-104",
+        "KAN-105",
+        "KAN-106",
+        "KAN-107",
+        "KAN-108",
+        "KAN-109",
+        "KAN-110",
+        "KAN-111",
+        "KAN-112"
+      ],
+      "acceptance": [
+        "The Wave-1 Road anchor essay is published as native MDX.",
+        "Its interactive spine resolves the VMN route and commodity network.",
+        "The recurring Invisible Maps series shell links the published essays."
+      ],
+      "evidence": [
+        "src/content/essays/invisible-maps-trade.mdx",
+        "data/editorial/invisible-maps-trade/manifest.json",
+        "src/components/islands/VmnNetworkExplorer.astro",
+        "src/pages/series/invisible-maps.astro"
+      ]
+    },
+    {
+      "key": "KAN-86",
+      "title": "Essay: Maps That Age",
+      "children": [
+        "KAN-113",
+        "KAN-114",
+        "KAN-115",
+        "KAN-116",
+        "KAN-117",
+        "KAN-118",
+        "KAN-119",
+        "KAN-120",
+        "KAN-121"
+      ],
+      "acceptance": [
+        "The Wave-1 Archive anchor essay is published as native MDX.",
+        "Plate-state comparison is delivered as a dedicated interactive.",
+        "Cartometry evidence is exported and integrated into the essay argument."
+      ],
+      "evidence": [
+        "src/content/essays/maps-that-age.mdx",
+        "data/editorial/maps-that-age/manifest.json",
+        "src/components/islands/PlateStateExplorer.astro",
+        "scripts/export-cartometry.mjs"
+      ]
+    },
+    {
+      "key": "KAN-87",
+      "title": "Essay: Invisible Maps of Religion",
+      "children": [
+        "KAN-122",
+        "KAN-123",
+        "KAN-124",
+        "KAN-125",
+        "KAN-126",
+        "KAN-127",
+        "KAN-128",
+        "KAN-129"
+      ],
+      "acceptance": [
+        "The Wave-1 Theatre anchor essay is published as native MDX.",
+        "Sacred orientation is delivered as an accessible interactive.",
+        "The essay participates in the shared Invisible Maps series."
+      ],
+      "evidence": [
+        "src/content/essays/invisible-maps-religion.mdx",
+        "data/editorial/invisible-maps-religion/manifest.json",
+        "src/components/islands/SacredOrientationExplorer.astro",
+        "src/pages/series/invisible-maps.astro"
+      ]
+    },
+    {
+      "key": "KAN-9",
+      "title": "Geo-Data Tier (GIS / Historical GIS)",
+      "children": [
+        "KAN-42",
+        "KAN-43",
+        "KAN-44",
+        "KAN-45",
+        "KAN-46",
+        "KAN-47",
+        "KAN-209",
+        "KAN-210",
+        "KAN-211",
+        "KAN-212",
+        "KAN-213"
+      ],
+      "acceptance": [
+        "Serverless cloud-native vector layers support the Atlas map.",
+        "Layer metadata, temporal behavior and versioned publication are validated.",
+        "Gazetteer interoperability and exploratory historical overlays close the optional gaps."
+      ],
+      "evidence": [
+        "src/lib/geo.ts",
+        "src/components/islands/AtlasMap.astro",
+        "docs/geo-layers.md",
+        "docs/geo-interoperability.md",
+        "scripts/geo-release.mjs",
+        "scripts/validate-geo-interop.mjs"
+      ]
+    },
+    {
+      "key": "KAN-84",
+      "title": "VMN c.1400 Atlas Layer",
+      "children": ["KAN-145", "KAN-85"],
+      "acceptance": [
+        "The cosmography roadmap links the VMN Atlas layer to its detailed work.",
+        "The published VMN data track remains documented as the implementation umbrella.",
+        "Invisible Maps of Trade consumes and links back to the VMN Atlas layer."
+      ],
+      "evidence": [
+        "docs/roadmap.md",
+        "docs/vmn/README.md",
+        "src/content/essays/invisible-maps-trade.mdx",
+        "src/pages/atlas.astro"
+      ]
+    },
+    {
+      "key": "KAN-89",
+      "title": "Wave 2 Essays",
+      "children": [
+        "KAN-226",
+        "KAN-227",
+        "KAN-228",
+        "KAN-229",
+        "KAN-230",
+        "KAN-231",
+        "KAN-232",
+        "KAN-233",
+        "KAN-234",
+        "KAN-235"
+      ],
+      "acceptance": [
+        "The normalized Wave-2 backlog covers every listed essay outcome.",
+        "Eight native editorial essays are published with canonical room assignments.",
+        "Component assignment and editorial QA are release-gated."
+      ],
+      "evidence": [
+        "data/editorial/wave-2/backlog.json",
+        "docs/editorial/wave-2-delivery.md",
+        "src/content/essays/the-shape-of-a-civilization.mdx",
+        "src/content/essays/the-cartography-of-empire.mdx",
+        "src/content/essays/when-maps-create-countries.mdx",
+        "src/content/essays/projection-and-perspective.mdx",
+        "src/content/essays/the-geography-of-power.mdx",
+        "src/content/essays/invisible-maps-of-migration.mdx",
+        "src/content/essays/palimpsest-landscapes.mdx",
+        "src/content/essays/classification-is-cartography.mdx"
+      ]
+    },
+    {
+      "key": "KAN-140",
+      "title": "Routes (mude)",
+      "boardOutcome": "In Progress",
+      "blockers": ["KAN-250", "KAN-253"],
+      "children": ["KAN-154", "KAN-155", "KAN-156", "KAN-157"],
+      "acceptance": [
+        "Muda waypoint sequences, corrected sea paths, compiled routes and the first Atlas flip are complete.",
+        "The chronology handoff and discrepancy ledger explicitly preserve the evidence boundary.",
+        "The parent remains In Progress until page-level chronology verification and citations are available."
+      ],
+      "evidence": [
+        "data/vmn/route-sequences.json",
+        "data/vmn/routes-paths.geojson",
+        "data/vmn/chronology-discrepancies.csv",
+        "docs/vmn/chronology-handoff.md",
+        "public/geo/venetian-routes.fgb"
+      ]
+    }
+  ]
+}

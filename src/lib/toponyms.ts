@@ -7,8 +7,9 @@
  * consumers from one source: the /geo/toponyms.geojson endpoint, a dedicated
  * toggleable pin set on the atlas (multi-name popups), and the search index.
  *
- * `pleiadesId` links a place to the Pleiades gazetteer for future interoperability
- * (KAN-46); only populated where the identifier is verified, left empty otherwise.
+ * Authority identifiers are deliberately sparse: only identifiers verified against
+ * their provider are published. The Linked Places export still carries every local
+ * place and can be reconciled by WHG / Pelagios tooling without inventing matches.
  */
 import { z } from 'astro:content';
 
@@ -20,6 +21,7 @@ export const ToponymSchema = z.object({
   variants: z.array(z.string()).default([]),
   coords: z.tuple([z.number(), z.number()]), // [lng, lat]
   pleiadesId: z.string().optional(),
+  whgId: z.string().optional(),
   essaySlugs: z.array(z.string()).default([]),
   mapIds: z.array(z.string()).default([]),
 });
@@ -73,6 +75,7 @@ const RAW: unknown[] = [
     medieval: ['Constantinople', 'Miklagard'],
     variants: ['Konstantiniyye', 'Nova Roma'],
     coords: [28.98, 41.01],
+    whgId: 'place:gn:745044',
     essaySlugs: ['speculum', 'venice-sicily'],
   },
   {
@@ -116,6 +119,7 @@ const RAW: unknown[] = [
     ancient: ['Londinium'],
     medieval: ['Lundenwic'],
     coords: [-0.13, 51.51],
+    whgId: 'place:169687',
     mapIds: ['hereford'],
     essaySlugs: ['cartography'],
   },
@@ -139,4 +143,95 @@ export function getToponyms(): Toponym[] {
 /** Every name a place is known by — modern first, then historical + variants. */
 export function toponymNames(t: Toponym): string[] {
   return [t.modern, ...t.ancient, ...t.medieval, ...t.variants];
+}
+
+export interface LinkedPlaceLink {
+  type: 'closeMatch';
+  identifier: string;
+}
+
+export interface LinkedPlaceFeature {
+  '@id': string;
+  type: 'Feature';
+  properties: {
+    title: string;
+    source_id: string;
+  };
+  geometry: {
+    type: 'Point';
+    coordinates: [number, number];
+  };
+  names: Array<{ toponym: string }>;
+  types: Array<{ identifier: string; label: string }>;
+  links: LinkedPlaceLink[];
+  when: Record<string, never>;
+}
+
+export interface LinkedPlacesCollection {
+  '@context': string;
+  type: 'FeatureCollection';
+  features: LinkedPlaceFeature[];
+  _terraChartarum: {
+    format: 'Linked Places Format';
+    version: '1.1';
+    reconciliation: string[];
+  };
+}
+
+/** Exact-match links for authority records that have been manually verified. */
+export function toponymAuthorityLinks(t: Toponym): LinkedPlaceLink[] {
+  return [
+    ...(t.pleiadesId
+      ? [
+          {
+            type: 'closeMatch' as const,
+            identifier: `https://pleiades.stoa.org/places/${t.pleiadesId}`,
+          },
+        ]
+      : []),
+    ...(t.whgId
+      ? [
+          {
+            type: 'closeMatch' as const,
+            identifier: `https://w3id.org/whg/id/${t.whgId}`,
+          },
+        ]
+      : []),
+  ];
+}
+
+/**
+ * GeoJSON-LD interchange shape used by WHG and Pelagios/Peripleo consumers.
+ * `baseUrl` must be the public endpoint URL, without a fragment.
+ */
+export function toLinkedPlacesCollection(
+  toponyms: Toponym[],
+  baseUrl: string,
+): LinkedPlacesCollection {
+  return {
+    '@context':
+      'https://raw.githubusercontent.com/LinkedPasts/linked-places/master/linkedplaces-context-v1.1.jsonld',
+    type: 'FeatureCollection',
+    features: toponyms.map((t) => ({
+      '@id': `${baseUrl}#${encodeURIComponent(t.id)}`,
+      type: 'Feature',
+      properties: {
+        title: t.modern,
+        source_id: t.id,
+      },
+      geometry: {
+        type: 'Point',
+        coordinates: t.coords,
+      },
+      names: toponymNames(t).map((toponym) => ({ toponym })),
+      types: [{ identifier: 'aat:300008347', label: 'inhabited place' }],
+      links: toponymAuthorityLinks(t),
+      when: {},
+    })),
+    _terraChartarum: {
+      format: 'Linked Places Format',
+      version: '1.1',
+      reconciliation: ['World Historical Gazetteer', 'Pleiades', 'Pelagios / Peripleo'],
+    },
+  };
 }

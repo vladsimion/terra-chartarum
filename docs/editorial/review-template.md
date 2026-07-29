@@ -17,7 +17,10 @@ Decision: `approved` / `approved-with-notes` / `blocked`
 ## Narrative-flow review
 
 - The opening states the problem and the essay’s promise.
+- Voice begins from inspectable evidence and names accountable actors.
+- Tone is exact, curious, and critical without assigning unsupported motives.
 - Section transitions explain why the next body of evidence follows.
+- Pacing slows at contested evidence and compresses repeated scaffolding.
 - Technical terms are introduced before they carry argumentative weight.
 - Catalogue detail supports the through-line without turning into an inventory.
 - The conclusion changes or sharpens the opening claim.
@@ -32,3 +35,14 @@ Decision: `approved` / `approved-with-notes` / `blocked`
 - Blocking notes:
 - Non-blocking revisions:
 - Follow-up ticket(s):
+
+## Release decision
+
+Check `data/editorial/release-policy.json` after the outline and narrative
+decisions are recorded.
+
+- Decision: `release` / `hold` / `rollback`
+- Policy criterion (when not `release`):
+- Last known good commit or deployment:
+- Owner:
+- Revalidation evidence:

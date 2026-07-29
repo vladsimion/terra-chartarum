@@ -1,0 +1,15 @@
+event_id,route_id,event_field,spec_value,lane_value,oconnell_value,resolution,status,notes
+muda_romania_start,muda_romania,start_date,1332-01-01,,,retain_spec_provisionally,blocked_page_verification,Page-level Lane and O'Connell comparison remains KAN-250; no source date has been inferred.
+muda_romania_end,muda_romania,end_date,1453-05-29,,,retain_spec_provisionally,blocked_page_verification,Page-level Lane and O'Connell comparison remains KAN-250; no source date has been inferred.
+muda_alexandria_start,muda_alexandria,start_date,1300-01-01,,,retain_spec_provisionally,blocked_page_verification,The round century boundary is a modelling envelope pending page-level verification.
+muda_alexandria_end,muda_alexandria,end_date,1500-12-31,,,retain_spec_provisionally,blocked_page_verification,The round century boundary is a modelling envelope pending page-level verification.
+muda_syria_start,muda_syria,start_date,1300-01-01,,,retain_spec_provisionally,blocked_page_verification,The round century boundary is a modelling envelope pending page-level verification.
+muda_syria_end,muda_syria,end_date,1500-12-31,,,retain_spec_provisionally,blocked_page_verification,The round century boundary is a modelling envelope pending page-level verification.
+muda_cyprus_start,muda_cyprus,start_date,1300-01-01,,,retain_spec_provisionally,blocked_page_verification,The round century boundary is a modelling envelope pending page-level verification.
+muda_cyprus_end,muda_cyprus,end_date,1500-12-31,,,retain_spec_provisionally,blocked_page_verification,The round century boundary is a modelling envelope pending page-level verification.
+muda_dalmatia_start,muda_dalmatia,start_date,1409-01-01,,,retain_spec_provisionally,blocked_page_verification,The route window is retained separately from the dated Dalmatian possession phase.
+muda_dalmatia_end,muda_dalmatia,end_date,1500-12-31,,,retain_spec_provisionally,blocked_page_verification,The round century boundary is a modelling envelope pending page-level verification.
+private_adriatic_start,private_adriatic,start_date,1200-01-01,,,retain_spec_provisionally,blocked_page_verification,Representative private navigation corridor rather than a scheduled muda.
+private_adriatic_end,private_adriatic,end_date,1500-12-31,,,retain_spec_provisionally,blocked_page_verification,Representative private navigation corridor rather than a scheduled muda.
+private_aegean_start,private_aegean,start_date,1207-01-01,,,retain_spec_provisionally,blocked_page_verification,Representative private navigation corridor rather than a scheduled muda.
+private_aegean_end,private_aegean,end_date,1500-12-31,,,retain_spec_provisionally,blocked_page_verification,Representative private navigation corridor rather than a scheduled muda.
