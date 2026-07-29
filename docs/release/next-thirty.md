@@ -85,3 +85,25 @@ Tickets: KAN-193, KAN-194, KAN-195, KAN-196, KAN-197.
 
 Evidence: `make vmn`, the 86/7/11-feature compiled QA gate and geo release
 integrity checks pass with unchanged binaries.
+
+Reprioritisation: after the eastern groups, KAN-198–202 were the next coherent
+deliverable because they combine the remaining KAN-151 assembly/count work with
+the first KAN-150 polity distinction. They also make the output gate stronger
+before the final Aegean/Crete/Morea phase audit.
+
+## Batch 5 — staging, typing and assembled-output gates
+
+Tickets: KAN-198, KAN-199, KAN-200, KAN-201, KAN-202.
+
+- Locked Messina, Palermo, Syracuse and Trapani as open-ended staging rows
+  without inferring Venetian sovereignty.
+- Documented quarter, rival colony, foreign port, trading post, feudatory,
+  staging and direct-rule distinctions.
+- Enforced floors of 86 phases/70 stable ports and all 12 required statuses.
+- Added exact authority-table/FGB feature-count and `(port_id, valid_from)` key
+  parity to reject stale or partial bundles.
+- Locked seven Cycladic ports to `duchy_archipelago` + `feudatory`, keeping Tino
+  available for its separate direct-Venetian phase.
+
+Evidence: source build, compiled 86/7/11 QA, projection parity, geo manifest
+integrity and formatting gates pass.

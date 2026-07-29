@@ -1,5 +1,24 @@
 {
   "schemaVersion": 1,
+  "global": {
+    "minPhaseRows": 86,
+    "minUniquePorts": 70,
+    "minMaritimeNodes": 24,
+    "requiredStatuses": [
+      "metropole",
+      "capital",
+      "subject",
+      "independent",
+      "commercial_quarter",
+      "metropolitan_quarter",
+      "rival_genoese",
+      "foreign_port",
+      "trading_post",
+      "crusader_port",
+      "feudatory",
+      "staging"
+    ]
+  },
   "groups": [
     {
       "ticket": "KAN-193",
@@ -162,6 +181,65 @@
             "notes_contains": "restored"
           }
         ]
+      }
+    },
+    {
+      "ticket": "KAN-198",
+      "name": "Sicilian staging ports",
+      "requiredIds": ["messina", "palermo", "syracuse", "trapani"],
+      "exactPhaseCount": true,
+      "constraints": {
+        "messina": [
+          {
+            "region": "Sicily",
+            "status": "staging",
+            "polity_id": "sicily",
+            "start_date": "1130-01-01",
+            "end_date": ""
+          }
+        ],
+        "palermo": [
+          {
+            "region": "Sicily",
+            "status": "staging",
+            "polity_id": "sicily",
+            "start_date": "1130-01-01",
+            "end_date": ""
+          }
+        ],
+        "syracuse": [
+          {
+            "region": "Sicily",
+            "status": "staging",
+            "polity_id": "sicily",
+            "start_date": "1130-01-01",
+            "end_date": ""
+          }
+        ],
+        "trapani": [
+          {
+            "region": "Sicily",
+            "status": "staging",
+            "polity_id": "sicily",
+            "start_date": "1130-01-01",
+            "end_date": ""
+          }
+        ]
+      }
+    },
+    {
+      "ticket": "KAN-202",
+      "name": "Duchy of the Archipelago ports",
+      "requiredIds": ["andros", "milos", "mykonos", "naxos", "paros", "santorini", "syros"],
+      "exactPhaseCount": true,
+      "constraints": {
+        "andros": [{ "status": "feudatory", "polity_id": "duchy_archipelago" }],
+        "milos": [{ "status": "feudatory", "polity_id": "duchy_archipelago" }],
+        "mykonos": [{ "status": "feudatory", "polity_id": "duchy_archipelago" }],
+        "naxos": [{ "status": "feudatory", "polity_id": "duchy_archipelago" }],
+        "paros": [{ "status": "feudatory", "polity_id": "duchy_archipelago" }],
+        "santorini": [{ "status": "feudatory", "polity_id": "duchy_archipelago" }],
+        "syros": [{ "status": "feudatory", "polity_id": "duchy_archipelago" }]
       }
     }
   ]

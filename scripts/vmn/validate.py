@@ -43,6 +43,7 @@ from build import (  # noqa: E402
     STATUS_VOCAB,
     WAYPOINTS_CSV,
     read_csv,
+    validate_port_contract,
 )
 
 REPO = Path(__file__).resolve().parents[2]
@@ -333,6 +334,29 @@ def check_coastline(geometry, errors: list[str]) -> None:
             errors.append(f"possessions row {i}: geometry extends beyond coastline tolerance")
 
 
+def check_port_projection(port_rows, errors: list[str]) -> None:
+    """Require the published ports bundle to be an exact authority-row projection."""
+    port_path = GEO_OUT / "venetian-ports.fgb"
+    if not port_path.exists():
+        return
+    info, fields, _ = read_fgb(port_path)
+    if int(info.get("features", 0)) != len(port_rows):
+        errors.append(
+            f"ports: FGB has {info.get('features', 0)} features for "
+            f"{len(port_rows)} authority rows"
+        )
+    expected = {
+        (row["port_id"].strip(), int(row["start_date"][:4]))
+        for row in port_rows
+    }
+    actual = {
+        (str(fields["port_id"][index]), int(fields["valid_from"][index]))
+        for index in range(len(fields.get("port_id", [])))
+    }
+    if actual != expected:
+        errors.append("ports: FGB (port_id, valid_from) keys differ from ports.csv")
+
+
 def validate_layer(layer: Layer, source_keys: set[str], errors: list[str]) -> str:
     if not layer.path.exists():
         return "pending (asset not built)"
@@ -353,8 +377,10 @@ def main() -> int:
     print("VMN QA gate (spec §8)")
     _, source_rows = read_csv(SOURCES_CSV)
     source_keys = {r["key"].strip() for r in source_rows}
+    _, port_rows = read_csv(PORTS_CSV)
 
-    errors: list[str] = []
+    errors: list[str] = validate_port_contract(port_rows)
+    check_port_projection(port_rows, errors)
     for layer in LAYERS:
         status = validate_layer(layer, source_keys, errors)
         print(f"  {layer.name:12s}: {status}")

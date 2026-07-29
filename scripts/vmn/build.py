@@ -200,6 +200,28 @@ def validate_port_contract(rows: list[dict[str, str]]) -> list[str]:
     for row in rows:
         by_id.setdefault(row["port_id"].strip(), []).append(row)
 
+    global_contract = contract.get("global", {})
+    unique_ports = len(by_id)
+    statuses = {row["status"].strip() for row in rows}
+    for field, actual in (
+        ("minPhaseRows", len(rows)),
+        ("minUniquePorts", unique_ports),
+        # Every stable port_id is a maritime node in this gazetteer; the separate
+        # waypoint table holds capes/offshore navigation anchors.
+        ("minMaritimeNodes", unique_ports),
+    ):
+        minimum = int(global_contract.get(field, 0))
+        if actual < minimum:
+            errors.append(f"port contract: {field} expected >= {minimum}, found {actual}")
+    missing_statuses = sorted(
+        set(global_contract.get("requiredStatuses", [])) - statuses
+    )
+    if missing_statuses:
+        errors.append(
+            "port contract: missing required status coverage "
+            + ", ".join(missing_statuses)
+        )
+
     for group in contract.get("groups", []):
         label = f"{group.get('ticket', 'contract')} {group.get('name', '')}".strip()
         required_ids = group.get("requiredIds", [])
