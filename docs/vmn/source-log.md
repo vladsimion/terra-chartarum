@@ -29,14 +29,29 @@ versions and SHA-256 checksums live in
 ## Publication rules
 
 - `source_keys` must be non-empty and resolve to `sources.csv`; the VMN QA gate enforces
-  this for every compiled feature. Keys may carry a `:pNN` or `:pNN-NN` page suffix
+  this for every compiled feature. Keys may carry a `:<locator>` suffix
   (`LANE1973:p436`), the KAN-154 page-level citation form; the gate resolves the base
-  key and validates the page syntax.
-- KAN-154 completed the scholarly page-level pass against the anchor editions — Lane,
+  key and validates the locator syntax.
+- **Edition and pagination basis (KAN-291).** All `pNN` locators are the **printed page
+  numbers of the two anchor print editions** named in the table above: Lane's
+  Johns Hopkins first edition of 1973 and O'Connell's Johns Hopkins edition of 2009.
+  A locator is never a PDF/scan sequence number. `LANE1973:p436` therefore means
+  page 436 as printed in Lane 1973, and `OCONNELL2009:p162-164` means O'Connell's
+  Appendix A, "Dates of Venetian domination", at its printed pages.
+- **Named locators for unfoliated front matter.** Lane's Chronology carries no printed
+  folio, so it is cited as `LANE1973:chronology` rather than a guessed roman numeral.
+  The accepted named locators are `chronology` and `appendix-a`; everything else must be
+  a printed page. This rule replaced two `pxvi`/`pxvii` locators from the first KAN-154
+  pass whose content was correct but whose page numbers were not visible on the page -
+  a locator must be readable in the source, not inferred.
+- KAN-154 completed the scholarly page-level pass against the anchor editions - Lane,
   _Venice: A Maritime Republic_ (JHU Press, 1973) and O'Connell, _Men of Empire_ (JHU
-  Press, 2009). Every dated §5.5 boundary carries both anchors' page-cited values in
+  Press, 2009). Every dated §5.5 route, possession and privilege boundary carries both
+  anchors' cited values in
   [`chronology-discrepancies.csv`](../../data/vmn/chronology-discrepancies.csv);
-  `not_in_source` marks a silent anchor, never an invented citation.
+  `not_in_source` marks a silent anchor, never an invented citation. Port phases are
+  the long tail: 51 of 86 rows carry page locators the anchors actually support, and the
+  remaining 35 keep bare source keys rather than a page claim nobody verified.
 - KAN-155 freezes the seven ordered route sequences in
   [`route-sequences.json`](../../data/vmn/route-sequences.json). The VMN gate requires
   that contract to match every `routes.csv` field and to carry the explicit

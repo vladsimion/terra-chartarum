@@ -51,9 +51,24 @@
       "name": "Black Sea maritime nodes",
       "requiredIds": ["trebizond", "sinope", "samsun", "tana", "caffa", "soldaia"],
       "constraints": {
-        "trebizond": [{ "region": "Black Sea", "status": "foreign_port" }],
-        "sinope": [{ "region": "Black Sea", "status": "foreign_port" }],
-        "samsun": [{ "region": "Black Sea", "status": "foreign_port" }],
+        "trebizond": [
+          {
+            "region": "Black Sea",
+            "status": "foreign_port"
+          }
+        ],
+        "sinope": [
+          {
+            "region": "Black Sea",
+            "status": "foreign_port"
+          }
+        ],
+        "samsun": [
+          {
+            "region": "Black Sea",
+            "status": "foreign_port"
+          }
+        ],
         "tana": [
           {
             "region": "Sea of Azov",
@@ -62,8 +77,18 @@
             "notes_contains": "Golden Horde"
           }
         ],
-        "caffa": [{ "region": "Crimea", "status": "rival_genoese" }],
-        "soldaia": [{ "region": "Crimea", "status": "rival_genoese" }]
+        "caffa": [
+          {
+            "region": "Crimea",
+            "status": "rival_genoese"
+          }
+        ],
+        "soldaia": [
+          {
+            "region": "Crimea",
+            "status": "rival_genoese"
+          }
+        ]
       }
     },
     {
@@ -148,8 +173,18 @@
             "polity_id": "kingdom_jerusalem"
           }
         ],
-        "tyre": [{ "region": "Levant", "status": "foreign_port" }],
-        "sidon": [{ "region": "Levant", "status": "foreign_port" }]
+        "tyre": [
+          {
+            "region": "Levant",
+            "status": "foreign_port"
+          }
+        ],
+        "sidon": [
+          {
+            "region": "Levant",
+            "status": "foreign_port"
+          }
+        ]
       }
     },
     {
@@ -233,13 +268,48 @@
       "requiredIds": ["andros", "milos", "mykonos", "naxos", "paros", "santorini", "syros"],
       "exactPhaseCount": true,
       "constraints": {
-        "andros": [{ "status": "feudatory", "polity_id": "duchy_archipelago" }],
-        "milos": [{ "status": "feudatory", "polity_id": "duchy_archipelago" }],
-        "mykonos": [{ "status": "feudatory", "polity_id": "duchy_archipelago" }],
-        "naxos": [{ "status": "feudatory", "polity_id": "duchy_archipelago" }],
-        "paros": [{ "status": "feudatory", "polity_id": "duchy_archipelago" }],
-        "santorini": [{ "status": "feudatory", "polity_id": "duchy_archipelago" }],
-        "syros": [{ "status": "feudatory", "polity_id": "duchy_archipelago" }]
+        "andros": [
+          {
+            "status": "feudatory",
+            "polity_id": "duchy_archipelago"
+          }
+        ],
+        "milos": [
+          {
+            "status": "feudatory",
+            "polity_id": "duchy_archipelago"
+          }
+        ],
+        "mykonos": [
+          {
+            "status": "feudatory",
+            "polity_id": "duchy_archipelago"
+          }
+        ],
+        "naxos": [
+          {
+            "status": "feudatory",
+            "polity_id": "duchy_archipelago"
+          }
+        ],
+        "paros": [
+          {
+            "status": "feudatory",
+            "polity_id": "duchy_archipelago"
+          }
+        ],
+        "santorini": [
+          {
+            "status": "feudatory",
+            "polity_id": "duchy_archipelago"
+          }
+        ],
+        "syros": [
+          {
+            "status": "feudatory",
+            "polity_id": "duchy_archipelago"
+          }
+        ]
       }
     },
     {
@@ -257,11 +327,41 @@
             "end_date": "1669-09-27"
           }
         ],
-        "canea": [{ "region": "Crete", "status": "subject", "polity_id": "venice" }],
-        "ierapetra": [{ "region": "Crete", "status": "subject", "polity_id": "venice" }],
-        "kissamos": [{ "region": "Crete", "status": "subject", "polity_id": "venice" }],
-        "rettimo": [{ "region": "Crete", "status": "subject", "polity_id": "venice" }],
-        "sitia": [{ "region": "Crete", "status": "subject", "polity_id": "venice" }]
+        "canea": [
+          {
+            "region": "Crete",
+            "status": "subject",
+            "polity_id": "venice"
+          }
+        ],
+        "ierapetra": [
+          {
+            "region": "Crete",
+            "status": "subject",
+            "polity_id": "venice"
+          }
+        ],
+        "kissamos": [
+          {
+            "region": "Crete",
+            "status": "subject",
+            "polity_id": "venice"
+          }
+        ],
+        "rettimo": [
+          {
+            "region": "Crete",
+            "status": "subject",
+            "polity_id": "venice"
+          }
+        ],
+        "sitia": [
+          {
+            "region": "Crete",
+            "status": "subject",
+            "polity_id": "venice"
+          }
+        ]
       }
     },
     {
@@ -334,7 +434,7 @@
             "region": "Morea",
             "status": "subject",
             "polity_id": "venice",
-            "start_date": "1207-01-01",
+            "start_date": "1206-01-01",
             "end_date": "1500-08-15"
           },
           {
@@ -349,7 +449,7 @@
             "region": "Morea",
             "status": "subject",
             "polity_id": "venice",
-            "start_date": "1460-01-01",
+            "start_date": "1464-01-01",
             "end_date": "1540-10-02"
           },
           {
@@ -364,7 +464,7 @@
             "region": "Morea",
             "status": "subject",
             "polity_id": "venice",
-            "start_date": "1207-01-01",
+            "start_date": "1206-01-01",
             "end_date": "1500-08-09"
           },
           {
@@ -474,7 +574,12 @@
       "minimumUniquePorts": 19,
       "requiredStatuses": ["feudatory", "subject", "capital"],
       "constraints": {
-        "tino": [{ "status": "subject", "polity_id": "venice" }]
+        "tino": [
+          {
+            "status": "subject",
+            "polity_id": "venice"
+          }
+        ]
       }
     }
   ]
