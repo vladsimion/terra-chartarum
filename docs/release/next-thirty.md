@@ -41,3 +41,27 @@ Tickets: KAN-213, KAN-214, KAN-215, KAN-216, KAN-217.
 
 Evidence: Astro check, focused Vitest component tests, geo release QA and the
 Chromium Atlas context/timeline Playwright flow pass.
+
+Reprioritisation: with the shared Atlas consumer stable, KAN-173/174 became
+bounded projections of already-published route fields rather than competing
+platform work. KAN-218/219 supplied the extraction and API guardrails, while
+KAN-175 stayed a no-build source-hunt spike. This deliberately unparked the
+small VMN-E7 slice without unblocking unsupported data claims.
+
+## Batch 3 — reusable patterns and standalone VMN exploration
+
+Tickets: KAN-173, KAN-174, KAN-175, KAN-218, KAN-219.
+
+- Added a self-contained, deterministic force-directed explorer projected from
+  the seven published route records; port focus highlights whole connected
+  routes.
+- Added the requested commodity authority table and click-to-filter behaviour,
+  with every route tag resolving through that table.
+- Published a source-hunt decision: no medieval route-cost layer from modern
+  reanalysis; PMIP4 remains conditional modelled-climate context only.
+- Audited recurring essay patterns by current consumer and reuse gap.
+- Defined props, slots, theming, accessibility and extraction conventions for
+  the shared library.
+
+Evidence: Astro check, focused VMN network Vitest tests, production build and the
+Chromium standalone-network Playwright flow pass.

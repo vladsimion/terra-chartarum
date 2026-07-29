@@ -125,3 +125,19 @@ test.describe('flow: atlas context and timeline sync', () => {
     await expect(page.locator('[data-atlas-track][data-revealed="false"]').first()).toBeAttached();
   });
 });
+
+test.describe('flow: VMN standalone network', () => {
+  test('commodity and waypoint interactions highlight authored routes', async ({ page }) => {
+    await page.goto('/embeds/vmn-network/');
+
+    await expect(page.locator('[data-edge]')).toHaveCount(38);
+    await page.locator('[data-commodity="spices"]').click();
+    await expect(page.locator('.vn-status')).toHaveText('3 routes carry spices.');
+    await expect(page.locator('[data-edge].is-active').first()).toBeVisible();
+    expect(await page.locator('[data-edge].is-dim').count()).toBeGreaterThan(0);
+
+    await page.locator('[data-node="venice"]').focus();
+    await expect(page.locator('.vn-status')).toContainText('Venice');
+    await expect(page.locator('[data-edge].is-active').first()).toBeVisible();
+  });
+});

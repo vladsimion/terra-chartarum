@@ -86,6 +86,9 @@ Historical GIS assets are provenance-tracked, integrity-checked and served at
 content-versioned URLs. See the [geo-layer publication guide](docs/geo-layers.md)
 for the release and Atlas integration contract.
 
+Reusable MDX patterns and their accessibility/composition conventions are
+tracked in the [shared component inventory](docs/component-library.md).
+
 ## Roadmap
 
 - **M1 — Portal MVP** ✅ unified site, all four essays live under one shell.
