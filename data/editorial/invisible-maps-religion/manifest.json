@@ -13,6 +13,12 @@
   "ogPath": "public/og/invisible-maps-religion.png",
   "seriesPath": "src/pages/series/invisible-maps.astro",
   "publishedPath": "src/content/essays/invisible-maps-religion.mdx",
+  "editorialReview": {
+    "outline": "approved",
+    "narrative": "approved-with-notes",
+    "reviewedAt": "2026-07-29",
+    "notesPath": "docs/editorial/cohesion-audit-2026-07-29.md"
+  },
   "crossLinks": [
     "/series/invisible-maps/",
     "/rooms/theatre/",

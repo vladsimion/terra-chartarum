@@ -80,6 +80,18 @@ const hashForwardScript = `(function () {
       />
     ) : (
       <article class="shell native-essay">
+        {data.hero && (
+          <figure class="essay-hero">
+            <img
+              src={data.hero}
+              alt=""
+              width="1200"
+              height="630"
+              loading="eager"
+              fetchpriority="high"
+            />
+          </figure>
+        )}
         <Content />
       </article>
     )
@@ -158,6 +170,16 @@ const hashForwardScript = `(function () {
      * self-hosted body face arrives, producing a visible layout shift.
      */
     max-width: min(var(--prose-max, 44rem), 44rem);
+  }
+  .essay-hero {
+    margin: 0 0 2.5rem;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .essay-hero img {
+    display: block;
+    width: 100%;
+    height: auto;
   }
   .essay-room-links {
     padding-block: 1rem 4rem;

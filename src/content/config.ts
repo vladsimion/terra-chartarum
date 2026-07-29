@@ -18,6 +18,7 @@ const essays = defineCollection({
     subtitle: z.string(),
     summary: z.string(),
     cover: z.string(), // path under /public (e.g. /covers/cartography.svg)
+    hero: z.string().optional(), // optional in-essay hero; distinct from the gallery cover
     // 'legacy' essays are rendered verbatim from public/essays/<slug>/ via the
     // host route's isolation boundary; 'native' essays are authored in MDX.
     status: z.enum(['legacy', 'native']).default('native'),

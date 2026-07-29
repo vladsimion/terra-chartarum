@@ -1,15 +1,8 @@
 ---
 import SiteSearch from './islands/SiteSearch.astro';
+import { isPrimaryNavActive, PRIMARY_NAV } from '../data/navigation';
+
 const path = Astro.url.pathname;
-const nav = [
-  { href: '/essays/', label: 'Essays' },
-  { href: '/atlas/', label: 'Atlas' },
-  { href: '/collection/', label: 'Collection' },
-  { href: '/cartographers/', label: 'Cartographers' },
-  { href: '/about/', label: 'About' },
-  { href: '/colophon/', label: 'Colophon' },
-];
-const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
 ---
 
 <header class="site-header" transition:persist>
@@ -21,9 +14,12 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
     <nav aria-label="Primary">
       <ul>
         {
-          nav.map((item) => (
+          PRIMARY_NAV.map((item) => (
             <li>
-              <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+              <a
+                href={item.href}
+                aria-current={isPrimaryNavActive(path, item.href) ? 'page' : undefined}
+              >
                 {item.label}
               </a>
             </li>
@@ -67,8 +63,17 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
     color: var(--gold);
     font-size: 0.8em;
   }
+  nav {
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar {
+    display: none;
+  }
   nav ul {
     display: flex;
+    width: max-content;
     gap: clamp(0.8rem, 2.5vw, 1.75rem);
     list-style: none;
     margin: 0;
@@ -91,6 +96,9 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
   @media (max-width: 640px) {
     .brand-name {
       display: none;
+    }
+    nav ul {
+      gap: 0.8rem;
     }
   }
 </style>

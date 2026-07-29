@@ -2,9 +2,11 @@
 import PortalLayout from '../../layouts/PortalLayout.astro';
 import EssayCard from '../../components/EssayCard.astro';
 import { getEssays, getFacets, DIMENSION_META } from '../../lib/registry';
+import { groupEssaysByRoom } from '../../lib/essay-index';
 
 const essays = await getEssays();
 const facets = await getFacets();
+const roomGroups = groupEssaysByRoom(essays);
 ---
 
 <PortalLayout
@@ -55,8 +57,30 @@ const facets = await getFacets();
 
     <p id="count" class="count" aria-live="polite"></p>
 
-    <div class="grid" id="grid">
-      {essays.map((essay) => <EssayCard essay={essay} />)}
+    <div class="room-groups" id="grid">
+      {
+        roomGroups.map(({ room, essays: roomEssays }) => (
+          <section class="room-group" data-room-group={room.slug}>
+            <header class="room-group-head">
+              <img src={room.glyph} alt="" width="40" height="40" aria-hidden="true" />
+              <div>
+                <p class="eyebrow">Room {room.order}</p>
+                <h2>
+                  <a href={`/rooms/${room.slug}/`}>{room.title}</a>
+                </h2>
+              </div>
+              <span class="room-count">
+                {roomEssays.length} {roomEssays.length === 1 ? 'essay' : 'essays'}
+              </span>
+            </header>
+            <div class="grid">
+              {roomEssays.map((essay) => (
+                <EssayCard essay={essay} />
+              ))}
+            </div>
+          </section>
+        ))
+      }
     </div>
     <p id="empty" class="empty" hidden>No essays match those filters.</p>
   </section>
@@ -77,6 +101,7 @@ const facets = await getFacets();
     const reset = document.getElementById('reset');
     const count = document.getElementById('count');
     const empty = document.getElementById('empty');
+    const groups = Array.from(grid.querySelectorAll<HTMLElement>('[data-room-group]'));
 
     type Row = { el: HTMLElement; title: string };
     const rows: Row[] = cards.map((el) => ({
@@ -126,6 +151,11 @@ const facets = await getFacets();
         if (ok && matched) ok = matched.has(card);
         card.hidden = !ok;
         if (ok) shown++;
+      }
+      for (const group of groups) {
+        group.hidden = !Array.from(group.querySelectorAll<HTMLElement>('.card')).some(
+          (card) => !card.hidden,
+        );
       }
       if (count) count.textContent = `${shown} of ${cards.length} essays`;
       if (empty) empty.hidden = shown !== 0;
@@ -223,10 +253,53 @@ const facets = await getFacets();
     color: var(--ink-muted);
     margin: 0 0 1.5rem;
   }
+  .room-groups {
+    display: grid;
+    gap: 3rem;
+  }
+  .room-group {
+    scroll-margin-top: 6rem;
+  }
+  .room-group-head {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.9rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .room-group-head img {
+    opacity: 0.8;
+  }
+  .room-group-head h2 {
+    margin: 0.1rem 0 0;
+    font-size: var(--step-2);
+  }
+  .room-group-head h2 a {
+    color: var(--ink);
+  }
+  .room-group-head h2 a:hover {
+    color: var(--gold);
+  }
+  .room-count {
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.06em;
+  }
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1.5rem;
+  }
+  @media (max-width: 34rem) {
+    .room-group-head {
+      grid-template-columns: auto 1fr;
+    }
+    .room-count {
+      grid-column: 2;
+    }
   }
   .empty {
     color: var(--ink-muted);

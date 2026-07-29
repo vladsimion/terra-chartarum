@@ -21,6 +21,17 @@ not a nicety.
 - [ ] Sources are credited; any claims that need support are referenced.
 - [ ] Summary/subtitle work as the card and social (OG) hook.
 
+## Editorial review gate
+
+- [ ] The outline has been reviewed against the thesis, map allocation, room
+      placement, and intended interactive argument before drafting proceeds.
+- [ ] Narrative flow has been reviewed after the complete draft: opening
+      promise, section sequence, transitions, pacing, conclusion, and cross-links.
+- [ ] The review decision is recorded in the package manifest as `approved` or
+      `approved-with-notes`, with a dated `notesPath`.
+- [ ] Any blocking review note is resolved before the package advances to
+      Design QA or Publish.
+
 ## Accessibility
 
 - [ ] Keyboard-navigable end to end, with visible focus states.
