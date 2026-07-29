@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build && node scripts/build-sites-entry.mjs",
+    "build": "astro build && node scripts/build-sites-entry.mjs && npm run indexing:validate",
     "preview": "astro preview",
     "check": "astro check",
     "lint": "eslint .",
@@ -15,6 +15,7 @@
     "test:e2e": "playwright test",
     "test:vmn-visual": "playwright test e2e/vmn-visual.spec.ts --project=chromium",
     "editorial:validate": "node scripts/validate-editorial.mjs",
+    "indexing:validate": "node scripts/validate-indexing.mjs",
     "geo:validate": "node scripts/geo-release.mjs --check",
     "geo:manifest": "node scripts/geo-release.mjs --write",
     "format": "prettier --write .",

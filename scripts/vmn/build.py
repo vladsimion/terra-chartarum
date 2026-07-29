@@ -34,7 +34,7 @@ WAYPOINTS_CSV = DATA_DIR / "waypoints.csv"
 ROUTES_CSV = DATA_DIR / "routes.csv"
 ROUTE_PATHS_GEOJSON = DATA_DIR / "routes-paths.geojson"
 EVENTS_CSV = DATA_DIR / "events.csv"
-POSSESSIONS_GEOJSON = DATA_DIR / "possessions.geojson"
+POSSESSIONS_GEOJSON = DATA_DIR / "possessions-extents.geojson"
 SOURCES_CSV = DATA_DIR / "sources.csv"
 BASE_DATA_DIR = DATA_DIR / "base"
 BASE_DATA_MANIFEST = BASE_DATA_DIR / "manifest.json"
@@ -583,26 +583,51 @@ def build_possessions() -> int:
     with LAND_GEOJSON.open(encoding="utf-8") as f:
         land_data = json.load(f)
 
-    traced = {
-        feature["properties"]["territory"]: shape(feature["geometry"])
-        for feature in traced_data["features"]
-    }
+    traced = {}
+    trace_errors = []
+    for feature in traced_data["features"]:
+        properties = feature.get("properties", {})
+        key = (
+            str(properties.get("territory", "")).strip(),
+            str(properties.get("start_date", "")).strip(),
+        )
+        if not all(key):
+            trace_errors.append(f"extent feature must carry territory and start_date: {key}")
+            continue
+        if key in traced:
+            trace_errors.append(f"duplicate possession extent for {key}")
+        traced[key] = shape(feature["geometry"])
     land = unary_union([shape(feature["geometry"]) for feature in land_data["features"]])
     header, rows = read_csv(EVENTS_CSV)
     _, source_rows = read_csv(SOURCES_CSV)
     source_keys = {r["key"].strip() for r in source_rows}
-    errors = validate_events(header, rows, set(traced), source_keys)
+    errors = trace_errors + validate_events(
+        header,
+        rows,
+        {territory for territory, _ in traced},
+        source_keys,
+    )
+    event_keys = {
+        (row["territory"].strip(), row["start_date"].strip()) for row in rows
+    }
+    if set(traced) != event_keys:
+        missing = sorted(event_keys - set(traced))
+        extra = sorted(set(traced) - event_keys)
+        if missing:
+            errors.append(f"possession extents missing event phases: {missing}")
+        if extra:
+            errors.append(f"possession extents have unknown phases: {extra}")
 
     clipped = []
     for i, r in enumerate(rows, start=2):
-        territory = r["territory"].strip()
-        if territory not in traced:
+        key = (r["territory"].strip(), r["start_date"].strip())
+        if key not in traced:
             clipped.append(None)
             continue
-        geometry = as_multipolygon(traced[territory].intersection(land))
+        geometry = as_multipolygon(traced[key].intersection(land))
         clipped.append(geometry)
         if geometry is None:
-            errors.append(f"row {i}: territory '{territory}' is empty after coastline clip")
+            errors.append(f"row {i}: territory phase {key} is empty after coastline clip")
 
     if errors:
         print(f"VMN possessions: {len(errors)} validation error(s):", file=sys.stderr)

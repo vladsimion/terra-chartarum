@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { getVmnNetwork } from './vmn-network';
 
 describe('VMN route-waypoint network', () => {
@@ -27,6 +29,23 @@ describe('VMN route-waypoint network', () => {
     );
     for (const route of network.routes) {
       expect(route.commodities.every((commodity) => ids.has(commodity))).toBe(true);
+    }
+  });
+
+  it('matches the frozen seven-route sequence contract', async () => {
+    const [network, raw] = await Promise.all([
+      getVmnNetwork(),
+      readFile(join(process.cwd(), 'data', 'vmn', 'route-sequences.json'), 'utf8'),
+    ]);
+    const contract = JSON.parse(raw);
+    expect(contract.status).toBe('structurally_verified');
+    expect(contract.chronologyStatus).toBe('pending_page_level_verification_KAN_154');
+    expect(contract.routes).toHaveLength(7);
+
+    const published = new Map(network.routes.map((route) => [route.id, route]));
+    for (const route of contract.routes) {
+      expect(published.get(route.routeId)?.waypoints).toEqual(route.waypoints);
+      expect(published.get(route.routeId)?.commodities).toEqual(route.commodities);
     }
   });
 });

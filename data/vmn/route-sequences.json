@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "status": "structurally_verified",
+  "chronologyStatus": "pending_page_level_verification_KAN_154",
+  "evidenceBoundary": "Ordered route calls, commodities and operating windows are derived scholarly assertions keyed to Lane 1973 and O’Connell 2009. They are structurally final for the VMN build, but the exact chronology remains provisional until KAN-154 records page-level citations from verified editions.",
+  "routes": [
+    {
+      "routeId": "muda_romania",
+      "name": "Muda di Romania",
+      "routeType": "muda",
+      "waypoints": [
+        "venice",
+        "zara",
+        "ragusa",
+        "modon",
+        "negroponte",
+        "constantinople_quarter",
+        "trebizond",
+        "tana"
+      ],
+      "commodities": ["spices", "silk", "wax", "fur"],
+      "startDate": "1332-01-01",
+      "endDate": "1453-05-29",
+      "sourceKeys": ["LANE1973"]
+    },
+    {
+      "routeId": "muda_alexandria",
+      "name": "Muda di Alessandria",
+      "routeType": "muda",
+      "waypoints": ["venice", "ragusa", "corfu", "modon", "candia", "alexandria"],
+      "commodities": ["spices", "cotton", "sugar"],
+      "startDate": "1300-01-01",
+      "endDate": "1500-12-31",
+      "sourceKeys": ["LANE1973"]
+    },
+    {
+      "routeId": "muda_syria",
+      "name": "Muda di Siria",
+      "routeType": "muda",
+      "waypoints": ["venice", "corfu", "modon", "candia", "famagusta", "beirut"],
+      "commodities": ["spices", "silk", "cotton", "sugar"],
+      "startDate": "1300-01-01",
+      "endDate": "1500-12-31",
+      "sourceKeys": ["LANE1973"]
+    },
+    {
+      "routeId": "muda_cyprus",
+      "name": "Muda di Cipro",
+      "routeType": "muda",
+      "waypoints": ["venice", "modon", "candia", "famagusta"],
+      "commodities": ["wine", "sugar", "cotton"],
+      "startDate": "1300-01-01",
+      "endDate": "1500-12-31",
+      "sourceKeys": ["LANE1973"]
+    },
+    {
+      "routeId": "muda_dalmatia",
+      "name": "Muda di Dalmazia",
+      "routeType": "muda",
+      "waypoints": ["venice", "zara", "sebenico", "trau", "spalato", "ragusa", "corfu"],
+      "commodities": ["grain", "wine", "salt"],
+      "startDate": "1409-01-01",
+      "endDate": "1500-12-31",
+      "sourceKeys": ["LANE1973", "OCONNELL2009"]
+    },
+    {
+      "routeId": "private_adriatic",
+      "name": "Adriatic round-ship trade",
+      "routeType": "private",
+      "waypoints": ["venice", "pola", "zara", "pelagosa", "ragusa", "capo_d_otranto", "corfu"],
+      "commodities": ["grain", "wine", "salt"],
+      "startDate": "1200-01-01",
+      "endDate": "1500-12-31",
+      "sourceKeys": ["LANE1973"]
+    },
+    {
+      "routeId": "private_aegean",
+      "name": "Aegean round-ship trade",
+      "routeType": "private",
+      "waypoints": ["venice", "modon", "coron", "negroponte", "tino", "naxos", "candia"],
+      "commodities": ["wine", "cotton", "wax"],
+      "startDate": "1207-01-01",
+      "endDate": "1500-12-31",
+      "sourceKeys": ["LANE1973"]
+    }
+  ]
+}

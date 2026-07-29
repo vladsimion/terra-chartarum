@@ -1,0 +1,178 @@
+<figure class="cmo" data-city-memory-overlay>
+  <div class="cmo-head">
+    <div>
+      <p class="cmo-kicker">Exploratory registration · Rome</p>
+      <h3>Nolli over a modern street map</h3>
+    </div>
+    <output class="cmo-status" for="city-memory-opacity" aria-live="polite">
+      Historical layer at 55% opacity.
+    </output>
+  </div>
+
+  <div class="cmo-stage">
+    <img
+      class="cmo-modern"
+      src="/images/cities-remember/rome-modern.webp"
+      alt="Modern OpenStreetMap-derived street map of central Rome"
+      width="1600"
+      height="1448"
+      loading="lazy"
+      decoding="async"
+    />
+    <img
+      class="cmo-historic"
+      src="/images/cities-remember/nolli-sheet-01.jpg"
+      alt="One engraved sheet of Giambattista Nolli's 1748 plan of Rome"
+      width="1920"
+      height="1185"
+      loading="lazy"
+      decoding="async"
+    />
+    <span class="cmo-label modern">Modern street map</span>
+    <span class="cmo-label historic">Nolli · 1748</span>
+  </div>
+
+  <div class="cmo-controls">
+    <label for="city-memory-opacity">Historical map opacity</label>
+    <input
+      id="city-memory-opacity"
+      type="range"
+      min="0"
+      max="100"
+      step="5"
+      value="55"
+      aria-describedby="city-memory-caution"
+    />
+  </div>
+
+  <figcaption id="city-memory-caution">
+    This is a looking device, not evidence of parcel survival. The sheet and basemap use an
+    exploratory four-point registration; crop, engraving and modern projection introduce visible
+    residual error. Do not infer that a wall or property line survives because two strokes appear to
+    coincide. <a href="/annotations/cities-remember-nolli.json"
+      >Download the Allmaps-compatible Web Annotation</a
+    >. Modern base: © OpenStreetMap contributors, ODbL; historical sheet: public domain via
+    Wikimedia Commons.
+  </figcaption>
+</figure>
+
+<script>
+  function initOverlay(root: HTMLElement) {
+    const layer = root.querySelector<HTMLElement>('.cmo-historic')!;
+    const input = root.querySelector<HTMLInputElement>('input[type="range"]')!;
+    const output = root.querySelector<HTMLOutputElement>('output')!;
+    const render = () => {
+      layer.style.opacity = String(Number(input.value) / 100);
+      output.value = `Historical layer at ${input.value}% opacity.`;
+    };
+    input.addEventListener('input', render);
+    render();
+  }
+
+  const boot = () =>
+    document.querySelectorAll<HTMLElement>('[data-city-memory-overlay]').forEach((root) => {
+      if (!root.dataset.ready) {
+        root.dataset.ready = '1';
+        initOverlay(root);
+      }
+    });
+  boot();
+  document.addEventListener('astro:page-load', boot);
+</script>
+
+<style>
+  .cmo {
+    margin: 2rem 0;
+    display: grid;
+    gap: 0.8rem;
+  }
+  .cmo-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: end;
+    gap: 0.75rem 1rem;
+  }
+  .cmo-kicker,
+  .cmo-status {
+    margin: 0;
+    color: var(--gold);
+    font: 0.68rem/1.4 var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  h3 {
+    margin: 0.2rem 0 0;
+  }
+  .cmo-stage {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+  }
+  .cmo-stage img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .cmo-modern {
+    object-position: center;
+  }
+  .cmo-historic {
+    filter: sepia(0.18) contrast(1.08);
+    object-position: center;
+    mix-blend-mode: multiply;
+  }
+  .cmo-label {
+    position: absolute;
+    bottom: 0.65rem;
+    z-index: 1;
+    padding: 0.2rem 0.5rem;
+    border-radius: 999px;
+    color: var(--ink);
+    background: color-mix(in srgb, var(--canvas) 78%, transparent);
+    font: 0.62rem/1.3 var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .cmo-label.modern {
+    left: 0.65rem;
+  }
+  .cmo-label.historic {
+    right: 0.65rem;
+  }
+  .cmo-controls {
+    display: grid;
+    grid-template-columns: minmax(10rem, auto) minmax(12rem, 1fr);
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+  }
+  input {
+    width: 100%;
+    accent-color: var(--gold);
+  }
+  input:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 4px;
+  }
+  figcaption {
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+  }
+  @media (max-width: 38rem) {
+    .cmo-controls {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cmo-historic {
+      transition: none;
+    }
+  }
+</style>

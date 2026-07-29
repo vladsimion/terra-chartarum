@@ -1,0 +1,128 @@
+{
+  "wave": 3,
+  "intakeTicket": "KAN-220",
+  "status": "normalized",
+  "normalizationDate": "2026-07-29",
+  "entries": [
+    {
+      "waveOrder": 1,
+      "title": "The Weight of Distance",
+      "slug": "the-weight-of-distance",
+      "room": "road",
+      "secondaryRooms": ["earth", "map"],
+      "bundleTicket": "KAN-224",
+      "state": "candidate",
+      "roomRationale": "Distance becomes a mapped experience of routes, impedance and choice, with The Road as the primary interpretive room."
+    },
+    {
+      "waveOrder": 2,
+      "title": "The Last Blank Spaces",
+      "slug": "the-last-blank-spaces",
+      "room": "earth",
+      "secondaryRooms": ["archive", "map"],
+      "bundleTicket": "KAN-224",
+      "state": "candidate",
+      "roomRationale": "Blankness is treated as a claim about the Earth and its knowability, supported by archival survival and graphic convention."
+    },
+    {
+      "waveOrder": 3,
+      "title": "Why North Is Up",
+      "slug": "why-north-is-up",
+      "room": "map",
+      "secondaryRooms": ["earth", "theatre"],
+      "bundleTicket": "KAN-224",
+      "state": "candidate",
+      "roomRationale": "Orientation is a convention of the map that also stages cosmology and learned habits as apparently natural."
+    },
+    {
+      "waveOrder": 4,
+      "title": "The Problem of Scale",
+      "slug": "the-problem-of-scale",
+      "room": "map",
+      "secondaryRooms": ["earth", "city"],
+      "bundleTicket": "KAN-222",
+      "state": "tracked",
+      "roomRationale": "Scale is a formal map operation whose effects change with the geographic and urban objects selected for representation."
+    },
+    {
+      "waveOrder": 5,
+      "title": "The Soul of Places",
+      "slug": "the-soul-of-places",
+      "room": "earth",
+      "secondaryRooms": ["city", "archive"],
+      "bundleTicket": "KAN-222",
+      "state": "tracked",
+      "roomRationale": "The essay asks how mapped land acquires character, then tests that character against urban experience and documentary memory."
+    },
+    {
+      "waveOrder": 6,
+      "title": "Frontiers Are Not Borders",
+      "slug": "frontiers-are-not-borders",
+      "room": "border",
+      "secondaryRooms": ["earth", "road"],
+      "bundleTicket": "KAN-222",
+      "state": "tracked",
+      "roomRationale": "The Border supplies the central distinction between a moving zone and a fixed line, while Earth and Road reveal its spatial consequences."
+    },
+    {
+      "waveOrder": 7,
+      "title": "The Invention of the Homeland",
+      "slug": "the-invention-of-the-homeland",
+      "room": "border",
+      "secondaryRooms": ["theatre", "archive"],
+      "bundleTicket": "KAN-223",
+      "state": "tracked",
+      "roomRationale": "Homeland is examined as a bounded political image staged through national myth and stabilized through repeated documents."
+    },
+    {
+      "waveOrder": 8,
+      "title": "Invisible Maps of Disease",
+      "slug": "invisible-maps-of-disease",
+      "room": "road",
+      "secondaryRooms": ["city", "archive"],
+      "bundleTicket": "KAN-223",
+      "state": "tracked",
+      "roomRationale": "Disease moves through routes and contacts, becoming visible through urban records and retrospective archival reconstruction."
+    },
+    {
+      "waveOrder": 9,
+      "title": "Ruins as Documents",
+      "slug": "ruins-as-documents",
+      "room": "archive",
+      "secondaryRooms": ["earth", "city"],
+      "bundleTicket": "KAN-223",
+      "state": "tracked",
+      "roomRationale": "Ruins are read as an unstable archive embedded in land and city fabric rather than as transparent remnants of a single past."
+    },
+    {
+      "waveOrder": 10,
+      "title": "The Geography of Memory",
+      "slug": "the-geography-of-memory",
+      "room": "city",
+      "secondaryRooms": ["archive", "road"],
+      "bundleTicket": "KAN-221",
+      "state": "tracked",
+      "roomRationale": "Memory is located through civic sites and routes, with archival traces exposing how those locations are selected and revised."
+    },
+    {
+      "waveOrder": 11,
+      "title": "Myth as Cartography",
+      "slug": "myth-as-cartography",
+      "room": "theatre",
+      "secondaryRooms": ["earth", "map"],
+      "bundleTicket": "KAN-221",
+      "state": "tracked",
+      "roomRationale": "Myth is treated as a performed spatial order that gives the Earth a legible structure through map-like narrative choices."
+    },
+    {
+      "waveOrder": 12,
+      "title": "Naming as Cartography",
+      "slug": "naming-as-cartography",
+      "room": "map",
+      "secondaryRooms": ["city", "border"],
+      "bundleTicket": "KAN-221",
+      "state": "tracked",
+      "roomRationale": "Naming is a cartographic operation that selects places, fixes identities and participates in civic and territorial authority."
+    }
+  ]
+}

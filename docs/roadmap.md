@@ -21,24 +21,21 @@ this page current when waves are re-groomed.
   [starter kit](../starter/README.md) sub-task checklist (see
   [Per-essay epics](#per-essay-epics-from-the-starter)).
 
-## Current corpus (baseline)
+## Current corpus
 
-Four essays are live, all `legacy` embeds, covering four of the seven rooms:
+Nine essays are live across six of the seven rooms:
 
-| Room        | Live essay                           | Status |
-| ----------- | ------------------------------------ | ------ |
-| The Earth   | —                                    | empty  |
-| The Map     | The Cartographic Sacrifice           | legacy |
-| The City    | —                                    | empty  |
-| The Border  | Terra Sigillata · Lapidarium Dacicum | legacy |
-| The Road    | La Rotta e il Catasto                | legacy |
-| The Archive | —                                    | empty  |
-| The Theatre | Speculum Chartarum                   | legacy |
+| Room        | Live essays                                            | Status        |
+| ----------- | ------------------------------------------------------ | ------------- |
+| The Earth   | —                                                      | Wave 2 anchor |
+| The Map     | The Cartographic Sacrifice · Anatomy of a Native Essay | live          |
+| The City    | Cities Remember                                        | live anchor   |
+| The Border  | Terra Sigillata · Lapidarium Dacicum                   | live          |
+| The Road    | La Rotta e il Catasto · Invisible Maps of Trade        | live          |
+| The Archive | Maps That Age                                          | live anchor   |
+| The Theatre | Speculum Chartarum · Invisible Maps of Religion        | live          |
 
-Three rooms — **Earth**, **City**, **Archive** — have no essay yet. Filling them is
-the spine of Wave 1.
-
-## Wave 1 — anchor each under-served room (next up)
+## Wave 1 — anchor each under-served room (complete)
 
 Wave 1 gives every currently-thin room its first purpose-built anchor essay. These
 are the **priority topics**, in build order:
@@ -73,14 +70,31 @@ A groomed set of 6–8 essays that take every room past a single entry and reach
 **Wave-2 gate (KAN-90):** once each room holds ~2 essays, promote **Rooms** to the
 primary navigation and (optionally) regroup the Essays index by room.
 
-## Wave 3 — backlog (KAN-91, unrefined)
+## Wave 3 — normalized backlog (KAN-91, KAN-220)
 
-Candidate topics, not yet room-assigned or estimated. Groom at the Wave-2 retro:
+The twelve candidate titles now have stable slugs, canonical room assignments,
+secondary rooms, a fixed wave order and bundle ownership. The machine-readable
+authority record is [`data/editorial/wave-3/backlog.json`](../data/editorial/wave-3/backlog.json);
+Jira remains the tracking authority.
 
-The Weight of Distance · The Last Blank Spaces · Why North Is Up · The Problem of
-Scale · The Soul of Places · Frontiers Are Not Borders · The Invention of the
-Homeland · Invisible Maps of Disease · Ruins as Documents · The Geography of Memory ·
-Myth as Cartography · Naming as Cartography.
+| Order | Candidate                     | Primary room | Tracking bundle | State     |
+| ----: | ----------------------------- | ------------ | --------------- | --------- |
+|     1 | The Weight of Distance        | The Road     | KAN-224         | candidate |
+|     2 | The Last Blank Spaces         | The Earth    | KAN-224         | candidate |
+|     3 | Why North Is Up               | The Map      | KAN-224         | candidate |
+|     4 | The Problem of Scale          | The Map      | KAN-222         | tracked   |
+|     5 | The Soul of Places            | The Earth    | KAN-222         | tracked   |
+|     6 | Frontiers Are Not Borders     | The Border   | KAN-222         | tracked   |
+|     7 | The Invention of the Homeland | The Border   | KAN-223         | tracked   |
+|     8 | Invisible Maps of Disease     | The Road     | KAN-223         | tracked   |
+|     9 | Ruins as Documents            | The Archive  | KAN-223         | tracked   |
+|    10 | The Geography of Memory       | The City     | KAN-221         | tracked   |
+|    11 | Myth as Cartography           | The Theatre  | KAN-221         | tracked   |
+|    12 | Naming as Cartography         | The Map      | KAN-221         | tracked   |
+
+The first KAN-224 set remains candidate-only until its dedicated tracking pass.
+KAN-225 owns interactive-component assignment and final backlog verification; this
+normalization does not pre-empt that review.
 
 ## Per-essay epics from the starter
 
