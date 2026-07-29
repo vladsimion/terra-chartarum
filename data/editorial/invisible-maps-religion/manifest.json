@@ -1,13 +1,13 @@
 {
   "slug": "invisible-maps-religion",
   "title": "Invisible Maps of Religion",
-  "stage": "corpus",
+  "stage": "design-qa",
   "room": "theatre",
   "secondaryRooms": ["road", "city"],
   "thesis": "Religious maps do not merely illustrate belief: by centring sacred cities, orienting bodies toward holy directions and turning pilgrimage into a sequence of stations, they organise lived space before political borders or measured distance become the dominant grammar.",
   "whyThisSite": "Terra Chartarum can compare centred world pictures with itinerary maps and city plans, then use the shared timeline, catalogue and room system to show how cosmology, ritual movement and urban memory produce different but interoperable kinds of sacred geography.",
   "minimumDraftWords": 3000,
-  "draftPath": "docs/editorial/invisible-maps-religion/draft.md",
+  "draftPath": "src/content/essays/invisible-maps-religion.mdx",
   "contentPath": "src/content/essays/invisible-maps-religion.mdx",
   "coverPath": "public/covers/invisible-maps-religion.svg",
   "ogPath": "public/og/invisible-maps-religion.png",
@@ -105,7 +105,101 @@
       "scanQuality": "8638 × 6628 high-resolution reproduction"
     }
   ],
-  "bibliography": [],
-  "claims": [],
-  "sections": []
+  "bibliography": [
+    {
+      "id": "woodward-1987-mappaemundi",
+      "citation": "Woodward, David. “Medieval Mappaemundi.” In The History of Cartography, vol. 1, 286–370. Chicago: University of Chicago Press, 1987.",
+      "url": "https://press.uchicago.edu/books/hoc/HOC_V1/HOC_VOLUME1_chapter18.pdf"
+    },
+    {
+      "id": "edson-1997",
+      "citation": "Edson, Evelyn. Mapping Time and Space: How Medieval Mapmakers Viewed Their World. London: British Library, 1997."
+    },
+    {
+      "id": "hereford-cathedral",
+      "citation": "Hereford Cathedral. “Mappa Mundi.” Collection guide, updated 20 July 2021.",
+      "url": "https://www.herefordcathedral.org/mappa-mundi"
+    },
+    {
+      "id": "bl-royal-14-c-vii",
+      "citation": "British Library. Royal MS 14 C VII, Matthew Paris, Historia Anglorum and prefatory itinerary materials. Archives and Manuscripts Catalogue.",
+      "url": "https://searcharchives.bl.uk/catalog/040-002106988"
+    },
+    {
+      "id": "loc-rudimentum",
+      "citation": "Library of Congress. Rudimentum Novitiorum. Lübeck: Lucas Brandis, 5 August 1475. Lessing J. Rosenwald Collection.",
+      "url": "https://www.loc.gov/item/48043282/"
+    },
+    {
+      "id": "harley-2001",
+      "citation": "Harley, J. B. The New Nature of Maps: Essays in the History of Cartography. Baltimore: Johns Hopkins University Press, 2001."
+    }
+  ],
+  "claims": [
+    {
+      "id": "religion-claim-form",
+      "claim": "Medieval mappaemundi form a varied family of diagrams, lists and world images rather than one uniform projection tradition.",
+      "citationIds": ["woodward-1987-mappaemundi"]
+    },
+    {
+      "id": "religion-claim-time-space",
+      "claim": "Many mappaemundi place episodes from sacred and classical history in the same field as places, making chronology spatially available.",
+      "citationIds": ["woodward-1987-mappaemundi", "edson-1997"]
+    },
+    {
+      "id": "religion-claim-hereford",
+      "claim": "The Hereford Mappa Mundi places Jerusalem at the centre of a 52-inch geographic circle and includes roughly 420 cities and towns alongside biblical, natural and classical material.",
+      "citationIds": ["hereford-cathedral"]
+    },
+    {
+      "id": "religion-claim-itinerary",
+      "claim": "Matthew Paris’s Royal MS 14 C VII prefatory sequence includes an itinerary from London to the Holy Land, organising the route as ordered stations.",
+      "citationIds": ["bl-royal-14-c-vii"]
+    },
+    {
+      "id": "religion-claim-print",
+      "claim": "The 1475 Rudimentum Novitiorum combines world history with two printed maps, carrying schematic sacred geography into the incunable book.",
+      "citationIds": ["loc-rudimentum"]
+    },
+    {
+      "id": "religion-claim-reading",
+      "claim": "The essay’s centre, orientation and route vocabularies are analytical descriptions of graphic structure, not claims that every medieval reader interpreted a map identically.",
+      "citationIds": ["woodward-1987-mappaemundi", "harley-2001"]
+    }
+  ],
+  "sections": [
+    {
+      "id": "centre-is-instruction",
+      "title": "A centre is an instruction",
+      "mapIds": ["religion-madaba", "hereford", "religion-bunting"],
+      "interactive": "SacredOrientationExplorer filters the corpus by centre, orientation and route grammar"
+    },
+    {
+      "id": "east-is-up",
+      "title": "When east is up",
+      "mapIds": ["religion-beatus", "religion-ebstorf", "religion-psalter"]
+    },
+    {
+      "id": "world-as-history",
+      "title": "The world as simultaneous history",
+      "mapIds": ["religion-beatus", "religion-ebstorf", "hereford"],
+      "interactive": "AdaptiveTimeline separates artifact date from the histories pictured inside the maps"
+    },
+    {
+      "id": "road-becomes-devotion",
+      "title": "The road becomes devotion",
+      "mapIds": ["religion-matthew-paris", "religion-madaba"],
+      "interactive": "CompareSlider contrasts a centred world image with a sequential pilgrimage itinerary"
+    },
+    {
+      "id": "print-remembers",
+      "title": "Print remembers the diagram",
+      "mapIds": ["religion-to-1472", "religion-rudimentum", "religion-bunting"]
+    },
+    {
+      "id": "boundary-of-this-argument",
+      "title": "The boundary of this argument",
+      "mapIds": ["hereford", "religion-matthew-paris", "religion-bunting"]
+    }
+  ]
 }

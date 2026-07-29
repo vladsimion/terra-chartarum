@@ -216,6 +216,42 @@ const RAW: unknown[] = [
       },
     ],
   },
+  {
+    id: 'matthew-paris',
+    room: 'road',
+    secondaryRooms: ['theatre', 'city'],
+    name: 'Matthew Paris',
+    sortName: 'Paris, Matthew',
+    born: 1200,
+    died: 1259,
+    places: ['St Albans', 'London'],
+    bio: 'Benedictine monk, chronicler, artist and mapmaker at St Albans Abbey. His manuscript itineraries organise travel from England toward the Holy Land as ordered stations, making sequence more important than uniform geographic scale.',
+    essaySlugs: ['invisible-maps-religion'],
+    links: [
+      {
+        label: 'British Library manuscript record',
+        url: 'https://searcharchives.bl.uk/catalog/040-002106988',
+      },
+    ],
+  },
+  {
+    id: 'heinrich-bunting',
+    room: 'theatre',
+    secondaryRooms: ['archive'],
+    name: 'Heinrich Bünting',
+    sortName: 'Bünting, Heinrich',
+    born: 1545,
+    died: 1606,
+    places: ['Hanover', 'Gronau'],
+    bio: 'German Protestant pastor and author of the Itinerarium Sacrae Scripturae. His memorable clover-leaf world map turns Europe, Asia and Africa into a Christian emblem whose leaves meet at Jerusalem.',
+    essaySlugs: ['invisible-maps-religion'],
+    links: [
+      {
+        label: 'Wikimedia Commons map',
+        url: 'https://commons.wikimedia.org/wiki/File:1581_Clover_Leaf_World_Map_by_Heinrich_Buenting.jpg',
+      },
+    ],
+  },
 ];
 
 export const CARTOGRAPHERS: Cartographer[] = RAW.map((c) => CartographerSchema.parse(c));

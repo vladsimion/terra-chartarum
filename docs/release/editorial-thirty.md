@@ -99,3 +99,31 @@ practices and SEO.
 of Cities Remember. Jira confirms KAN-124–KAN-128 are all To Do, Medium and
 unblocked, so Batch 5 follows the editorial dependency chain: research → outline →
 draft → interactive build → design QA.
+
+## Batch 5 — Invisible Maps of Religion build
+
+**Tickets:** KAN-124, KAN-125, KAN-126, KAN-127, KAN-128.
+
+- Added a bounded research dossier with six traceable claims and explicit limits:
+  the essay is a medieval European and Byzantine Christian case study, not a
+  universal account of religious cartography.
+- Assigned all nine corpus maps across six chapters and three interactive moments.
+- Published a 3,000+ word native MDX essay in the site voice, with complete
+  Theatre/Road/City room metadata.
+- Added the accessible `SacredOrientationExplorer`, a comparison between centred
+  and sequential reading grammars, and a linked artifact timeline.
+- Integrated nine rich catalogue records, two cartographer authority records and
+  five shared bibliography entries.
+- Completed design QA with a code-native cover, generated OG image and local
+  rights-cleared Hereford/Matthew Paris comparison assets.
+
+**Evidence:** editorial QA, lint, 109 unit tests, Astro check, an 81-page production
+build, formatting, focused desktop and mobile interaction flows, and Lighthouse
+scores of 98 performance and 100 for accessibility, best practices and SEO.
+
+**Reprioritisation:** the live Roadmap still completes Religion before Cities
+Remember. Jira confirms KAN-129–KAN-133 are To Do and Medium with no blocking links.
+Batch 6 therefore publishes and cross-links Religion, then advances Cities Remember
+through concept, rights-cleared corpus, research and fully mapped outline. The
+“Relates” issues attached to KAN-129 supply context and follow-up checks; they do not
+block this release.

@@ -206,3 +206,35 @@ test.describe('flow: Maps That Age interactive build', () => {
     ).toBeVisible();
   });
 });
+
+test.describe('flow: Invisible Maps of Religion interactive build', () => {
+  test('grammar filters and comparison remain operable across viewports', async ({ page }) => {
+    await page.goto('/essays/invisible-maps-religion/');
+
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Invisible Maps of Religion' }),
+    ).toBeVisible();
+
+    const explorer = page.locator('[data-sacred-orientation]');
+    await explorer.getByRole('button', { name: 'Pilgrimage route' }).click();
+    await expect(explorer.locator('.soe-status')).toHaveText(
+      'Showing 1 maps using the route grammar.',
+    );
+    await expect(explorer.locator('[data-map]:visible')).toHaveCount(1);
+    await expect(explorer.getByRole('link', { name: 'Open catalogue record' })).toHaveAttribute(
+      'href',
+      '/collection/religion-matthew-paris/',
+    );
+
+    const comparison = page.getByRole('slider', {
+      name: 'Reveal slider between Centred world · Hereford and Sequential route · Matthew Paris',
+    });
+    await comparison.focus();
+    await page.keyboard.press('ArrowRight');
+    await expect(comparison).toHaveAttribute('aria-valuenow', '52');
+
+    await expect(
+      page.getByRole('navigation', { name: 'Reading path through The Theatre' }),
+    ).toBeVisible();
+  });
+});

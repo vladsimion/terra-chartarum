@@ -88,6 +88,48 @@ const RAW: unknown[] = [
       'O’Connell, Monique. Men of Empire: Power and Negotiation in Venice’s Maritime State. Baltimore: Johns Hopkins University Press, 2009.',
   },
   {
+    id: 'woodward-1987-mappaemundi',
+    author: 'Woodward, David',
+    year: 1987,
+    title: 'Medieval Mappaemundi',
+    citation:
+      'Woodward, David. “Medieval Mappaemundi.” In The History of Cartography, vol. 1, 286–370. Chicago: University of Chicago Press, 1987.',
+    url: 'https://press.uchicago.edu/books/hoc/HOC_V1/HOC_VOLUME1_chapter18.pdf',
+  },
+  {
+    id: 'edson-1997',
+    author: 'Edson, Evelyn',
+    year: 1997,
+    title: 'Mapping Time and Space: How Medieval Mapmakers Viewed Their World',
+    citation:
+      'Edson, Evelyn. Mapping Time and Space: How Medieval Mapmakers Viewed Their World. London: British Library, 1997.',
+  },
+  {
+    id: 'hereford-cathedral',
+    author: 'Hereford Cathedral',
+    year: 2021,
+    title: 'Mappa Mundi',
+    citation: 'Hereford Cathedral. “Mappa Mundi.” Collection guide, updated 20 July 2021.',
+    url: 'https://www.herefordcathedral.org/mappa-mundi',
+  },
+  {
+    id: 'bl-royal-14-c-vii',
+    author: 'British Library',
+    title: 'Royal MS 14 C VII',
+    citation:
+      'British Library. Royal MS 14 C VII, Matthew Paris, Historia Anglorum and prefatory itinerary materials. Archives and Manuscripts Catalogue.',
+    url: 'https://searcharchives.bl.uk/catalog/040-002106988',
+  },
+  {
+    id: 'loc-rudimentum',
+    author: 'Library of Congress',
+    year: 1475,
+    title: 'Rudimentum Novitiorum',
+    citation:
+      'Library of Congress. Rudimentum Novitiorum. Lübeck: Lucas Brandis, 5 August 1475. Lessing J. Rosenwald Collection.',
+    url: 'https://www.loc.gov/item/48043282/',
+  },
+  {
     id: 'vandenbroecke-1996',
     author: 'Van den Broecke, Marcel P. R.',
     year: 1996,
