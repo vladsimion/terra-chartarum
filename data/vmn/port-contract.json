@@ -1,0 +1,168 @@
+{
+  "schemaVersion": 1,
+  "groups": [
+    {
+      "ticket": "KAN-193",
+      "name": "Egypt maritime nodes",
+      "requiredIds": ["alexandria", "damietta"],
+      "constraints": {
+        "alexandria": [
+          {
+            "region": "Egypt",
+            "status": "foreign_port",
+            "polity_id": "mamluks",
+            "start_date": "1250-01-01",
+            "end_date": "1517-01-22",
+            "notes_contains": "fondaco"
+          }
+        ],
+        "damietta": [
+          {
+            "region": "Egypt",
+            "status": "foreign_port",
+            "polity_id": "mamluks",
+            "start_date": "1250-01-01",
+            "end_date": "1517-01-22"
+          }
+        ]
+      }
+    },
+    {
+      "ticket": "KAN-194",
+      "name": "Black Sea maritime nodes",
+      "requiredIds": ["trebizond", "sinope", "samsun", "tana", "caffa", "soldaia"],
+      "constraints": {
+        "trebizond": [{ "region": "Black Sea", "status": "foreign_port" }],
+        "sinope": [{ "region": "Black Sea", "status": "foreign_port" }],
+        "samsun": [{ "region": "Black Sea", "status": "foreign_port" }],
+        "tana": [
+          {
+            "region": "Sea of Azov",
+            "status": "trading_post",
+            "polity_id": "venice",
+            "notes_contains": "Golden Horde"
+          }
+        ],
+        "caffa": [{ "region": "Crimea", "status": "rival_genoese" }],
+        "soldaia": [{ "region": "Crimea", "status": "rival_genoese" }]
+      }
+    },
+    {
+      "ticket": "KAN-195",
+      "name": "Cyprus maritime nodes",
+      "requiredIds": ["famagusta", "limassol", "kyrenia"],
+      "exactPhaseCount": true,
+      "constraints": {
+        "famagusta": [
+          {
+            "status": "foreign_port",
+            "polity_id": "cyprus",
+            "start_date": "1192-01-01",
+            "end_date": "1373-10-01"
+          },
+          {
+            "status": "rival_genoese",
+            "polity_id": "genoa",
+            "start_date": "1373-10-01",
+            "end_date": "1464-01-01"
+          },
+          {
+            "status": "foreign_port",
+            "polity_id": "cyprus",
+            "start_date": "1464-01-01",
+            "end_date": "1489-02-26"
+          },
+          {
+            "status": "subject",
+            "polity_id": "venice",
+            "start_date": "1489-02-26",
+            "end_date": "1571-08-01"
+          }
+        ],
+        "limassol": [
+          {
+            "status": "foreign_port",
+            "polity_id": "cyprus",
+            "start_date": "1192-01-01",
+            "end_date": "1489-02-26"
+          },
+          {
+            "status": "subject",
+            "polity_id": "venice",
+            "start_date": "1489-02-26",
+            "end_date": "1571-08-01"
+          }
+        ],
+        "kyrenia": [
+          {
+            "status": "foreign_port",
+            "polity_id": "cyprus",
+            "start_date": "1192-01-01",
+            "end_date": "1489-02-26"
+          },
+          {
+            "status": "subject",
+            "polity_id": "venice",
+            "start_date": "1489-02-26",
+            "end_date": "1571-08-01"
+          }
+        ]
+      }
+    },
+    {
+      "ticket": "KAN-196",
+      "name": "Levant maritime nodes",
+      "requiredIds": ["beirut", "acre", "tyre", "sidon"],
+      "constraints": {
+        "beirut": [
+          {
+            "region": "Levant",
+            "status": "foreign_port",
+            "polity_id": "mamluks",
+            "notes_contains": "fondaco"
+          }
+        ],
+        "acre": [
+          {
+            "region": "Levant",
+            "status": "crusader_port",
+            "polity_id": "kingdom_jerusalem"
+          }
+        ],
+        "tyre": [{ "region": "Levant", "status": "foreign_port" }],
+        "sidon": [{ "region": "Levant", "status": "foreign_port" }]
+      }
+    },
+    {
+      "ticket": "KAN-197",
+      "name": "Constantinople quarter phases",
+      "requiredIds": ["constantinople_quarter"],
+      "exactPhaseCount": true,
+      "constraints": {
+        "constantinople_quarter": [
+          {
+            "status": "commercial_quarter",
+            "polity_id": "byzantine",
+            "start_date": "1082-05-01",
+            "end_date": "1204-04-13",
+            "notes_contains": "chrysobull"
+          },
+          {
+            "status": "metropolitan_quarter",
+            "polity_id": "latin_empire",
+            "start_date": "1204-04-13",
+            "end_date": "1261-07-25",
+            "notes_contains": "not a sovereign colony"
+          },
+          {
+            "status": "commercial_quarter",
+            "polity_id": "byzantine",
+            "start_date": "1261-07-25",
+            "end_date": "1453-05-29",
+            "notes_contains": "restored"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -65,3 +65,23 @@ Tickets: KAN-173, KAN-174, KAN-175, KAN-218, KAN-219.
 
 Evidence: Astro check, focused VMN network Vitest tests, production build and the
 Chromium standalone-network Playwright flow pass.
+
+Reprioritisation: the remaining high-confidence work was the migrated port
+gazetteer. KAN-193–197 form one regional/phase slice under KAN-151 and could be
+closed with exact authority-table checks; the scholarly chronology and
+georeferencing tickets remained blocked on sources.
+
+## Batch 4 — eastern maritime-node contracts
+
+Tickets: KAN-193, KAN-194, KAN-195, KAN-196, KAN-197.
+
+- Added executable regional requirements for Egypt, the Black Sea/Sea of Azov
+  and Crimea, Cyprus and the Levant.
+- Locked Alexandria and Beirut's fondaco documentation to foreign-port rows.
+- Locked Famagusta's four phases and Limassol/Kyrenia's two phases.
+- Locked the Constantinople quarter's three legal-status phases, including the
+  non-sovereign Latin Empire representation.
+- Made the contract a pre-write VMN build gate and documented its role.
+
+Evidence: `make vmn`, the 86/7/11-feature compiled QA gate and geo release
+integrity checks pass with unchanged binaries.

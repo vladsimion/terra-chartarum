@@ -75,6 +75,11 @@ The imported source's `bailiwick` label is normalized to `subject`: bailiwick
 describes the administrative form of Venetian jurisdiction, while `status`
 records sovereignty/tenure. The original distinction remains in the phase note.
 
+Ticket-level regional and phase expectations are executable in
+[`port-contract.json`](../../data/vmn/port-contract.json); the accompanying
+[authority-contract guide](port-authority-contract.md) explains how it protects
+the CSV-to-FlatGeobuf projection.
+
 ```sh
 make vmn-validate   # validates public/geo/venetian-*.fgb against spec §8
 ```

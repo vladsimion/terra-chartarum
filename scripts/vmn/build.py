@@ -29,6 +29,7 @@ DATA_DIR = REPO / "data" / "vmn"
 GEO_OUT = REPO / "public" / "geo"
 
 PORTS_CSV = DATA_DIR / "ports.csv"
+PORT_CONTRACT = DATA_DIR / "port-contract.json"
 WAYPOINTS_CSV = DATA_DIR / "waypoints.csv"
 ROUTES_CSV = DATA_DIR / "routes.csv"
 ROUTE_PATHS_GEOJSON = DATA_DIR / "routes-paths.geojson"
@@ -179,6 +180,61 @@ def validate_ports(
             errors.append(f"row {i}: duplicate (port_id, start_date) {dkey}")
         seen.add(dkey)
 
+    errors.extend(validate_port_contract(rows))
+    return errors
+
+
+def validate_port_contract(rows: list[dict[str, str]]) -> list[str]:
+    """Validate ticket-level gazetteer expectations against the authority table.
+
+    The contract makes region/status/polity/phasing acceptance criteria executable
+    without teaching the compiler historical exceptions.
+    """
+    with PORT_CONTRACT.open(encoding="utf-8") as f:
+        contract = json.load(f)
+    if contract.get("schemaVersion") != 1:
+        return ["port-contract.json: unsupported schemaVersion"]
+
+    errors: list[str] = []
+    by_id: dict[str, list[dict[str, str]]] = {}
+    for row in rows:
+        by_id.setdefault(row["port_id"].strip(), []).append(row)
+
+    for group in contract.get("groups", []):
+        label = f"{group.get('ticket', 'contract')} {group.get('name', '')}".strip()
+        required_ids = group.get("requiredIds", [])
+        constraints = group.get("constraints", {})
+        for port_id in required_ids:
+            if port_id not in by_id:
+                errors.append(f"{label}: required port_id '{port_id}' missing")
+        for port_id, expected_phases in constraints.items():
+            actual_phases = by_id.get(port_id, [])
+            if group.get("exactPhaseCount") and len(actual_phases) != len(expected_phases):
+                errors.append(
+                    f"{label}: '{port_id}' has {len(actual_phases)} phases, "
+                    f"expected {len(expected_phases)}"
+                )
+            for expected in expected_phases:
+                notes_contains = str(expected.get("notes_contains", "")).lower()
+                fields = {
+                    key: str(value)
+                    for key, value in expected.items()
+                    if key != "notes_contains"
+                }
+                matches = [
+                    row
+                    for row in actual_phases
+                    if all(row.get(key, "").strip() == value for key, value in fields.items())
+                    and (
+                        not notes_contains
+                        or notes_contains in row.get("notes", "").lower()
+                    )
+                ]
+                if not matches:
+                    description = ", ".join(f"{key}={value}" for key, value in fields.items())
+                    if notes_contains:
+                        description += f", notes~={notes_contains}"
+                    errors.append(f"{label}: '{port_id}' missing phase ({description})")
     return errors
 
 
@@ -548,7 +604,7 @@ def main() -> int:
     print("VMN pipeline")
     print(f"  data dir : {DATA_DIR}")
     required = [
-        PORTS_CSV, WAYPOINTS_CSV, ROUTES_CSV, ROUTE_PATHS_GEOJSON, EVENTS_CSV,
+        PORTS_CSV, PORT_CONTRACT, WAYPOINTS_CSV, ROUTES_CSV, ROUTE_PATHS_GEOJSON, EVENTS_CSV,
         POSSESSIONS_GEOJSON, SOURCES_CSV, BASE_DATA_MANIFEST, LAND_GEOJSON,
         COASTLINE_GEOJSON,
     ]
