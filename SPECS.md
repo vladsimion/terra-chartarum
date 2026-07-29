@@ -213,9 +213,9 @@ These early deferrals are all resolved:
 - **Sitemap** — re-added, pinned to `@astrojs/sitemap@3.2.1` (later 3.x require an
   `astro:routes:resolved` hook Astro 4.16 doesn't emit), alongside `/rss.xml` and
   `public/robots.txt` (KAN-22 / ATLAS-205).
-- **Production origin** — `astro.config.mjs` `site` is set to the live origin (the
-  OpenAI Sites host; see [`docs/launch-runbook.md`](docs/launch-runbook.md)) (KAN-56 /
-  ATLAS-605).
+- **Production origin** - `astro.config.mjs` `site` is set to the live origin
+  (Cloudflare Pages, `https://terra-chartarum.pages.dev`; see
+  [`docs/launch-runbook.md`](docs/launch-runbook.md)) (KAN-56 / ATLAS-605).
 - **Tooling/CI** — ESLint, Prettier, Vitest, Playwright + axe and Lighthouse CI run
   in `.github/workflows/ci.yml`, plus a VMN dataset QA gate (KAN-14 / ATLAS-102,
   extended by VMN-21).

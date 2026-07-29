@@ -5,11 +5,11 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  // Portable static output, deployed from the saved Sites source/version.
+  // Portable static output, deployed to Cloudflare Pages (output dir: dist).
   output: 'static',
   // Production origin (KAN-56 / ATLAS-605). Drives canonical tags, absolute OG image URLs,
   // sitemap entries, RSS and citation URLs; keep public/robots.txt aligned.
-  site: 'https://terra-chartarum-atlas.vladsimion.chatgpt.site',
+  site: 'https://terra-chartarum.pages.dev',
   integrations: [
     mdx(),
     tailwind({ applyBaseStyles: false }),

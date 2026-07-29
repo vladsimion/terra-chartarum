@@ -3,14 +3,14 @@
     "http://www.w3.org/ns/anno.jsonld",
     "https://iiif.io/api/extension/georef/1/context.json"
   ],
-  "id": "https://terra-chartarum-atlas.vladsimion.chatgpt.site/data/vmn/reference/shepherd-byzantine-1265-1355.json",
+  "id": "https://terra-chartarum.pages.dev/data/vmn/reference/shepherd-byzantine-1265-1355.json",
   "type": "AnnotationPage",
   "label": {
     "en": ["Reference registration: The Byzantine Empire, 1265–1355"]
   },
   "items": [
     {
-      "id": "https://terra-chartarum-atlas.vladsimion.chatgpt.site/data/vmn/reference/shepherd-byzantine-1265-1355.json#georeference",
+      "id": "https://terra-chartarum.pages.dev/data/vmn/reference/shepherd-byzantine-1265-1355.json#georeference",
       "type": "Annotation",
       "motivation": "georeferencing",
       "target": {

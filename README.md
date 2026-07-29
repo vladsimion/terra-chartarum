@@ -107,12 +107,12 @@ tracked in the [shared component inventory](docs/component-library.md).
 
 ## Deploy
 
-The build emits portable static `dist/`. Production ships as an **OpenAI Sites**
-bundle — `npm run build` runs `scripts/build-sites-entry.mjs`, and the canonical
-origin is `site` in `astro.config.mjs`
-(`https://terra-chartarum-atlas.vladsimion.chatgpt.site`). The same `dist/` also
-runs on Cloudflare Pages or any static host. Full procedure — gates, smoke tests,
-rollback — in the [launch runbook](docs/launch-runbook.md).
+`npm run build` emits a portable static `dist/` that deploys to **Cloudflare Pages**
+(output `dist/`, git integration with per-PR previews). The canonical origin is
+`site` in `astro.config.mjs` (`https://terra-chartarum.pages.dev`), which drives the
+canonical tags, sitemap and RSS. The same `dist/` runs on any static host. Full
+procedure - gates, smoke tests, rollback - in the
+[launch runbook](docs/launch-runbook.md).
 
 ## Roadmap
 

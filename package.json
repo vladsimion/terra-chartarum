@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "npm run editorial:validate && npm run epic:validate && npm run release:validate && astro build && node scripts/build-sites-entry.mjs && npm run indexing:validate && npm run geo:interop:validate",
+    "build": "npm run editorial:validate && npm run epic:validate && npm run release:validate && astro build && npm run indexing:validate && npm run geo:interop:validate",
     "preview": "astro preview",
     "check": "astro check",
     "lint": "eslint .",
