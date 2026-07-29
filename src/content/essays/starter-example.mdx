@@ -3,7 +3,7 @@ title: Anatomy of a Native Essay
 subtitle: A Worked Example of the Component Library
 summary: >-
   A native (MDX) essay that doubles as living documentation: it uses every shared
-  island — radar, adaptive timeline, compare slider, and scrollytelling — so new
+  island - radar, adaptive timeline, compare slider, and scrollytelling - so new
   authors can copy it as a starting point.
 cover: /covers/starter-example.svg
 status: native
@@ -40,7 +40,7 @@ import CompareSlider from '../../components/islands/CompareSlider.astro';
 import Scrollytelling from '../../components/islands/Scrollytelling.astro';
 import Section from '../../components/Section.astro';
 
-This page is authored in **MDX** and rendered natively inside the portal shell —
+This page is authored in **MDX** and rendered natively inside the portal shell -
 no iframe. It exists to show the three reusable islands in context. Copy
 `starter/essay.mdx.template` (or run `npm run create-essay`) to begin your own.
 
@@ -122,7 +122,7 @@ into the `before` and `after` slots.
 Mark each step block `data-scrolly-step`; give the graphic ordered
 `data-scrolly-figure` panels and it cross-fades to the one matching the active
 step as the reader scrolls. It rides the shared IntersectionObserver scroll-spy
-(`src/lib/scrollytelling.ts`) and is reduced-motion aware — under
+(`src/lib/scrollytelling.ts`) and is reduced-motion aware - under
 `prefers-reduced-motion` the graphic un-sticks and every figure reads in flow.
 Prefer a bespoke graphic? Listen for the `scrolly:step` event it dispatches.
 
@@ -154,7 +154,7 @@ Prefer a bespoke graphic? Listen for the `scrolly:step` event it dispatches.
   </svg>
 
   <div data-scrolly-step>
-    **The globe.** Start with the sphere — the only faithful model, and the one
+    **The globe.** Start with the sphere - the only faithful model, and the one
     you can never lay flat on a table or a page.
   </div>
   <div data-scrolly-step>
@@ -162,7 +162,7 @@ Prefer a bespoke graphic? Listen for the `scrolly:step` event it dispatches.
     decision about where that violence goes.
   </div>
   <div data-scrolly-step>
-    **The grid.** Rolled onto a plane, the meridians snap parallel — legible,
+    **The grid.** Rolled onto a plane, the meridians snap parallel - legible,
     printable, and quietly lying about the poles.
   </div>
 </Scrollytelling>
@@ -172,7 +172,7 @@ Prefer a bespoke graphic? Listen for the `scrolly:step` event it dispatches.
 <Section id="on-abstraction" title="Why these components are theatre" rooms={['theatre', 'map']}>
 
 This chapter belongs to a different room than the essay. It is wrapped in
-`<Section>`, which emits the `#on-abstraction` anchor and declares its rooms —
+`<Section>`, which emits the `#on-abstraction` anchor and declares its rooms -
 mirroring the `sections` entry in this essay's frontmatter, the queryable source
 of truth the room pages read. Every island above stages an argument about a map
 rather than reproducing one, which is why this section is tagged **The Theatre**

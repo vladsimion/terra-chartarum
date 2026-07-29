@@ -5,9 +5,9 @@ Compiles the Venetian Maritime Network authority-table CSVs into the
 cloud-native FlatGeobuf assets the atlas renders (spec §6 / data-dictionary §5).
 
 Implemented:
-  * ports  (VMN-9)  — data/vmn/ports.csv -> public/geo/venetian-ports.fgb (Point)
-  * routes       (VMN-13) — venetian-routes.fgb (LineString)
-  * possessions  (VMN-19) — venetian-possessions.fgb (MultiPolygon)
+  * ports  (VMN-9)  - data/vmn/ports.csv -> public/geo/venetian-ports.fgb (Point)
+  * routes       (VMN-13) - venetian-routes.fgb (LineString)
+  * possessions  (VMN-19) - venetian-possessions.fgb (MultiPolygon)
 
 The writer is GDAL's FlatGeobuf driver via ``pyogrio``; Shapely clips generalized
 possession traces to Natural Earth land. GDAL emits the packed-Hilbert spatial
@@ -127,7 +127,7 @@ def iso_year(value: str, *, field: str, row: int, errors: list[str]) -> int | No
 
 
 # A locator is a printed page (`p436`, `p162-164`, roman `pxvi`) or a named
-# division for front matter that carries no printed folio — Lane's Chronology is
+# division for front matter that carries no printed folio - Lane's Chronology is
 # the only such case in the anchor editions, so naming it beats inventing a page.
 NAMED_LOCATORS = frozenset({"chronology", "appendix-a"})
 PAGE_REF_RE = re.compile(r"p(?:[0-9]+(?:-[0-9]+)?|[ivxlc]+(?:-[ivxlc]+)?)")

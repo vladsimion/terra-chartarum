@@ -81,7 +81,7 @@ cookies, persistent identifiers, personal data, sensitive custom properties or
 a provider whose legal basis requires opt-in. Hold the release while that
 decision is unresolved.
 
-## Staging verification — KAN-268
+## Staging verification - KAN-268
 
 Run both builds. They do not contact Plausible during compilation; they inspect
 the emitted static HTML.

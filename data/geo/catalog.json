@@ -75,7 +75,7 @@
       "featureCount": 112,
       "yearFrom": 106,
       "yearTo": 271,
-      "source": "Ancient World Mapping Center (AWMC), UNC Chapel Hill — roman_empire_ce_117_extent",
+      "source": "Ancient World Mapping Center (AWMC), UNC Chapel Hill - roman_empire_ce_117_extent",
       "license": "ODbL 1.0",
       "attribution": "Ancient World Mapping Center; derived from the Barrington Atlas and OpenStreetMap (ODbL)"
     },
@@ -88,7 +88,7 @@
       "featureCount": 86,
       "yearFrom": 1200,
       "yearTo": 1500,
-      "source": "Terra Chartarum (compiled) — Lane 1973; O'Connell 2009",
+      "source": "Terra Chartarum (compiled) - Lane 1973; O'Connell 2009",
       "license": "CC BY",
       "attribution": "Terra Chartarum; after Lane and O'Connell"
     },
@@ -101,7 +101,7 @@
       "featureCount": 7,
       "yearFrom": 1200,
       "yearTo": 1500,
-      "source": "Terra Chartarum (compiled) — Lane 1973",
+      "source": "Terra Chartarum (compiled) - Lane 1973",
       "license": "CC BY",
       "attribution": "Terra Chartarum; after Lane"
     },
@@ -114,7 +114,7 @@
       "featureCount": 11,
       "yearFrom": 1200,
       "yearTo": 1500,
-      "source": "Terra Chartarum (compiled) — Lane 1973; O'Connell 2009",
+      "source": "Terra Chartarum (compiled) - Lane 1973; O'Connell 2009",
       "license": "CC BY",
       "attribution": "Terra Chartarum; after Lane and O'Connell"
     }

@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 // Core user flows (KAN-54 / ATLAS-603). These run on every engine in the
-// Playwright config — Chromium, Firefox, WebKit — and on two mobile viewports
+// Playwright config - Chromium, Firefox, WebKit - and on two mobile viewports
 // (Pixel 5, iPhone 13), so they double as the cross-browser / responsive QA
 // gate. They are deliberately click- and value-driven (no keyboard-focus
 // assertions, which are engine-specific and covered chromium-only in
@@ -33,7 +33,7 @@ test.describe('flow: primary navigation', () => {
     await expect(page.locator('h1').first()).toBeVisible();
 
     // The brand mark returns to the home page.
-    await page.getByRole('link', { name: 'Terra Chartarum — home' }).click();
+    await page.getByRole('link', { name: 'Terra Chartarum - home' }).click();
     await page.waitForURL(/\/$/);
     await expect(page.locator('h1').first()).toBeVisible();
   });

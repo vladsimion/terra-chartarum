@@ -10,12 +10,12 @@ Decision: approved with additive-use caveat
 
 The canonical order remains:
 
-1. **Measure** — geometric, survey and quantitative relations.
-2. **Witness** — evidential grounding, inheritance and uncertainty.
-3. **Use** — fitness for navigation, retrieval, access and action.
-4. **Cosmos** — meaning, orientation, naming, craft and staged knowledge.
-5. **Power** — authority, property, jurisdiction, boundaries and institutions.
-6. **Silence** — omission, erasure, refusal and what a system cannot record.
+1. **Measure** - geometric, survey and quantitative relations.
+2. **Witness** - evidential grounding, inheritance and uncertainty.
+3. **Use** - fitness for navigation, retrieval, access and action.
+4. **Cosmos** - meaning, orientation, naming, craft and staged knowledge.
+5. **Power** - authority, property, jurisdiction, boundaries and institutions.
+6. **Silence** - omission, erasure, refusal and what a system cannot record.
 
 The sequence moves from formal relation through evidence and use to meaning,
 authority and absence. It is a reading order, not a ranking.

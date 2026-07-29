@@ -1,12 +1,12 @@
-# Terra Chartarum — Specification
+# Terra Chartarum - Specification
 
 An interactive historical-atlas portal: a gallery of cartographic visual essays
 under one publication of record. Cohesion lives in the **shell, tokens,
-navigation, motion, and metadata** — each essay keeps its bespoke interior.
+navigation, motion, and metadata** - each essay keeps its bespoke interior.
 
 - **Status:** Live. The portal shell, shared component library, interactive Atlas +
   historical-GIS tier, collection catalogue, seven-room cosmography, and the Venetian
-  Maritime Network atlas layer have all shipped — the four founding essays have grown
+  Maritime Network atlas layer have all shipped - the four founding essays have grown
   into a multi-room corpus. Only the VMN chronology source-verification (Jira KAN-140
   / KAN-154) remains open, pending page-level Lane & O'Connell excerpts.
 - **Stack:** Astro (static output, islands) + TypeScript (strict) + Tailwind +
@@ -35,11 +35,11 @@ navigation, motion, and metadata** — each essay keeps its bespoke interior.
 The wrapper route `/essays/<slug>/` and the raw essay must **not** share an
 output path. Raw essays therefore live at `/embed/<slug>/`, and each wrapper's
 iframe points at `/embed/<slug>/index.html`. Do not move raw essays back under
-`public/essays/` — the wrapper would recursively load itself.
+`public/essays/` - the wrapper would recursively load itself.
 
 ### Directory layout (M1 baseline)
 
-_This shows the M1 shell; the tree has since grown — rooms, atlas, collection,
+_This shows the M1 shell; the tree has since grown - rooms, atlas, collection,
 cartographers, bibliography, the VMN GIS pipeline, and the islands library. See
 [`README.md`](README.md) and [`docs/roadmap.md`](docs/roadmap.md) for the current
 shape._
@@ -126,29 +126,29 @@ type CanonicalDimension = 'measure' | 'witness' | 'use' | 'cosmos' | 'power' | '
 ## 4. Harmonized Meta-Lens (additive)
 
 The four essays use different analytical vocabularies. They are harmonized into
-**one overarching lens of 6 canonical dimensions** — _derived from_, not imposed
+**one overarching lens of 6 canonical dimensions** - _derived from_, not imposed
 on, the essays (all four share a Harley critical-cartography spine where Power
 and Silence are first-class).
 
 **Design rule: additive, never replacing.** Each essay keeps its native lens
 intact inside the interior. The meta-lens lives only at the **portal level**
 (faceted discovery, tagging, optional cross-essay radar) and is documented
-transparently in `/colophon` as _one interpretive frame_ — on-theme, since every
+transparently in `/colophon` as _one interpretive frame_ - on-theme, since every
 map has its own silences.
 
 | Canonical   | Meaning                                 | cartography             | Speculum       | Dacia                       | Venice·Sicily                      |
 | ----------- | --------------------------------------- | ----------------------- | -------------- | --------------------------- | ---------------------------------- |
 | **Measure** | geometric/survey fidelity               | Accuracy                | Geodesy        | mensvra                     | MARE/TERRA detail                  |
-| **Witness** | empirical grounding vs copied           | (Completeness)          | Witness        | —                           | —                                  |
-| **Use**     | navigation, fitness, reach              | Usability, Navigation   | Fitness, Reach | —                           | RETE                               |
-| **Cosmos**  | symbolic/meaning density, naming, craft | Symbolism, Richness     | Cosmos, Hand   | nomina, ordinatio, litterae | —                                  |
-| **Power**   | politics, authority, boundaries         | Politics                | —              | auctoritas, limes           | CONFINE, IMPOSIZIONE, CIRCOLAZIONE |
-| **Silence** | omission, erasure, exclusion            | (Completeness, inverse) | —              | silentium, rasura, vacat    | Harley "what omitted"              |
+| **Witness** | empirical grounding vs copied           | (Completeness)          | Witness        | -                           | -                                  |
+| **Use**     | navigation, fitness, reach              | Usability, Navigation   | Fitness, Reach | -                           | RETE                               |
+| **Cosmos**  | symbolic/meaning density, naming, craft | Symbolism, Richness     | Cosmos, Hand   | nomina, ordinatio, litterae | -                                  |
+| **Power**   | politics, authority, boundaries         | Politics                | -              | auctoritas, limes           | CONFINE, IMPOSIZIONE, CIRCOLAZIONE |
+| **Silence** | omission, erasure, exclusion            | (Completeness, inverse) | -              | silentium, rasura, vacat    | Harley "what omitted"              |
 
 - The machine-readable `CROSSWALK` in `registry.ts` maps each native axis to
   canonical dimensions (e.g. `Accuracy: {measure:1}`,
   `Completeness: {witness:0.5, silence:-0.5}`, `silentium: {silence:1}`).
-- Dacia's **Sex Lectiones** is a _reading method_, not a scoring set — only
+- Dacia's **Sex Lectiones** is a _reading method_, not a scoring set - only
   `rasura`/`vacat` feed Silence; the rest stays a reading protocol.
 - **Normalization:** native scales (1–5, 0–8, categorical) normalize to 0–1 for
   any cross-essay radar, with the commensurability caveat stated inline.
@@ -159,7 +159,7 @@ map has its own silences.
 
 ## 5. Interactive Atlas & Geo Tier
 
-_Shipped — the Atlas map, sqrt-compressed timeline, `GeoLayer` registry, and the
+_Shipped - the Atlas map, sqrt-compressed timeline, `GeoLayer` registry, and the
 Venetian Maritime Network FlatGeobuf layers are live; the contract below is
 as-built._
 
@@ -167,13 +167,13 @@ as-built._
   corpus timeline + faceted discovery + client search. The current
   `atlas.astro` ships the timeline (sqrt-compressed for ancient eras,
   `pos = (1 − sqrt((NOW − year) / ageMax)) × 100`, `NOW = 2024`).
-- **Geo-data tier (EG) — Regime A first:** serverless cloud-native GIS with no
-  database — **PMTiles** (vector/raster via HTTP range requests), **COG**
+- **Geo-data tier (EG) - Regime A first:** serverless cloud-native GIS with no
+  database - **PMTiles** (vector/raster via HTTP range requests), **COG**
   (raster), **FlatGeobuf/GeoJSON** (small vectors), served from CDN. A typed
   `GeoLayer` registry mirrors the essay registry (kind, format, url, crs,
   temporal extent, source/license/attribution, `essaySlugs`).
 - **Escalation to Regime B (deferred):** stand up PostGIS + Martin/TiTiler only
-  on a real trigger — spatial queries, very large data, dynamic tiling, or
+  on a real trigger - spatial queries, very large data, dynamic tiling, or
   user-contributed data.
 - **Georeferencing (optional, ATLAS-EG6):** warp scanned maps via Allmaps/IIIF;
   OpenLayers where projections require it.
@@ -186,9 +186,9 @@ as-built._
    `src/content/config.ts`), `status: native`.
 2. Add `/covers/<slug>.svg` and set `accent`.
 3. Compose the body with shared islands (RadarChart, AdaptiveTimeline,
-   CompareSlider, Scrollytelling — extracted in E4).
+   CompareSlider, Scrollytelling - extracted in E4).
 4. Add `metaScores` for cross-essay discovery (optional; see §4).
-5. `npm run build` — the gallery, atlas timeline, and facets pick it up
+5. `npm run build` - the gallery, atlas timeline, and facets pick it up
    automatically from the registry.
 
 A documented `starter/` kit + `create-essay` scaffold script landed in KAN-37
@@ -210,13 +210,13 @@ npm run check      # astro check (types)
 
 These early deferrals are all resolved:
 
-- **Sitemap** — re-added, pinned to `@astrojs/sitemap@3.2.1` (later 3.x require an
+- **Sitemap** - re-added, pinned to `@astrojs/sitemap@3.2.1` (later 3.x require an
   `astro:routes:resolved` hook Astro 4.16 doesn't emit), alongside `/rss.xml` and
   `public/robots.txt` (KAN-22 / ATLAS-205).
 - **Production origin** - `astro.config.mjs` `site` is set to the live origin
   (Cloudflare Pages, `https://terra-chartarum.pages.dev`; see
   [`docs/launch-runbook.md`](docs/launch-runbook.md)) (KAN-56 / ATLAS-605).
-- **Tooling/CI** — ESLint, Prettier, Vitest, Playwright + axe and Lighthouse CI run
+- **Tooling/CI** - ESLint, Prettier, Vitest, Playwright + axe and Lighthouse CI run
   in `.github/workflows/ci.yml`, plus a VMN dataset QA gate (KAN-14 / ATLAS-102,
   extended by VMN-21).
 
@@ -236,12 +236,12 @@ These early deferrals are all resolved:
 
 ## 9. Milestones
 
-- **M1 — Portal MVP:** E1 + E2 + E3 (+ EL1–EL3) → unified site, the founding essays
+- **M1 - Portal MVP:** E1 + E2 + E3 (+ EL1–EL3) → unified site, the founding essays
   live. _(done)_
-- **M2 — Platform:** + E4 → shared components + new-essay starter. _(done)_
-- **M3 — Atlas:** + E5 + EG + EL4 → cross-essay map/timeline/lens/GIS discovery.
+- **M2 - Platform:** + E4 → shared components + new-essay starter. _(done)_
+- **M3 - Atlas:** + E5 + EG + EL4 → cross-essay map/timeline/lens/GIS discovery.
   _(done)_
-- **M4 — Launch:** + E6 → production deploy; E7 runs continuously after. _(done)_
-- **M5 — Collection catalogue & beyond:** rich catalogue, cartographer/bibliography
+- **M4 - Launch:** + E6 → production deploy; E7 runs continuously after. _(done)_
+- **M5 - Collection catalogue & beyond:** rich catalogue, cartographer/bibliography
   registries, unified search, the seven-room cosmography, and the VMN atlas layer.
   _(done; VMN chronology page-verification KAN-140 / KAN-154 open)_

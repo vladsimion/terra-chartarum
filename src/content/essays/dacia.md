@@ -31,6 +31,6 @@ metaScores:
   silence: 0.9
 ---
 
-A two-winged exhibition — museum and trench — reading thirteen maps of Dacia as
+A two-winged exhibition - museum and trench - reading thirteen maps of Dacia as
 epigraphic stelae (Sex Lectiones) and scoring them as excavated strata
 (Quinque Sigilla).

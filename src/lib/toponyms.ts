@@ -140,7 +140,7 @@ export function getToponyms(): Toponym[] {
   return [...TOPONYMS].sort((a, b) => a.modern.localeCompare(b.modern));
 }
 
-/** Every name a place is known by — modern first, then historical + variants. */
+/** Every name a place is known by - modern first, then historical + variants. */
 export function toponymNames(t: Toponym): string[] {
   return [t.modern, ...t.ancient, ...t.medieval, ...t.variants];
 }

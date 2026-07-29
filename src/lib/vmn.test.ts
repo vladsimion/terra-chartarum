@@ -37,7 +37,7 @@ describe('VMN port resolver (PortProfilePopover data)', () => {
   it('derives route membership from the published waypoints', async () => {
     const modon = await getPortProfile('modon');
     const routeIds = modon!.routes.map((route) => route.routeId).sort();
-    // Modon is a hinge of the muda system — it appears on multiple convoy spines.
+    // Modon is a hinge of the muda system - it appears on multiple convoy spines.
     expect(routeIds).toContain('muda_alexandria');
     expect(routeIds).toContain('muda_syria');
     expect(modon!.routes.every((route) => route.name.length > 0)).toBe(true);

@@ -1,7 +1,7 @@
 # Essay Starter Kit
 
-How to add a new **native** essay to Terra Chartarum. (Legacy essays — full
-self-contained HTML documents — are hosted differently; see `SPECS.md §1`.)
+How to add a new **native** essay to Terra Chartarum. (Legacy essays - full
+self-contained HTML documents - are hosted differently; see `SPECS.md §1`.)
 
 ## Quick start
 
@@ -13,13 +13,13 @@ This scaffolds `src/content/essays/my-essay.mdx` from the template and drops a
 placeholder cover at `public/covers/my-essay.svg`. Then:
 
 1. Edit the frontmatter (summary, eras, regions, lenses, yearFrom/yearTo, accent).
-2. Replace the placeholder cover SVG (800×500 viewBox; match the house style —
+2. Replace the placeholder cover SVG (800×500 viewBox; match the house style -
    dark canvas, one accent colour, humanist serif title).
 3. Write the body in MDX, importing only the islands you use.
 4. `npm run dev` and open `/essays/my-essay/`.
 
 The essay appears automatically in the gallery, the cross-essay atlas timeline,
-and the faceted filters — everything reads from the content collection via
+and the faceted filters - everything reads from the content collection via
 `src/lib/registry.ts`. No registration step.
 
 ## Frontmatter reference
@@ -42,7 +42,7 @@ Validated by `src/content/config.ts` (Zod). Required unless noted.
 
 ## The component library (`src/components/islands/`)
 
-All three are Astro components — server-rendered by default, shipping vanilla JS
+All three are Astro components - server-rendered by default, shipping vanilla JS
 only where interaction requires it. Framework choice (Preact/Svelte/React) is
 deliberately deferred (ATLAS-401 spike); these need no runtime.
 
@@ -109,7 +109,7 @@ deliberately deferred (ATLAS-401 spike); these need no runtime.
   one matching the active step; or listen for the `scrolly:step` CustomEvent to
   drive a bespoke graphic.
 - Rides the shared IntersectionObserver scroll-spy (`src/lib/scrollytelling.ts`)
-  and is reduced-motion aware — under `prefers-reduced-motion` the graphic
+  and is reduced-motion aware - under `prefers-reduced-motion` the graphic
   un-sticks and every figure reads in flow.
 
 ## Definition of done

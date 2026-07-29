@@ -12,8 +12,8 @@ import { ROOM_SLUGS } from '../data/rooms';
 
 // Section-level room tagging (KAN-95). The async getRoomSections wiring is a thin
 // wrapper over getEssays (not runnable under the astro:content vitest shim), so
-// the flatten/filter logic is tested pure here, and the AC — a Border-tagged
-// chapter of "La Rotta e il Catasto" with a working deep link — is verified by
+// the flatten/filter logic is tested pure here, and the AC - a Border-tagged
+// chapter of "La Rotta e il Catasto" with a working deep link - is verified by
 // reading the real essay frontmatter off disk.
 
 const SLUGS = new Set<string>(ROOM_SLUGS);

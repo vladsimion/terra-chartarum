@@ -1,4 +1,4 @@
-# VMN — data-model & integration decisions (VMN-2 spike)
+# VMN - data-model & integration decisions (VMN-2 spike)
 
 Reverse-engineered from the live **Roman Empire, AD 117** reference layer and the
 atlas rendering pipeline as they exist in this repo, to freeze spec §5 field
@@ -15,10 +15,10 @@ rationale while describing the implemented outcome.
 
 | Artifact             | Location                                                         |
 | -------------------- | ---------------------------------------------------------------- |
-| Registry entry       | `src/lib/geo.ts` — `id: 'roman-empire-117'` (+ `GeoLayerSchema`) |
+| Registry entry       | `src/lib/geo.ts` - `id: 'roman-empire-117'` (+ `GeoLayerSchema`) |
 | Geometry asset       | `public/geo/roman-empire-117.geojson`                            |
-| Renderer / add-layer | `src/components/islands/AtlasMap.astro` — `addGeoLayer`          |
-| Time-slider binding  | `src/components/islands/AtlasMap.astro` — `syncLayerTime`        |
+| Renderer / add-layer | `src/components/islands/AtlasMap.astro` - `addGeoLayer`          |
+| Time-slider binding  | `src/components/islands/AtlasMap.astro` - `syncLayerTime`        |
 
 ## Findings (freeze these into §5)
 
@@ -26,14 +26,14 @@ rationale while describing the implemented outcome.
    `format: 'geojson'`, `url: '/geo/roman-empire-117.geojson'`. The ticket
    assumed "FGB attributes"; there are none to read. FGB is still the VMN target
    (`format` enum already accepts `flatgeobuf`, and the placeholder
-   `venetian-maritime-1400` entry declares it) — but see blocker **B1**.
+   `venetian-maritime-1400` entry declares it) - but see blocker **B1**.
 
 2. **All metadata lives in the registry entry, not on features.** The GeoJSON is
    a `FeatureCollection` of **112 `Polygon` features, each with `properties: {}`**
-   — no ids, no dates, no source per feature. Temporal extent (`yearFrom: 106`,
-   `yearTo: 271`), `source`, `license`, `attribution`, `color`, `geometry` all
-   sit in the `GeoLayer` registry object. The renderer reads **zero** feature
-   properties.
+   - no ids, no dates, no source per feature. Temporal extent (`yearFrom: 106`,
+     `yearTo: 271`), `source`, `license`, `attribution`, `color`, `geometry` all
+     sit in the `GeoLayer` registry object. The renderer reads **zero** feature
+     properties.
 
 3. **CRS is implicit EPSG:4326.** No GeoJSON `crs` member; lon/lat WGS84 by
    spec default. Matches §5.1. `GeoLayerSchema.crs` defaults `'EPSG:4326'`.
@@ -51,15 +51,15 @@ roomAnchor`, plus optional per-feature styling hints. Each VMN layer parses
 
 ## Resolved integration issues
 
-- **B1 — FlatGeobuf loading: resolved.** `addGeoLayer` lazily imports the
+- **B1 - FlatGeobuf loading: resolved.** `addGeoLayer` lazily imports the
   FlatGeobuf decoder only when an FGB layer is toggled, streams its features into
   a MapLibre GeoJSON source, and leaves FGB as the canonical QA artifact.
 
-- **B2 — Per-feature time filtering: resolved.** `syncLayerTime` composes the
+- **B2 - Per-feature time filtering: resolved.** `syncLayerTime` composes the
   layer's base style filter with inclusive `valid_from`/`valid_to` expressions.
   The port region facet composes with the same temporal filter.
 
-- **B3 — Data-driven styling: resolved.** The schema accepts `circle`; ports
+- **B3 - Data-driven styling: resolved.** The schema accepts `circle`; ports
   graduate by `status`, routes split into solid/dashed sublayers by `route_type`,
   and possessions render as phased fills.
 
@@ -80,7 +80,7 @@ pyogrio conventions, ready for the B2/B3 renderer work:
   `commodities`, operating-window fields (reserved for VMN-E7 embeds).
 
 Registry-level (per `GeoLayerSchema`): three entries replacing the single pending
-`venetian-maritime-1400` row — `kind: 'vector'`, `format: 'flatgeobuf'`,
+`venetian-maritime-1400` row - `kind: 'vector'`, `format: 'flatgeobuf'`,
 `essaySlugs: ['venice-sicily']`, layer-envelope `yearFrom`/`yearTo`, and
 `geometry`/`color` once B3 extends the enum.
 
@@ -91,7 +91,7 @@ gate now covers schema, geometry, temporal ranges, provenance, route references,
 and coastline containment; the atlas consumes the same frozen fields for
 interaction, filtering, and styling.
 
-## D10 — Possession phases and extents (KAN-158–162)
+## D10 - Possession phases and extents (KAN-158–162)
 
 The possession authority table is one row per political phase, and the authored
 extent file is keyed by the same `(territory, start_date)` pair. This prevents a

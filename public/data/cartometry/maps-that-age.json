@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "title": "Maps That Age — Cartometry evidence export",
+  "title": "Maps That Age - Cartometry evidence export",
   "methodology": "Counts documented plate interventions; it does not calculate pixel or geographic error across differently cropped scans.",
   "records": [
     {

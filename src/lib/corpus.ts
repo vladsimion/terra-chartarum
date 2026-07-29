@@ -5,7 +5,7 @@
  * each geolocated (where it depicts / was made) so the atlas can plot the whole
  * corpus on one map + timeline. Coordinates are [lng, lat] (GeoJSON order).
  *
- * This is authored data, not derived — it links a map to its source essay so
+ * This is authored data, not derived - it links a map to its source essay so
  * pins deep-link back into the essay that discusses it.
  *
  * The record schema is a *superset*: every field the collection catalogue will
@@ -19,7 +19,7 @@ import { z } from 'astro:content';
 import { ROOM_SLUGS } from '../data/rooms';
 
 /**
- * An inline citation on a map — a self-contained reference that isn't (yet) in
+ * An inline citation on a map - a self-contained reference that isn't (yet) in
  * the shared bibliography registry. Records may instead cite a registry entry
  * by its string key; see `MapBibRefSchema` (KAN-70).
  */
@@ -94,7 +94,7 @@ export const HistoricalMapSchema = z.object({
 export type HistoricalMap = z.infer<typeof HistoricalMapSchema>;
 
 /**
- * The atlas-critical subset — exactly the fields the MapLibre island needs to
+ * The atlas-critical subset - exactly the fields the MapLibre island needs to
  * plot a pin, filter it, and deep-link back to its essay. AtlasMap serialises
  * *this* shape into its inline payload so rich catalogue fields never inflate
  * the bytes every visitor downloads.
@@ -123,7 +123,7 @@ const RAW: unknown[] = [
     essaySlug: 'cartography',
     region: 'Mesopotamia',
     coords: [44.42, 32.54],
-    blurb: 'The Imago Mundi — earth as a disc ringed by the bitter river.',
+    blurb: 'The Imago Mundi - earth as a disc ringed by the bitter river.',
     bibliography: ['harley-2001', 'brotton-2012'],
   },
   {
@@ -379,7 +379,7 @@ const RAW: unknown[] = [
     essaySlug: 'cartography',
     region: 'Duisburg',
     coords: [6.76, 51.43],
-    blurb: 'Rhumb lines made straight — navigation bought with area.',
+    blurb: 'Rhumb lines made straight - navigation bought with area.',
     cartographer: 'Gerardus Mercator',
     cartographerId: 'mercator',
     bibliography: ['snyder-1993', 'brotton-2012'],
@@ -408,7 +408,7 @@ const RAW: unknown[] = [
     essaySlug: 'cartography',
     region: 'Global',
     coords: [0, 0],
-    blurb: 'Earth seen whole, from outside — the photographic map.',
+    blurb: 'Earth seen whole, from outside - the photographic map.',
   },
 
   // La Rotta e il Catasto (Venice vs Sicily)
@@ -421,7 +421,7 @@ const RAW: unknown[] = [
     essaySlug: 'venice-sicily',
     region: 'Mediterranean',
     coords: [9.5, 41],
-    blurb: 'The oldest surviving portolan — the sea as a web of bearings.',
+    blurb: 'The oldest surviving portolan - the sea as a web of bearings.',
     bibliography: ['campbell-1987', 'harley-2001'],
     relatedEssaySlugs: ['invisible-maps-trade'],
     images: [
@@ -1062,7 +1062,7 @@ const RAW: unknown[] = [
     essaySlug: 'speculum',
     region: 'Alexandria',
     coords: [29.92, 31.2],
-    blurb: 'Coordinates for 8,000 places — cartography as a table of numbers.',
+    blurb: 'Coordinates for 8,000 places - cartography as a table of numbers.',
   },
   {
     id: 'waldseemuller',
@@ -1088,7 +1088,7 @@ const RAW: unknown[] = [
     essaySlug: 'speculum',
     region: 'Antwerp',
     coords: [4.4, 51.22],
-    blurb: 'The first modern atlas — the world bound as a book.',
+    blurb: 'The first modern atlas - the world bound as a book.',
     cartographer: 'Abraham Ortelius',
     cartographerId: 'ortelius',
   },
@@ -1104,7 +1104,7 @@ const RAW: unknown[] = [
     essaySlug: 'dacia',
     region: 'Roman Empire',
     coords: [12.49, 41.9],
-    blurb: 'The road as the unit of space — Dacia stretched along an itinerary.',
+    blurb: 'The road as the unit of space - Dacia stretched along an itinerary.',
   },
   {
     id: 'honterus',

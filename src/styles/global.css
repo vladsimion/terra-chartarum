@@ -48,7 +48,7 @@
      distinguishable without relying on colour. The chrome links (header/footer
      nav, breadcrumbs, cards, timeline tracks) stand alone and carry their own
      non-colour affordance, so the underline is scoped to prose paragraphs and
-     content link-lists — the contexts axe flags as text blocks. */
+     content link-lists - the contexts axe flags as text blocks. */
   p a,
   .linklist li a {
     text-decoration: underline;

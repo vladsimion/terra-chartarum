@@ -5,7 +5,7 @@
  * Opt-in high-resolution pan/zoom viewer for a map scan. The static <img> is the
  * fallback and the only thing in the initial payload; OpenSeadragon (~400K) is
  * dynamic-imported only on interaction (click "Explore in high resolution" or the
- * image itself) — the same lazy pattern as the MapLibre atlas. The host page only
+ * image itself) - the same lazy pattern as the MapLibre atlas. The host page only
  * renders this island when an image actually carries a tiled source, so default
  * catalogue pages ship zero extra bytes.
  *
@@ -17,7 +17,7 @@
  */
 interface Props {
   tileSource?: string;
-  /** Untiled single-image source URL — pan/zoom without a tile pyramid. */
+  /** Untiled single-image source URL - pan/zoom without a tile pyramid. */
   image?: string;
   src: string;
   alt: string;
@@ -47,7 +47,7 @@ const { tileSource, image, src, alt, credit, license } = Astro.props;
 </figure>
 
 <script>
-  // Type-only import — erased at build. The real OpenSeadragon module is pulled
+  // Type-only import - erased at build. The real OpenSeadragon module is pulled
   // in lazily inside launch(), so nothing ships until the reader opts in.
   import type OpenSeadragonNS from 'openseadragon';
 

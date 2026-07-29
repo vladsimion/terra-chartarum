@@ -52,7 +52,7 @@ export function pointInRing([x, y]: [number, number], ring: Ring): boolean {
   return inside;
 }
 
-/** The footprints as light [mapId, ring] pairs — passed to the atlas payload. */
+/** The footprints as light [mapId, ring] pairs - passed to the atlas payload. */
 export function coveragePolygons(): { mapId: string; ring: Ring }[] {
   return FEATURES.map((f) => ({ mapId: f.mapId, ring: f.ring }));
 }

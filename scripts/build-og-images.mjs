@@ -3,7 +3,7 @@
  * build-og-images (KAN-22)
  *
  * Social platforms (X/Twitter, Facebook, LinkedIn, Slack) do not render SVG for
- * `summary_large_image` cards — they need a raster at the canonical 1200×630.
+ * `summary_large_image` cards - they need a raster at the canonical 1200×630.
  * The per-essay covers under public/covers/ are 800×500 SVGs, so this script
  * composes a fresh 1200×630 OG card per essay (matching the cover aesthetic:
  * dark canvas, gold graticule, mono eyebrow, serif title) and rasterizes it to
@@ -11,7 +11,7 @@
  *
  * Output lands in public/og/<slug>.png (+ default.png). Because SVG→PNG text
  * rendering depends on locally installed fonts, the PNGs are generated once and
- * committed to the repo rather than built in CI — keeping social previews
+ * committed to the repo rather than built in CI - keeping social previews
  * deterministic regardless of the runner's font stack. Re-run after adding an
  * essay or changing a title:
  *
@@ -33,7 +33,7 @@ const W = 1200;
 const H = 630;
 const SITE = 'Terra Chartarum';
 
-// Palette (design tokens — kept in sync with src/styles/global.css).
+// Palette (design tokens - kept in sync with src/styles/global.css).
 const CANVAS = '#0a0806';
 const CANVAS_HI = '#1a1408';
 const GOLD = '#d4b87a';
@@ -69,7 +69,7 @@ function wrap(text, maxCharsPerLine, maxLines) {
   }
   if (lines.length < maxLines && line) lines.push(line);
   if (lines.length === maxLines) {
-    // Ran out of lines — mark truncation if there was more text.
+    // Ran out of lines - mark truncation if there was more text.
     const consumed = lines.join(' ').length;
     if (consumed < text.length) lines[maxLines - 1] = lines[maxLines - 1].replace(/\W?$/, '…');
   }

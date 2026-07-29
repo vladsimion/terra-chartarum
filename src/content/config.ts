@@ -34,7 +34,7 @@ const essays = defineCollection({
     order: z.number().default(0),
     featured: z.boolean().default(false),
     // Seven-room cosmography (TC-102 / KAN-93). `room` is the essay's primary
-    // room and is REQUIRED — the build fails on a missing or non-canonical slug.
+    // room and is REQUIRED - the build fails on a missing or non-canonical slug.
     // `secondaryRooms` (0–2) lets an essay also surface in adjacent rooms;
     // `roomAnchor` marks the essay that headlines its room.
     room: z.enum(ROOM_SLUGS),
@@ -43,8 +43,8 @@ const essays = defineCollection({
     // Section-level room tagging (TC-104 / KAN-95). A single chapter of an essay
     // can belong to room(s) other than the essay's primary room, so it surfaces
     // on those room pages via a deep link. Each `id` MUST match an anchor in the
-    // rendered essay body — a native <Section id> heading or a legacy embed's
-    // section id — so the room page can link straight to that chapter.
+    // rendered essay body - a native <Section id> heading or a legacy embed's
+    // section id - so the room page can link straight to that chapter.
     sections: z
       .array(
         z.object({

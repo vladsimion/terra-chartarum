@@ -42,9 +42,9 @@ versions and SHA-256 checksums live in
   folio, so it is cited as `LANE1973:chronology` rather than a guessed roman numeral.
   The accepted named locators are `chronology` and `appendix-a`; everything else must be
   a printed page. This rule replaced two `pxvi`/`pxvii` locators from the first KAN-154
-  pass whose content was correct but whose page numbers were not visible on the page —
+  pass whose content was correct but whose page numbers were not visible on the page -
   a locator must be readable in the source, not inferred.
-- KAN-154 completed the scholarly page-level pass against the anchor editions — Lane,
+- KAN-154 completed the scholarly page-level pass against the anchor editions - Lane,
   _Venice: A Maritime Republic_ (JHU Press, 1973) and O'Connell, _Men of Empire_ (JHU
   Press, 2009). Every dated §5.5 route, possession and privilege boundary carries both
   anchors' cited values in
