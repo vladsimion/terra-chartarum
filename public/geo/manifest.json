@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "geo-26d1ffc789ed3dc2",
+  "release": "geo-9a47b3a8884e35f2",
   "generatedBy": "scripts/geo-release.mjs",
   "assets": [
     {
@@ -132,10 +132,10 @@
       "source": "Terra Chartarum (compiled) - Lane 1973; O'Connell 2009",
       "license": "CC BY",
       "attribution": "Terra Chartarum; after Lane and O'Connell",
-      "bytes": 26024,
-      "sha256": "e3f3baf7a913d025aef02f12bb37f5dc41faaf31abfa1aeeabc1716232f971be",
-      "version": "e3f3baf7a913",
-      "url": "/geo/venetian-ports.fgb?v=e3f3baf7a913"
+      "bytes": 26816,
+      "sha256": "4440ae3946c6c305df4846e20f58b429a6830f07383e7d1f12945f360cbde53e",
+      "version": "4440ae3946c6",
+      "url": "/geo/venetian-ports.fgb?v=4440ae3946c6"
     },
     {
       "id": "venetian-routes",
@@ -151,10 +151,10 @@
       "source": "Terra Chartarum (compiled) - Lane 1973",
       "license": "CC BY",
       "attribution": "Terra Chartarum; after Lane",
-      "bytes": 12944,
-      "sha256": "8f4a7ff8ed408f962223a8c74661f14cf894ddc4f495cc8b0b2e0360efcb4194",
-      "version": "8f4a7ff8ed40",
-      "url": "/geo/venetian-routes.fgb?v=8f4a7ff8ed40"
+      "bytes": 14096,
+      "sha256": "b3147d6499c74889a5998df77e37e23e3c89398e59ae70974205820abf673c52",
+      "version": "b3147d6499c7",
+      "url": "/geo/venetian-routes.fgb?v=b3147d6499c7"
     },
     {
       "id": "venetian-possessions",
@@ -170,10 +170,10 @@
       "source": "Terra Chartarum (compiled) - Lane 1973; O'Connell 2009",
       "license": "CC BY",
       "attribution": "Terra Chartarum; after Lane and O'Connell",
-      "bytes": 133592,
-      "sha256": "7d5be86fa5e594abe5d0ab6503dea50c3f68e09ee64193857bd16c1cf7d68847",
-      "version": "7d5be86fa5e5",
-      "url": "/geo/venetian-possessions.fgb?v=7d5be86fa5e5"
+      "bytes": 135640,
+      "sha256": "fad7b3ccc1abffc7de42e77342aa34270dc693097ffd3de2e3d3015b1cbe1b26",
+      "version": "fad7b3ccc1ab",
+      "url": "/geo/venetian-possessions.fgb?v=fad7b3ccc1ab"
     }
   ]
 }
