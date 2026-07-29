@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "release": "geo-b36f1d355ea91d09",
+  "generatedBy": "scripts/geo-release.mjs",
+  "assets": [
+    {
+      "id": "ne-coastline",
+      "file": "ne_110m_coastline.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": [
+        "LineString"
+      ],
+      "featureCount": 134,
+      "yearFrom": -6000,
+      "yearTo": 2024,
+      "source": "Natural Earth",
+      "license": "Public Domain",
+      "attribution": "Made with Natural Earth",
+      "bytes": 139907,
+      "sha256": "851f581ff5ffb844deed8ae1a9ce22e3c4bb3d74fa342cadb5d8e39b41ae7c3c",
+      "version": "851f581ff5ff",
+      "url": "/geo/ne_110m_coastline.geojson?v=851f581ff5ff"
+    },
+    {
+      "id": "ne-land",
+      "file": "ne_110m_land.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": [
+        "Polygon"
+      ],
+      "featureCount": 127,
+      "yearFrom": -6000,
+      "yearTo": 2024,
+      "source": "Natural Earth",
+      "license": "Public Domain",
+      "attribution": "Made with Natural Earth",
+      "bytes": 138160,
+      "sha256": "9e0729ee253ca7d7a5c4ae9395fb1902264c5377c52e224d13dd85010e2835d9",
+      "version": "9e0729ee253c",
+      "url": "/geo/ne_110m_land.geojson?v=9e0729ee253c"
+    },
+    {
+      "id": "ne-rivers",
+      "file": "ne_110m_rivers_lake_centerlines.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": [
+        "LineString"
+      ],
+      "featureCount": 13,
+      "yearFrom": -6000,
+      "yearTo": 2024,
+      "source": "Natural Earth",
+      "license": "Public Domain",
+      "attribution": "Made with Natural Earth",
+      "bytes": 38087,
+      "sha256": "55aa4497405afc07cdc931b7fbe062c4d6693ba2a550c0d24899953f5d507c8d",
+      "version": "55aa4497405a",
+      "url": "/geo/ne_110m_rivers_lake_centerlines.geojson?v=55aa4497405a"
+    },
+    {
+      "id": "ne-boundaries",
+      "file": "ne_110m_admin_0_boundary_lines_land.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": [
+        "LineString",
+        "MultiLineString"
+      ],
+      "featureCount": 331,
+      "yearFrom": 1949,
+      "yearTo": 2024,
+      "source": "Natural Earth",
+      "license": "Public Domain",
+      "attribution": "Made with Natural Earth",
+      "bytes": 340010,
+      "sha256": "d42479fd79552cca4eec7f85fcdca717a790d29ff06be7676f1af0568c6d3f7c",
+      "version": "d42479fd7955",
+      "url": "/geo/ne_110m_admin_0_boundary_lines_land.geojson?v=d42479fd7955"
+    },
+    {
+      "id": "map-coverage",
+      "file": "coverage.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": [
+        "Polygon"
+      ],
+      "featureCount": 15,
+      "yearFrom": -600,
+      "yearTo": 1972,
+      "source": "Terra Chartarum (authored)",
+      "license": "CC BY",
+      "attribution": "Terra Chartarum",
+      "bytes": 9155,
+      "sha256": "d733b77ecae4659e62005af7d2459ffc4778bdb1e01d94f52389aab531d7e37c",
+      "version": "d733b77ecae4",
+      "url": "/geo/coverage.geojson?v=d733b77ecae4"
+    },
+    {
+      "id": "roman-empire-117",
+      "file": "roman-empire-117.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": [
+        "Polygon"
+      ],
+      "featureCount": 112,
+      "yearFrom": 106,
+      "yearTo": 271,
+      "source": "Ancient World Mapping Center (AWMC), UNC Chapel Hill — roman_empire_ce_117_extent",
+      "license": "ODbL 1.0",
+      "attribution": "Ancient World Mapping Center; derived from the Barrington Atlas and OpenStreetMap (ODbL)",
+      "bytes": 483181,
+      "sha256": "9bfaeaf73f6d00934b66120719270434de46093e2590d7c40b0abf4e2b748a4e",
+      "version": "9bfaeaf73f6d",
+      "url": "/geo/roman-empire-117.geojson?v=9bfaeaf73f6d"
+    },
+    {
+      "id": "venetian-ports",
+      "file": "venetian-ports.fgb",
+      "format": "flatgeobuf",
+      "crs": "EPSG:4326",
+      "geometry": [
+        "Point"
+      ],
+      "featureCount": 86,
+      "yearFrom": 1200,
+      "yearTo": 1500,
+      "source": "Terra Chartarum (compiled) — Lane 1973; O'Connell 2009",
+      "license": "CC BY",
+      "attribution": "Terra Chartarum; after Lane and O'Connell",
+      "bytes": 26024,
+      "sha256": "e3f3baf7a913d025aef02f12bb37f5dc41faaf31abfa1aeeabc1716232f971be",
+      "version": "e3f3baf7a913",
+      "url": "/geo/venetian-ports.fgb?v=e3f3baf7a913"
+    },
+    {
+      "id": "venetian-routes",
+      "file": "venetian-routes.fgb",
+      "format": "flatgeobuf",
+      "crs": "EPSG:4326",
+      "geometry": [
+        "LineString"
+      ],
+      "featureCount": 7,
+      "yearFrom": 1200,
+      "yearTo": 1500,
+      "source": "Terra Chartarum (compiled) — Lane 1973",
+      "license": "CC BY",
+      "attribution": "Terra Chartarum; after Lane",
+      "bytes": 12944,
+      "sha256": "8f4a7ff8ed408f962223a8c74661f14cf894ddc4f495cc8b0b2e0360efcb4194",
+      "version": "8f4a7ff8ed40",
+      "url": "/geo/venetian-routes.fgb?v=8f4a7ff8ed40"
+    },
+    {
+      "id": "venetian-possessions",
+      "file": "venetian-possessions.fgb",
+      "format": "flatgeobuf",
+      "crs": "EPSG:4326",
+      "geometry": [
+        "MultiPolygon"
+      ],
+      "featureCount": 11,
+      "yearFrom": 1200,
+      "yearTo": 1500,
+      "source": "Terra Chartarum (compiled) — Lane 1973; O'Connell 2009",
+      "license": "CC BY",
+      "attribution": "Terra Chartarum; after Lane and O'Connell",
+      "bytes": 152872,
+      "sha256": "7d7fb10f617ef9771f7d8000c26c56f00cb0062e25594771333fdbb18492b1a2",
+      "version": "7d7fb10f617e",
+      "url": "/geo/venetian-possessions.fgb?v=7d7fb10f617e"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+---
+import PortalLayout from '../../layouts/PortalLayout.astro';
+import VmnNetworkExplorer from '../../components/islands/VmnNetworkExplorer.astro';
+---
+
+<PortalLayout
+  title="Venetian maritime network explorer"
+  description="A force-directed view of the seven authored Venetian maritime routes, filterable by commodity."
+>
+  <main class="shell embed-page">
+    <VmnNetworkExplorer />
+    <p class="embed-note">
+      Network position is analytical, not geographic. Return to the <a
+        href="/atlas/?layers=venetian-routes">Atlas</a
+      > for coastline-safe route geometry and time filtering.
+    </p>
+  </main>
+</PortalLayout>
+
+<style>
+  .embed-page {
+    padding-block: clamp(2rem, 5vw, 4rem);
+  }
+  .embed-note {
+    color: var(--ink-muted);
+    max-width: var(--prose-max);
+    font-style: italic;
+  }
+</style>

@@ -29,6 +29,7 @@ DATA_DIR = REPO / "data" / "vmn"
 GEO_OUT = REPO / "public" / "geo"
 
 PORTS_CSV = DATA_DIR / "ports.csv"
+PORT_CONTRACT = DATA_DIR / "port-contract.json"
 WAYPOINTS_CSV = DATA_DIR / "waypoints.csv"
 ROUTES_CSV = DATA_DIR / "routes.csv"
 ROUTE_PATHS_GEOJSON = DATA_DIR / "routes-paths.geojson"
@@ -179,6 +180,119 @@ def validate_ports(
             errors.append(f"row {i}: duplicate (port_id, start_date) {dkey}")
         seen.add(dkey)
 
+    errors.extend(validate_port_contract(rows))
+    return errors
+
+
+def validate_port_contract(rows: list[dict[str, str]]) -> list[str]:
+    """Validate ticket-level gazetteer expectations against the authority table.
+
+    The contract makes region/status/polity/phasing acceptance criteria executable
+    without teaching the compiler historical exceptions.
+    """
+    with PORT_CONTRACT.open(encoding="utf-8") as f:
+        contract = json.load(f)
+    if contract.get("schemaVersion") != 1:
+        return ["port-contract.json: unsupported schemaVersion"]
+
+    errors: list[str] = []
+    by_id: dict[str, list[dict[str, str]]] = {}
+    for row in rows:
+        by_id.setdefault(row["port_id"].strip(), []).append(row)
+
+    global_contract = contract.get("global", {})
+    unique_ports = len(by_id)
+    statuses = {row["status"].strip() for row in rows}
+    for field, actual in (
+        ("minPhaseRows", len(rows)),
+        ("minUniquePorts", unique_ports),
+        # Every stable port_id is a maritime node in this gazetteer; the separate
+        # waypoint table holds capes/offshore navigation anchors.
+        ("minMaritimeNodes", unique_ports),
+    ):
+        minimum = int(global_contract.get(field, 0))
+        if actual < minimum:
+            errors.append(f"port contract: {field} expected >= {minimum}, found {actual}")
+    missing_statuses = sorted(
+        set(global_contract.get("requiredStatuses", [])) - statuses
+    )
+    if missing_statuses:
+        errors.append(
+            "port contract: missing required status coverage "
+            + ", ".join(missing_statuses)
+        )
+
+    for group in contract.get("groups", []):
+        label = f"{group.get('ticket', 'contract')} {group.get('name', '')}".strip()
+        required_ids = group.get("requiredIds", [])
+        constraints = group.get("constraints", {})
+        for port_id in required_ids:
+            if port_id not in by_id:
+                errors.append(f"{label}: required port_id '{port_id}' missing")
+        actual_group_ids = {port_id for port_id in required_ids if port_id in by_id}
+        minimum_group_ports = int(group.get("minimumUniquePorts", 0))
+        if len(actual_group_ids) < minimum_group_ports:
+            errors.append(
+                f"{label}: expected >= {minimum_group_ports} unique ports, "
+                f"found {len(actual_group_ids)}"
+            )
+        group_statuses = {
+            row["status"].strip()
+            for port_id in actual_group_ids
+            for row in by_id[port_id]
+        }
+        missing_group_statuses = sorted(
+            set(group.get("requiredStatuses", [])) - group_statuses
+        )
+        if missing_group_statuses:
+            errors.append(
+                f"{label}: missing status coverage " + ", ".join(missing_group_statuses)
+            )
+        for port_id, count in group.get("exactPhaseCounts", {}).items():
+            actual_count = len(by_id.get(port_id, []))
+            if actual_count != int(count):
+                errors.append(
+                    f"{label}: '{port_id}' has {actual_count} phases, expected {count}"
+                )
+        for port_id in group.get("disjointIds", []):
+            phases = sorted(
+                by_id.get(port_id, []), key=lambda row: row["start_date"]
+            )
+            for earlier, later in zip(phases, phases[1:]):
+                earlier_end = earlier["end_date"].strip()
+                if earlier_end and later["start_date"].strip() < earlier_end:
+                    errors.append(
+                        f"{label}: '{port_id}' phases overlap at "
+                        f"{later['start_date']} < {earlier_end}"
+                    )
+        for port_id, expected_phases in constraints.items():
+            actual_phases = by_id.get(port_id, [])
+            if group.get("exactPhaseCount") and len(actual_phases) != len(expected_phases):
+                errors.append(
+                    f"{label}: '{port_id}' has {len(actual_phases)} phases, "
+                    f"expected {len(expected_phases)}"
+                )
+            for expected in expected_phases:
+                notes_contains = str(expected.get("notes_contains", "")).lower()
+                fields = {
+                    key: str(value)
+                    for key, value in expected.items()
+                    if key != "notes_contains"
+                }
+                matches = [
+                    row
+                    for row in actual_phases
+                    if all(row.get(key, "").strip() == value for key, value in fields.items())
+                    and (
+                        not notes_contains
+                        or notes_contains in row.get("notes", "").lower()
+                    )
+                ]
+                if not matches:
+                    description = ", ".join(f"{key}={value}" for key, value in fields.items())
+                    if notes_contains:
+                        description += f", notes~={notes_contains}"
+                    errors.append(f"{label}: '{port_id}' missing phase ({description})")
     return errors
 
 
@@ -548,7 +662,7 @@ def main() -> int:
     print("VMN pipeline")
     print(f"  data dir : {DATA_DIR}")
     required = [
-        PORTS_CSV, WAYPOINTS_CSV, ROUTES_CSV, ROUTE_PATHS_GEOJSON, EVENTS_CSV,
+        PORTS_CSV, PORT_CONTRACT, WAYPOINTS_CSV, ROUTES_CSV, ROUTE_PATHS_GEOJSON, EVENTS_CSV,
         POSSESSIONS_GEOJSON, SOURCES_CSV, BASE_DATA_MANIFEST, LAND_GEOJSON,
         COASTLINE_GEOJSON,
     ]

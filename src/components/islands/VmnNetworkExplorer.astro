@@ -1,0 +1,372 @@
+---
+import { getVmnNetwork } from '../../lib/vmn-network';
+
+const network = await getVmnNetwork();
+const width = 960;
+const height = 620;
+const positions = Object.fromEntries(
+  network.nodes.map((node, index) => {
+    const angle = (index / network.nodes.length) * Math.PI * 2 - Math.PI / 2;
+    const radius = index === 0 ? 0 : 220 + (index % 3) * 30;
+    return [
+      node.id,
+      {
+        x: width / 2 + Math.cos(angle) * radius,
+        y: height / 2 + Math.sin(angle) * radius,
+      },
+    ];
+  }),
+);
+---
+
+<section class="vmn-network" data-vmn-network>
+  <header>
+    <p class="eyebrow">Standalone VMN embed · published routes only</p>
+    <h2>Convoys as a network of calls</h2>
+    <p>
+      Hover or focus a port to reveal every connected route. Choose a commodity to isolate the
+      routes already tagged with it in the authority data.
+    </p>
+  </header>
+
+  <div class="vn-commodities" role="group" aria-label="Filter routes by commodity">
+    <button type="button" class="is-active" data-commodity="" aria-pressed="true">All cargo</button>
+    {
+      network.commodities.map((commodity) => (
+        <button
+          type="button"
+          data-commodity={commodity.id}
+          aria-pressed="false"
+          title={`${commodity.category}; ${commodity.routeCount} routes`}
+        >
+          {commodity.label} <span>{commodity.routeCount}</span>
+        </button>
+      ))
+    }
+  </div>
+
+  <p class="vn-status" aria-live="polite">Showing all seven authored routes.</p>
+
+  <div class="vn-frame">
+    <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-labelledby="vn-title vn-desc">
+      <title id="vn-title">Venetian maritime route network</title>
+      <desc id="vn-desc">
+        A force-directed diagram of twenty-two ports and waypoints connected by seven authored
+        maritime routes.
+      </desc>
+      <g class="vn-edges">
+        {
+          network.edges.map((edge) => (
+            <line
+              data-edge={edge.id}
+              data-route={edge.routeId}
+              data-source={edge.source}
+              data-target={edge.target}
+              x1={positions[edge.source].x}
+              y1={positions[edge.source].y}
+              x2={positions[edge.target].x}
+              y2={positions[edge.target].y}
+            />
+          ))
+        }
+      </g>
+      <g class="vn-nodes">
+        {
+          network.nodes.map((node) => (
+            <g
+              class="vn-node"
+              data-node={node.id}
+              data-routes={node.routes.join('|')}
+              transform={`translate(${positions[node.id].x} ${positions[node.id].y})`}
+              tabindex="0"
+              role="button"
+              aria-label={`${node.label}; ${node.routes.length} connected routes`}
+            >
+              <circle r={5 + Math.min(node.routes.length, 5) * 1.8} />
+              <text x="11" y="4">
+                {node.label}
+              </text>
+            </g>
+          ))
+        }
+      </g>
+    </svg>
+  </div>
+
+  <ol class="vn-routes" aria-label="Routes in the network">
+    {
+      network.routes.map((route) => (
+        <li data-route-summary={route.id}>
+          <strong>{route.name}</strong>
+          <span>
+            {route.routeType} · {route.waypoints.length} calls
+          </span>
+        </li>
+      ))
+    }
+  </ol>
+
+  <script type="application/json" data-vmn-network-data set:html={JSON.stringify(network)} />
+</section>
+
+<script>
+  type NodeDatum = { id: string; routes: string[] };
+  type EdgeDatum = { id: string; source: string; target: string; routeId: string };
+  type RouteDatum = { id: string; commodities: string[] };
+
+  const bootVmnNetworks = () => {
+    document.querySelectorAll<HTMLElement>('[data-vmn-network]').forEach((root) => {
+      if (root.dataset.ready) return;
+      root.dataset.ready = 'true';
+      const data = JSON.parse(
+        root.querySelector<HTMLElement>('[data-vmn-network-data]')?.textContent || '{}',
+      ) as { nodes: NodeDatum[]; edges: EdgeDatum[]; routes: RouteDatum[] };
+      const svg = root.querySelector<SVGSVGElement>('svg');
+      if (!svg) return;
+
+      const positions = new Map(
+        data.nodes.map((node, index) => {
+          const angle = (index / data.nodes.length) * Math.PI * 2 - Math.PI / 2;
+          return [
+            node.id,
+            {
+              x: 480 + Math.cos(angle) * (index === 0 ? 0 : 250),
+              y: 310 + Math.sin(angle) * (index === 0 ? 0 : 250),
+              vx: 0,
+              vy: 0,
+            },
+          ];
+        }),
+      );
+
+      // Small deterministic force simulation: inverse-square repulsion, route
+      // springs and a centre pull. No geography is inferred by this layout.
+      for (let tick = 0; tick < 180; tick += 1) {
+        const nodes = [...positions.entries()];
+        for (let a = 0; a < nodes.length; a += 1) {
+          for (let b = a + 1; b < nodes.length; b += 1) {
+            const pa = nodes[a][1];
+            const pb = nodes[b][1];
+            const dx = pb.x - pa.x || 0.01;
+            const dy = pb.y - pa.y || 0.01;
+            const distance2 = Math.max(dx * dx + dy * dy, 100);
+            const force = 650 / distance2;
+            pa.vx -= dx * force;
+            pa.vy -= dy * force;
+            pb.vx += dx * force;
+            pb.vy += dy * force;
+          }
+        }
+        for (const edge of data.edges) {
+          const source = positions.get(edge.source)!;
+          const target = positions.get(edge.target)!;
+          const dx = target.x - source.x;
+          const dy = target.y - source.y;
+          const distance = Math.max(Math.hypot(dx, dy), 1);
+          const force = (distance - 105) * 0.0025;
+          source.vx += (dx / distance) * force;
+          source.vy += (dy / distance) * force;
+          target.vx -= (dx / distance) * force;
+          target.vy -= (dy / distance) * force;
+        }
+        for (const point of positions.values()) {
+          point.vx += (480 - point.x) * 0.0008;
+          point.vy += (310 - point.y) * 0.0008;
+          point.vx *= 0.82;
+          point.vy *= 0.82;
+          point.x = Math.max(70, Math.min(890, point.x + point.vx));
+          point.y = Math.max(45, Math.min(575, point.y + point.vy));
+        }
+      }
+
+      for (const [id, point] of positions) {
+        root
+          .querySelector<SVGGElement>(`[data-node="${id}"]`)
+          ?.setAttribute('transform', `translate(${point.x} ${point.y})`);
+      }
+      for (const edge of data.edges) {
+        const line = root.querySelector<SVGLineElement>(`[data-edge="${edge.id}"]`);
+        const source = positions.get(edge.source)!;
+        const target = positions.get(edge.target)!;
+        line?.setAttribute('x1', String(source.x));
+        line?.setAttribute('y1', String(source.y));
+        line?.setAttribute('x2', String(target.x));
+        line?.setAttribute('y2', String(target.y));
+      }
+
+      const status = root.querySelector<HTMLElement>('.vn-status')!;
+      const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-commodity]'));
+      let selectedCommodity = '';
+
+      const highlight = (routeIds: Set<string>, label: string) => {
+        root.querySelectorAll<SVGLineElement>('[data-route]').forEach((edge) => {
+          const active = routeIds.has(edge.dataset.route ?? '');
+          edge.classList.toggle('is-active', active);
+          edge.classList.toggle('is-dim', routeIds.size > 0 && !active);
+        });
+        root.querySelectorAll<HTMLElement>('[data-route-summary]').forEach((item) => {
+          const active = routeIds.has(item.dataset.routeSummary ?? '');
+          item.classList.toggle('is-active', active);
+          item.classList.toggle('is-dim', routeIds.size > 0 && !active);
+        });
+        status.textContent = label;
+      };
+
+      const commodityHighlight = () => {
+        const routes = new Set(
+          data.routes
+            .filter((route) => !selectedCommodity || route.commodities.includes(selectedCommodity))
+            .map((route) => route.id),
+        );
+        highlight(
+          selectedCommodity ? routes : new Set(),
+          selectedCommodity
+            ? `${routes.size} routes carry ${selectedCommodity.replaceAll('_', ' ')}.`
+            : 'Showing all seven authored routes.',
+        );
+      };
+
+      for (const button of buttons) {
+        button.addEventListener('click', () => {
+          selectedCommodity = button.dataset.commodity ?? '';
+          for (const candidate of buttons) {
+            const active = candidate === button;
+            candidate.classList.toggle('is-active', active);
+            candidate.setAttribute('aria-pressed', String(active));
+          }
+          commodityHighlight();
+        });
+      }
+
+      root.querySelectorAll<SVGGElement>('[data-node]').forEach((node) => {
+        const show = () => {
+          const routes = new Set((node.dataset.routes ?? '').split('|').filter(Boolean));
+          highlight(routes, `${node.getAttribute('aria-label')}.`);
+        };
+        node.addEventListener('pointerenter', show);
+        node.addEventListener('focus', show);
+        node.addEventListener('pointerleave', commodityHighlight);
+        node.addEventListener('blur', commodityHighlight);
+      });
+    });
+  };
+
+  bootVmnNetworks();
+  document.addEventListener('astro:page-load', bootVmnNetworks);
+</script>
+
+<style>
+  .vmn-network {
+    display: grid;
+    gap: 1rem;
+  }
+  .vmn-network header {
+    max-width: var(--prose-max);
+  }
+  .vmn-network h2 {
+    margin: 0.2rem 0 0.5rem;
+    font-size: var(--step-3);
+  }
+  .vmn-network header > p:last-child {
+    color: var(--ink-muted);
+  }
+  .vn-commodities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+  .vn-commodities button {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--panel);
+    color: var(--ink-muted);
+    padding: 0.4rem 0.7rem;
+    font: 0.72rem var(--font-mono);
+    cursor: pointer;
+  }
+  .vn-commodities button span {
+    color: var(--gold);
+  }
+  .vn-commodities button.is-active {
+    border-color: var(--gold);
+    color: var(--ink);
+    background: color-mix(in srgb, var(--gold) 14%, var(--panel));
+  }
+  .vn-status {
+    margin: 0;
+    min-height: 1.3em;
+    color: var(--ink-muted);
+    font: 0.74rem var(--font-mono);
+  }
+  .vn-frame {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: radial-gradient(circle at center, #17130d, var(--canvas));
+    overflow: auto;
+  }
+  svg {
+    display: block;
+    width: 100%;
+    min-width: 680px;
+  }
+  .vn-edges line {
+    stroke: color-mix(in srgb, var(--gold) 48%, var(--line));
+    stroke-width: 1.2;
+    transition:
+      opacity var(--dur-fast),
+      stroke-width var(--dur-fast);
+  }
+  .vn-edges line.is-active {
+    stroke: var(--gold);
+    stroke-width: 3;
+  }
+  .vn-edges line.is-dim,
+  .vn-routes li.is-dim {
+    opacity: 0.1;
+  }
+  .vn-node {
+    cursor: pointer;
+    outline: none;
+  }
+  .vn-node circle {
+    fill: var(--panel-2);
+    stroke: var(--gold);
+    stroke-width: 1.5;
+  }
+  .vn-node:focus circle,
+  .vn-node:hover circle {
+    fill: var(--gold);
+  }
+  .vn-node text {
+    fill: var(--ink);
+    font: 12px var(--font-mono);
+    paint-order: stroke;
+    stroke: var(--canvas);
+    stroke-width: 3px;
+  }
+  .vn-routes {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: 0.5rem;
+  }
+  .vn-routes li {
+    display: grid;
+    padding: 0.65rem 0.8rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    transition: opacity var(--dur-fast);
+  }
+  .vn-routes li.is-active {
+    border-color: var(--gold);
+  }
+  .vn-routes strong {
+    font-family: var(--font-display);
+  }
+  .vn-routes span {
+    color: var(--ink-muted);
+    font: 0.68rem var(--font-mono);
+  }
+</style>

@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "assets": [
+    {
+      "id": "ne-coastline",
+      "file": "ne_110m_coastline.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": ["LineString"],
+      "featureCount": 134,
+      "yearFrom": -6000,
+      "yearTo": 2024,
+      "source": "Natural Earth",
+      "license": "Public Domain",
+      "attribution": "Made with Natural Earth"
+    },
+    {
+      "id": "ne-land",
+      "file": "ne_110m_land.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": ["Polygon"],
+      "featureCount": 127,
+      "yearFrom": -6000,
+      "yearTo": 2024,
+      "source": "Natural Earth",
+      "license": "Public Domain",
+      "attribution": "Made with Natural Earth"
+    },
+    {
+      "id": "ne-rivers",
+      "file": "ne_110m_rivers_lake_centerlines.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": ["LineString"],
+      "featureCount": 13,
+      "yearFrom": -6000,
+      "yearTo": 2024,
+      "source": "Natural Earth",
+      "license": "Public Domain",
+      "attribution": "Made with Natural Earth"
+    },
+    {
+      "id": "ne-boundaries",
+      "file": "ne_110m_admin_0_boundary_lines_land.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": ["LineString", "MultiLineString"],
+      "featureCount": 331,
+      "yearFrom": 1949,
+      "yearTo": 2024,
+      "source": "Natural Earth",
+      "license": "Public Domain",
+      "attribution": "Made with Natural Earth"
+    },
+    {
+      "id": "map-coverage",
+      "file": "coverage.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": ["Polygon"],
+      "featureCount": 15,
+      "yearFrom": -600,
+      "yearTo": 1972,
+      "source": "Terra Chartarum (authored)",
+      "license": "CC BY",
+      "attribution": "Terra Chartarum"
+    },
+    {
+      "id": "roman-empire-117",
+      "file": "roman-empire-117.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": ["Polygon"],
+      "featureCount": 112,
+      "yearFrom": 106,
+      "yearTo": 271,
+      "source": "Ancient World Mapping Center (AWMC), UNC Chapel Hill — roman_empire_ce_117_extent",
+      "license": "ODbL 1.0",
+      "attribution": "Ancient World Mapping Center; derived from the Barrington Atlas and OpenStreetMap (ODbL)"
+    },
+    {
+      "id": "venetian-ports",
+      "file": "venetian-ports.fgb",
+      "format": "flatgeobuf",
+      "crs": "EPSG:4326",
+      "geometry": ["Point"],
+      "featureCount": 86,
+      "yearFrom": 1200,
+      "yearTo": 1500,
+      "source": "Terra Chartarum (compiled) — Lane 1973; O'Connell 2009",
+      "license": "CC BY",
+      "attribution": "Terra Chartarum; after Lane and O'Connell"
+    },
+    {
+      "id": "venetian-routes",
+      "file": "venetian-routes.fgb",
+      "format": "flatgeobuf",
+      "crs": "EPSG:4326",
+      "geometry": ["LineString"],
+      "featureCount": 7,
+      "yearFrom": 1200,
+      "yearTo": 1500,
+      "source": "Terra Chartarum (compiled) — Lane 1973",
+      "license": "CC BY",
+      "attribution": "Terra Chartarum; after Lane"
+    },
+    {
+      "id": "venetian-possessions",
+      "file": "venetian-possessions.fgb",
+      "format": "flatgeobuf",
+      "crs": "EPSG:4326",
+      "geometry": ["MultiPolygon"],
+      "featureCount": 11,
+      "yearFrom": 1200,
+      "yearTo": 1500,
+      "source": "Terra Chartarum (compiled) — Lane 1973; O'Connell 2009",
+      "license": "CC BY",
+      "attribution": "Terra Chartarum; after Lane and O'Connell"
+    }
+  ]
+}

@@ -40,6 +40,9 @@ const bars = essays.map((e) => {
       Every historical map discussed across the essays, geolocated. Drag the slider to reveal them
       in chronological order; search or filter by essay.
     </p>
+    <p class="atlas-explorer-link">
+      <a href="/embeds/vmn-network/">Explore the VMN route and commodity network →</a>
+    </p>
     <AtlasMap />
 
     <h2 class="section-h section-h--spaced">One timeline, every essay</h2>
@@ -59,6 +62,11 @@ const bars = essays.map((e) => {
             <a
               class="track"
               href={`/essays/${essay.slug}/`}
+              data-atlas-track
+              data-essay={essay.slug}
+              data-year-from={essay.data.yearFrom}
+              data-year-to={essay.data.yearTo}
+              aria-current="false"
               style={`left:${left}%; width:${width}%; --accent:${essay.data.accent ?? 'var(--gold)'}`}
               title={`${essay.data.title} (${formatYear(essay.data.yearFrom)} – ${formatYear(essay.data.yearTo)})`}
             >
@@ -77,6 +85,66 @@ const bars = essays.map((e) => {
     </p>
   </section>
 </PortalLayout>
+
+<script>
+  const bindAtlasTimeline = () => {
+    const tracks = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-atlas-track]'));
+    if (!tracks.length) return;
+
+    const select = (slug = '') => {
+      for (const track of tracks) {
+        const selected = track.dataset.essay === slug;
+        track.classList.toggle('is-selected', selected);
+        track.setAttribute('aria-current', selected ? 'true' : 'false');
+      }
+    };
+    const reveal = (year: number) => {
+      for (const track of tracks) {
+        const visible = Number(track.dataset.yearFrom) <= year;
+        track.classList.toggle('is-future', !visible);
+        track.dataset.revealed = String(visible);
+      }
+    };
+    const onSelection = ((event: Event) => {
+      select((event as CustomEvent<{ essaySlug?: string }>).detail?.essaySlug ?? '');
+    }) as EventListener;
+    const onTime = ((event: Event) => {
+      reveal((event as CustomEvent<{ year?: number }>).detail?.year ?? 2024);
+    }) as EventListener;
+
+    const atlasWindow = window as unknown as {
+      __atlasTimelineSelection?: EventListener;
+      __atlasTimelineTime?: EventListener;
+    };
+    if (atlasWindow.__atlasTimelineSelection) {
+      document.removeEventListener('atlas:selection', atlasWindow.__atlasTimelineSelection);
+    }
+    if (atlasWindow.__atlasTimelineTime) {
+      document.removeEventListener('atlas:time', atlasWindow.__atlasTimelineTime);
+    }
+    atlasWindow.__atlasTimelineSelection = onSelection;
+    atlasWindow.__atlasTimelineTime = onTime;
+    document.addEventListener('atlas:selection', onSelection);
+    document.addEventListener('atlas:time', onTime);
+
+    for (const track of tracks) {
+      const send = () => {
+        document.dispatchEvent(
+          new CustomEvent('atlas:essay', { detail: { slug: track.dataset.essay } }),
+        );
+      };
+      track.addEventListener('focus', send);
+      track.addEventListener('pointerenter', send);
+    }
+
+    const params = new URLSearchParams(location.search);
+    select(params.get('essay') ?? '');
+    reveal(Number(params.get('year') ?? 2024));
+  };
+
+  bindAtlasTimeline();
+  document.addEventListener('astro:page-load', bindAtlasTimeline);
+</script>
 
 <style>
   .atlas {
@@ -107,6 +175,14 @@ const bars = essays.map((e) => {
     color: var(--ink-muted);
     margin: 0 0 1.25rem;
     max-width: var(--prose-max);
+  }
+  .atlas-explorer-link {
+    margin: -0.5rem 0 1.25rem;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+  }
+  .atlas-explorer-link a {
+    color: var(--gold);
   }
 
   .timeline {
@@ -160,6 +236,14 @@ const bars = essays.map((e) => {
   }
   .track:hover {
     background: color-mix(in srgb, var(--accent) 40%, var(--panel-2));
+  }
+  .track.is-selected {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    background: color-mix(in srgb, var(--accent) 48%, var(--panel-2));
+  }
+  .track.is-future {
+    opacity: 0.34;
   }
   .track-label {
     font-family: var(--font-display);

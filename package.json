@@ -14,6 +14,8 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "test:vmn-visual": "playwright test e2e/vmn-visual.spec.ts --project=chromium",
+    "geo:validate": "node scripts/geo-release.mjs --check",
+    "geo:manifest": "node scripts/geo-release.mjs --write",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "create-essay": "node scripts/create-essay.mjs",

@@ -1,0 +1,10 @@
+commodity_id,label,category,source_keys,notes
+spices,Spices,luxury,LANE1973,Controlled label already present on route records.
+silk,Silk,textile,LANE1973,Controlled label already present on route records.
+wax,Wax,material,LANE1973,Controlled label already present on route records.
+fur,Fur,material,LANE1973,Controlled label already present on route records.
+cotton,Cotton,textile,LANE1973,Controlled label already present on route records.
+sugar,Sugar,food,LANE1973,Controlled label already present on route records.
+wine,Wine,food,LANE1973,Controlled label already present on route records.
+grain,Grain,staple,LANE1973,Controlled label already present on route records.
+salt,Salt,staple,LANE1973,Controlled label already present on route records.

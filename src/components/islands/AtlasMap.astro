@@ -15,6 +15,7 @@ import { join } from 'node:path';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { getCorpusCore, corpusYearRange } from '../../lib/corpus';
 import { getGeoLayers } from '../../lib/geo';
+import { versionedGeoUrl } from '../../lib/geo-release';
 import { coveragePolygons } from '../../lib/coverage';
 import { getToponyms, toponymNames } from '../../lib/toponyms';
 import { getEssays, formatYear } from '../../lib/registry';
@@ -43,7 +44,17 @@ const layerMeta = layers.map((l) => ({
 }));
 
 const essayMeta = Object.fromEntries(
-  essays.map((e) => [e.slug, { title: e.data.title, accent: e.data.accent ?? '#d4b87a' }]),
+  essays.map((e) => [
+    e.slug,
+    {
+      title: e.data.title,
+      summary: e.data.summary,
+      accent: e.data.accent ?? '#d4b87a',
+      yearFrom: e.data.yearFrom,
+      yearTo: e.data.yearTo,
+      room: e.data.room,
+    },
+  ]),
 );
 
 // Toponym concordance (KAN-75): a separate, toggleable pin set of places carrying
@@ -67,11 +78,22 @@ const payload = {
     ...m,
     accent: essayMeta[m.essaySlug]?.accent ?? '#d4b87a',
     essayTitle: essayMeta[m.essaySlug]?.title ?? m.essaySlug,
+    essaySummary: essayMeta[m.essaySlug]?.summary ?? '',
+    essayYearFrom: essayMeta[m.essaySlug]?.yearFrom ?? m.year,
+    essayYearTo: essayMeta[m.essaySlug]?.yearTo ?? m.year,
     yearLabel: formatYear(m.year),
+  })),
+  essays: essays.map((essay) => ({
+    slug: essay.slug,
+    title: essay.data.title,
+    summary: essay.data.summary,
+    yearFrom: essay.data.yearFrom,
+    yearTo: essay.data.yearTo,
+    room: essay.data.room,
   })),
   layers: layerMeta.map((l) => ({
     id: l.id,
-    url: l.url,
+    url: versionedGeoUrl(l),
     format: l.format,
     geometry: l.geometry,
     color: l.color,
@@ -150,13 +172,25 @@ const payload = {
     }
   </div>
 
-  <div class="am-stage">
-    <div class="am-map" role="application" aria-label="Map of the essay corpus"></div>
-    <noscript>
-      <p class="am-fallback-note">
-        The interactive map needs JavaScript. The full corpus is listed below.
+  <div class="am-platform">
+    <div class="am-stage">
+      <div class="am-map" role="application" aria-label="Map of the essay corpus"></div>
+      <noscript>
+        <p class="am-fallback-note">
+          The interactive map needs JavaScript. The full corpus is listed below.
+        </p>
+      </noscript>
+    </div>
+    <aside class="am-context" aria-live="polite" aria-atomic="true">
+      <p class="am-context-kicker">Atlas context</p>
+      <h3 class="am-context-title">Space and time, held together</h3>
+      <p class="am-context-summary">
+        Select a map pin, essay filter, layer feature, or timeline bar to keep its argument beside
+        the atlas.
       </p>
-    </noscript>
+      <p class="am-context-meta"></p>
+      <a class="am-context-link" href="/essays/" hidden>Enter the essay →</a>
+    </aside>
   </div>
 
   {
@@ -275,6 +309,9 @@ const payload = {
     yearLabel: string;
     essaySlug: string;
     essayTitle: string;
+    essaySummary: string;
+    essayYearFrom: number;
+    essayYearTo: number;
     region: string;
     coords: [number, number];
     accent: string;
@@ -299,6 +336,15 @@ const payload = {
   };
 
   type Coverage = { id: string; title: string; ring: [number, number][] };
+
+  type EssayMeta = {
+    slug: string;
+    title: string;
+    summary: string;
+    yearFrom: number;
+    yearTo: number;
+    room: string;
+  };
 
   type Toponym = {
     id: string;
@@ -326,12 +372,14 @@ const payload = {
     if (!dataEl || !mapEl) return;
     const parsed = JSON.parse(dataEl.textContent || '{}') as {
       corpus: Pt[];
+      essays?: EssayMeta[];
       layers?: LayerMeta[];
       vmnLinks?: VmnBeatState[];
       coverage?: Coverage[];
       toponyms?: Toponym[];
     };
     const corpus = parsed.corpus ?? [];
+    const essayDetails = parsed.essays ?? [];
     const geoLayers = parsed.layers ?? [];
     const vmnLinks = parsed.vmnLinks ?? [];
     const coverage = parsed.coverage ?? [];
@@ -360,6 +408,10 @@ const payload = {
     const yearOut = root.querySelector<HTMLOutputElement>('.am-year-out')!;
     const topoCheck = root.querySelector<HTMLInputElement>('.am-topo-check');
     const list = root.querySelector<HTMLElement>('.am-list')!;
+    const contextTitle = root.querySelector<HTMLElement>('.am-context-title')!;
+    const contextSummary = root.querySelector<HTMLElement>('.am-context-summary')!;
+    const contextMeta = root.querySelector<HTMLElement>('.am-context-meta')!;
+    const contextLink = root.querySelector<HTMLAnchorElement>('.am-context-link')!;
     const layerToggles = Array.from(
       root.querySelectorAll<HTMLInputElement>('.am-layer input[data-layer]'),
     );
@@ -386,6 +438,23 @@ const payload = {
     const markers: { pt: Pt; marker?: MLMarker; li: HTMLElement }[] = [];
     const listItems = Array.from(list.querySelectorAll('li'));
     corpus.forEach((pt, i) => markers.push({ pt, li: listItems[i] }));
+    for (const { pt, li } of markers) {
+      const select = () =>
+        showContext(
+          {
+            id: `map:${pt.id}`,
+            title: pt.title,
+            summary: pt.blurb || pt.essaySummary,
+            meta: `${pt.region} · ${pt.yearLabel} · ${pt.essayTitle}`,
+            href: `/essays/${pt.essaySlug}/`,
+            essaySlug: pt.essaySlug,
+            year: Number(yearIn.value),
+          },
+          false,
+        );
+      li.querySelector('a')?.addEventListener('focus', select);
+      li.addEventListener('pointerenter', select);
+    }
 
     // A dedicated concordance pin set (KAN-75), kept entirely separate from both
     // the corpus pins and the GeoLayer pipeline (addGeoLayer has no point branch).
@@ -428,6 +497,72 @@ const payload = {
 
     const readable = (value: unknown) => String(value ?? '').replaceAll('_', ' ');
 
+    type AtlasContext = {
+      id: string;
+      title: string;
+      summary: string;
+      meta: string;
+      href: string;
+      linkLabel?: string;
+      essaySlug?: string;
+      year?: number;
+    };
+
+    const updateUrlState = (essaySlug?: string, year?: number) => {
+      const url = new URL(location.href);
+      if (essaySlug) url.searchParams.set('essay', essaySlug);
+      else url.searchParams.delete('essay');
+      if (year !== undefined) url.searchParams.set('year', String(year));
+      history.replaceState(history.state, '', `${url.pathname}${url.search}${url.hash}`);
+    };
+
+    const showContext = (context: AtlasContext, persist = true) => {
+      contextTitle.textContent = context.title;
+      contextSummary.textContent = context.summary;
+      contextMeta.textContent = context.meta;
+      contextLink.href = context.href;
+      contextLink.textContent = context.linkLabel ?? 'Enter the essay →';
+      contextLink.hidden = false;
+      root.dataset.atlasSelection = context.id;
+      if (persist) updateUrlState(context.essaySlug, context.year ?? Number(yearIn.value));
+      document.dispatchEvent(
+        new CustomEvent('atlas:selection', {
+          detail: { ...context },
+        }),
+      );
+    };
+
+    const showEssayContext = (slug: string, persist = true) => {
+      const essay = essayDetails.find((candidate) => candidate.slug === slug);
+      if (!essay) return;
+      showContext(
+        {
+          id: `essay:${slug}`,
+          title: essay.title,
+          summary: essay.summary,
+          meta: `${readable(essay.room)} · ${fmt(essay.yearFrom)}–${fmt(essay.yearTo)}`,
+          href: `/essays/${slug}/`,
+          essaySlug: slug,
+        },
+        persist,
+      );
+    };
+
+    const requestedEssay = new URLSearchParams(location.search).get('essay');
+    if (requestedEssay && essayDetails.some((essay) => essay.slug === requestedEssay)) {
+      essaySel.value = requestedEssay;
+    }
+    const announceTime = () => {
+      const year = Number(yearIn.value);
+      updateUrlState(essaySel.value || undefined, year);
+      document.dispatchEvent(new CustomEvent('atlas:time', { detail: { year } }));
+    };
+    essaySel.addEventListener('change', () => {
+      if (essaySel.value) showEssayContext(essaySel.value);
+      else updateUrlState(undefined, Number(yearIn.value));
+    });
+    yearIn.addEventListener('input', announceTime);
+
     const portPopupHtml = (properties: Record<string, unknown>) => {
       const historic = escapeHtml(properties.name);
       const modern = escapeHtml(properties.name_modern);
@@ -460,6 +595,28 @@ const payload = {
             )} →</a>`
           : '') +
         `</div>`
+      );
+    };
+
+    const showPortContext = (properties: Record<string, unknown>, persist = true) => {
+      const essay = essayDetails.find((candidate) => candidate.slug === 'venice-sicily');
+      const essayLink = reverseEssayLink('venetian-ports');
+      const validTo =
+        Number(properties.valid_to) === 9999 ? 'present' : String(properties.valid_to ?? '');
+      showContext(
+        {
+          id: `port:${String(properties.port_id ?? '')}`,
+          title: String(properties.name ?? 'Venetian maritime port'),
+          summary: String(properties.notes || essay?.summary || ''),
+          meta: `${String(properties.region ?? '')} · ${readable(properties.status)} · ${String(
+            properties.valid_from ?? '',
+          )}–${validTo}`,
+          href: essayLink?.href ?? '/essays/venice-sicily/',
+          linkLabel: essayLink?.label ? `${essayLink.label} →` : undefined,
+          essaySlug: 'venice-sicily',
+          year: Number(yearIn.value),
+        },
+        persist,
       );
     };
 
@@ -508,13 +665,21 @@ const payload = {
         if (!portPopupPinned) portPopup?.remove();
       };
       const click = (event: MapLayerMouseEvent) => show(event, true);
+      const select = (event: MapLayerMouseEvent) => {
+        const feature = event.features?.[0];
+        if (feature) {
+          showPortContext((feature.properties ?? {}) as Record<string, unknown>);
+        }
+      };
       map.on('mouseenter', renderLayerId, enter);
       map.on('mouseleave', renderLayerId, leave);
       map.on('click', renderLayerId, click);
+      map.on('click', renderLayerId, select);
       layerCleanups.set('venetian-ports', () => {
         map?.off('mouseenter', renderLayerId, enter);
         map?.off('mouseleave', renderLayerId, leave);
         map?.off('click', renderLayerId, click);
+        map?.off('click', renderLayerId, select);
         portPopup?.remove();
         portPopup = null;
         portPopupPinned = false;
@@ -743,6 +908,17 @@ const payload = {
         el.className = 'am-pin';
         el.style.setProperty('--accent', pt.accent);
         el.setAttribute('aria-label', `${pt.title} (${pt.yearLabel})`);
+        el.addEventListener('click', () => {
+          showContext({
+            id: `map:${pt.id}`,
+            title: pt.title,
+            summary: pt.blurb || pt.essaySummary,
+            meta: `${pt.region} · ${pt.yearLabel} · ${pt.essayTitle}`,
+            href: `/essays/${pt.essaySlug}/`,
+            essaySlug: pt.essaySlug,
+            year: Number(yearIn.value),
+          });
+        });
         const popup = new maplibregl.Popup({ offset: 14, closeButton: false }).setHTML(
           `<div class="am-pop"><span class="am-pop-year">${pt.yearLabel}</span>` +
             `<strong class="am-pop-title">${pt.title}</strong>` +
@@ -834,6 +1010,7 @@ const payload = {
         ) ?? matches[0];
       if (chosen.geometry.type !== 'Point') return;
       root.dataset.atlasTarget = `port:${portId}`;
+      showPortContext((chosen.properties ?? {}) as Record<string, unknown>);
       const coords = chosen.geometry.coordinates as [number, number];
       const open = () => {
         map!.flyTo({ center: coords, zoom: 5.5 });
@@ -894,6 +1071,20 @@ const payload = {
       if (!feature) return;
       root.dataset.atlasTarget =
         sourceLayerId === 'venetian-routes' ? `route:${value}` : `territory:${value}`;
+      const essay = essayDetails.find((candidate) => candidate.slug === 'venice-sicily');
+      const essayLink = reverseEssayLink(sourceLayerId);
+      showContext({
+        id: `${sourceLayerId === 'venetian-routes' ? 'route' : 'territory'}:${value}`,
+        title: String(feature.properties?.name || readable(value)),
+        summary: String(feature.properties?.notes || essay?.summary || ''),
+        meta: `${sourceLayerId === 'venetian-routes' ? 'Maritime route' : 'Venetian territory'} · ${fmt(
+          Number(yearIn.value),
+        )}`,
+        href: essayLink?.href ?? '/essays/venice-sicily/',
+        linkLabel: essayLink?.label ? `${essayLink.label} →` : undefined,
+        essaySlug: 'venice-sicily',
+        year: Number(yearIn.value),
+      });
       if (sourceLayerId === 'venetian-routes') focusedRouteId = value;
       else focusedTerritoryId = value;
       const focusId = `${layerId(sourceLayerId)}--focus`;
@@ -919,7 +1110,6 @@ const payload = {
       const bounds = featureBounds(feature);
       if (bounds) {
         map.fitBounds(bounds, { padding: 72, maxZoom: 6 });
-        const essayLink = reverseEssayLink(sourceLayerId);
         if (PopupCtor && essayLink) {
           targetPopup?.remove();
           targetPopup = new PopupCtor({ offset: 8, closeButton: true, closeOnClick: true })
@@ -984,6 +1174,22 @@ const payload = {
       if (raw.startsWith('topo-')) {
         const entry = topoMarkers.find((t) => t.topo.id === raw.slice('topo-'.length));
         if (!entry || !map) return;
+        const relatedEssay = entry.topo.essays[0];
+        const relatedMap = entry.topo.maps[0];
+        showContext({
+          id: `toponym:${entry.topo.id}`,
+          title: entry.topo.modern,
+          summary: entry.topo.historical.length
+            ? `Also charted as ${entry.topo.historical.join(', ')}.`
+            : 'A place-name shared across the atlas corpus.',
+          meta: `${entry.topo.maps.length} map references · ${entry.topo.essays.length} essays`,
+          href: relatedEssay
+            ? `/essays/${relatedEssay.slug}/`
+            : relatedMap
+              ? `/collection/${relatedMap.id}/`
+              : '/essays/',
+          essaySlug: relatedEssay?.slug,
+        });
         if (topoCheck && !topoCheck.checked) topoCheck.checked = true;
         const open = () => {
           setTopoVisible(true);
@@ -997,6 +1203,15 @@ const payload = {
       const id = raw;
       const entry = markers.find((m) => m.pt.id === id);
       if (!entry) return;
+      showContext({
+        id: `map:${entry.pt.id}`,
+        title: entry.pt.title,
+        summary: entry.pt.blurb || entry.pt.essaySummary,
+        meta: `${entry.pt.region} · ${entry.pt.yearLabel} · ${entry.pt.essayTitle}`,
+        href: `/essays/${entry.pt.essaySlug}/`,
+        essaySlug: entry.pt.essaySlug,
+        year: Number(yearIn.value),
+      });
       if (map) {
         const open = () => {
           map!.flyTo({ center: entry.pt.coords, zoom: 4.5 });
@@ -1061,7 +1276,26 @@ const payload = {
     coversSel?.addEventListener('change', apply);
     yearIn.addEventListener('input', apply);
     regionSel.addEventListener('change', apply);
+
+    const receiveEssaySelection = ((event: Event) => {
+      const slug = (event as CustomEvent<{ slug?: string }>).detail?.slug;
+      if (!slug || !essayDetails.some((essay) => essay.slug === slug)) return;
+      essaySel.value = slug;
+      apply();
+      showEssayContext(slug);
+    }) as EventListener;
+    const atlasWindow = window as unknown as { __amEssaySelection?: EventListener };
+    if (atlasWindow.__amEssaySelection) {
+      document.removeEventListener('atlas:essay', atlasWindow.__amEssaySelection);
+    }
+    atlasWindow.__amEssaySelection = receiveEssaySelection;
+    document.addEventListener('atlas:essay', receiveEssaySelection);
+
     apply();
+    if (requestedEssay) showEssayContext(requestedEssay, false);
+    document.dispatchEvent(
+      new CustomEvent('atlas:time', { detail: { year: Number(yearIn.value) } }),
+    );
     // In the no-WebGL fallback there is no map 'load' event to drive the deep link,
     // so honour at least the ?year= param here (layers/port need the GL map).
     if (!map) applyDeepLink();
@@ -1120,6 +1354,12 @@ const payload = {
     min-width: 4.5rem;
   }
 
+  .am-platform {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(15rem, 1fr);
+    gap: 1rem;
+    align-items: stretch;
+  }
   .am-stage {
     position: relative;
     border: 1px solid var(--line);
@@ -1129,6 +1369,47 @@ const payload = {
   }
   .am-map {
     height: clamp(360px, 52vh, 620px);
+  }
+  .am-context {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background:
+      linear-gradient(160deg, color-mix(in srgb, var(--gold) 8%, transparent), transparent 55%),
+      var(--panel);
+    padding: clamp(1rem, 2vw, 1.4rem);
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+  .am-context-kicker {
+    margin: 0 0 0.65rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .am-context-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+  }
+  .am-context-summary {
+    margin: 0.65rem 0;
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+  }
+  .am-context-meta {
+    margin: 0 0 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--ink-muted);
+  }
+  .am-context-link {
+    margin-top: auto;
+    color: var(--gold);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
   }
   .am-fallback-note {
     padding: 1rem;
@@ -1361,5 +1642,14 @@ const payload = {
     grid-column: 2;
     font-size: var(--step--1);
     color: var(--ink-muted);
+  }
+
+  @media (max-width: 800px) {
+    .am-platform {
+      grid-template-columns: 1fr;
+    }
+    .am-context {
+      min-height: 12rem;
+    }
   }
 </style>
