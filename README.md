@@ -1,15 +1,20 @@
 # Terra Chartarum
 
 An interactive historical-atlas portal — a gallery of cartographic visual essays
-under one publication of record. Four bespoke long-form essays on the history and
+under one publication of record. Bespoke long-form essays on the history and
 politics of mapmaking are unified by a shared shell (landing, navigation, design
 tokens, motion) while each keeps its own immersive interior.
 
 Built with **[Astro](https://astro.build)** (static output, islands architecture),
 TypeScript, Tailwind, and a CSS custom-property design-token layer.
 
-> **Status:** M2 complete — unified portal with all four essays live, plus a
-> reusable component library and MDX authoring pipeline for new essays.
+> **Status:** Live. The unified portal, reusable component/island library, MDX
+> authoring pipeline, interactive Atlas + historical-GIS tier, collection catalogue,
+> cartographer & bibliography registries, unified search, and the seven-room
+> cosmography have all shipped — the four founding essays have grown into a
+> multi-room corpus. The Venetian Maritime Network atlas layer is live; only its
+> chronology source-verification (Jira KAN-140 / KAN-154) remains open, pending
+> page-level Lane & O'Connell excerpts.
 
 ## The essays
 
@@ -19,6 +24,9 @@ TypeScript, Tailwind, and a CSS custom-property design-token layer.
 | **Terra Sigillata · Lapidarium Dacicum**     | Dacia/Romania, 19 centuries      | Quinque Sigilla + Sex Lectiones                                                    |
 | **Speculum Chartarum**                       | Antiquity → early-modern geodesy | Six Bearings: Geodesy · Witness · Cosmos · Fitness · Reach · Hand                  |
 | **La Rotta e il Catasto** (Venice vs Sicily) | 1150–1750, Mediterranean         | Harley theory, 6-axis radar                                                        |
+
+_These four founding essays now sit within a larger seven-room corpus — browse the
+full set at [`/essays`](src/pages/essays/index.astro)._
 
 The four analytical vocabularies are harmonized — additively, never replacing —
 onto **six canonical meta-lens dimensions** (Measure, Witness, Use, Cosmos, Power,
@@ -40,22 +48,30 @@ Silence) that power cross-essay discovery. The full crosswalk is published at
 
 ```
 src/
-  pages/          index · essays/[slug] · essays/index · atlas · colophon · about · 404
+  pages/          index · essays/ · atlas · collection/ · cartographers/ · rooms/
+                  bibliography · colophon · about · rss.xml · search-index.json · 404/500
   layouts/        PortalLayout (shell chrome)
-  components/     Header · Footer · EssayCard
-  components/islands/  RadarChart · AdaptiveTimeline · CompareSlider
+  components/     Header · Footer · EssayCard · CatalogueCard · room + section chrome
+  components/islands/  RadarChart · AdaptiveTimeline · CompareSlider · Scrollytelling
+                  AtlasMap · DeepZoomViewer · CiteExport · SiteSearch · VMN explorers
   content/        essays/*.md(x) + config.ts (Zod schema)
-  lib/            registry.ts (essays + meta-lens crosswalk)
+  data/           rooms.ts (seven-room taxonomy) + navigation
+  lib/            registry · corpus · geo · cartographers · bibliography · cite
+                  vmn* · toponyms · meta-lens · analytics · …
   styles/         tokens.css · global.css
 public/
   embed/<slug>/   legacy essays preserved verbatim
-  covers/         essay cover art
+  geo/            Natural Earth + Venetian Maritime Network FlatGeobuf layers
+  covers/ og/     essay cover art + social cards
+data/vmn/         VMN authority tables (CSV) → compiled FGB via scripts/vmn (Makefile)
 starter/          new-essay template + authoring guide
-scripts/          create-essay.mjs scaffold
+scripts/          create-essay, geo/build pipelines, validators
 ```
 
-See [`SPECS.md`](SPECS.md) for the full specification and
-[`jira-import.csv`](jira-import.csv) for the roadmap/backlog (project key `ATLAS`).
+See [`SPECS.md`](SPECS.md) for the specification and
+[`docs/roadmap.md`](docs/roadmap.md) for the essay roadmap. The live backlog is Jira
+project `KAN`; `jira-import.csv` is the original `ATLAS`-keyed import seed, kept for
+provenance.
 
 ## Develop
 
@@ -89,10 +105,25 @@ for the release and Atlas integration contract.
 Reusable MDX patterns and their accessibility/composition conventions are
 tracked in the [shared component inventory](docs/component-library.md).
 
+## Deploy
+
+The build emits portable static `dist/`. Production ships as an **OpenAI Sites**
+bundle — `npm run build` runs `scripts/build-sites-entry.mjs`, and the canonical
+origin is `site` in `astro.config.mjs`
+(`https://terra-chartarum-atlas.vladsimion.chatgpt.site`). The same `dist/` also
+runs on Cloudflare Pages or any static host. Full procedure — gates, smoke tests,
+rollback — in the [launch runbook](docs/launch-runbook.md).
+
 ## Roadmap
 
-- **M1 — Portal MVP** ✅ unified site, all four essays live under one shell.
+- **M1 — Portal MVP** ✅ unified site, the founding essays live under one shell.
 - **M2 — Platform** ✅ shared component library + MDX essay starter.
-- **M3 — Atlas** ⏳ cross-essay MapLibre map + historical-GIS layer tier
-  (PMTiles/COG), time-slider, faceted discovery.
-- **M4 — Launch** — a11y, performance, deploy.
+- **M3 — Atlas** ✅ cross-essay MapLibre map + historical-GIS layer tier
+  (PMTiles/COG/FlatGeobuf), time-slider, faceted discovery.
+- **M4 — Launch** ✅ accessibility, performance, deploy.
+- **M5 — Collection catalogue** ✅ rich map schema, cartographer & bibliography
+  registries, unified search, citation export.
+- **Cosmography & editorial waves** ✅ seven-room taxonomy, Wave 1–2 essays, and the
+  Venetian Maritime Network GIS layer. See [`docs/roadmap.md`](docs/roadmap.md) and
+  Jira `KAN` for the live plan; VMN chronology page-verification (KAN-140 / KAN-154)
+  is the one open thread.

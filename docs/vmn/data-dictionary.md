@@ -89,14 +89,14 @@ or a `waypoint_id`.
 
 ## `venetian-possessions.fgb` — MultiPolygon (§5.3)
 
-| Field                     | Type   | Notes                                                                                                                  |
-| ------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------- |
-| `possession_id`           | string | Stable territory slug plus phase year (`crete_1211`)                                                                   |
-| `territory`               | string | Stable territory slug (`crete`, `corfu`, `dalmatia`, `negroponte`, `morea`, `cyprus`, `ionian`, `terraferma` optional) |
-| `name`                    | string | Display name (Regno di Candia)                                                                                         |
-| `status`                  | enum   | `direct_rule` · `protectorate` · `condominium` · `contested`                                                           |
-| `valid_from` / `valid_to` | int    | Derived from ISO dates in `events.csv`                                                                                 |
-| `source_keys`, `notes`    | string | Provenance; `notes` must flag judgment calls                                                                           |
+| Field                     | Type   | Notes                                                                                                                                             |
+| ------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `possession_id`           | string | Stable territory slug plus phase year (`crete_1211`)                                                                                              |
+| `territory`               | string | Stable territory slug (`crete`, `corfu`, `dalmatia`, `negroponte`, `morea`, `cyprus`, `albania_veneta`; `ionian`, `terraferma` optional/reserved) |
+| `name`                    | string | Display name (Regno di Candia)                                                                                                                    |
+| `status`                  | enum   | `direct_rule` · `protectorate` · `condominium` · `contested`                                                                                      |
+| `valid_from` / `valid_to` | int    | Derived from ISO dates in `events.csv`                                                                                                            |
+| `source_keys`, `notes`    | string | Provenance; `notes` must flag judgment calls                                                                                                      |
 
 **Geometry rule:** _never digitize coastline._ Draw generous inland/offshore
 extent polygons in
@@ -158,7 +158,9 @@ editions can be checked at page level.
   layer ids, and a `popup`/`highlight` display mode; it contains no geometry or
   copied display prose. See [`deep-links.md`](deep-links.md) for the accepted
   URL state and stable reverse-link ID conventions.
-- **`commodities.csv`** — `tag, label, direction, note` (reserved for VMN-E7).
+- **`commodities.csv`** — `commodity_id, label, category, source_keys, notes`. The
+  controlled commodity vocabulary referenced by the pipe-separated `commodities`
+  tags on `routes.csv`.
 
 ## Decisions & deviations from spec
 

@@ -7,15 +7,24 @@ ATLAS-606).
 
 ## 1. Deploy topology
 
-- **Host:** Cloudflare Pages, connected to this repository via the git
-  integration. Every push to `main` triggers a production build; pull-request
-  branches get preview deployments.
-- **Build command:** `npm run build` (Astro static output).
-- **Output directory:** `dist/`.
-- **Public URL:** `https://terra-chartarum.pages.dev` (matches `site` in
-  `astro.config.mjs`, which drives canonical URLs, the sitemap and RSS).
-- **Output mode:** `output: 'static'` — there is no server runtime. Everything
-  ships as pre-rendered HTML plus client islands.
+The build emits portable static output, so it runs on any static host. The
+**canonical production origin** is whatever `site` is set to in `astro.config.mjs`
+(currently the OpenAI Sites host); keep `public/robots.txt` and this runbook aligned
+with it.
+
+- **Primary deploy:** an **OpenAI Sites** bundle. `npm run build` runs
+  `scripts/build-sites-entry.mjs`, which restructures `dist/` into the Sites layout
+  (`dist/client`, `dist/server`, `dist/.openai/hosting.json`) and is promoted to the
+  saved Sites version.
+- **Public URL:** `https://terra-chartarum-atlas.vladsimion.chatgpt.site` (matches
+  `site` in `astro.config.mjs`, which drives canonical URLs, the sitemap and RSS).
+- **Alternate host:** the same `dist/` also deploys to **Cloudflare Pages** (build
+  `npm run build`, output `dist/`, git integration with per-PR preview deploys). The
+  Cloudflare-specific steps below (rollback, `404.html`, `_redirects`) apply when
+  deploying via Pages.
+- **Build command:** `npm run build` · **Output directory:** `dist/`.
+- **Output mode:** `output: 'static'` — no server runtime; everything ships as
+  pre-rendered HTML plus client islands.
 
 ## 2. Pre-flight gates (must be green)
 

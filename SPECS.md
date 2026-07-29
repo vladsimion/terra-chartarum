@@ -4,11 +4,16 @@ An interactive historical-atlas portal: a gallery of cartographic visual essays
 under one publication of record. Cohesion lives in the **shell, tokens,
 navigation, motion, and metadata** — each essay keeps its bespoke interior.
 
-- **Status:** M1 (Portal MVP) scaffold complete — 4 legacy essays live under one
-  roof with shared chrome.
+- **Status:** Live. The portal shell, shared component library, interactive Atlas +
+  historical-GIS tier, collection catalogue, seven-room cosmography, and the Venetian
+  Maritime Network atlas layer have all shipped — the four founding essays have grown
+  into a multi-room corpus. Only the VMN chronology source-verification (Jira KAN-140
+  / KAN-154) remains open, pending page-level Lane & O'Connell excerpts.
 - **Stack:** Astro (static output, islands) + TypeScript (strict) + Tailwind +
   CSS custom-property tokens + Astro Content Collections (Zod).
-- **Full roadmap & backlog:** `jira-import.csv` (project key `ATLAS`).
+- **Full roadmap & backlog:** Jira project `KAN` (the live tracker);
+  [`docs/roadmap.md`](docs/roadmap.md) is the human-readable digest. `jira-import.csv`
+  is the original `ATLAS`-keyed import seed, kept for provenance.
 
 ---
 
@@ -32,7 +37,12 @@ output path. Raw essays therefore live at `/embed/<slug>/`, and each wrapper's
 iframe points at `/embed/<slug>/index.html`. Do not move raw essays back under
 `public/essays/` — the wrapper would recursively load itself.
 
-### Directory layout (as built)
+### Directory layout (M1 baseline)
+
+_This shows the M1 shell; the tree has since grown — rooms, atlas, collection,
+cartographers, bibliography, the VMN GIS pipeline, and the islands library. See
+[`README.md`](README.md) and [`docs/roadmap.md`](docs/roadmap.md) for the current
+shape._
 
 ```
 src/
@@ -147,7 +157,11 @@ map has its own silences.
 
 ---
 
-## 5. Interactive Atlas & Geo Tier (future)
+## 5. Interactive Atlas & Geo Tier
+
+_Shipped — the Atlas map, sqrt-compressed timeline, `GeoLayer` registry, and the
+Venetian Maritime Network FlatGeobuf layers are live; the contract below is
+as-built._
 
 - **Atlas meta-layer (E5):** MapLibre GL map (pins → essays/maps) + unified
   corpus timeline + faceted discovery + client search. The current
@@ -177,7 +191,8 @@ map has its own silences.
 5. `npm run build` — the gallery, atlas timeline, and facets pick it up
    automatically from the registry.
 
-A documented `starter/` kit + `create-essay` scaffold script land in ATLAS-406.
+A documented `starter/` kit + `create-essay` scaffold script landed in KAN-37
+(ATLAS-406).
 
 ---
 
@@ -191,15 +206,19 @@ npm run preview    # serve the build
 npm run check      # astro check (types)
 ```
 
-### Known state / deferrals
+### Known state
 
-- **Sitemap** (`@astrojs/sitemap`) is removed pending a version-compatible pin —
-  it crashed the build at `build:done`. Re-add under **ATLAS-205** with RSS +
-  `robots.txt`.
-- **Production origin** in `astro.config.mjs` (`site`) is a placeholder — set the
-  real origin under **ATLAS-605** before launch.
-- **Tooling/CI** (ESLint, Prettier, Vitest, Playwright, axe, Lighthouse CI) is
-  scoped in **ATLAS-102**, not yet wired.
+These early deferrals are all resolved:
+
+- **Sitemap** — re-added, pinned to `@astrojs/sitemap@3.2.1` (later 3.x require an
+  `astro:routes:resolved` hook Astro 4.16 doesn't emit), alongside `/rss.xml` and
+  `public/robots.txt` (KAN-22 / ATLAS-205).
+- **Production origin** — `astro.config.mjs` `site` is set to the live origin (the
+  OpenAI Sites host; see [`docs/launch-runbook.md`](docs/launch-runbook.md)) (KAN-56 /
+  ATLAS-605).
+- **Tooling/CI** — ESLint, Prettier, Vitest, Playwright + axe and Lighthouse CI run
+  in `.github/workflows/ci.yml`, plus a VMN dataset QA gate (KAN-14 / ATLAS-102,
+  extended by VMN-21).
 
 ---
 
@@ -217,8 +236,12 @@ npm run check      # astro check (types)
 
 ## 9. Milestones
 
-- **M1 — Portal MVP:** E1 + E2 + E3 (+ EL1–EL3) → unified site, all 4 essays
-  live. _(scaffold complete)_
-- **M2 — Platform:** + E4 → shared components + new-essay starter.
+- **M1 — Portal MVP:** E1 + E2 + E3 (+ EL1–EL3) → unified site, the founding essays
+  live. _(done)_
+- **M2 — Platform:** + E4 → shared components + new-essay starter. _(done)_
 - **M3 — Atlas:** + E5 + EG + EL4 → cross-essay map/timeline/lens/GIS discovery.
-- **M4 — Launch:** + E6 → production deploy; E7 runs continuously after.
+  _(done)_
+- **M4 — Launch:** + E6 → production deploy; E7 runs continuously after. _(done)_
+- **M5 — Collection catalogue & beyond:** rich catalogue, cartographer/bibliography
+  registries, unified search, the seven-room cosmography, and the VMN atlas layer.
+  _(done; VMN chronology page-verification KAN-140 / KAN-154 open)_
