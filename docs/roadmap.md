@@ -70,6 +70,11 @@ A groomed set of 6–8 essays that take every room past a single entry and reach
 **Wave-2 gate (KAN-90):** once each room holds ~2 essays, promote **Rooms** to the
 primary navigation and (optionally) regroup the Essays index by room.
 
+**Platform gate shipped (2026-07-29):** Rooms is now in primary navigation and
+the Essays index is grouped by its validated primary-room association. Content
+depth remains honest: The Earth stays unanchored until KAN-228 delivers _The
+Shape of a Civilization_.
+
 ## Wave 3 — normalized backlog (KAN-91, KAN-220)
 
 The twelve candidate titles now have stable slugs, canonical room assignments,
@@ -77,24 +82,26 @@ secondary rooms, a fixed wave order and bundle ownership. The machine-readable
 authority record is [`data/editorial/wave-3/backlog.json`](../data/editorial/wave-3/backlog.json);
 Jira remains the tracking authority.
 
-| Order | Candidate                     | Primary room | Tracking bundle | State     |
-| ----: | ----------------------------- | ------------ | --------------- | --------- |
-|     1 | The Weight of Distance        | The Road     | KAN-224         | candidate |
-|     2 | The Last Blank Spaces         | The Earth    | KAN-224         | candidate |
-|     3 | Why North Is Up               | The Map      | KAN-224         | candidate |
-|     4 | The Problem of Scale          | The Map      | KAN-222         | tracked   |
-|     5 | The Soul of Places            | The Earth    | KAN-222         | tracked   |
-|     6 | Frontiers Are Not Borders     | The Border   | KAN-222         | tracked   |
-|     7 | The Invention of the Homeland | The Border   | KAN-223         | tracked   |
-|     8 | Invisible Maps of Disease     | The Road     | KAN-223         | tracked   |
-|     9 | Ruins as Documents            | The Archive  | KAN-223         | tracked   |
-|    10 | The Geography of Memory       | The City     | KAN-221         | tracked   |
-|    11 | Myth as Cartography           | The Theatre  | KAN-221         | tracked   |
-|    12 | Naming as Cartography         | The Map      | KAN-221         | tracked   |
+| Order | Candidate                     | Primary room | Tracking bundle | State   |
+| ----: | ----------------------------- | ------------ | --------------- | ------- |
+|     1 | The Weight of Distance        | The Road     | KAN-224         | tracked |
+|     2 | The Last Blank Spaces         | The Earth    | KAN-224         | tracked |
+|     3 | Why North Is Up               | The Map      | KAN-224         | tracked |
+|     4 | The Problem of Scale          | The Map      | KAN-222         | tracked |
+|     5 | The Soul of Places            | The Earth    | KAN-222         | tracked |
+|     6 | Frontiers Are Not Borders     | The Border   | KAN-222         | tracked |
+|     7 | The Invention of the Homeland | The Border   | KAN-223         | tracked |
+|     8 | Invisible Maps of Disease     | The Road     | KAN-223         | tracked |
+|     9 | Ruins as Documents            | The Archive  | KAN-223         | tracked |
+|    10 | The Geography of Memory       | The City     | KAN-221         | tracked |
+|    11 | Myth as Cartography           | The Theatre  | KAN-221         | tracked |
+|    12 | Naming as Cartography         | The Map      | KAN-221         | tracked |
 
-The first KAN-224 set remains candidate-only until its dedicated tracking pass.
-KAN-225 owns interactive-component assignment and final backlog verification; this
-normalization does not pre-empt that review.
+The KAN-224 tracking pass created KAN-286–288 for the final three candidates.
+KAN-225 verified all twelve Jira links, canonical room assignments, Editorial
+ownership labels, and candidate-specific interactive directions. The project does
+not expose a Jira Components field for Tasks, so the `editorial` label is the
+machine-checked ownership mechanism.
 
 ## Per-essay epics from the starter
 

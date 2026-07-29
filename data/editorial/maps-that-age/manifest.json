@@ -12,6 +12,12 @@
   "coverPath": "public/covers/maps-that-age.svg",
   "ogPath": "public/og/maps-that-age.png",
   "publishedPath": "src/content/essays/maps-that-age.mdx",
+  "editorialReview": {
+    "outline": "approved",
+    "narrative": "approved-with-notes",
+    "reviewedAt": "2026-07-29",
+    "notesPath": "docs/editorial/cohesion-audit-2026-07-29.md"
+  },
   "crossLinks": [
     "/essays/speculum/",
     "/rooms/archive/",

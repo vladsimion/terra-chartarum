@@ -8,7 +8,7 @@ import { test, expect } from '@playwright/test';
 // smoke.spec.ts) and make no assumptions about the exact essay count.
 
 test.describe('flow: primary navigation', () => {
-  test('header nav reaches Essays and Atlas from the home page', async ({ page }) => {
+  test('header nav reaches Essays, Rooms and Atlas from the home page', async ({ page }) => {
     await page.goto('/');
 
     // The primary nav is present and usable at every viewport (it reflows rather
@@ -19,6 +19,14 @@ test.describe('flow: primary navigation', () => {
     await nav.getByRole('link', { name: 'Essays' }).click();
     await page.waitForURL(/\/essays\/?$/);
     await expect(page.getByRole('heading', { level: 1, name: 'Visual essays' })).toBeVisible();
+
+    await nav.getByRole('link', { name: 'Rooms' }).click();
+    await page.waitForURL(/\/rooms\/?$/);
+    await expect(page.getByRole('heading', { level: 1, name: 'The Seven Rooms' })).toBeVisible();
+    await expect(nav.getByRole('link', { name: 'Rooms' })).toHaveAttribute('aria-current', 'page');
+
+    await page.goto('/rooms/city/');
+    await expect(nav.getByRole('link', { name: 'Rooms' })).toHaveAttribute('aria-current', 'page');
 
     await nav.getByRole('link', { name: 'Atlas' }).click();
     await page.waitForURL(/\/atlas\/?$/);
@@ -47,6 +55,20 @@ test.describe('flow: gallery → essay', () => {
     const heading = page.locator('h1').first();
     const frame = page.locator('iframe.essay-frame');
     await expect(heading.or(frame).first()).toBeVisible();
+  });
+});
+
+test.describe('flow: room-grouped gallery', () => {
+  test('groups essay cards under their canonical room headings', async ({ page }) => {
+    await page.goto('/essays/');
+
+    const groups = page.locator('[data-room-group]');
+    expect(await groups.count()).toBeGreaterThan(0);
+
+    const firstGroup = groups.first();
+    await expect(firstGroup.getByRole('heading', { level: 2 })).toBeVisible();
+    await expect(firstGroup.locator('.card').first()).toBeVisible();
+    await expect(firstGroup.locator('.room-count')).toHaveText(/\d+ essays?/);
   });
 });
 

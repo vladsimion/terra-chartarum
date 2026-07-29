@@ -150,6 +150,20 @@ function validatePackage(file) {
       `${label}: built essay content path does not exist`,
       errors,
     );
+    const review = manifest.editorialReview ?? {};
+    const accepted = new Set(['approved', 'approved-with-notes']);
+    check(accepted.has(review.outline), `${label}: outline review is not approved`, errors);
+    check(accepted.has(review.narrative), `${label}: narrative review is not approved`, errors);
+    check(
+      /^\d{4}-\d{2}-\d{2}$/.test(review.reviewedAt ?? ''),
+      `${label}: editorial review date is missing`,
+      errors,
+    );
+    check(
+      existsSync(resolve(ROOT, review.notesPath ?? '')),
+      `${label}: editorial review notes do not exist`,
+      errors,
+    );
   }
 
   if (stage >= STAGES.indexOf('design-qa')) {
@@ -218,7 +232,13 @@ function validateWaveThreeBacklog() {
 
   check(backlog.wave === 3, 'wave-3: incorrect wave number', errors);
   check(backlog.intakeTicket === 'KAN-220', 'wave-3: intake ticket must be KAN-220', errors);
-  check(backlog.status === 'normalized', 'wave-3: backlog is not normalized', errors);
+  check(backlog.status === 'verified', 'wave-3: backlog is not verified', errors);
+  check(backlog.verificationTicket === 'KAN-225', 'wave-3: incorrect verification ticket', errors);
+  check(
+    backlog.componentModel === 'jira-label',
+    'wave-3: unsupported component ownership model',
+    errors,
+  );
   check(entries.length === 12, `wave-3: expected 12 candidates; found ${entries.length}`, errors);
   check(new Set(slugs).size === entries.length, 'wave-3: duplicate slug', errors);
   check(new Set(titles).size === entries.length, 'wave-3: duplicate title', errors);
@@ -256,17 +276,33 @@ function validateWaveThreeBacklog() {
       `wave-3/${entry.title}: room rationale is not substantive`,
       errors,
     );
+    check(/^KAN-\d+$/.test(entry.ticket ?? ''), `wave-3/${entry.title}: ticket missing`, errors);
+    check(
+      entry.component === 'Editorial',
+      `wave-3/${entry.title}: Editorial ownership missing`,
+      errors,
+    );
+    check(
+      (entry.interactivePattern ?? '').length >= 40,
+      `wave-3/${entry.title}: interactive pattern is not substantive`,
+      errors,
+    );
   }
 
   const tracked = entries.filter((entry) => entry.state === 'tracked');
   check(
-    tracked.length === 9,
-    `wave-3: expected 9 tracked entries; found ${tracked.length}`,
+    tracked.length === 12,
+    `wave-3: expected 12 tracked entries; found ${tracked.length}`,
     errors,
   );
   check(
-    tracked.every((entry) => ['KAN-221', 'KAN-222', 'KAN-223'].includes(entry.bundleTicket)),
-    'wave-3: tracked entries must belong to KAN-221–223',
+    tracked.every((entry) => /^KAN-22[1-4]$/.test(entry.bundleTicket)),
+    'wave-3: tracked entries must belong to KAN-221–224',
+    errors,
+  );
+  check(
+    new Set(entries.map((entry) => entry.ticket)).size === entries.length,
+    'wave-3: duplicate candidate ticket',
     errors,
   );
   return errors;

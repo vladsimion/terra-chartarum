@@ -12,6 +12,12 @@
   "coverPath": "public/covers/cities-remember.svg",
   "ogPath": "public/og/cities-remember.png",
   "publishedPath": "src/content/essays/cities-remember.mdx",
+  "editorialReview": {
+    "outline": "approved",
+    "narrative": "approved-with-notes",
+    "reviewedAt": "2026-07-29",
+    "notesPath": "docs/editorial/cohesion-audit-2026-07-29.md"
+  },
   "crossLinks": [
     "/rooms/city/",
     "/rooms/archive/",
