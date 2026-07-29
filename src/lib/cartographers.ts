@@ -61,7 +61,7 @@ const RAW: unknown[] = [
     died: 1598,
     places: ['Antwerp'],
     bio: 'Brabantian cartographer and geographer whose Theatrum Orbis Terrarum (1570) is regarded as the first modern atlas: a uniform, bound set of map sheets with a credited list of sources.',
-    essaySlugs: ['speculum'],
+    essaySlugs: ['speculum', 'maps-that-age'],
     links: [{ label: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Abraham_Ortelius' }],
   },
   {

@@ -87,6 +87,54 @@ const RAW: unknown[] = [
     citation:
       'O’Connell, Monique. Men of Empire: Power and Negotiation in Venice’s Maritime State. Baltimore: Johns Hopkins University Press, 2009.',
   },
+  {
+    id: 'vandenbroecke-1996',
+    author: 'Van den Broecke, Marcel P. R.',
+    year: 1996,
+    title: 'Ortelius Atlas Maps: An Illustrated Guide',
+    citation:
+      'Van den Broecke, Marcel P. R. Ortelius Atlas Maps: An Illustrated Guide. ’t Goy-Houten: HES Publishers, 1996.',
+    url: 'https://orteliusmaps.com/ortindexnumber.html',
+  },
+  {
+    id: 'vandenbroecke-ort1',
+    author: 'Van den Broecke, Marcel P. R.',
+    title: 'Ortelius Map No. 1: Typus Orbis Terrarum',
+    citation:
+      'Van den Broecke, Marcel P. R. “Ortelius Map No. 1: Typus Orbis Terrarum.” Cartographica Neerlandica.',
+    url: 'https://orteliusmaps.com/book/ort1.html',
+  },
+  {
+    id: 'vandenbroecke-ort2',
+    author: 'Van den Broecke, Marcel P. R.',
+    title: 'Ortelius Map No. 2: Typus Orbis Terrarum',
+    citation:
+      'Van den Broecke, Marcel P. R. “Ortelius Map No. 2: Typus Orbis Terrarum.” Cartographica Neerlandica.',
+    url: 'https://orteliusmaps.com/book/ort2.html',
+  },
+  {
+    id: 'vandenbroecke-ort3',
+    author: 'Van den Broecke, Marcel P. R.',
+    title: 'Ortelius Map No. 3: Typus Orbis Terrarum',
+    citation:
+      'Van den Broecke, Marcel P. R. “Ortelius Map No. 3: Typus Orbis Terrarum.” Cartographica Neerlandica.',
+    url: 'https://orteliusmaps.com/book/ort3.html',
+  },
+  {
+    id: 'loc-ortelius',
+    author: 'Library of Congress',
+    title: 'Ortelius Atlas',
+    citation: 'Library of Congress. “Ortelius Atlas.” General Atlases, Geography and Map Division.',
+    url: 'https://www.loc.gov/collections/general-maps/articles-and-essays/general-atlases/ortelius-atlas/',
+  },
+  {
+    id: 'nuti-2003',
+    author: 'Nuti, Lucia',
+    year: 2003,
+    title: 'The World Map as an Emblem: Abraham Ortelius and the Stoic Contemplation',
+    citation:
+      'Nuti, Lucia. “The World Map as an Emblem: Abraham Ortelius and the Stoic Contemplation.” Imago Mundi 55 (2003): 38–55.',
+  },
 ];
 
 export const BIBLIOGRAPHY: BibEntry[] = RAW.map((b) => BibEntrySchema.parse(b));

@@ -172,3 +172,28 @@ test.describe('flow: Invisible Maps of Trade publication', () => {
     ).toBeVisible();
   });
 });
+
+test.describe('flow: Maps That Age interactive build', () => {
+  test('comparison and plate-state filters expose the documented evidence', async ({ page }) => {
+    await page.goto('/essays/maps-that-age/');
+
+    await expect(page.getByRole('heading', { level: 1, name: 'Maps That Age' })).toBeVisible();
+
+    const comparison = page.getByRole('slider', {
+      name: 'Reveal slider between First plate · 1579 impression and Replacement plate · 1587',
+    });
+    await comparison.focus();
+    await page.keyboard.press('End');
+    await expect(comparison).toHaveAttribute('aria-valuenow', '100');
+
+    const explorer = page.locator('[data-plate-state-explorer]');
+    await explorer.getByRole('button', { name: 'Plate 2', exact: true }).click();
+    await expect(explorer.locator('.pse-status')).toHaveText(
+      'Showing 2 documented moments for plate 2.',
+    );
+    await expect(explorer.locator('[data-state]:visible')).toHaveCount(2);
+    await expect(
+      explorer.getByRole('link', { name: 'Open catalogue record' }).first(),
+    ).toBeVisible();
+  });
+});

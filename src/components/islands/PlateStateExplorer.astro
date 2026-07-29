@@ -1,0 +1,149 @@
+---
+import states from '../../../data/editorial/maps-that-age/states.json';
+
+const plates = [...new Set(states.map((state) => state.plate))];
+---
+
+<section class="pse" data-plate-state-explorer>
+  <header>
+    <p class="eyebrow">Plate-state ledger · documented interventions</p>
+    <h3>One title, three plates, eight visible moments</h3>
+    <p>
+      Filter the ledger by copperplate. Each row separates the intervention from the evidence used
+      to identify it.
+    </p>
+  </header>
+
+  <div class="pse-controls" role="group" aria-label="Filter plate-state ledger">
+    <button type="button" class="is-active" data-plate="" aria-pressed="true">All plates</button>
+    {
+      plates.map((plate) => (
+        <button type="button" data-plate={plate} aria-pressed="false">
+          Plate {plate}
+        </button>
+      ))
+    }
+  </div>
+
+  <p class="pse-status" aria-live="polite">Showing all {states.length} documented moments.</p>
+
+  <ol class="pse-list">
+    {
+      states.map((state) => (
+        <li data-state data-plate={state.plate}>
+          <p class="pse-id">
+            <span>{state.year}</span> · Ort {state.plate}, state {state.state}
+          </p>
+          <h4>{state.intervention}</h4>
+          <p>{state.evidence}</p>
+          <p class="pse-confidence">Evidence confidence: {state.confidence}</p>
+          <a href={`/collection/${state.mapId}/`}>Open catalogue record</a>
+        </li>
+      ))
+    }
+  </ol>
+</section>
+
+<script>
+  const bootPlateStateExplorers = () => {
+    document.querySelectorAll<HTMLElement>('[data-plate-state-explorer]').forEach((root) => {
+      if (root.dataset.ready) return;
+      root.dataset.ready = 'true';
+      const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-plate]'));
+      const rows = Array.from(root.querySelectorAll<HTMLElement>('[data-state]'));
+      const status = root.querySelector<HTMLElement>('.pse-status');
+
+      for (const button of buttons) {
+        button.addEventListener('click', () => {
+          const plate = button.dataset.plate ?? '';
+          let shown = 0;
+          for (const candidate of buttons) {
+            const active = candidate === button;
+            candidate.classList.toggle('is-active', active);
+            candidate.setAttribute('aria-pressed', String(active));
+          }
+          for (const row of rows) {
+            const visible = !plate || row.dataset.plate === plate;
+            row.hidden = !visible;
+            if (visible) shown += 1;
+          }
+          if (status) {
+            status.textContent = plate
+              ? `Showing ${shown} documented moments for plate ${plate}.`
+              : `Showing all ${shown} documented moments.`;
+          }
+        });
+      }
+    });
+  };
+
+  bootPlateStateExplorers();
+  document.addEventListener('astro:page-load', bootPlateStateExplorers);
+</script>
+
+<style>
+  .pse {
+    margin: 2.5rem 0;
+    padding: clamp(1rem, 3vw, 1.6rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+  }
+  .pse header {
+    max-width: 46rem;
+  }
+  .pse h3 {
+    margin: 0.3rem 0 0.5rem;
+  }
+  .pse-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin: 1.2rem 0 0.7rem;
+  }
+  .pse-controls button {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--ink-muted);
+    background: var(--panel-2);
+    padding: 0.45rem 0.8rem;
+    font: inherit;
+    cursor: pointer;
+  }
+  .pse-controls button:hover,
+  .pse-controls button:focus-visible,
+  .pse-controls button.is-active {
+    color: var(--gold);
+    border-color: var(--gold);
+  }
+  .pse-status,
+  .pse-id,
+  .pse-confidence {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+  }
+  .pse-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 0.75rem;
+    list-style: none;
+    padding: 0;
+  }
+  .pse-list li {
+    padding: 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--canvas);
+  }
+  .pse-list h4 {
+    margin: 0.35rem 0;
+  }
+  .pse-list p {
+    margin: 0.35rem 0;
+  }
+  .pse-list a {
+    display: inline-block;
+    margin-top: 0.5rem;
+  }
+</style>

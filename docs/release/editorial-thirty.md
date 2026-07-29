@@ -46,3 +46,27 @@ Medium, unblocked and in the required pipeline order. Batch 3 therefore remains 
 That Age corpus → research → outline → draft → interactive build. KAN-119–KAN-121
 stay immediately behind it because design QA, publication and Cartometry export
 depend on that build.
+
+## Batch 3 — Maps That Age build
+
+**Tickets:** KAN-114, KAN-115, KAN-116, KAN-117, KAN-118.
+
+- Secured a nine-record corpus across three Ortelius world-map plates, with explicit
+  distinctions between image evidence and specialist textual state evidence.
+- Added a six-claim research dossier and shared bibliography records for the
+  Library of Congress, Van den Broecke plate census and Nuti’s emblematic reading.
+- Assigned every chapter a map and one of three interactive moments.
+- Published a 3,701-word native MDX build with a public-domain plate comparison,
+  linear intervention timeline and a new accessible, filterable plate-state ledger.
+- Added nine rich collection records with plate, state, engraver, condition,
+  bibliography, relationship and rights metadata.
+
+**Evidence:** editorial QA, lint, 109 unit tests, Astro check, a 70-page production
+build, formatting, Git diff hygiene and the focused Chromium comparison/state-filter
+flow pass.
+
+**Reprioritisation:** the new Roadmap and Jira read found KAN-119–KAN-123 all To Do
+and Medium. KAN-119–KAN-121 are now unblocked by the completed essay build and close
+Maps That Age through design QA, publication and the evidence export. KAN-122 and
+KAN-123 then start the next required Wave-1 anchor, Invisible Maps of Religion. Its
+“Relates” links are contextual, not blocking dependencies.
