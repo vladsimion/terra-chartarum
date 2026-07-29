@@ -1,7 +1,7 @@
 {
   "slug": "invisible-maps-religion",
   "title": "Invisible Maps of Religion",
-  "stage": "design-qa",
+  "stage": "publish",
   "room": "theatre",
   "secondaryRooms": ["road", "city"],
   "thesis": "Religious maps do not merely illustrate belief: by centring sacred cities, orienting bodies toward holy directions and turning pilgrimage into a sequence of stations, they organise lived space before political borders or measured distance become the dominant grammar.",
@@ -12,6 +12,14 @@
   "coverPath": "public/covers/invisible-maps-religion.svg",
   "ogPath": "public/og/invisible-maps-religion.png",
   "seriesPath": "src/pages/series/invisible-maps.astro",
+  "publishedPath": "src/content/essays/invisible-maps-religion.mdx",
+  "crossLinks": [
+    "/series/invisible-maps/",
+    "/rooms/theatre/",
+    "/rooms/road/",
+    "/rooms/city/",
+    "/collection/?essay=invisible-maps-religion"
+  ],
   "corpus": [
     {
       "id": "religion-madaba",

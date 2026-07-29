@@ -127,3 +127,33 @@ Batch 6 therefore publishes and cross-links Religion, then advances Cities Remem
 through concept, rights-cleared corpus, research and fully mapped outline. The
 “Relates” issues attached to KAN-129 supply context and follow-up checks; they do not
 block this release.
+
+## Batch 6 — Religion publication and Cities Remember foundation
+
+**Tickets:** KAN-129, KAN-130, KAN-131, KAN-132, KAN-133.
+
+- Promoted Invisible Maps of Religion to publication and recorded five reciprocal
+  links across the series, Theatre, Road, City and collection surfaces.
+- Approved Cities Remember as a study of urban plans as revisionary civic memory,
+  with The City as its primary room and Archive/Theatre as secondary lenses.
+- Rights-logged a nine-map corpus from the Forma Urbis fragments and the Nuremberg
+  Chronicle through de’ Barbari, Bufalini, Agas, Braun and Hogenberg, Turgot, Nolli
+  and Sanborn; Nolli is the sole hero.
+- Added a seven-source, seven-claim research dossier with evidence boundaries for
+  fragment reconstruction, image history, survey method and insurance revision.
+- Assigned maps and interactions to all six chapters, including a fragment ledger,
+  a comparison and an Allmaps-compatible Nolli opacity overlay whose residual
+  alignment is disclosed rather than treated as ground truth.
+
+**Evidence:** editorial QA for all four packages, lint, 109 unit tests, Astro check
+with zero errors, an 81-page production build, geo release QA, formatting and Git
+diff hygiene. The clean supported-browser matrix passed 54 Chromium, Firefox and
+mobile-Chrome flows. Local WebKit execution is unavailable on the macOS 12
+Playwright runtime and remains a CI-runner check, not a waived product requirement.
+
+**Reprioritisation:** Jira confirms KAN-134–KAN-137 are To Do, Medium and now
+unblocked, so the next editorial chain is Cities Remember draft → interactive build
+→ design QA and cover → publication and cross-linking. KAN-138 (foundations and
+schema) and KAN-139 (ports gazetteer) are already Done. KAN-140, the In Progress
+routes/mude epic, is therefore the fifth actionable item and follows the Cities
+publication chain ahead of the Sprint 3 possessions work in KAN-141.
