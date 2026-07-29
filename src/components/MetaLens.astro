@@ -1,0 +1,112 @@
+---
+import type { CanonicalDimension } from '../lib/registry';
+import { assertEssayLensCoverage, DIMENSION_META, mappedNativeAxes } from '../lib/registry';
+import { CANONICAL_DIMENSIONS } from '../content/config';
+import RadarChart from './islands/RadarChart.astro';
+
+interface Props {
+  slug: string;
+  title: string;
+  lenses: string[];
+  scores?: Partial<Record<CanonicalDimension, number>>;
+}
+
+const { slug, title, lenses, scores } = Astro.props;
+assertEssayLensCoverage({ slug, lenses, metaScores: scores });
+const nativeAxes = mappedNativeAxes(lenses);
+const values = CANONICAL_DIMENSIONS.map((dimension) => scores?.[dimension] ?? 0);
+---
+
+<aside class="meta-lens" aria-labelledby={`meta-lens-${slug}`}>
+  <div class="meta-copy">
+    <p class="eyebrow">Additive meta-lens</p>
+    <h2 id={`meta-lens-${slug}`}>Six ways into this essay</h2>
+    <p>
+      The shared lens makes essays discoverable across six canonical dimensions. It does not replace <em
+        >{title}</em
+      >'s native terms or make unlike scores naturally commensurable.
+    </p>
+    <details>
+      <summary>How the native lens maps</summary>
+      <dl>
+        {
+          nativeAxes.map(({ axis, mappings }) => (
+            <div>
+              <dt>{axis}</dt>
+              <dd>
+                {mappings
+                  .map(
+                    ({ label, weight }) =>
+                      `${label} ${weight < 0 ? 'inverse ' : ''}${Math.abs(weight)}`,
+                  )
+                  .join(' · ')}
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </details>
+  </div>
+  <RadarChart
+    axes={CANONICAL_DIMENSIONS.map((dimension) => DIMENSION_META[dimension].label)}
+    series={[{ label: title, values }]}
+    caption="Editorial scores are normalized 0–1 for discovery. Read them with the native-axis crosswalk and essay evidence."
+  />
+</aside>
+
+<style>
+  .meta-lens {
+    display: grid;
+    gap: 1.5rem;
+    margin: 3rem 0;
+    padding: clamp(1.2rem, 4vw, 2rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+  }
+  .meta-copy h2 {
+    margin: 0.3rem 0 0.7rem;
+    font-size: var(--step-2);
+  }
+  .meta-copy p {
+    color: var(--ink-muted);
+  }
+  details {
+    border-top: 1px solid var(--line);
+    padding-top: 0.8rem;
+  }
+  summary {
+    cursor: pointer;
+    color: var(--gold);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  dl {
+    display: grid;
+    gap: 0.55rem;
+    margin: 1rem 0 0;
+  }
+  dl div {
+    display: grid;
+    grid-template-columns: minmax(8rem, 0.8fr) 1.2fr;
+    gap: 0.8rem;
+  }
+  dt {
+    color: var(--ink);
+    font-family: var(--font-display);
+  }
+  dd {
+    margin: 0;
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+  }
+  @media (min-width: 52rem) {
+    .meta-lens {
+      grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.8fr);
+      align-items: center;
+    }
+  }
+</style>

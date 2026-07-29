@@ -1,0 +1,211 @@
+---
+title: Classification Is Cartography
+subtitle: The Border Inside the Catalogue
+summary: >-
+  Categories draw boundaries through collections just as maps draw them
+  through land. What can be searched, compared or counted depends on where the
+  catalogue places each object—and what it leaves unclassifiable.
+cover: /covers/classification-is-cartography.svg
+status: native
+eras: [Enlightenment, Industrial, Contemporary]
+regions: [Global]
+lenses: [Classification, Catalogue, Taxonomy, Search, Uncertainty]
+yearFrom: 1665
+yearTo: 2025
+mapCount: 8
+readingMinutes: 8
+accent: '#8775a6'
+order: 16
+featured: false
+room: theatre
+secondaryRooms: [map, archive]
+sections:
+  - id: category-draws-a-border
+    title: A category draws a border
+    room: theatre
+    secondaryRooms: [border]
+  - id: catalogue-makes-a-world
+    title: The catalogue makes a world
+    room: archive
+    secondaryRooms: [theatre]
+  - id: coordinate-systems-for-things
+    title: Coordinate systems for things
+    room: map
+    secondaryRooms: [theatre]
+  - id: uncertainty-needs-a-field
+    title: Uncertainty needs a field
+    room: archive
+    secondaryRooms: [map]
+  - id: classify-with-escape-routes
+    title: Classify with escape routes
+    room: theatre
+    secondaryRooms: [archive, map]
+publishedAt: '2026-07-29'
+updatedAt: '2026-07-29'
+metaScores:
+  measure: 0.62
+  witness: 0.84
+  use: 0.9
+  cosmos: 0.96
+  power: 0.94
+  silence: 0.98
+---
+
+import Section from '../../components/Section.astro';
+import AdaptiveTimeline from '../../components/islands/AdaptiveTimeline.astro';
+
+<p class="essay-kicker">The Theatre · The Map · The Archive</p>
+
+# Classification Is Cartography
+
+## The border inside the catalogue
+
+A map assigns things to positions. A classification assigns them to categories.
+Both create neighbourhoods, boundaries, centres and margins. An object placed
+under “nautical chart” becomes comparable with some sheets and distant from
+others. A place recorded under one authorised name becomes findable through
+that name and harder to retrieve through another. The catalogue is a map of the
+collection.
+
+Classification is necessary. Without shared fields, a corpus cannot be searched,
+filtered, counted or linked. The danger is not that categories are artificial.
+It is that their construction becomes invisible while their effects remain.
+
+This essay treats taxonomy as spatial work. It asks where the system draws its
+internal borders, which objects are forced to choose one side, and how
+uncertainty can remain queryable instead of being cleaned away.
+
+<Section id="category-draws-a-border" title="A category draws a border" rooms={['theatre', 'border']}>
+
+Suppose a catalogue offers two types: “map” and “diagram.” A medieval T–O image,
+transit schematic or cosmological chart may fit both. Requiring one value turns
+an analytic distinction into a border. Statistics downstream will then report
+two clean populations produced partly by the database rule.
+
+Multi-value fields soften the boundary but do not remove it. The available
+terms still define the universe of description. “Other” collects disagreement
+without explaining it. Free text preserves nuance but may fragment retrieval.
+Every schema trades some expressive range for shared use.
+
+The first discipline is to state the purpose of a category. Medium, function,
+genre, depicted subject and institutional collection are different axes. A
+portolan chart can be parchment by medium, navigational by use, nautical by
+genre and Mediterranean by coverage. Collapsing those axes into one “type”
+produces a classification that cannot explain itself.
+
+</Section>
+
+<Section id="catalogue-makes-a-world" title="The catalogue makes a world" rooms={['archive', 'theatre']}>
+
+Early modern cabinets, library catalogues, natural histories and atlases all
+staged knowledge through ordered collections. Their sequence told a reader
+which differences mattered. Modern standards make exchange possible on a far
+larger scale, but they inherit the same responsibility.
+
+The timeline marks influential systems that organised unlike domains. It is
+not a genealogy in which one universal standard emerges as the destination.
+
+<AdaptiveTimeline
+  from={1600}
+  to={2030}
+  compress={false}
+  ticks={[1600, 1800, 2000, 2030]}
+  caption="Classification systems overlap and serve different domains; dates indicate publication or adoption moments."
+  events={[
+    { year: 1665, label: 'Hooke: visual taxonomy' },
+    { year: 1735, label: 'Linnaean system' },
+    { year: 1876, label: 'Dewey Decimal' },
+    { year: 1895, label: 'Universal Decimal' },
+    { year: 1999, label: 'CIDOC CRM work begins' },
+    { year: 2014, label: 'IIIF Presentation API' },
+  ]}
+/>
+
+A catalogue record often outlives the arrangement that created it. Historical
+terms persist in subject headings. Colonial place names remain access points.
+Maker attributions harden through copying. Digital migration can carry these
+fields forward because preserving search appears safer than revisiting meaning.
+
+The archive therefore contains two histories: the object and the description
+of the object. Versioning a record makes the second history visible.
+
+</Section>
+
+<Section id="coordinate-systems-for-things" title="Coordinate systems for things" rooms={['map', 'theatre']}>
+
+Controlled vocabularies resemble coordinate reference systems. They let
+different records occupy a shared descriptive space. Crosswalks translate
+between systems, but translation is rarely one-to-one. A local term may be
+broader, narrower or conceptually different from the target.
+
+Terra Chartarum's six-dimensional meta-lens is an example. Native essay axes are
+not erased; they are mapped additively onto Measure, Witness, Use, Cosmos, Power
+and Silence. The crosswalk enables discovery while retaining the original
+vocabulary. It would become coercive if the six dimensions replaced every
+essay's terms or claimed that unlike scores were naturally commensurable.
+
+Place names reveal the same structure. A stable identifier can link variant
+names without declaring one timeless label. Coordinates support spatial
+matching, but historical places may have uncertain extent or move in relation
+to rivers and coastlines. Identity is not reducible to a point.
+
+Crosswalks should therefore publish direction and loss. Which source terms were
+combined? Which distinctions disappeared? Can a user return to the native
+record? Translation without that route becomes assimilation.
+
+</Section>
+
+<Section id="uncertainty-needs-a-field" title="Uncertainty needs a field" rooms={['archive', 'map']}>
+
+Data cleaning often treats uncertainty as a defect. Dates become single years,
+makers become names, places become points and ambiguous types become preferred
+terms. The record passes validation while the evidence becomes less honest.
+
+Uncertainty needs structure. A date can carry an interval and basis: printed,
+catalogued, inferred from state, or approximate. Attribution can distinguish
+signed, documented, traditional and disputed. Geometry can be observed,
+reconstructed or schematic. Confidence should resolve to evidence, not float
+as an unexplained percentage.
+
+Null also needs meaning. “Unknown,” “not applicable,” “not recorded,”
+“withheld” and “not yet researched” support different conclusions. One empty
+cell cannot safely represent them all.
+
+Structured uncertainty improves search. A user can ask for disputed
+attributions or maps dated only by century. The alternative—hiding doubt in a
+notes field—makes the catalogue look cleaner while making its uncertainty
+impossible to query.
+
+</Section>
+
+<Section id="classify-with-escape-routes" title="Classify with escape routes" rooms={['theatre', 'archive', 'map']}>
+
+A humane classification has escape routes. Records can hold multiple terms,
+retain source language, link broader and narrower concepts, and record who
+applied a description. Users can search synonyms without pretending they are
+identical. Communities represented by the collection can contest harmful or
+obsolete terms without erasing the history of prior cataloguing.
+
+Interfaces should reveal filters as arguments. A facet count is not a fact
+about the world; it is a fact about records matching a field under current
+definitions. Tooltips, data dictionaries and visible zero states help readers
+understand the boundary.
+
+Machine classification raises the same questions at speed. Embeddings can
+create useful neighbourhoods, but similarity depends on training data and
+features. An automated label needs provenance, review status and a path for
+correction. Confidence is not consent.
+
+Classification is cartography because it creates a navigable world of things.
+The ethical catalogue does not refuse to draw. It keeps the legend close,
+preserves the source landscape and lets readers inspect the borders inside the
+system.
+
+</Section>
+
+### Reading trail
+
+- Geoffrey C. Bowker and Susan Leigh Star, _Sorting Things Out_.
+- Michel Foucault, _The Order of Things_.
+- Hope A. Olson, _The Power to Name_.
+- Johanna Drucker, _Graphesis_.

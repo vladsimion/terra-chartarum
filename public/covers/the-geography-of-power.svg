@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">The Geography of Power</title>
+  <desc id="desc">Overlapping civic grids reveal unequal service and jurisdiction.</desc>
+  <rect width="1200" height="630" fill="#0a0806"/>
+  <g fill="none">
+    <path d="M80 80H1120V450H80Z" stroke="#9a6f7f" stroke-width="3"/>
+    <path d="M80 210H1120M80 340H1120M300 80V450M560 80V450M850 80V450" stroke="#e8dec5" stroke-width="2" opacity=".25"/>
+    <path d="M80 410C260 300 380 360 520 190S820 120 1120 230" stroke="#d4b87a" stroke-width="22" opacity=".6"/>
+    <circle cx="340" cy="330" r="80" fill="#9a6f7f" fill-opacity=".24" stroke="#9a6f7f" stroke-width="4"/>
+    <circle cx="810" cy="170" r="110" fill="#9a6f7f" fill-opacity=".12" stroke="#9a6f7f" stroke-width="4"/>
+  </g>
+  <text x="72" y="540" fill="#e8dec5" font-family="serif" font-size="54">The Geography of Power</text>
+  <text x="76" y="582" fill="#9a6f7f" font-family="monospace" font-size="20" letter-spacing="5">AUTHORITY AT STREET LEVEL</text>
+</svg>

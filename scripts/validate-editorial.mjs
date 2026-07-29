@@ -4,6 +4,8 @@ import { URL } from 'node:url';
 
 const ROOT = resolve(import.meta.dirname, '..');
 const DATA_ROOT = resolve(ROOT, 'data/editorial');
+const RELEASE_POLICY = resolve(DATA_ROOT, 'release-policy.json');
+const WAVE_TWO_BACKLOG = resolve(DATA_ROOT, 'wave-2/backlog.json');
 const WAVE_THREE_BACKLOG = resolve(DATA_ROOT, 'wave-3/backlog.json');
 const ROOM_SLUGS = new Set(['earth', 'map', 'city', 'border', 'road', 'archive', 'theatre']);
 const STAGES = [
@@ -308,6 +310,183 @@ function validateWaveThreeBacklog() {
   return errors;
 }
 
+function validateWaveTwoBacklog() {
+  if (!existsSync(WAVE_TWO_BACKLOG)) return [];
+  const backlog = JSON.parse(readFileSync(WAVE_TWO_BACKLOG, 'utf8'));
+  const entries = backlog.entries ?? [];
+  const errors = [];
+  const expectedTickets = [
+    'KAN-228',
+    'KAN-227',
+    'KAN-230',
+    'KAN-226',
+    'KAN-231',
+    'KAN-232',
+    'KAN-233',
+    'KAN-234',
+  ];
+
+  check(backlog.wave === 2, 'wave-2: incorrect wave number', errors);
+  check(backlog.intakeTicket === 'KAN-229', 'wave-2: intake ticket must be KAN-229', errors);
+  check(
+    backlog.verificationTicket === 'KAN-235',
+    'wave-2: verification ticket must be KAN-235',
+    errors,
+  );
+  check(
+    ['in-progress', 'verified'].includes(backlog.status),
+    `wave-2: invalid release status '${backlog.status}'`,
+    errors,
+  );
+  check(entries.length === 8, `wave-2: expected 8 essays; found ${entries.length}`, errors);
+  check(
+    JSON.stringify(entries.map((entry) => entry.waveOrder)) ===
+      JSON.stringify(Array.from({ length: 8 }, (_, index) => index + 1)),
+    'wave-2: waveOrder must be the complete sequence 1–8',
+    errors,
+  );
+  check(
+    JSON.stringify(entries.map((entry) => entry.editorialRef)) ===
+      JSON.stringify(Array.from({ length: 8 }, (_, index) => `TC-10.${index + 1}`)),
+    'wave-2: editorial references must be the canonical TC-10.1–TC-10.8 sequence',
+    errors,
+  );
+  check(
+    JSON.stringify(entries.map((entry) => entry.ticket)) === JSON.stringify(expectedTickets),
+    'wave-2: ticket-to-editorial-order mapping has drifted',
+    errors,
+  );
+  check(
+    new Set(entries.map((entry) => entry.slug)).size === entries.length,
+    'wave-2: duplicate slug',
+    errors,
+  );
+  check(
+    new Set(entries.map((entry) => entry.title)).size === entries.length,
+    'wave-2: duplicate title',
+    errors,
+  );
+
+  for (const entry of entries) {
+    const label = `wave-2/${entry.ticket ?? entry.title}`;
+    check(/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(entry.slug ?? ''), `${label}: invalid slug`, errors);
+    check(ROOM_SLUGS.has(entry.room), `${label}: invalid primary room`, errors);
+    check(
+      (entry.secondaryRooms ?? []).length <= 2 &&
+        (entry.secondaryRooms ?? []).every((room) => ROOM_SLUGS.has(room) && room !== entry.room),
+      `${label}: invalid secondary rooms`,
+      errors,
+    );
+    check(entry.component === 'Editorial', `${label}: Editorial ownership missing`, errors);
+    check(
+      ['AdaptiveTimeline', 'Scrollytelling', 'CompareSlider', 'FragmentLedger'].includes(
+        entry.componentAssignment,
+      ),
+      `${label}: component assignment is missing or unsupported`,
+      errors,
+    );
+    check(
+      (entry.interactivePattern ?? '').length >= 60,
+      `${label}: interactive pattern is not substantive`,
+      errors,
+    );
+    check(
+      (entry.roomRationale ?? '').length >= 100,
+      `${label}: room rationale is not substantive`,
+      errors,
+    );
+    check(
+      ['tracked', 'delivered'].includes(entry.state),
+      `${label}: invalid state '${entry.state}'`,
+      errors,
+    );
+    if (entry.state === 'delivered') {
+      const contentPath = resolve(ROOT, entry.contentPath ?? '');
+      check(existsSync(contentPath), `${label}: delivered content is missing`, errors);
+      if (existsSync(contentPath)) {
+        check(
+          words(readFileSync(contentPath, 'utf8')) >= 700,
+          `${label}: delivered essay is shorter than 700 words`,
+          errors,
+        );
+      }
+    }
+  }
+
+  if (backlog.status === 'verified') {
+    check(
+      entries.every((entry) => entry.state === 'delivered'),
+      'wave-2: verified backlog still contains undelivered essays',
+      errors,
+    );
+  }
+
+  return errors;
+}
+
+function validateReleasePolicy() {
+  const errors = [];
+  check(existsSync(RELEASE_POLICY), 'release-policy: policy file is missing', errors);
+  if (!existsSync(RELEASE_POLICY)) return errors;
+
+  const policy = JSON.parse(readFileSync(RELEASE_POLICY, 'utf8'));
+  check(policy.schemaVersion === 1, 'release-policy: unsupported schema version', errors);
+  check(policy.policyTicket === 'KAN-260', 'release-policy: policy ticket must be KAN-260', errors);
+  check(policy.parentTicket === 'KAN-12', 'release-policy: parent ticket must be KAN-12', errors);
+  check(
+    existsSync(resolve(ROOT, policy.styleGuide ?? '')),
+    'release-policy: style guide does not resolve',
+    errors,
+  );
+  check(
+    existsSync(resolve(ROOT, policy.reviewTemplate ?? '')),
+    'release-policy: review template does not resolve',
+    errors,
+  );
+  const requiredCommands = new Set(policy.requiredCommands ?? []);
+  for (const command of [
+    'npm run editorial:validate',
+    'npm run check',
+    'npm test',
+    'npm run build',
+  ]) {
+    check(
+      requiredCommands.has(command),
+      `release-policy: required command '${command}' missing`,
+      errors,
+    );
+  }
+  check(
+    JSON.stringify(policy.approvalGate?.acceptedDecisions) ===
+      JSON.stringify(['approved', 'approved-with-notes']),
+    'release-policy: approval decisions have drifted',
+    errors,
+  );
+  check(
+    (policy.holdCriteria ?? []).length >= 5,
+    'release-policy: expected at least five hold criteria',
+    errors,
+  );
+  check(
+    (policy.rollbackCriteria ?? []).length >= 3,
+    'release-policy: expected at least three rollback criteria',
+    errors,
+  );
+  for (const criterion of [...(policy.holdCriteria ?? []), ...(policy.rollbackCriteria ?? [])]) {
+    check(
+      Boolean(criterion.id && criterion.condition && (criterion.releaseAction || criterion.action)),
+      'release-policy: incomplete hold or rollback criterion',
+      errors,
+    );
+  }
+  check(
+    (policy.recoveryRule ?? '').length >= 120,
+    'release-policy: recovery rule is not substantive',
+    errors,
+  );
+  return errors;
+}
+
 if (!existsSync(DATA_ROOT)) {
   console.log('Editorial QA: no packages registered.');
   process.exit(0);
@@ -318,7 +497,12 @@ const files = readdirSync(DATA_ROOT, { withFileTypes: true })
   .map((entry) => resolve(DATA_ROOT, entry.name, 'manifest.json'))
   .filter(existsSync);
 
-const errors = [...files.flatMap(validatePackage), ...validateWaveThreeBacklog()];
+const errors = [
+  ...files.flatMap(validatePackage),
+  ...validateReleasePolicy(),
+  ...validateWaveTwoBacklog(),
+  ...validateWaveThreeBacklog(),
+];
 if (errors.length) {
   console.error(`Editorial QA failed (${errors.length}):`);
   for (const error of errors) console.error(`- ${error}`);

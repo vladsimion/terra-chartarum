@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Palimpsest Landscapes</title>
+  <desc id="desc">Several partial surveys overlap without resolving into one final layer.</desc>
+  <rect width="1200" height="630" fill="#0a0806"/>
+  <g fill="none" stroke-linecap="round">
+    <path d="M50 150C280 40 420 300 650 170S940 70 1160 210" stroke="#8c8063" stroke-width="32" opacity=".25"/>
+    <path d="M20 320C250 220 430 470 650 330S930 250 1180 370" stroke="#d4b87a" stroke-width="6" stroke-dasharray="30 12"/>
+    <path d="M100 420L260 270L430 420L610 250L790 390L1040 230" stroke="#e8dec5" stroke-width="3" opacity=".5"/>
+    <path d="M180 80V450M400 80V450M700 80V450M990 80V450" stroke="#8c8063" stroke-width="2" opacity=".4"/>
+  </g>
+  <text x="72" y="540" fill="#e8dec5" font-family="serif" font-size="54">Palimpsest Landscapes</text>
+  <text x="76" y="582" fill="#8c8063" font-family="monospace" font-size="20" letter-spacing="5">THE GROUND KEEPS SEVERAL TIMES</text>
+</svg>

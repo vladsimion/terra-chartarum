@@ -54,6 +54,8 @@ ROUTE_SEQUENCE_CONTRACT = REPO / "data" / "vmn" / "route-sequences.json"
 REFERENCE_ROOT = REPO / "data" / "vmn" / "reference"
 REFERENCE_MANIFEST = REFERENCE_ROOT / "manifest.json"
 QUARTER_REPRESENTATION_CONTRACT = REPO / "data" / "vmn" / "quarter-representations.json"
+CHRONOLOGY_DISCREPANCIES = REPO / "data" / "vmn" / "chronology-discrepancies.csv"
+ATLAS_LINKS_CSV = REPO / "data" / "vmn" / "atlas_links.csv"
 
 # Sanity envelope for every VMN feature: the Mediterranean, Black Sea and the
 # Atlantic approach (Aigues-Mortes, Flanders, London). A bbox outside this window
@@ -419,6 +421,66 @@ def check_route_sequence_contract(errors: list[str]) -> None:
         errors.append("routes: route-sequences.json differs from routes.csv authority rows")
 
 
+def check_chronology_handoff(errors: list[str]) -> None:
+    """Freeze the source-independent route handoff while page checks stay blocked."""
+    _, route_rows = read_csv(ROUTES_CSV)
+
+    if not CHRONOLOGY_DISCREPANCIES.exists():
+        errors.append("chronology: discrepancy ledger is missing")
+        return
+
+    _, discrepancy_rows = read_csv(CHRONOLOGY_DISCREPANCIES)
+    expected = {
+        (row["route_id"].strip(), field): row[field].strip()
+        for row in route_rows
+        for field in ("start_date", "end_date")
+    }
+    actual = {}
+    for row in discrepancy_rows:
+        key = (row["route_id"].strip(), row["event_field"].strip())
+        if key in actual:
+            errors.append(f"chronology: duplicate discrepancy row {key}")
+        actual[key] = row["spec_value"].strip()
+        if row["event_id"].strip() != f"{key[0]}_{key[1].removesuffix('_date')}":
+            errors.append(f"chronology: unstable event id '{row['event_id']}'")
+        if row["lane_value"].strip() or row["oconnell_value"].strip():
+            errors.append(
+                f"chronology: '{row['event_id']}' invents an unverified anchor-source value"
+            )
+        if row["resolution"].strip() != "retain_spec_provisionally":
+            errors.append(
+                f"chronology: '{row['event_id']}' must retain the spec provisionally"
+            )
+        if row["status"].strip() != "blocked_page_verification":
+            errors.append(
+                f"chronology: '{row['event_id']}' must remain blocked_page_verification"
+            )
+        if not row["notes"].strip():
+            errors.append(f"chronology: '{row['event_id']}' lacks an editorial note")
+
+    if actual != expected:
+        errors.append("chronology: discrepancy ledger does not cover every route boundary")
+
+    _, atlas_links = read_csv(ATLAS_LINKS_CSV)
+    first_flip = [
+        row for row in atlas_links if row["beat_id"].strip() == "rotta_spine"
+    ]
+    if len(first_flip) != 1:
+        errors.append("atlas flip: expected exactly one rotta_spine link")
+        return
+    flip = first_flip[0]
+    route_ids = {row["route_id"].strip() for row in route_rows}
+    layers = set(flip["layer_ids"].strip().split("|"))
+    if (
+        flip["target_type"].strip() != "route"
+        or flip["target_id"].strip() not in route_ids
+        or flip["year"].strip() != "1450"
+        or layers != {"venetian-ports", "venetian-routes"}
+        or flip["display_mode"].strip() != "highlight"
+    ):
+        errors.append("atlas flip: rotta_spine no longer matches the first route presentation")
+
+
 def check_reference_plate_contract(errors: list[str]) -> None:
     """Require every possession territory to resolve to an inspectable annotation."""
     import json
@@ -546,6 +608,7 @@ def main() -> int:
     errors: list[str] = validate_port_contract(port_rows)
     check_port_projection(port_rows, errors)
     check_route_sequence_contract(errors)
+    check_chronology_handoff(errors)
     check_reference_plate_contract(errors)
     check_quarter_representation_contract(port_rows, source_keys, errors)
     for layer in LAYERS:

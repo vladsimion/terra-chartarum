@@ -4,6 +4,7 @@ import { getEssays } from '../../lib/registry';
 import RoomBadge from '../../components/RoomBadge.astro';
 import RoomPath from '../../components/RoomPath.astro';
 import RelatedByRoom from '../../components/RelatedByRoom.astro';
+import MetaLens from '../../components/MetaLens.astro';
 import { getRoomPath, getRelatedByRoom } from '../../lib/room-content';
 
 export async function getStaticPaths() {
@@ -93,6 +94,12 @@ const hashForwardScript = `(function () {
           </figure>
         )}
         <Content />
+        <MetaLens
+          slug={essay.slug}
+          title={data.title}
+          lenses={data.lenses}
+          scores={data.metaScores}
+        />
       </article>
     )
   }

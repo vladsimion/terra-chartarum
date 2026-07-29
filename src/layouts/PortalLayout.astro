@@ -2,6 +2,7 @@
 import { ViewTransitions } from 'astro:transitions';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import Analytics from '../components/Analytics.astro';
 // Self-hosted fonts (KAN-53 / ATLAS-602): bundled same-origin woff2 via
 // @fontsource, replacing the render-blocking Google Fonts CDN. Variable faces
 // cover every weight in one file each; italic is only pulled for the body
@@ -76,6 +77,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <link rel="preload" href={ibmPlexMonoLatinUrl} as="font" type="font/woff2" crossorigin />
 
     <ViewTransitions />
+    <Analytics />
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>

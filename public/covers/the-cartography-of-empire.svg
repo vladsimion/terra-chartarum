@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">The Cartography of Empire</title>
+  <desc id="desc">Administrative sheets divide an irregular field into inherited jurisdictions.</desc>
+  <rect width="1200" height="630" fill="#0a0806"/>
+  <g fill="#a66f5e" fill-opacity=".12" stroke="#a66f5e" stroke-width="3">
+    <path d="M70 70H500L455 270L535 500H70Z"/>
+    <path d="M500 70H820L900 230L720 410L535 500L455 270Z"/>
+    <path d="M820 70H1130V500H535L720 410L900 230Z"/>
+  </g>
+  <g fill="#e8dec5" font-family="serif" font-size="22" opacity=".75">
+    <text x="210" y="250">PROVINCIA I</text><text x="585" y="235">PROVINCIA II</text><text x="890" y="330">PROVINCIA III</text>
+  </g>
+  <text x="72" y="555" fill="#e8dec5" font-family="serif" font-size="54">The Cartography of Empire</text>
+  <text x="76" y="595" fill="#a66f5e" font-family="monospace" font-size="20" letter-spacing="5">THE ADMINISTRATIVE SHEET</text>
+</svg>

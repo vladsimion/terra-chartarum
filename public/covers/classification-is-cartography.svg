@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Classification Is Cartography</title>
+  <desc id="desc">Objects move among category fields while uncertain fragments remain at the borders.</desc>
+  <rect width="1200" height="630" fill="#0a0806"/>
+  <g fill="#8775a6" fill-opacity=".12" stroke="#8775a6" stroke-width="3">
+    <rect x="80" y="80" width="300" height="330"/><rect x="450" y="80" width="300" height="330"/><rect x="820" y="80" width="300" height="330"/>
+  </g>
+  <g fill="#d4b87a">
+    <circle cx="190" cy="180" r="18"/><circle cx="310" cy="310" r="28"/><circle cx="520" cy="250" r="15"/><circle cx="680" cy="155" r="24"/><circle cx="910" cy="330" r="20"/>
+  </g>
+  <path d="M380 260H450M750 220H820" stroke="#e8dec5" stroke-width="3" stroke-dasharray="12 10"/>
+  <text x="72" y="540" fill="#e8dec5" font-family="serif" font-size="54">Classification Is Cartography</text>
+  <text x="76" y="582" fill="#8775a6" font-family="monospace" font-size="20" letter-spacing="5">THE BORDER INSIDE THE CATALOGUE</text>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Invisible Maps of Migration</title>
+  <desc id="desc">Incomplete routes cross a border while archival traces appear as points.</desc>
+  <rect width="1200" height="630" fill="#0a0806"/>
+  <path d="M590 40V470" stroke="#a66f5e" stroke-width="5" stroke-dasharray="18 12"/>
+  <g fill="none" stroke="#7186a8" stroke-linecap="round">
+    <path d="M80 360C260 120 430 480 650 220S930 360 1120 110" stroke-width="10"/>
+    <path d="M100 180C320 310 440 110 690 360S950 160 1100 330" stroke-width="4" stroke-dasharray="14 18" opacity=".7"/>
+  </g>
+  <g fill="#d4b87a"><circle cx="80" cy="360" r="12"/><circle cx="650" cy="220" r="12"/><circle cx="1120" cy="110" r="12"/></g>
+  <text x="72" y="540" fill="#e8dec5" font-family="serif" font-size="54">Invisible Maps of Migration</text>
+  <text x="76" y="582" fill="#7186a8" font-family="monospace" font-size="20" letter-spacing="5">THE JOURNEY AND THE RECORD</text>
+</svg>

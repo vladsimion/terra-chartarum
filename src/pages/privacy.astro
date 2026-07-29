@@ -1,0 +1,75 @@
+---
+import PortalLayout from '../layouts/PortalLayout.astro';
+---
+
+<PortalLayout
+  title="Privacy"
+  description="How Terra Chartarum handles analytics, cookies, personal information, and external collection links."
+>
+  <section class="shell prose">
+    <p class="eyebrow">Privacy</p>
+    <h1>Read without a profile</h1>
+    <p>
+      Terra Chartarum is a static publication. It has no reader accounts, comments, advertising
+      pixels, behavioural profiles, or forms that collect personal information.
+    </p>
+
+    <h2>Analytics</h2>
+    <p>
+      Analytics is disabled unless the production build is explicitly configured with a
+      site-specific Plausible Analytics script. When enabled, the integration sends aggregate
+      pageviews only. Optional outbound-link, file-download, form, custom-property, hash-route and
+      localhost measurements are disabled in the site code.
+    </p>
+    <p>
+      Plausible states that its service does not use cookies or persistent identifiers, does not
+      collect personal data, and processes visitor data in the European Union. See Plausible's
+      <a href="https://plausible.io/privacy-focused-web-analytics">privacy overview</a>,
+      <a href="https://plausible.io/privacy">privacy policy</a>, and
+      <a href="https://plausible.io/compliance">compliance documentation</a>.
+    </p>
+    <p>
+      On that selected configuration, this site does not display an analytics cookie-consent banner
+      because it does not set analytics cookies. If the provider, measurements, storage, or legal
+      context changes, analytics must be held until this notice and the consent decision are
+      reviewed again.
+    </p>
+
+    <h2>External links and media</h2>
+    <p>
+      Essays link to libraries, archives, map collections, scholarship, and source records.
+      Following an external link takes you to another organisation with its own privacy practices.
+      The portal's production images and fonts are served from the site itself; a catalogue record
+      may preserve an external source URL for attribution without loading it automatically.
+    </p>
+
+    <h2>Operational logs</h2>
+    <p>
+      The hosting provider may process ordinary request and security logs needed to deliver and
+      protect the site. Those platform logs are separate from the optional Plausible integration
+      described above.
+    </p>
+
+    <h2>Changes</h2>
+    <p>
+      Analytics remains a reversible feature. Removing the three public build variables removes the
+      script from every generated page. Material changes to collection or tracking require an
+      updated privacy review before release.
+    </p>
+  </section>
+</PortalLayout>
+
+<style>
+  .prose {
+    max-width: 72ch;
+    padding-block: clamp(2.5rem, 6vw, 4rem);
+  }
+  .prose h1 {
+    margin: 0.3rem 0 1.25rem;
+    font-size: var(--step-4);
+  }
+  .prose h2 {
+    margin: 2.5rem 0 1rem;
+    font-size: var(--step-2);
+  }
+</style>

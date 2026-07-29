@@ -1,0 +1,226 @@
+---
+title: Projection and Perspective
+subtitle: Every View Has a Position
+summary: >-
+  Projection is not a contest for the least distorted world. It is a declared
+  choice about which spatial relationships should survive when a curved Earth
+  becomes a flat, situated image.
+cover: /covers/projection-and-perspective.svg
+status: native
+eras: [Ancient, Renaissance, Modern, Contemporary]
+regions: [Global]
+lenses: [Projection, Perspective, Distortion, Scale, Viewpoint]
+yearFrom: 150
+yearTo: 2018
+mapCount: 8
+readingMinutes: 8
+accent: '#668ea0'
+order: 12
+featured: false
+room: map
+secondaryRooms: [earth, theatre]
+sections:
+  - id: flattening-is-a-contract
+    title: Flattening is a contract
+    room: map
+    secondaryRooms: [earth]
+  - id: mercator-keeps-a-bearing
+    title: Mercator keeps a bearing
+    room: road
+    secondaryRooms: [map]
+  - id: equal-area-changes-question
+    title: Equal area changes the question
+    room: earth
+    secondaryRooms: [border]
+  - id: perspective-has-a-viewer
+    title: Perspective has a viewer
+    room: theatre
+    secondaryRooms: [city]
+  - id: choose-and-disclose
+    title: Choose and disclose
+    room: map
+    secondaryRooms: [theatre]
+publishedAt: '2026-07-29'
+updatedAt: '2026-07-29'
+metaScores:
+  measure: 0.98
+  witness: 0.66
+  use: 0.88
+  cosmos: 0.7
+  power: 0.76
+  silence: 0.72
+---
+
+import Section from '../../components/Section.astro';
+import AdaptiveTimeline from '../../components/islands/AdaptiveTimeline.astro';
+
+<p class="essay-kicker">The Map · The Earth · The Theatre</p>
+
+# Projection and Perspective
+
+## Every view has a position
+
+The most common lesson about map projections is also the least helpful: every
+map is distorted. True, but incomplete. A flat map cannot preserve every
+distance, direction, area and shape on a curved Earth. The useful question is
+not how to escape distortion. It is which relations a projection chooses to
+preserve, where its errors concentrate, and whether those choices fit the task.
+
+Projection turns geometry into a contract. A conformal map preserves local
+angles at the cost of area. An equal-area map preserves relative surface at the
+cost of local shape. An equidistant map keeps selected distances, not all
+distances everywhere. An azimuthal map can preserve direction from a chosen
+centre. Each makes a promise with conditions.
+
+Perspective adds another layer. Maps often imply a view from nowhere, but every
+world image has an orientation, centre, extent and scale. Even a globe must be
+seen from a position. The view is not a flaw; the hidden view is.
+
+<Section id="flattening-is-a-contract" title="Flattening is a contract" rooms={['map', 'earth']}>
+
+Imagine cutting an orange peel and pressing it flat. Tears and overlaps make
+the problem visible. Mathematical projection replaces the torn peel with a
+systematic transformation. The result is more predictable, not lossless.
+
+Ptolemy's _Geography_ described methods for representing the inhabited world
+with a graticule. Renaissance printed editions made those instructions newly
+repeatable. Later projection families formalised different constraints as
+navigation, surveying, thematic mapping and global comparison asked different
+questions.
+
+The chronology is not a march from primitive to correct. Innovations remain
+useful because tasks differ.
+
+<AdaptiveTimeline
+  from={100}
+  to={2020}
+  compress={true}
+  ticks={[150, 1000, 1500, 1800, 2020]}
+  caption="Dates mark influential formulations and adoptions. No projection makes its predecessors universally obsolete."
+  events={[
+    { year: 150, label: 'Ptolemaic methods' },
+    { year: 1569, label: 'Mercator world map' },
+    { year: 1772, label: 'Lambert conformal conic' },
+    { year: 1805, label: 'Mollweide equal-area' },
+    { year: 1919, label: 'Goode interrupted' },
+    { year: 1988, label: 'Robinson adoption' },
+    { year: 2018, label: 'Equal Earth' },
+  ]}
+/>
+
+The map reader should therefore look for the scope of the promise. “Preserves
+area” means a thematic comparison of regions can be proportional; it does not
+mean coastlines retain familiar shapes. “Preserves angles” supports local
+bearing relations; it does not make a world map a transparent picture of
+continental size.
+
+</Section>
+
+<Section id="mercator-keeps-a-bearing" title="Mercator keeps a bearing" rooms={['road', 'map']}>
+
+Gerardus Mercator's 1569 projection makes rhumb lines—courses of constant
+compass bearing—straight. That property gave the map a powerful navigational
+logic. A mariner could plot a bearing as a line on the chart, though real
+navigation still depended on instruments, observation, corrections and local
+knowledge.
+
+At world scale, Mercator greatly enlarges high latitudes. The familiar comparison
+between Greenland and Africa exposes this area distortion: their apparent sizes
+approach one another on many Mercator maps even though Africa is vastly larger.
+The observation is important, but the moral is often simplified into “Mercator
+is bad.”
+
+A projection suited to one task can be irresponsible for another. Straight
+rhumb lines do not justify using Mercator for a population cartogram or a
+classroom comparison of continental area. Conversely, area distortion does not
+erase its mathematical purpose. Critique becomes stronger when it connects a
+property to a use.
+
+Web maps revived a spherical form of Mercator because it supports a convenient
+square, tiled, multi-zoom system. At neighbourhood scale its local angle
+behaviour is useful; at a zoomed-out world view its area politics return.
+Software can switch projections or disclose distortion. Familiar infrastructure
+is a choice, not an alibi.
+
+</Section>
+
+<Section id="equal-area-changes-question" title="Equal area changes the question" rooms={['earth', 'border']}>
+
+Equal-area projections change what comparison feels natural. Regions occupy
+surface in correct proportion to one another, making maps of land cover,
+population density or ecological change less likely to grant visual weight
+through projection inflation.
+
+But area fidelity does not settle political interpretation. A choropleth still
+uses chosen boundaries. Large, sparsely populated units can dominate the page.
+A national average can conceal local variation. Colour classes can exaggerate
+thresholds. Projection solves one geometric problem while leaving statistical
+and administrative choices intact.
+
+The Peters controversy made these questions public in the late twentieth
+century. Arno Peters promoted an equal-area projection as a corrective to
+Eurocentric world maps, though the underlying cylindrical equal-area family
+predated his version. The debate mattered because it revealed that projection
+choice carries cultural consequence. It also showed how easily a technical
+property can be marketed as a complete ethical solution.
+
+There is no socially neutral geometry, but geometry is not reducible to
+ideology. The ethical practice is to name both: the measurable property and the
+institutional use.
+
+</Section>
+
+<Section id="perspective-has-a-viewer" title="Perspective has a viewer" rooms={['theatre', 'city']}>
+
+Projection is usually described as a transformation of the Earth. Perspective
+asks where the viewer stands. A bird's-eye city view combines elevation,
+oblique sight and selective enlargement so streets and monuments can be seen
+together. It may resemble a view from the air while exceeding what any single
+eye could observe.
+
+The viewpoint produces authority. From above, parcels align, routes connect and
+crowds become patterns. The city appears available to inspection. Yet oblique
+views can also foreground civic identity, giving towers, walls and sacred
+buildings more space than strict geometry would allow.
+
+Satellite imagery seems to complete the view from above, but it too is assembled:
+sensor bands, orbital paths, rectification, mosaicking, dates and cloud removal
+shape the image. “Perspective from space” is still a production pipeline.
+
+The Theatre makes this visible. A map stages a world for a viewer. North-up,
+centred longitude, crop and zoom decide where the audience is placed. Changing
+the centre does not merely move objects; it interrupts the habit by which one
+view becomes the world.
+
+</Section>
+
+<Section id="choose-and-disclose" title="Choose and disclose" rooms={['map', 'theatre']}>
+
+Good projection practice begins with a sentence: this map needs to preserve
+_what_, for _whom_, at _which scale_? Navigation, cadastral measurement,
+continental comparison and polar climate analysis will produce different
+answers.
+
+The next sentence names sacrifice. A conformal web map should warn against
+world-area comparison. An equal-area map should prepare readers for unfamiliar
+shapes. A centred azimuthal view should identify its privileged point. A local
+projection should publish its valid extent.
+
+Interfaces can turn disclosure into exploration. A projection switch should not
+offer a decorative carousel of globes. It should state what changes: area,
+angle, distance, direction, interruption and centre. Reduced-motion and static
+readers need the same explanation in prose.
+
+The goal is not a projection without perspective. It is a map honest enough to
+show its position. Distortion becomes informative when a reader can connect the
+shape on the page to the contract that produced it.
+
+</Section>
+
+### Reading trail
+
+- John P. Snyder, _Flattening the Earth_.
+- Mark Monmonier, _Rhumb Lines and Map Wars_.
+- Denis Wood, _The Power of Maps_.
+- Bojan Šavrič, Tom Patterson and Bernhard Jenny, “The Equal Earth Map
+  Projection.”

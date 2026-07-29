@@ -283,7 +283,7 @@ test.describe('flow: Cities Remember publication', () => {
     await page.keyboard.press('Home');
     await expect(comparison).toHaveAttribute('aria-valuenow', '0');
 
-    const opacity = page.getByRole('slider', { name: 'Historical map opacity' });
+    const opacity = page.getByRole('slider', { name: 'Historical layer amount' });
     await opacity.focus();
     await page.keyboard.press('ArrowRight');
     await expect(page.locator('.cmo-status')).toHaveText('Historical layer at 60% opacity.');
@@ -299,7 +299,7 @@ test.describe('flow: Cities Remember publication', () => {
       'href',
       '/rooms/city/',
     );
-    await expect(roomPath).toContainText('1 of 1');
+    await expect(roomPath).toContainText('1 of 2');
 
     for (const [name, href] of [
       ['The City', '/rooms/city/'],

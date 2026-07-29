@@ -1,0 +1,346 @@
+---
+import type { Essay } from '../lib/registry';
+import { CANONICAL_DIMENSIONS } from '../content/config';
+import { DIMENSION_META } from '../lib/registry';
+import { buildMetaLensComparisonEntries } from '../lib/meta-lens-comparison';
+import RadarChart from './islands/RadarChart.astro';
+
+interface Props {
+  essays: Essay[];
+}
+
+const entries = buildMetaLensComparisonEntries(
+  Astro.props.essays.map(({ slug, data }) => ({
+    slug,
+    title: data.title,
+    lenses: data.lenses,
+    metaScores: data.metaScores,
+    color: data.accent,
+  })),
+);
+const first = entries.find(({ slug }) => slug === 'cartography') ?? entries[0];
+const second =
+  entries.find(({ slug }) => slug === 'classification-is-cartography') ??
+  entries.find(({ slug }) => slug !== first.slug) ??
+  entries[0];
+const axes = CANONICAL_DIMENSIONS.map((dimension) => DIMENSION_META[dimension].label);
+const payload = JSON.stringify({ axes, entries }).replace(/</g, '\\u003c');
+---
+
+<section class="lens-explorer" data-meta-lens-explorer aria-labelledby="cross-essay-lens">
+  <header class="lens-head">
+    <div>
+      <p class="eyebrow">Cross-essay radar</p>
+      <h2 id="cross-essay-lens">Compare arguments, then inspect their vocabularies</h2>
+    </div>
+    <div class="lens-mode" role="group" aria-label="Lens view">
+      <button type="button" data-lens-mode="meta" aria-pressed="true">Meta-lens</button>
+      <button type="button" data-lens-mode="native" aria-pressed="false">Native lenses</button>
+    </div>
+  </header>
+
+  <p class="lens-caveat">
+    The six shared scores are editorial discovery aids normalized from 0–1. They make a visual
+    comparison possible; they do not make different essays, sources, or native concepts naturally
+    commensurable.
+  </p>
+
+  <div class="lens-selectors">
+    <label>
+      First essay
+      <select data-lens-select="first">
+        {
+          entries.map((entry) => (
+            <option value={entry.slug} selected={entry.slug === first.slug}>
+              {entry.title}
+            </option>
+          ))
+        }
+      </select>
+    </label>
+    <label>
+      Second essay
+      <select data-lens-select="second">
+        {
+          entries.map((entry) => (
+            <option value={entry.slug} selected={entry.slug === second.slug}>
+              {entry.title}
+            </option>
+          ))
+        }
+      </select>
+    </label>
+  </div>
+
+  <div data-lens-view="meta">
+    <RadarChart
+      axes={axes}
+      series={[
+        { label: first.title, values: first.values, color: first.color },
+        { label: second.title, values: second.values, color: second.color },
+      ]}
+      interactive
+      caption="Compare the silhouette, then switch to Native lenses to see the terms that were mapped into it."
+    />
+  </div>
+
+  <div class="native-view" data-lens-view="native" hidden>
+    <article data-native-card="first"></article>
+    <article data-native-card="second"></article>
+  </div>
+
+  <script type="application/json" data-lens-payload set:html={payload} />
+</section>
+
+<script>
+  interface ComparisonEntry {
+    slug: string;
+    title: string;
+    color: string;
+    values: number[];
+    nativeAxes: Array<{ axis: string; mappings: string[] }>;
+  }
+
+  function initMetaLensExplorer(root: HTMLElement) {
+    if (root.dataset.ready) return;
+    root.dataset.ready = '1';
+
+    const raw = root.querySelector<HTMLElement>('[data-lens-payload]')?.textContent;
+    if (!raw) return;
+    const payload = JSON.parse(raw) as { axes: string[]; entries: ComparisonEntry[] };
+    const bySlug = new Map(payload.entries.map((entry) => [entry.slug, entry]));
+    const selects = {
+      first: root.querySelector<HTMLSelectElement>('[data-lens-select="first"]')!,
+      second: root.querySelector<HTMLSelectElement>('[data-lens-select="second"]')!,
+    };
+    const metaView = root.querySelector<HTMLElement>('[data-lens-view="meta"]')!;
+    const nativeView = root.querySelector<HTMLElement>('[data-lens-view="native"]')!;
+    const modeButtons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-lens-mode]'));
+
+    const point = (index: number, value: number) => {
+      const size = 340;
+      const center = size / 2;
+      const radius = size / 2 - size * 0.18;
+      const angle = (-90 + (index * 360) / payload.axes.length) * (Math.PI / 180);
+      return {
+        x: center + radius * Math.max(0, Math.min(1, value)) * Math.cos(angle),
+        y: center + radius * Math.max(0, Math.min(1, value)) * Math.sin(angle),
+      };
+    };
+
+    const renderNativeCard = (slot: 'first' | 'second', entry: ComparisonEntry) => {
+      const card = root.querySelector<HTMLElement>(`[data-native-card="${slot}"]`)!;
+      card.replaceChildren();
+      const heading = document.createElement('h3');
+      heading.textContent = entry.title;
+      const list = document.createElement('dl');
+      for (const nativeAxis of entry.nativeAxes) {
+        const row = document.createElement('div');
+        const term = document.createElement('dt');
+        term.textContent = nativeAxis.axis;
+        const mapping = document.createElement('dd');
+        mapping.textContent = nativeAxis.mappings.join(' · ');
+        row.append(term, mapping);
+        list.append(row);
+      }
+      card.append(heading, list);
+    };
+
+    const updateOptions = () => {
+      for (const option of selects.first.options)
+        option.disabled = option.value === selects.second.value;
+      for (const option of selects.second.options)
+        option.disabled = option.value === selects.first.value;
+    };
+
+    const render = () => {
+      const chosen = [bySlug.get(selects.first.value), bySlug.get(selects.second.value)].filter(
+        (entry): entry is ComparisonEntry => Boolean(entry),
+      );
+      if (chosen.length !== 2) return;
+
+      const groups = Array.from(metaView.querySelectorAll<SVGGElement>('.series'));
+      const legendButtons = Array.from(metaView.querySelectorAll<HTMLButtonElement>('.legend-btn'));
+      chosen.forEach((entry, seriesIndex) => {
+        const points = entry.values.map(point);
+        const group = groups[seriesIndex];
+        group?.style.setProperty('--c', entry.color);
+        group
+          ?.querySelector<SVGPolygonElement>('.area')
+          ?.setAttribute(
+            'points',
+            points.map(({ x, y }) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' '),
+          );
+        group?.querySelectorAll<SVGCircleElement>('.node').forEach((node, index) => {
+          node.setAttribute('cx', points[index].x.toFixed(1));
+          node.setAttribute('cy', points[index].y.toFixed(1));
+        });
+        const legendButton = legendButtons[seriesIndex];
+        legendButton?.parentElement?.style.setProperty('--c', entry.color);
+        if (legendButton?.lastChild) legendButton.lastChild.textContent = entry.title;
+        legendButton?.setAttribute('aria-label', `Emphasize ${entry.title}`);
+      });
+
+      metaView
+        .querySelector('svg')
+        ?.setAttribute(
+          'aria-label',
+          `Radar chart across ${payload.axes.join(', ')}. ${chosen
+            .map(
+              (entry) =>
+                `${entry.title}: ${entry.values
+                  .map((value, index) => `${payload.axes[index]} ${(value * 100).toFixed(0)}%`)
+                  .join(', ')}`,
+            )
+            .join('. ')}`,
+        );
+      renderNativeCard('first', chosen[0]);
+      renderNativeCard('second', chosen[1]);
+      updateOptions();
+    };
+
+    for (const [slot, select] of Object.entries(selects)) {
+      select.addEventListener('change', () => {
+        const other = slot === 'first' ? selects.second : selects.first;
+        if (select.value === other.value) {
+          other.value =
+            payload.entries.find(({ slug }) => slug !== select.value)?.slug ?? other.value;
+        }
+        render();
+      });
+    }
+    for (const button of modeButtons) {
+      button.addEventListener('click', () => {
+        const showMeta = button.dataset.lensMode === 'meta';
+        metaView.hidden = !showMeta;
+        nativeView.hidden = showMeta;
+        for (const candidate of modeButtons) {
+          candidate.setAttribute(
+            'aria-pressed',
+            String(candidate.dataset.lensMode === button.dataset.lensMode),
+          );
+        }
+      });
+    }
+    render();
+  }
+
+  const boot = () =>
+    document
+      .querySelectorAll<HTMLElement>('[data-meta-lens-explorer]')
+      .forEach(initMetaLensExplorer);
+  boot();
+  document.addEventListener('astro:page-load', boot);
+</script>
+
+<style>
+  .lens-explorer {
+    display: grid;
+    gap: 1rem;
+    margin-top: 3.5rem;
+    padding: clamp(1.2rem, 4vw, 2rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+  }
+  .lens-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .lens-head h2 {
+    margin: 0.25rem 0 0;
+    font-size: var(--step-2);
+  }
+  .lens-mode {
+    display: flex;
+    gap: 0.35rem;
+  }
+  .lens-mode button,
+  select {
+    border: 1px solid var(--line);
+    border-radius: 0.35rem;
+    color: var(--ink);
+    background: var(--canvas);
+    font: 0.72rem/1.4 var(--font-mono);
+  }
+  .lens-mode button {
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+  }
+  .lens-mode button[aria-pressed='true'] {
+    border-color: var(--gold);
+    color: var(--canvas);
+    background: var(--gold);
+  }
+  .lens-caveat {
+    max-width: var(--prose-max);
+    margin: 0;
+    color: var(--ink-muted);
+  }
+  .lens-selectors {
+    display: grid;
+    gap: 0.8rem;
+  }
+  .lens-selectors label {
+    display: grid;
+    gap: 0.3rem;
+    color: var(--ink-muted);
+    font: 0.68rem/1.4 var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  select {
+    width: 100%;
+    padding: 0.55rem 2rem 0.55rem 0.65rem;
+    text-transform: none;
+  }
+  button:focus-visible,
+  select:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+  }
+  .native-view {
+    display: grid;
+    gap: 1rem;
+  }
+  .native-view[hidden] {
+    display: none;
+  }
+  .native-view article {
+    padding: 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--canvas);
+  }
+  .native-view h3 {
+    margin: 0 0 0.8rem;
+  }
+  .native-view dl {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+  }
+  .native-view dl div {
+    display: grid;
+    grid-template-columns: minmax(7rem, 0.7fr) minmax(0, 1.3fr);
+    gap: 0.75rem;
+  }
+  .native-view dt {
+    color: var(--ink);
+    font-family: var(--font-display);
+  }
+  .native-view dd {
+    margin: 0;
+    color: var(--ink-muted);
+    font: 0.7rem/1.5 var(--font-mono);
+  }
+  @media (min-width: 48rem) {
+    .lens-selectors,
+    .native-view {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

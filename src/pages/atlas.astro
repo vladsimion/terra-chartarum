@@ -1,6 +1,7 @@
 ---
 import PortalLayout from '../layouts/PortalLayout.astro';
 import AtlasMap from '../components/islands/AtlasMap.astro';
+import MetaLensExplorer from '../components/MetaLensExplorer.astro';
 import { getEssays, formatYear } from '../lib/registry';
 
 const essays = await getEssays();
@@ -44,6 +45,8 @@ const bars = essays.map((e) => {
       <a href="/embeds/vmn-network/">Explore the VMN route and commodity network →</a>
     </p>
     <AtlasMap />
+
+    <MetaLensExplorer essays={essays} />
 
     <h2 class="section-h section-h--spaced">One timeline, every essay</h2>
     <div class="timeline" role="group" aria-label="Timeline of essays across cartographic history">

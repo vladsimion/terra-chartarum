@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">The Shape of a Civilization</title>
+  <desc id="desc">Layered river, road and settlement forms refuse a single territorial outline.</desc>
+  <rect width="1200" height="630" fill="#0a0806"/>
+  <g fill="none" stroke-linecap="round">
+    <path d="M40 380 C220 180 340 520 520 300 S860 110 1160 330" stroke="#7d9b71" stroke-width="26" opacity=".35"/>
+    <path d="M10 470 C260 250 430 560 650 340 S980 260 1210 160" stroke="#d4b87a" stroke-width="5"/>
+    <path d="M160 130 L310 250 L480 170 L660 290 L840 150 L1040 260" stroke="#e8dec5" stroke-width="2" stroke-dasharray="12 18" opacity=".6"/>
+  </g>
+  <g fill="#d4b87a">
+    <circle cx="310" cy="250" r="12"/><circle cx="480" cy="170" r="8"/><circle cx="660" cy="290" r="15"/><circle cx="840" cy="150" r="9"/>
+  </g>
+  <text x="72" y="545" fill="#e8dec5" font-family="serif" font-size="54">The Shape of a Civilization</text>
+  <text x="76" y="585" fill="#7d9b71" font-family="monospace" font-size="20" letter-spacing="5">GROUND BEFORE TERRITORY</text>
+</svg>
