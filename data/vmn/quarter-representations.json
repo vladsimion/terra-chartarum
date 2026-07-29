@@ -10,9 +10,16 @@
       "representation": "port_only",
       "validFrom": "1082-05-01",
       "validTo": "1453-05-29",
-      "sourceKeys": ["LANE1973"],
+      "sourceKeys": [
+        "LANE1973:p68",
+        "LANE1973:p75",
+        "LANE1973:p348",
+        "LANE1973:chronology",
+        "OCONNELL2009:p18"
+      ],
       "decisionTicket": "KAN-179",
-      "rationale": "The quarter changed jurisdiction and extent across three authority phases, while the available sources do not establish a parcel boundary precise enough for a polygon. The phased point records preserve those changes without implying cadastral certainty."
+      "rationale": "The quarter changed jurisdiction and extent across three authority phases, while the available sources do not establish a parcel boundary precise enough for a polygon. The phased point records preserve those changes without implying cadastral certainty.",
+      "chronologyNote": "KAN-154 page verification: the 1082 Golden Bull granting commercial privileges in return for naval aid against the Normans is dated in Lane's Chronology and described at p68; the 1204 reaffirmation and extension over the whole Empire is at p68 with the partition at p43 and O'Connell p18; Michael Palaiologos retook the city in July 1261 (Lane p75); the quarter ends with the fall of the city in 1453 (Lane Chronology; p348). Day-level boundaries are editorial."
     },
     {
       "id": "tana_fondaco",
@@ -21,9 +28,10 @@
       "representation": "port_only",
       "validFrom": "1332-01-01",
       "validTo": "1475-01-01",
-      "sourceKeys": ["LANE1973", "SHEPHERD1911"],
+      "sourceKeys": ["LANE1973:p129", "LANE1973:p131", "SHEPHERD1911"],
       "decisionTicket": "KAN-178",
-      "rationale": "Tana was a trading post under Golden Horde suzerainty, not a territorial possession. A port-authority point communicates presence and chronology without turning the fondaco into a sovereign enclave."
+      "rationale": "Tana was a trading post under Golden Horde suzerainty, not a territorial possession. A port-authority point communicates presence and chronology without turning the fondaco into a sovereign enclave.",
+      "chronologyNote": "KAN-154 page verification: Lane dates the Venetian galley detachment to Tana to 1322 and the Black Sea build-up to the 1320s and 1330s (p129); a riot closed the port for some years after 1343 (p131). Neither anchor dates a fondaco beginning in 1332 or ending in 1475 — the window is retained as a documented editorial envelope."
     },
     {
       "id": "trebizond_quarter",
@@ -32,9 +40,11 @@
       "representation": "port_only",
       "validFrom": "1204-01-01",
       "validTo": "1461-08-15",
-      "sourceKeys": ["LANE1973", "SHEPHERD1911"],
+      "sourceKeys": ["LANE1973:p129", "SHEPHERD1911"],
       "decisionTicket": "KAN-180",
-      "rationale": "The evidence supports a Venetian commercial presence inside the Empire of Trebizond but not a stable, surveyable quarter boundary. The foreign-port authority record is therefore the published representation."
+      "rationale": "The evidence supports a Venetian commercial presence inside the Empire of Trebizond but not a stable, surveyable quarter boundary. The foreign-port authority record is therefore the published representation.",
+      "chronologyNote": "KAN-154 page verification and documented discrepancy: Lane dates the large fortified Venetian quarter at Trebizond to after the 1319 commercial treaty with its emperor (p129) — not to the 1204 partition that this record's validFrom asserts. The 1204 start is retained only as the outer envelope of Venetian commercial presence; neither anchor dates the 1461 end at page level."
     }
-  ]
+  ],
+  "chronologyStatus": "page_level_verified_KAN_154"
 }

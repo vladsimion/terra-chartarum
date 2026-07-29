@@ -58,7 +58,7 @@ describe('VMN compiled datasets', () => {
       features.some(
         (feature) =>
           feature.properties?.port_id === 'negroponte' &&
-          feature.properties?.valid_from === 1209 &&
+          feature.properties?.valid_from === 1211 &&
           feature.properties?.status === 'subject',
       ),
     ).toBe(true);

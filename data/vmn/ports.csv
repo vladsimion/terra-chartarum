@@ -1,22 +1,22 @@
 port_id,name_historic,name_modern,name_local,region,lat,lon,status,start_date,end_date,polity_id,source_keys,pleiades_id,notes
 chios,Chios,Chios,Chíos,Aegean,38.368,26.136,rival_genoese,1346-01-01,1566-04-17,maona_chios,LANE1973,,Governed by the Genoese Maona of Chios; fell to the Ottomans 1566
-salonica,Salonica,Thessaloniki,Thessaloníki,Aegean,40.64,22.944,subject,1423-09-14,1430-03-29,venice,LANE1973;OCONNELL2009,,
-durazzo,Durazzo,Durrës,Durrës,Albania,41.313,19.445,subject,1392-01-01,1501-08-17,venice,LANE1973;OCONNELL2009,573193,
-scutari,Scutari,Shkodër,Shkodër,Albania,42.068,19.512,subject,1396-01-01,1479-01-25,venice,LANE1973;OCONNELL2009,,
+salonica,Salonica,Thessaloniki,Thessaloníki,Aegean,40.64,22.944,subject,1423-09-14,1430-03-29,venice,OCONNELL2009:p22;OCONNELL2009:p164,,
+durazzo,Durazzo,Durrës,Durrës,Albania,41.313,19.445,subject,1392-01-01,1501-08-17,venice,OCONNELL2009:p23;OCONNELL2009:p162,573193,
+scutari,Scutari,Shkodër,Shkodër,Albania,42.068,19.512,subject,1396-01-01,1479-01-25,venice,LANE1973:p236;OCONNELL2009:p22;OCONNELL2009:p163,,
 antivari,Antivari,Bar,Bar,Albania Veneta,42.094,19.1,subject,1443-01-01,1571-08-01,venice,LANE1973;OCONNELL2009,,
-budua,Budua,Budva,Budva,Albania Veneta,42.288,18.842,subject,1442-01-01,1797-05-12,venice,LANE1973;OCONNELL2009,,
-cattaro,Cattaro,Kotor,Kotor,Albania Veneta,42.425,18.771,subject,1420-01-01,1797-05-12,venice,LANE1973;OCONNELL2009,,
-dulcigno,Dulcigno,Ulcinj,Ulcinj,Albania Veneta,41.929,19.224,subject,1423-01-01,1571-08-01,venice,LANE1973;OCONNELL2009,,
+budua,Budua,Budva,Budva,Albania Veneta,42.288,18.842,subject,1442-01-01,1797-05-12,venice,OCONNELL2009:p162,,
+cattaro,Cattaro,Kotor,Kotor,Albania Veneta,42.425,18.771,subject,1420-01-01,1797-05-12,venice,OCONNELL2009:p30;OCONNELL2009:p162,,
+dulcigno,Dulcigno,Ulcinj,Ulcinj,Albania Veneta,41.929,19.224,subject,1423-01-01,1571-08-01,venice,OCONNELL2009:p163,,
 samsun,Amisos,Samsun,Samsun,Black Sea,41.292,36.331,foreign_port,1204-01-01,1461-01-01,various,LANE1973;SHEPHERD1911,,Annexed by the Ottomans 1461
 sinope,Sinope,Sinop,Sinop,Black Sea,42.026,35.153,foreign_port,1204-01-01,1461-01-01,various,LANE1973;SHEPHERD1911,857321,Jandarid emirate; annexed by the Ottomans 1461
-trebizond,Trebizond,Trabzon,Trabzon,Black Sea,41.005,39.723,foreign_port,1204-01-01,1461-08-15,empire_trebizond,LANE1973;SHEPHERD1911,229599,Empire of Trebizond; fell to the Ottomans 1461
-constantinople_latin,Constantinople,Istanbul,Istanbul,Constantinople,41.008,28.978,capital,1204-04-13,1261-07-25,latin_empire,LANE1973;SHEPHERD1911,,Capital of the Latin Empire
-constantinople_quarter,Venetian Quarter,Istanbul,Istanbul,Constantinople,41.017,28.97,commercial_quarter,1082-05-01,1204-04-13,byzantine,LANE1973,,Quarter granted by the 1082 chrysobull of Alexios I Komnenos
-constantinople_quarter,Venetian Quarter,Istanbul,Istanbul,Constantinople,41.017,28.97,metropolitan_quarter,1204-04-13,1261-07-25,latin_empire,LANE1973,,Expanded jurisdiction under the Latin Empire; not a sovereign colony
-constantinople_quarter,Venetian Quarter,Istanbul,Istanbul,Constantinople,41.017,28.97,commercial_quarter,1261-07-25,1453-05-29,byzantine,LANE1973,,Merchant quarter restored after the Byzantine reconquest
+trebizond,Trebizond,Trabzon,Trabzon,Black Sea,41.005,39.723,foreign_port,1204-01-01,1461-08-15,empire_trebizond,LANE1973:p129,229599,Empire of Trebizond; fell to the Ottomans 1461
+constantinople_latin,Constantinople,Istanbul,Istanbul,Constantinople,41.008,28.978,capital,1204-04-13,1261-07-25,latin_empire,LANE1973:p43;LANE1973:p75;LANE1973:chronology;OCONNELL2009:p18,,Capital of the Latin Empire
+constantinople_quarter,Venetian Quarter,Istanbul,Istanbul,Constantinople,41.017,28.97,commercial_quarter,1082-05-01,1204-04-13,byzantine,LANE1973:p68;LANE1973:chronology,,Quarter granted by the 1082 chrysobull of Alexios I Komnenos
+constantinople_quarter,Venetian Quarter,Istanbul,Istanbul,Constantinople,41.017,28.97,metropolitan_quarter,1204-04-13,1261-07-25,latin_empire,LANE1973:p68;LANE1973:p75;LANE1973:chronology;OCONNELL2009:p18,,Expanded jurisdiction under the Latin Empire; not a sovereign colony
+constantinople_quarter,Venetian Quarter,Istanbul,Istanbul,Constantinople,41.017,28.97,commercial_quarter,1261-07-25,1453-05-29,byzantine,LANE1973:p75;LANE1973:p348;LANE1973:chronology,,Merchant quarter restored after the Byzantine reconquest
 galata,Galata,Galata,Galata,Constantinople,41.026,28.974,rival_genoese,1267-01-01,1453-05-29,genoa,LANE1973,,Genoese concession adjoining Pera
 pera,Pera,Beyoğlu,Beyoğlu,Constantinople,41.028,28.975,rival_genoese,1261-07-25,1453-05-29,genoa,LANE1973,,Principal Genoese concession after the Treaty of Nymphaeum
-candia,Candia,Heraklion,Irákleio,Crete,35.339,25.133,capital,1211-01-01,1669-09-27,venice,LANE1973;OCONNELL2009,,Capital of the Regno di Candia; fell after the 21-year siege
+candia,Candia,Heraklion,Irákleio,Crete,35.339,25.133,capital,1211-01-01,1669-09-27,venice,LANE1973:p43;LANE1973:p410;OCONNELL2009:p162;OCONNELL2009:p172,,Capital of the Regno di Candia; fell after the 21-year siege
 canea,Canea,Chania,Chaniá,Crete,35.516,24.019,subject,1252-01-01,1645-08-22,venice,LANE1973;OCONNELL2009,465938,Refounded by Venice 1252; fell to the Ottomans 1645
 ierapetra,Hierapetra,Ierapetra,Ierápetra,Crete,35.011,25.737,subject,1211-01-01,1647-01-01,venice,LANE1973;OCONNELL2009,,Southern Crete
 kissamos,Cissamo,Kissamos,Kíssamos,Crete,35.495,23.655,subject,1211-01-01,1645-08-22,venice,LANE1973;OCONNELL2009,,Western Crete
@@ -24,63 +24,63 @@ rettimo,Rettimo,Rethymno,Réthymno,Crete,35.366,24.482,subject,1211-01-01,1646-1
 sitia,Sitia,Sitia,Siteía,Crete,35.208,26.104,subject,1211-01-01,1651-01-01,venice,LANE1973;OCONNELL2009,,Razed and abandoned 1651
 caffa,Caffa,Feodosia,Feodosia,Crimea,45.031,35.382,rival_genoese,1266-01-01,1475-06-01,genoa,LANE1973,,Genoese Black Sea colony; fell to the Ottomans 1475
 soldaia,Soldaia,Sudak,Sudak,Crimea,44.849,34.972,rival_genoese,1365-01-01,1475-06-01,genoa,LANE1973,,Genoese from 1365; fell to the Ottomans 1475
-andros,Andros,Andros,Ándros,Cyclades,37.834,24.935,feudatory,1207-01-01,1566-01-01,duchy_archipelago,LANE1973;SHEPHERD1911,,Duchy of the Archipelago
-milos,Milo,Milos,Mílos,Cyclades,36.746,24.427,feudatory,1207-01-01,1566-01-01,duchy_archipelago,LANE1973;SHEPHERD1911,570474,Duchy of the Archipelago
-mykonos,Micono,Mykonos,Mýkonos,Cyclades,37.445,25.329,feudatory,1207-01-01,1566-01-01,duchy_archipelago,LANE1973;SHEPHERD1911,,Held by the Ghisi under Archipelago suzerainty
-naxos,Naxos,Naxos,Náxos,Cyclades,37.107,25.376,feudatory,1207-01-01,1566-01-01,duchy_archipelago,LANE1973;SHEPHERD1911,,Seat of the Duchy of the Archipelago; Ottoman annexation 1566
-paros,Paro,Paros,Páros,Cyclades,37.085,25.152,feudatory,1207-01-01,1566-01-01,duchy_archipelago,LANE1973;SHEPHERD1911,599867,Duchy of the Archipelago
-santorini,Santorini,Thera,Santoríni,Cyclades,36.416,25.432,feudatory,1207-01-01,1566-01-01,duchy_archipelago,LANE1973;SHEPHERD1911,,Duchy of the Archipelago
-syros,Syra,Syros,Sýros,Cyclades,37.445,24.943,feudatory,1207-01-01,1566-01-01,duchy_archipelago,LANE1973;SHEPHERD1911,,Duchy of the Archipelago
-tino,Tino,Tinos,Tínos,Cyclades,37.539,25.162,subject,1390-01-01,1715-06-05,venice,LANE1973;OCONNELL2009,,Direct Venetian rule from 1390; longest-held Aegean island
+andros,Andros,Andros,Ándros,Cyclades,37.834,24.935,feudatory,1207-01-01,1566-01-01,duchy_archipelago,LANE1973:p43;OCONNELL2009:p18,,Duchy of the Archipelago
+milos,Milo,Milos,Mílos,Cyclades,36.746,24.427,feudatory,1207-01-01,1566-01-01,duchy_archipelago,LANE1973:p43;OCONNELL2009:p18,570474,Duchy of the Archipelago
+mykonos,Micono,Mykonos,Mýkonos,Cyclades,37.445,25.329,feudatory,1207-01-01,1566-01-01,duchy_archipelago,LANE1973:p43;OCONNELL2009:p18,,Held by the Ghisi under Archipelago suzerainty
+naxos,Naxos,Naxos,Náxos,Cyclades,37.107,25.376,feudatory,1207-01-01,1566-01-01,duchy_archipelago,LANE1973:p43;OCONNELL2009:p18,,Seat of the Duchy of the Archipelago; Ottoman annexation 1566
+paros,Paro,Paros,Páros,Cyclades,37.085,25.152,feudatory,1207-01-01,1566-01-01,duchy_archipelago,LANE1973:p43;OCONNELL2009:p18,599867,Duchy of the Archipelago
+santorini,Santorini,Thera,Santoríni,Cyclades,36.416,25.432,feudatory,1207-01-01,1566-01-01,duchy_archipelago,LANE1973:p43;OCONNELL2009:p18,,Duchy of the Archipelago
+syros,Syra,Syros,Sýros,Cyclades,37.445,24.943,feudatory,1207-01-01,1566-01-01,duchy_archipelago,LANE1973:p43;OCONNELL2009:p18,,Duchy of the Archipelago
+tino,Tino,Tinos,Tínos,Cyclades,37.539,25.162,subject,1390-01-01,1715-06-05,venice,OCONNELL2009:p164,,Direct Venetian rule from 1390; longest-held Aegean island
 famagusta,Famagusta,Famagusta,Gazimağusa,Cyprus,35.125,33.941,foreign_port,1192-01-01,1373-10-01,cyprus,LANE1973;SHEPHERD1911,,
 famagusta,Famagusta,Famagusta,Gazimağusa,Cyprus,35.125,33.941,rival_genoese,1373-10-01,1464-01-01,genoa,LANE1973;SHEPHERD1911,,Genoese occupation; modelled as a rival phase.
 famagusta,Famagusta,Famagusta,Gazimağusa,Cyprus,35.125,33.941,foreign_port,1464-01-01,1489-02-26,cyprus,LANE1973;SHEPHERD1911,,
-famagusta,Famagusta,Famagusta,Gazimağusa,Cyprus,35.125,33.941,subject,1489-02-26,1571-08-01,venice,LANE1973;OCONNELL2009,,Venetian Kingdom of Cyprus phase.
+famagusta,Famagusta,Famagusta,Gazimağusa,Cyprus,35.125,33.941,subject,1489-02-26,1571-08-01,venice,OCONNELL2009:p37;OCONNELL2009:p163,,Venetian Kingdom of Cyprus phase.
 kyrenia,Cerines,Kyrenia,Kerýneia,Cyprus,35.341,33.317,foreign_port,1192-01-01,1489-02-26,cyprus,LANE1973;SHEPHERD1911,,
-kyrenia,Cerines,Kyrenia,Kerýneia,Cyprus,35.341,33.317,subject,1489-02-26,1571-08-01,venice,LANE1973;OCONNELL2009,,Venetian Kingdom of Cyprus phase.
+kyrenia,Cerines,Kyrenia,Kerýneia,Cyprus,35.341,33.317,subject,1489-02-26,1571-08-01,venice,OCONNELL2009:p37;OCONNELL2009:p163,,Venetian Kingdom of Cyprus phase.
 limassol,Limisso,Limassol,Lemesós,Cyprus,34.675,33.044,foreign_port,1192-01-01,1489-02-26,cyprus,LANE1973;SHEPHERD1911,,
-limassol,Limisso,Limassol,Lemesós,Cyprus,34.675,33.044,subject,1489-02-26,1571-08-01,venice,LANE1973;OCONNELL2009,,Venetian Kingdom of Cyprus phase.
-curzola,Curzola,Korčula,Korčula,Dalmatia,42.96,17.136,subject,1420-01-01,1797-05-12,venice,LANE1973;OCONNELL2009,,
-lesina,Lesina,Hvar,Hvar,Dalmatia,43.172,16.442,subject,1420-01-01,1797-05-12,venice,LANE1973;OCONNELL2009,,
+limassol,Limisso,Limassol,Lemesós,Cyprus,34.675,33.044,subject,1489-02-26,1571-08-01,venice,OCONNELL2009:p37;OCONNELL2009:p163,,Venetian Kingdom of Cyprus phase.
+curzola,Curzola,Korčula,Korčula,Dalmatia,42.96,17.136,subject,1420-01-01,1797-05-12,venice,OCONNELL2009:p30;OCONNELL2009:p163,,
+lesina,Lesina,Hvar,Hvar,Dalmatia,43.172,16.442,subject,1421-01-01,1797-05-12,venice,OCONNELL2009:p30;OCONNELL2009:p163,,
 ragusa,Ragusa,Dubrovnik,Dubrovnik,Dalmatia,42.64,18.111,independent,1358-01-27,1808-01-31,ragusa,LANE1973,,Referenced but not Venetian
-sebenico,Sebenico,Šibenik,Šibenik,Dalmatia,43.735,15.896,subject,1412-01-01,1797-05-12,venice,LANE1973;OCONNELL2009,,
-spalato,Spalato,Split,Split,Dalmatia,43.509,16.44,subject,1420-01-01,1797-05-12,venice,LANE1973;OCONNELL2009,,
-trau,Traù,Trogir,Trogir,Dalmatia,43.516,16.251,subject,1420-01-01,1797-05-12,venice,LANE1973;OCONNELL2009,,
-zara,Zara,Zadar,Zadar,Dalmatia,44.119,15.231,subject,1202-11-24,1358-02-18,venice,LANE1973;OCONNELL2009,,First sustained Venetian phase after the Fourth Crusade.
-zara,Zara,Zadar,Zadar,Dalmatia,44.119,15.231,foreign_port,1358-02-18,1409-07-09,hungary_croatia,LANE1973;OCONNELL2009,,Transferred by the Peace of Zara.
-zara,Zara,Zadar,Zadar,Dalmatia,44.119,15.231,subject,1409-07-09,1797-05-12,venice,LANE1973;OCONNELL2009,,Venetian sovereignty restored by acquisition of Ladislaus's Dalmatian rights.
+sebenico,Sebenico,Šibenik,Šibenik,Dalmatia,43.735,15.896,subject,1412-01-01,1797-05-12,venice,OCONNELL2009:p22;OCONNELL2009:p163,,
+spalato,Spalato,Split,Split,Dalmatia,43.509,16.44,subject,1420-01-01,1797-05-12,venice,OCONNELL2009:p30;OCONNELL2009:p163,,
+trau,Traù,Trogir,Trogir,Dalmatia,43.516,16.251,subject,1420-01-01,1797-05-12,venice,OCONNELL2009:p30;OCONNELL2009:p164,,
+zara,Zara,Zadar,Zadar,Dalmatia,44.119,15.231,subject,1202-11-24,1358-02-18,venice,LANE1973:p43;OCONNELL2009:p164,,First sustained Venetian phase after the Fourth Crusade.
+zara,Zara,Zadar,Zadar,Dalmatia,44.119,15.231,foreign_port,1358-02-18,1409-07-09,hungary_croatia,LANE1973:chronology;OCONNELL2009:p164,,Transferred by the Peace of Zara.
+zara,Zara,Zadar,Zadar,Dalmatia,44.119,15.231,subject,1409-07-09,1797-05-12,venice,OCONNELL2009:p28;OCONNELL2009:p164,,Venetian sovereignty restored by acquisition of Ladislaus's Dalmatian rights.
 alexandria,Alexandria,Alexandria,al-Iskandariyya,Egypt,31.2,29.892,foreign_port,1250-01-01,1517-01-22,mamluks,LANE1973;SHEPHERD1911,727070,Principal Mamluk emporium with a Venetian fondaco
 damietta,Damietta,Damietta,Dumyāṭ,Egypt,31.417,31.813,foreign_port,1250-01-01,1517-01-22,mamluks,LANE1973;SHEPHERD1911,,Mamluk Nile-delta port
-negroponte,Negroponte,Chalkida,Chalkída,Euboea,38.464,23.594,subject,1209-01-01,1390-01-01,venice,LANE1973;OCONNELL2009,530827,Venetian bailo and jurisdiction within a divided feudal island.
-negroponte,Negroponte,Chalkida,Chalkída,Euboea,38.464,23.594,subject,1390-01-01,1470-07-12,venice,LANE1973;OCONNELL2009,530827,Direct sovereignty consolidated before the Ottoman conquest.
-lepanto,Lepanto,Nafpaktos,Náfpaktos,Gulf of Corinth,38.399,21.827,subject,1407-01-01,1499-08-29,venice,LANE1973;OCONNELL2009,,Lost to the Ottomans 1499
-cephalonia,Cephalonia,Kefalonia,Kefaloniá,Ionian Islands,38.176,20.489,subject,1500-12-24,1797-05-12,venice,LANE1973;OCONNELL2009,,
-corfu,Corfu,Corfu,Kérkyra,Ionian Islands,39.624,19.922,subject,1386-01-01,1797-05-12,venice,LANE1973;OCONNELL2009,530835,
-santa_maura,Santa Maura,Lefkada,Lefkáda,Ionian Islands,38.833,20.707,subject,1684-08-06,1797-05-12,venice,LANE1973;OCONNELL2009,,
-zante,Zante,Zakynthos,Zákynthos,Ionian Islands,37.787,20.899,subject,1485-01-01,1797-05-12,venice,LANE1973;OCONNELL2009,,
+negroponte,Negroponte,Chalkida,Chalkída,Euboea,38.464,23.594,subject,1211-01-01,1390-01-01,venice,LANE1973:p43;OCONNELL2009:p19;OCONNELL2009:p164,530827,Venetian bailo and jurisdiction within a divided feudal island.
+negroponte,Negroponte,Chalkida,Chalkída,Euboea,38.464,23.594,subject,1390-01-01,1470-07-12,venice,LANE1973:p236;LANE1973:chronology;OCONNELL2009:p25;OCONNELL2009:p163,530827,Direct sovereignty consolidated before the Ottoman conquest.
+lepanto,Lepanto,Nafpaktos,Náfpaktos,Gulf of Corinth,38.399,21.827,subject,1407-01-01,1499-08-29,venice,OCONNELL2009:p22;OCONNELL2009:p163,,Lost to the Ottomans 1499
+cephalonia,Cephalonia,Kefalonia,Kefaloniá,Ionian Islands,38.176,20.489,subject,1500-12-24,1797-05-12,venice,OCONNELL2009:p162,,
+corfu,Corfu,Corfu,Kérkyra,Ionian Islands,39.624,19.922,subject,1386-01-01,1797-05-12,venice,LANE1973:p198;LANE1973:p436;OCONNELL2009:p162,530835,
+santa_maura,Santa Maura,Lefkada,Lefkáda,Ionian Islands,38.833,20.707,subject,1684-08-06,1797-05-12,venice,LANE1973:p410;LANE1973:chronology,,
+zante,Zante,Zakynthos,Zákynthos,Ionian Islands,37.787,20.899,subject,1482-01-01,1797-05-12,venice,OCONNELL2009:p164,,
 capodistria,Capodistria,Koper,Koper,Istria,45.548,13.73,subject,1279-01-01,1797-05-12,venice,LANE1973;OCONNELL2009,,
 parenzo,Parenzo,Poreč,Poreč,Istria,45.228,13.594,subject,1267-01-01,1797-05-12,venice,LANE1973;OCONNELL2009,,
 pirano,Pirano,Piran,Piran,Istria,45.528,13.568,subject,1283-01-01,1797-05-12,venice,LANE1973;OCONNELL2009,,
 pola,Pola,Pula,Pula,Istria,44.869,13.848,subject,1331-01-01,1797-05-12,venice,LANE1973;OCONNELL2009,,
 rovigno,Rovigno,Rovinj,Rovinj,Istria,45.082,13.632,subject,1283-01-01,1797-05-12,venice,LANE1973;OCONNELL2009,,
 chioggia,Chioggia,Chioggia,Cióxa,Lagoon,45.218,12.277,subject,1405-01-01,1797-05-12,venice,LANE1973;OCONNELL2009,,
-venice,Venice,Venice,Venezia,Lagoon,45.437,12.335,metropole,0697-01-01,,venice,LANE1973,,
-venice,Venice,Venice,Venezia,Lagoon,45.437,12.335,capital,1204-01-01,1797-05-12,venice,LANE1973,,
+venice,Venice,Venice,Venezia,Lagoon,45.437,12.335,metropole,0697-01-01,,venice,LANE1973:chronology,,
+venice,Venice,Venice,Venezia,Lagoon,45.437,12.335,capital,1204-01-01,1797-05-12,venice,LANE1973:p43;LANE1973:chronology,,
 acre,Acre,Acre,ʿAkkā,Levant,32.923,35.069,crusader_port,1104-01-01,1291-05-18,kingdom_jerusalem,LANE1973;SHEPHERD1911,,Crusader port of the Kingdom of Jerusalem; fell 1291
 beirut,Beirut,Beirut,Bayrūt,Levant,33.895,35.478,foreign_port,1291-01-01,1516-08-24,mamluks,LANE1973;SHEPHERD1911,,Mamluk port with a Venetian fondaco
 sidon,Sidon,Sidon,Ṣaydā,Levant,33.56,35.375,foreign_port,1110-01-01,1516-08-24,various,LANE1973;SHEPHERD1911,,Crusader-held to 1291
 tyre,Tyre,Tyre,Ṣūr,Levant,33.271,35.196,foreign_port,1124-01-01,1516-08-24,various,LANE1973;SHEPHERD1911,,Crusader-held to 1291
-argos,Argos,Argos,Árgos,Morea,37.633,22.719,subject,1394-01-01,1463-01-01,venice,LANE1973;OCONNELL2009,,Acquired 1394; lost to the Ottomans 1463
-argos,Argos,Argos,Árgos,Morea,37.633,22.719,subject,1686-09-29,1715-07-20,venice,LANE1973;OCONNELL2009,,
-coron,Coron,Koroni,Koróni,Morea,36.795,21.955,subject,1207-01-01,1500-08-15,venice,LANE1973;OCONNELL2009,,Sister fortress to Modon; surrendered days after it
-coron,Coron,Koroni,Koróni,Morea,36.795,21.955,subject,1685-08-11,1715-07-01,venice,LANE1973;OCONNELL2009,,
-malvasia,Malvasia,Monemvasia,Monemvasía,Morea,36.688,23.056,subject,1460-01-01,1540-10-02,venice,LANE1973;OCONNELL2009,,
-malvasia,Malvasia,Monemvasia,Monemvasía,Morea,36.688,23.056,subject,1690-08-12,1715-09-07,venice,LANE1973;OCONNELL2009,,
-modon,Modon,Methoni,Methóni,Morea,36.818,21.703,subject,1207-01-01,1500-08-09,venice,LANE1973;OCONNELL2009,,"One of the ""two eyes of the Republic""; fell to the Ottomans 1500"
-modon,Modon,Methoni,Methóni,Morea,36.818,21.703,subject,1686-07-10,1715-07-01,venice,LANE1973;OCONNELL2009,,Recovered during the Morean War; lost in the Ottoman reconquest.
-nauplia,Nauplia,Nafplio,Náfplio,Morea,37.567,22.807,subject,1389-01-01,1540-01-01,venice,LANE1973;OCONNELL2009,,Acquired 1388/89; ceded to the Ottomans 1540
-nauplia,Nauplia,Nafplio,Náfplio,Morea,37.567,22.807,capital,1686-09-29,1715-07-20,venice,LANE1973;OCONNELL2009,,Capital of the Venetian Kingdom of the Morea.
-tana,Tana,Azov,Azov,Sea of Azov,47.112,39.421,trading_post,1332-01-01,1475-01-01,venice,LANE1973;SHEPHERD1911,,Venetian fondaco on the Sea of Azov under Golden Horde suzerainty
+argos,Argos,Argos,Árgos,Morea,37.633,22.719,subject,1394-01-01,1463-01-01,venice,OCONNELL2009:p25,,Acquired 1394; lost to the Ottomans 1463
+argos,Argos,Argos,Árgos,Morea,37.633,22.719,subject,1686-09-29,1715-07-20,venice,LANE1973:p410;LANE1973:chronology,,
+coron,Coron,Koroni,Koróni,Morea,36.795,21.955,subject,1206-01-01,1500-08-15,venice,LANE1973:p43;LANE1973:p242;OCONNELL2009:p19;OCONNELL2009:p162,,Sister fortress to Modon; surrendered days after it
+coron,Coron,Koroni,Koróni,Morea,36.795,21.955,subject,1685-08-11,1715-07-01,venice,LANE1973:p410;LANE1973:chronology,,
+malvasia,Malvasia,Monemvasia,Monemvasía,Morea,36.688,23.056,subject,1464-01-01,1540-10-02,venice,OCONNELL2009:p38;OCONNELL2009:p163,,
+malvasia,Malvasia,Monemvasia,Monemvasía,Morea,36.688,23.056,subject,1690-08-12,1715-09-07,venice,LANE1973:p410;LANE1973:chronology,,
+modon,Modon,Methoni,Methóni,Morea,36.818,21.703,subject,1206-01-01,1500-08-09,venice,LANE1973:p43;LANE1973:p242;LANE1973:chronology;OCONNELL2009:p19;OCONNELL2009:p163,,"One of the ""two eyes of the Republic""; fell to the Ottomans 1500"
+modon,Modon,Methoni,Methóni,Morea,36.818,21.703,subject,1686-07-10,1715-07-01,venice,LANE1973:p410;LANE1973:chronology,,Recovered during the Morean War; lost in the Ottoman reconquest.
+nauplia,Nauplia,Nafplio,Náfplio,Morea,37.567,22.807,subject,1389-01-01,1540-01-01,venice,OCONNELL2009:p25;OCONNELL2009:p164,,Acquired 1388/89; ceded to the Ottomans 1540
+nauplia,Nauplia,Nafplio,Náfplio,Morea,37.567,22.807,capital,1686-09-29,1715-07-20,venice,LANE1973:p410;LANE1973:chronology,,Capital of the Venetian Kingdom of the Morea.
+tana,Tana,Azov,Azov,Sea of Azov,47.112,39.421,trading_post,1332-01-01,1475-01-01,venice,LANE1973:p129;LANE1973:p131,,Venetian fondaco on the Sea of Azov under Golden Horde suzerainty
 messina,Messina,Messina,Messina,Sicily,38.194,15.554,staging,1130-01-01,,sicily,LANE1973;MCEVEDY,,Galley staging port of the Kingdom of Sicily
 palermo,Palermo,Palermo,Palermo,Sicily,38.116,13.361,staging,1130-01-01,,sicily,LANE1973;MCEVEDY,,Galley staging port of the Kingdom of Sicily
 syracuse,Syracuse,Siracusa,Siracusa,Sicily,37.059,15.293,staging,1130-01-01,,sicily,LANE1973;MCEVEDY,,Galley staging port of the Kingdom of Sicily

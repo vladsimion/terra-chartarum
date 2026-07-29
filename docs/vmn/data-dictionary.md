@@ -156,6 +156,15 @@ editorial envelopes in that ledger rather than source claims.
   `possessions-extents.geojson` into coastline-clipped
   `venetian-possessions.fgb` features.
 - **`sources.csv`** — `key, citation, url, license`. Seeded in KAN-145.
+- **`chronology-discrepancies.csv`** —
+  `event_id, subject_type, subject_id, event_field, event_type, spec_value, lane_value,
+oconnell_value, resolution, status, notes`. The KAN-154 verification ledger: one row
+  per dated §5.5 boundary. `event_id` is `{subject_type}_{subject_id}_{start|end}`, kept
+  globally unique because a territory and a port can share a name and year (`negroponte`
+  is both). `subject_type` is `route`, `possession`, `privilege` or `port`; anchor values
+  take the form `value@locator` (`1797-05-12@p436`), or `not_in_source` for an anchor
+  that is silent — never an invented page. See
+  [`chronology-handoff.md`](chronology-handoff.md) for the coverage rules and findings.
 - **`atlas_links.csv`** — ID-only essay-beat → Atlas state mappings. Each row
   carries a `port`, `route`, or `possession` target id, year, pipe-separated
   layer ids, and a `popup`/`highlight` display mode; it contains no geometry or

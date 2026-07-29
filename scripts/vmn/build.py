@@ -126,22 +126,30 @@ def iso_year(value: str, *, field: str, row: int, errors: list[str]) -> int | No
     return int(parts[0])
 
 
+# A locator is a printed page (`p436`, `p162-164`, roman `pxvi`) or a named
+# division for front matter that carries no printed folio — Lane's Chronology is
+# the only such case in the anchor editions, so naming it beats inventing a page.
+NAMED_LOCATORS = frozenset({"chronology", "appendix-a"})
 PAGE_REF_RE = re.compile(r"p(?:[0-9]+(?:-[0-9]+)?|[ivxlc]+(?:-[ivxlc]+)?)")
+
+
+def valid_locator(locator: str) -> bool:
+    return locator in NAMED_LOCATORS or bool(PAGE_REF_RE.fullmatch(locator))
 
 
 def validate_source_keys(
     raw: str, *, row: int, source_keys: set[str], errors: list[str]
 ) -> None:
-    """A key is `KEY` or `KEY:pNN[-NN]` (KAN-154 page-level citation)."""
+    """A key is `KEY` or `KEY:<locator>` (KAN-154 page-level citation)."""
     keys = [k for k in raw.strip().split(";") if k]
     if not keys:
         errors.append(f"row {row}: unsourced phase (empty source_keys)")
     for key in keys:
-        base, _, page = key.partition(":")
+        base, _, locator = key.partition(":")
         if base not in source_keys:
             errors.append(f"row {row}: source key '{base}' not in sources.csv")
-        if page and not PAGE_REF_RE.fullmatch(page):
-            errors.append(f"row {row}: malformed page citation '{key}'")
+        if locator and not valid_locator(locator):
+            errors.append(f"row {row}: malformed source locator '{key}'")
 
 
 def validate_ports(

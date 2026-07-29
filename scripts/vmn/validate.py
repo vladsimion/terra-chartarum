@@ -45,6 +45,7 @@ from build import (  # noqa: E402
     STATUS_VOCAB,
     WAYPOINTS_CSV,
     read_csv,
+    valid_locator,
     validate_port_contract,
 )
 
@@ -427,75 +428,120 @@ CHRONOLOGY_RESOLUTIONS = {
     "corrected_to_source",
     "retained_spec_envelope",
 }
+CHRONOLOGY_EVENT_TYPES = {
+    "territorial_acquisition",
+    "territorial_loss",
+    "administrative_change",
+    "treaty_effective",
+    "privilege_change",
+    "convoy_window",
+    "navigation_window",
+}
+# Route, possession and privilege windows are few and wholly spec-defined, so the
+# ledger must mirror them exhaustively. Port phases are the long tail (86 rows):
+# the anchors date only some, so port rows are opt-in and checked for referential
+# integrity instead — a row must still name a real phase and quote its spec value.
+EXHAUSTIVE_SUBJECTS = ("route", "possession", "privilege")
+
+
+def _chronology_boundaries() -> dict[tuple[str, str, str], str]:
+    """Every dated §5.5 boundary, keyed (subject_type, subject_id, field)."""
+    import json
+
+    boundaries: dict[tuple[str, str, str], str] = {}
+
+    _, route_rows = read_csv(ROUTES_CSV)
+    for row in route_rows:
+        for field in ("start_date", "end_date"):
+            boundaries[("route", row["route_id"].strip(), field)] = row[field].strip()
+
+    _, event_rows = read_csv(EVENTS_CSV)
+    for row in event_rows:
+        subject_id = f"{row['territory'].strip()}_{row['start_date'].strip()[:4]}"
+        for field in ("start_date", "end_date"):
+            boundaries[("possession", subject_id, field)] = row[field].strip()
+
+    _, port_rows = read_csv(PORTS_CSV)
+    for row in port_rows:
+        subject_id = f"{row['port_id'].strip()}_{row['start_date'].strip()[:4]}"
+        for field in ("start_date", "end_date"):
+            boundaries[("port", subject_id, field)] = row[field].strip()
+
+    with QUARTER_REPRESENTATION_CONTRACT.open(encoding="utf-8") as handle:
+        quarters = json.load(handle)
+    for rep in quarters.get("representations", []):
+        subject_id = str(rep.get("id", "")).strip()
+        boundaries[("privilege", subject_id, "start_date")] = str(
+            rep.get("validFrom", "")
+        ).strip()
+        boundaries[("privilege", subject_id, "end_date")] = str(
+            rep.get("validTo", "")
+        ).strip()
+
+    return boundaries
 
 
 def check_chronology_handoff(errors: list[str]) -> None:
     """KAN-154: every §5.5 boundary carries page-verified Lane/O'Connell values."""
-    _, route_rows = read_csv(ROUTES_CSV)
-    _, event_rows = read_csv(EVENTS_CSV)
-
     if not CHRONOLOGY_DISCREPANCIES.exists():
         errors.append("chronology: discrepancy ledger is missing")
         return
 
+    expected = _chronology_boundaries()
     _, discrepancy_rows = read_csv(CHRONOLOGY_DISCREPANCIES)
-    expected = {
-        ("route", row["route_id"].strip(), field): row[field].strip()
-        for row in route_rows
-        for field in ("start_date", "end_date")
-    }
-    for row in event_rows:
-        subject_id = f"{row['territory'].strip()}_{row['start_date'].strip()[:4]}"
-        for field in ("start_date", "end_date"):
-            expected[("possession", subject_id, field)] = row[field].strip()
 
-    actual = {}
+    actual: dict[tuple[str, str, str], str] = {}
     for row in discrepancy_rows:
-        key = (
-            row["subject_type"].strip(),
-            row["subject_id"].strip(),
-            row["event_field"].strip(),
-        )
+        subject_type = row["subject_type"].strip()
+        key = (subject_type, row["subject_id"].strip(), row["event_field"].strip())
+        event_id = row["event_id"].strip()
         if key in actual:
             errors.append(f"chronology: duplicate discrepancy row {key}")
         actual[key] = row["spec_value"].strip()
-        if row["event_id"].strip() != f"{key[1]}_{key[2].removesuffix('_date')}":
-            errors.append(f"chronology: unstable event id '{row['event_id']}'")
+        if event_id != f"{key[0]}_{key[1]}_{key[2].removesuffix('_date')}":
+            errors.append(f"chronology: unstable event id '{event_id}'")
         if not row["lane_value"].strip() or not row["oconnell_value"].strip():
             errors.append(
-                f"chronology: '{row['event_id']}' is missing a page-verified anchor value"
+                f"chronology: '{event_id}' is missing a page-verified anchor value"
                 " (use not_in_source for a source that is silent)"
+            )
+        if row["event_type"].strip() not in CHRONOLOGY_EVENT_TYPES:
+            errors.append(
+                f"chronology: '{event_id}' event_type must be one of "
+                f"{sorted(CHRONOLOGY_EVENT_TYPES)}"
             )
         if row["resolution"].strip() not in CHRONOLOGY_RESOLUTIONS:
             errors.append(
-                f"chronology: '{row['event_id']}' resolution must be one of "
+                f"chronology: '{event_id}' resolution must be one of "
                 f"{sorted(CHRONOLOGY_RESOLUTIONS)}"
             )
         if row["status"].strip() != "verified_page_level":
-            errors.append(
-                f"chronology: '{row['event_id']}' must be verified_page_level"
-            )
+            errors.append(f"chronology: '{event_id}' must be verified_page_level")
         if not row["notes"].strip():
-            errors.append(f"chronology: '{row['event_id']}' lacks an editorial note")
+            errors.append(f"chronology: '{event_id}' lacks an editorial note")
 
-    if actual != expected:
-        missing = sorted(set(expected) - set(actual))
-        extra = sorted(set(actual) - set(expected))
-        mismatched = sorted(
-            k for k in set(actual) & set(expected) if actual[k] != expected[k]
-        )
-        detail = "; ".join(
-            part
-            for part in (
-                f"missing {missing}" if missing else "",
-                f"extra {extra}" if extra else "",
-                f"spec mismatch {mismatched}" if mismatched else "",
-            )
-            if part
-        )
+    unknown = sorted(set(actual) - set(expected))
+    if unknown:
+        errors.append(f"chronology: ledger rows name no such boundary: {unknown}")
+
+    mismatched = sorted(
+        k for k in set(actual) & set(expected) if actual[k] != expected[k]
+    )
+    if mismatched:
         errors.append(
-            "chronology: ledger does not mirror every route and possession boundary"
-            + (f" ({detail})" if detail else "")
+            "chronology: ledger spec_value disagrees with the authority table for "
+            f"{mismatched}"
+        )
+
+    missing = sorted(
+        k
+        for k in set(expected) - set(actual)
+        if k[0] in EXHAUSTIVE_SUBJECTS
+    )
+    if missing:
+        errors.append(
+            "chronology: ledger does not cover every route, possession and privilege "
+            f"boundary (missing {missing})"
         )
 
     _, atlas_links = read_csv(ATLAS_LINKS_CSV)
@@ -506,6 +552,7 @@ def check_chronology_handoff(errors: list[str]) -> None:
         errors.append("atlas flip: expected exactly one rotta_spine link")
         return
     flip = first_flip[0]
+    _, route_rows = read_csv(ROUTES_CSV)
     route_ids = {row["route_id"].strip() for row in route_rows}
     layers = set(flip["layer_ids"].strip().split("|"))
     if (
@@ -607,9 +654,14 @@ def check_quarter_representation_contract(
                 f"quarters: '{representation_id}' leaks into possession territories"
             )
         for source_key in representation.get("sourceKeys", []):
-            if source_key not in source_keys:
+            base, _, locator = str(source_key).partition(":")
+            if base not in source_keys:
                 errors.append(
-                    f"quarters: '{representation_id}' source '{source_key}' is unknown"
+                    f"quarters: '{representation_id}' source '{base}' is unknown"
+                )
+            if locator and not valid_locator(locator):
+                errors.append(
+                    f"quarters: '{representation_id}' locator '{source_key}' is malformed"
                 )
         if not str(representation.get("rationale", "")).strip():
             errors.append(f"quarters: '{representation_id}' lacks a rationale")
