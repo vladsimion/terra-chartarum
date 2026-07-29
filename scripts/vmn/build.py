@@ -229,6 +229,42 @@ def validate_port_contract(rows: list[dict[str, str]]) -> list[str]:
         for port_id in required_ids:
             if port_id not in by_id:
                 errors.append(f"{label}: required port_id '{port_id}' missing")
+        actual_group_ids = {port_id for port_id in required_ids if port_id in by_id}
+        minimum_group_ports = int(group.get("minimumUniquePorts", 0))
+        if len(actual_group_ids) < minimum_group_ports:
+            errors.append(
+                f"{label}: expected >= {minimum_group_ports} unique ports, "
+                f"found {len(actual_group_ids)}"
+            )
+        group_statuses = {
+            row["status"].strip()
+            for port_id in actual_group_ids
+            for row in by_id[port_id]
+        }
+        missing_group_statuses = sorted(
+            set(group.get("requiredStatuses", [])) - group_statuses
+        )
+        if missing_group_statuses:
+            errors.append(
+                f"{label}: missing status coverage " + ", ".join(missing_group_statuses)
+            )
+        for port_id, count in group.get("exactPhaseCounts", {}).items():
+            actual_count = len(by_id.get(port_id, []))
+            if actual_count != int(count):
+                errors.append(
+                    f"{label}: '{port_id}' has {actual_count} phases, expected {count}"
+                )
+        for port_id in group.get("disjointIds", []):
+            phases = sorted(
+                by_id.get(port_id, []), key=lambda row: row["start_date"]
+            )
+            for earlier, later in zip(phases, phases[1:]):
+                earlier_end = earlier["end_date"].strip()
+                if earlier_end and later["start_date"].strip() < earlier_end:
+                    errors.append(
+                        f"{label}: '{port_id}' phases overlap at "
+                        f"{later['start_date']} < {earlier_end}"
+                    )
         for port_id, expected_phases in constraints.items():
             actual_phases = by_id.get(port_id, [])
             if group.get("exactPhaseCount") and len(actual_phases) != len(expected_phases):

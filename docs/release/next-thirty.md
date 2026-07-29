@@ -107,3 +107,28 @@ Tickets: KAN-198, KAN-199, KAN-200, KAN-201, KAN-202.
 
 Evidence: source build, compiled 86/7/11 QA, projection parity, geo manifest
 integrity and formatting gates pass.
+
+Reprioritisation: KAN-203–207 remained the final unblocked five. They close the
+same KAN-150 regional compilation boundary; replacing any of them with
+chronology/georeferencing work would have required unavailable source editions
+or reference plates.
+
+## Batch 6 — Crete, Morea and temporal-phase closure
+
+Tickets: KAN-203, KAN-204, KAN-205, KAN-206, KAN-207.
+
+- Locked Candia plus five Cretan subject ports to direct Venetian polity rows.
+- Locked Argos, Coron, Malvasia, Modon and Nauplia to their early and
+  Morean-War phases, including Nauplia's later capital status.
+- Required exact counts and non-overlap for all eleven known changing-control
+  port IDs (the intentionally overlapping Venice metropole/capital roles remain
+  outside that sovereignty-change rule).
+- Required in-row Archipelago decision evidence for all seven feudatory ports
+  and kept Tino typed to direct Venetian rule.
+- Added a combined 19-port Aegean/Crete/Morea gate with feudatory, subject and
+  capital coverage.
+
+Evidence: source build, compiled 86/7/11 QA, exact projection parity, geo release
+integrity, lint, formatting, Astro checks, the 109-test unit suite, production
+build, and all 33 Chromium journeys (including the 18-frame VMN visual scrub)
+pass.

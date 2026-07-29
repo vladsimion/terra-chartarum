@@ -47,5 +47,11 @@ The compiled QA gate also compares the complete `(port_id, valid_from)` key set
 and feature count between `ports.csv` and `venetian-ports.fgb`, preventing a
 stale, duplicated or partially assembled sprint output.
 
+The final regional set additionally locks six directly governed Cretan ports,
+five Morea ports with both early and Morean-War phases, Tino's direct Venetian
+typing, and all eleven known changing-control IDs as disjoint dated sequences.
+The combined Cyclades/Crete/Morea gate requires 19 stable ports and explicit
+`feudatory`, `subject` and `capital` coverage.
+
 Run `make vmn` to check the contract before any binary is written, then
 `make vmn-validate` to check the compiled layer.

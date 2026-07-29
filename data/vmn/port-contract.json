@@ -241,6 +241,241 @@
         "santorini": [{ "status": "feudatory", "polity_id": "duchy_archipelago" }],
         "syros": [{ "status": "feudatory", "polity_id": "duchy_archipelago" }]
       }
+    },
+    {
+      "ticket": "KAN-203",
+      "name": "Crete ports",
+      "requiredIds": ["candia", "canea", "ierapetra", "kissamos", "rettimo", "sitia"],
+      "exactPhaseCount": true,
+      "constraints": {
+        "candia": [
+          {
+            "region": "Crete",
+            "status": "capital",
+            "polity_id": "venice",
+            "start_date": "1211-01-01",
+            "end_date": "1669-09-27"
+          }
+        ],
+        "canea": [{ "region": "Crete", "status": "subject", "polity_id": "venice" }],
+        "ierapetra": [{ "region": "Crete", "status": "subject", "polity_id": "venice" }],
+        "kissamos": [{ "region": "Crete", "status": "subject", "polity_id": "venice" }],
+        "rettimo": [{ "region": "Crete", "status": "subject", "polity_id": "venice" }],
+        "sitia": [{ "region": "Crete", "status": "subject", "polity_id": "venice" }]
+      }
+    },
+    {
+      "ticket": "KAN-204",
+      "name": "Known changing-control phase coverage",
+      "requiredIds": [
+        "argos",
+        "constantinople_quarter",
+        "coron",
+        "famagusta",
+        "kyrenia",
+        "limassol",
+        "malvasia",
+        "modon",
+        "nauplia",
+        "negroponte",
+        "zara"
+      ],
+      "exactPhaseCounts": {
+        "argos": 2,
+        "constantinople_quarter": 3,
+        "coron": 2,
+        "famagusta": 4,
+        "kyrenia": 2,
+        "limassol": 2,
+        "malvasia": 2,
+        "modon": 2,
+        "nauplia": 2,
+        "negroponte": 2,
+        "zara": 3
+      },
+      "disjointIds": [
+        "argos",
+        "constantinople_quarter",
+        "coron",
+        "famagusta",
+        "kyrenia",
+        "limassol",
+        "malvasia",
+        "modon",
+        "nauplia",
+        "negroponte",
+        "zara"
+      ],
+      "constraints": {}
+    },
+    {
+      "ticket": "KAN-205",
+      "name": "Morea ports",
+      "requiredIds": ["argos", "coron", "malvasia", "modon", "nauplia"],
+      "exactPhaseCount": true,
+      "constraints": {
+        "argos": [
+          {
+            "region": "Morea",
+            "status": "subject",
+            "polity_id": "venice",
+            "start_date": "1394-01-01",
+            "end_date": "1463-01-01"
+          },
+          {
+            "status": "subject",
+            "polity_id": "venice",
+            "start_date": "1686-09-29",
+            "end_date": "1715-07-20"
+          }
+        ],
+        "coron": [
+          {
+            "region": "Morea",
+            "status": "subject",
+            "polity_id": "venice",
+            "start_date": "1207-01-01",
+            "end_date": "1500-08-15"
+          },
+          {
+            "status": "subject",
+            "polity_id": "venice",
+            "start_date": "1685-08-11",
+            "end_date": "1715-07-01"
+          }
+        ],
+        "malvasia": [
+          {
+            "region": "Morea",
+            "status": "subject",
+            "polity_id": "venice",
+            "start_date": "1460-01-01",
+            "end_date": "1540-10-02"
+          },
+          {
+            "status": "subject",
+            "polity_id": "venice",
+            "start_date": "1690-08-12",
+            "end_date": "1715-09-07"
+          }
+        ],
+        "modon": [
+          {
+            "region": "Morea",
+            "status": "subject",
+            "polity_id": "venice",
+            "start_date": "1207-01-01",
+            "end_date": "1500-08-09"
+          },
+          {
+            "status": "subject",
+            "polity_id": "venice",
+            "start_date": "1686-07-10",
+            "end_date": "1715-07-01"
+          }
+        ],
+        "nauplia": [
+          {
+            "region": "Morea",
+            "status": "subject",
+            "polity_id": "venice",
+            "start_date": "1389-01-01",
+            "end_date": "1540-01-01"
+          },
+          {
+            "status": "capital",
+            "polity_id": "venice",
+            "start_date": "1686-09-29",
+            "end_date": "1715-07-20"
+          }
+        ]
+      }
+    },
+    {
+      "ticket": "KAN-206",
+      "name": "Duchy typing decision evidence",
+      "requiredIds": ["andros", "milos", "mykonos", "naxos", "paros", "santorini", "syros"],
+      "constraints": {
+        "andros": [
+          {
+            "status": "feudatory",
+            "polity_id": "duchy_archipelago",
+            "notes_contains": "Archipelago"
+          }
+        ],
+        "milos": [
+          {
+            "status": "feudatory",
+            "polity_id": "duchy_archipelago",
+            "notes_contains": "Archipelago"
+          }
+        ],
+        "mykonos": [
+          {
+            "status": "feudatory",
+            "polity_id": "duchy_archipelago",
+            "notes_contains": "Archipelago"
+          }
+        ],
+        "naxos": [
+          {
+            "status": "feudatory",
+            "polity_id": "duchy_archipelago",
+            "notes_contains": "Archipelago"
+          }
+        ],
+        "paros": [
+          {
+            "status": "feudatory",
+            "polity_id": "duchy_archipelago",
+            "notes_contains": "Archipelago"
+          }
+        ],
+        "santorini": [
+          {
+            "status": "feudatory",
+            "polity_id": "duchy_archipelago",
+            "notes_contains": "Archipelago"
+          }
+        ],
+        "syros": [
+          {
+            "status": "feudatory",
+            "polity_id": "duchy_archipelago",
+            "notes_contains": "Archipelago"
+          }
+        ]
+      }
+    },
+    {
+      "ticket": "KAN-207",
+      "name": "Aegean Crete Morea coverage",
+      "requiredIds": [
+        "andros",
+        "milos",
+        "mykonos",
+        "naxos",
+        "paros",
+        "santorini",
+        "syros",
+        "tino",
+        "candia",
+        "canea",
+        "ierapetra",
+        "kissamos",
+        "rettimo",
+        "sitia",
+        "argos",
+        "coron",
+        "malvasia",
+        "modon",
+        "nauplia"
+      ],
+      "minimumUniquePorts": 19,
+      "requiredStatuses": ["feudatory", "subject", "capital"],
+      "constraints": {
+        "tino": [{ "status": "subject", "polity_id": "venice" }]
+      }
     }
   ]
 }
