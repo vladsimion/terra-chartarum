@@ -119,6 +119,103 @@ const RAW: unknown[] = [
     essaySlugs: ['dacia'],
     links: [{ label: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Johannes_Honterus' }],
   },
+  {
+    id: 'pietro-vesconte',
+    room: 'road',
+    secondaryRooms: ['map'],
+    name: 'Pietro Vesconte',
+    sortName: 'Vesconte, Pietro',
+    places: ['Genoa', 'Venice'],
+    bio: 'Fourteenth-century chartmaker associated with the earliest signed and dated surviving portolan chart. His nautical charts and atlas work made ordered Mediterranean coasts available to both navigation and crusading geography.',
+    essaySlugs: ['invisible-maps-trade'],
+    links: [
+      {
+        label: 'Digital Bodleian',
+        url: 'https://digital.bodleian.ox.ac.uk/search/?q=Pietro%20Vesconte',
+      },
+    ],
+  },
+  {
+    id: 'andrea-bianco',
+    room: 'road',
+    secondaryRooms: ['map'],
+    name: 'Andrea Bianco',
+    sortName: 'Bianco, Andrea',
+    places: ['Venice'],
+    bio: 'Fifteenth-century Venetian mariner and chartmaker whose 1436 atlas joins portolan leaves, tables and cosmographic material in a single working manuscript.',
+    essaySlugs: ['invisible-maps-trade'],
+    links: [
+      {
+        label: 'Wikimedia Commons atlas',
+        url: 'https://commons.wikimedia.org/wiki/Atlante_di_Andrea_Bianco_dell%27_anno_1436',
+      },
+    ],
+  },
+  {
+    id: 'petrus-roselli',
+    room: 'road',
+    name: 'Petrus Roselli',
+    sortName: 'Roselli, Petrus',
+    places: ['Majorca'],
+    bio: 'Fifteenth-century chartmaker in the Majorcan portolan tradition. His signed Mediterranean charts preserve the dense coastal names and rhumb networks through which the sea was made operational.',
+    essaySlugs: ['invisible-maps-trade'],
+    links: [
+      {
+        label: 'Wikimedia Commons chart',
+        url: 'https://commons.wikimedia.org/wiki/File:Petrus_Roselli_-_Portolan_Chart_of_the_Mediterranean_(1466).png',
+      },
+    ],
+  },
+  {
+    id: 'battista-agnese',
+    room: 'road',
+    secondaryRooms: ['theatre'],
+    name: 'Battista Agnese',
+    sortName: 'Agnese, Battista',
+    places: ['Genoa', 'Venice'],
+    bio: 'Genoese-born cartographer active in Venice, where his workshop produced richly illuminated portolan atlases for elite patrons during the sixteenth century.',
+    essaySlugs: ['invisible-maps-trade'],
+    links: [
+      {
+        label: 'Library of Congress atlas',
+        url: 'https://www.loc.gov/item/98687206/',
+      },
+    ],
+  },
+  {
+    id: 'fra-mauro',
+    room: 'road',
+    secondaryRooms: ['theatre'],
+    name: 'Fra Mauro',
+    sortName: 'Mauro, Fra',
+    born: 1385,
+    died: 1459,
+    places: ['Murano', 'Venice'],
+    bio: 'Camaldolese monk and cartographer whose monumental world map assembled travel reports, inherited geography and Venetian information networks into a densely annotated south-up image.',
+    essaySlugs: ['venice-sicily', 'invisible-maps-trade'],
+    links: [
+      {
+        label: 'Biblioteca Nazionale Marciana',
+        url: 'https://bibliotecanazionalemarciana.cultura.gov.it/mappa-mondo-fra-mauro',
+      },
+    ],
+  },
+  {
+    id: 'jacopo-de-barbari',
+    room: 'city',
+    secondaryRooms: ['road'],
+    name: 'Jacopo de’ Barbari',
+    sortName: 'Barbari, Jacopo de’',
+    places: ['Venice', 'Nuremberg'],
+    bio: 'Venetian painter and printmaker whose monumental bird’s-eye View of Venice (1500) turns the lagoon city into a single inspectable object while recording its extraordinary material density.',
+    essaySlugs: ['invisible-maps-trade'],
+    links: [
+      {
+        label: 'Minneapolis Institute of Art',
+        url: 'https://collections.artsmia.org/art/111219/view-of-venice-jacopo-de-barbari',
+      },
+    ],
+  },
 ];
 
 export const CARTOGRAPHERS: Cartographer[] = RAW.map((c) => CartographerSchema.parse(c));

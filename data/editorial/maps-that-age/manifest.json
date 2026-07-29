@@ -1,0 +1,19 @@
+{
+  "slug": "maps-that-age",
+  "title": "Maps That Age",
+  "stage": "concept",
+  "room": "archive",
+  "secondaryRooms": ["map", "theatre"],
+  "thesis": "Maps do not simply become old: printing plates accumulate repairs, recut borders and altered names, while later states preserve inherited geometries that make political change look continuous. Reading successive states exposes age as an editorial process rather than a date.",
+  "whyThisSite": "Terra Chartarum can place dated states of the same plate in a CompareSlider, record state-specific changes in the catalogue and export those observations through Cartometry, making revision visible without pretending that every difference is a new map.",
+  "minimumDraftWords": 3000,
+  "draftPath": "docs/editorial/maps-that-age/draft.md",
+  "contentPath": "src/content/essays/maps-that-age.mdx",
+  "coverPath": "public/covers/maps-that-age.svg",
+  "ogPath": "public/og/maps-that-age.png",
+  "seriesPath": "src/pages/series/maps-that-age.astro",
+  "corpus": [],
+  "bibliography": [],
+  "claims": [],
+  "sections": []
+}

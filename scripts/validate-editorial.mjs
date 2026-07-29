@@ -129,6 +129,27 @@ function validatePackage(file) {
     );
   }
 
+  if (stage >= STAGES.indexOf('design-qa')) {
+    check(
+      existsSync(resolve(ROOT, manifest.coverPath ?? '')),
+      `${label}: cover asset does not exist`,
+      errors,
+    );
+    check(
+      existsSync(resolve(ROOT, manifest.ogPath ?? '')),
+      `${label}: social preview asset does not exist`,
+      errors,
+    );
+  }
+
+  if (stage >= STAGES.indexOf('publish')) {
+    check(
+      existsSync(resolve(ROOT, manifest.seriesPath ?? '')),
+      `${label}: series or editorial index path does not exist`,
+      errors,
+    );
+  }
+
   return errors;
 }
 

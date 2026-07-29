@@ -141,3 +141,34 @@ test.describe('flow: VMN standalone network', () => {
     await expect(page.locator('[data-edge].is-active').first()).toBeVisible();
   });
 });
+
+test.describe('flow: Invisible Maps of Trade publication', () => {
+  test('essay interactions and series index are connected', async ({ page }) => {
+    await page.goto('/essays/invisible-maps-trade/');
+
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Invisible Maps of Trade' }),
+    ).toBeVisible();
+
+    const comparison = page.getByRole('slider', {
+      name: 'Reveal slider between Carta Pisana · c. 1290 and Anonymous portolan · c. 1320–50',
+    });
+    await expect(comparison).toHaveAttribute('aria-valuenow', '50');
+    await comparison.focus();
+    await page.keyboard.press('ArrowRight');
+    await expect(comparison).toHaveAttribute('aria-valuenow', '52');
+
+    await expect(page.locator('[data-vmn-network]')).toBeVisible();
+    await page.getByRole('button', { name: /spices/i }).click();
+    await expect(page.locator('[data-vmn-network] .vn-status')).toHaveText(
+      '3 routes carry spices.',
+    );
+
+    await page.getByRole('link', { name: 'Part of the Invisible Maps series' }).click();
+    await page.waitForURL(/\/series\/invisible-maps\/?$/);
+    await expect(page.getByRole('heading', { level: 1, name: 'Invisible Maps' })).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: /Invisible Maps of Trade/i }).first(),
+    ).toBeVisible();
+  });
+});

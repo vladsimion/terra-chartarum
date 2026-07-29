@@ -1,16 +1,20 @@
 {
   "slug": "invisible-maps-trade",
   "title": "Invisible Maps of Trade",
-  "stage": "draft",
+  "stage": "publish",
   "room": "road",
   "secondaryRooms": ["border", "city"],
   "thesis": "A portolan chart did not merely picture Mediterranean trade: by reducing land to a named coast and sea to a routable field, it made a commercial network appear natural while concealing the jurisdictions, labour, coercion and negotiated privileges that kept that network moving.",
   "whyThisSite": "Terra Chartarum can read the chart beside the VMN authority tables, route paths and commodity vocabulary, letting the reader compare the elegant visual promise of frictionless movement with the dated political arrangements beneath every call.",
   "minimumDraftWords": 3000,
-  "draftPath": "docs/editorial/invisible-maps-trade/draft.md",
+  "draftPath": "src/content/essays/invisible-maps-trade.mdx",
+  "contentPath": "src/content/essays/invisible-maps-trade.mdx",
+  "coverPath": "public/covers/invisible-maps-trade.svg",
+  "ogPath": "public/og/invisible-maps-trade.png",
+  "seriesPath": "src/pages/series/invisible-maps.astro",
   "corpus": [
     {
-      "id": "trade-carta-pisana",
+      "id": "carta-pisana",
       "title": "Carta Pisana",
       "maker": "Anonymous",
       "year": 1290,
@@ -71,7 +75,7 @@
       "scanQuality": "3651 × 2144 digital reproduction"
     },
     {
-      "id": "trade-fra-mauro",
+      "id": "fra-mauro",
       "title": "Fra Mauro world map",
       "maker": "Fra Mauro",
       "year": 1459,
@@ -159,7 +163,7 @@
     {
       "id": "coast-as-infrastructure",
       "title": "The coast as infrastructure",
-      "mapIds": ["trade-carta-pisana", "trade-loc-portolan"],
+      "mapIds": ["carta-pisana", "trade-loc-portolan"],
       "interactive": "CompareSlider between the Carta Pisana and the Library of Congress portolan"
     },
     {
@@ -182,12 +186,12 @@
     {
       "id": "world-collected",
       "title": "A world collected in Venice",
-      "mapIds": ["trade-fra-mauro", "trade-agnese-1544"]
+      "mapIds": ["fra-mauro", "trade-agnese-1544"]
     },
     {
       "id": "invisible-below-route",
       "title": "What disappears below the route",
-      "mapIds": ["trade-carta-pisana", "trade-barbari-1500"],
+      "mapIds": ["carta-pisana", "trade-barbari-1500"],
       "interactive": "VMN force-directed commodity and waypoint explorer"
     }
   ]

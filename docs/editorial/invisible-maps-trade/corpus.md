@@ -7,6 +7,11 @@ The executable record is
 Every entry records its holding institution or repository, source page, reuse status
 and scan-quality note.
 
+The published essay source is
+[`src/content/essays/invisible-maps-trade.mdx`](../../../src/content/essays/invisible-maps-trade.mdx);
+the batch-one Markdown draft was promoted into that native MDX entry during the build
+stage, leaving a single prose source of truth.
+
 ## Hero
 
 **Carta Pisana, c. 1275–1300** — the earliest surviving portolan chart, represented by

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Invisible Maps of Trade">
+  <rect width="800" height="500" fill="#0a0806"/>
+  <g fill="none" stroke="#79b8b2" stroke-width="1.5" opacity="0.52">
+    <circle cx="130" cy="118" r="5"/><circle cx="288" cy="208" r="5"/>
+    <circle cx="430" cy="142" r="5"/><circle cx="558" cy="304" r="5"/>
+    <circle cx="696" cy="224" r="5"/>
+    <path d="M130 118 L288 208 L430 142 L558 304 L696 224"/>
+    <path d="M130 118 L430 142 M288 208 L558 304 M430 142 L696 224" opacity="0.45"/>
+  </g>
+  <g stroke="#d4b87a" stroke-width="1" opacity="0.2">
+    <path d="M0 60 H800 M0 160 H800 M0 260 H800 M0 360 H800 M0 460 H800"/>
+    <path d="M80 0 V500 M240 0 V500 M400 0 V500 M560 0 V500 M720 0 V500"/>
+  </g>
+  <text x="54" y="68" fill="#79b8b2" font-family="monospace" font-size="14" letter-spacing="4">THE ROAD BENEATH THE CHART</text>
+  <text x="54" y="406" fill="#e8dec5" font-family="Georgia, serif" font-size="52">Invisible Maps</text>
+  <text x="54" y="462" fill="#79b8b2" font-family="Georgia, serif" font-size="52" font-style="italic">of Trade</text>
+</svg>

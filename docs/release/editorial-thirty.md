@@ -20,3 +20,29 @@ parked optional platform tickets are not substituted merely to increase the coun
 
 **Evidence:** editorial QA, lint, 109 unit tests, Astro check, formatting and Git diff
 hygiene pass.
+
+## Batch 2 — Trade publication and next anchor
+
+**Tickets:** KAN-109, KAN-110, KAN-111, KAN-112, KAN-113.
+
+- Promoted the Trade draft to a 3,790-word native MDX essay with complete room,
+  section and meta-lens frontmatter.
+- Added a keyboard-operable portolan comparison plus live Atlas, timeline and VMN
+  commodity-network moments.
+- Integrated all nine maps into the collection catalogue, linked six cartographer
+  authorities and shared bibliography entries, and added a code-native cover plus
+  generated OG image.
+- Published an auto-expanding Invisible Maps series shell and more than three
+  cross-room links.
+- Approved the Maps That Age concept brief, with The Archive as primary room and a
+  state-change ledger as its evidence contract.
+
+**Evidence:** editorial QA for two packages, lint, 109 unit tests, Astro check, a
+60-page production build, formatting, Git diff hygiene, and the focused Chromium
+essay/interaction/series flow pass.
+
+**Reprioritisation:** a fresh Roadmap and Jira read found KAN-114–KAN-118 all To Do,
+Medium, unblocked and in the required pipeline order. Batch 3 therefore remains Maps
+That Age corpus → research → outline → draft → interactive build. KAN-119–KAN-121
+stay immediately behind it because design QA, publication and Cartometry export
+depend on that build.

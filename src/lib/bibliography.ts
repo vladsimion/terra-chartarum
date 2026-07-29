@@ -54,6 +54,39 @@ const RAW: unknown[] = [
     citation:
       'Edney, Matthew H. Cartography: The Ideal and Its History. Chicago: University of Chicago Press, 2019.',
   },
+  {
+    id: 'campbell-1987',
+    author: 'Campbell, Tony',
+    year: 1987,
+    title: 'Portolan Charts from the Late Thirteenth Century to 1500',
+    citation:
+      'Campbell, Tony. “Portolan Charts from the Late Thirteenth Century to 1500.” In The History of Cartography, vol. 1. Chicago: University of Chicago Press, 1987.',
+    url: 'https://press.uchicago.edu/books/HOC/HOC_V1/HOC_VOLUME1_chapter19.pdf',
+  },
+  {
+    id: 'lane-1934',
+    author: 'Lane, Frederic C.',
+    year: 1934,
+    title: 'Venetian Ships and Shipbuilders of the Renaissance',
+    citation:
+      'Lane, Frederic C. Venetian Ships and Shipbuilders of the Renaissance. Baltimore: Johns Hopkins University Press, 1934.',
+  },
+  {
+    id: 'lane-1973',
+    author: 'Lane, Frederic C.',
+    year: 1973,
+    title: 'Venice: A Maritime Republic',
+    citation:
+      'Lane, Frederic C. Venice: A Maritime Republic. Baltimore: Johns Hopkins University Press, 1973.',
+  },
+  {
+    id: 'oconnell-2009',
+    author: 'O’Connell, Monique',
+    year: 2009,
+    title: 'Men of Empire: Power and Negotiation in Venice’s Maritime State',
+    citation:
+      'O’Connell, Monique. Men of Empire: Power and Negotiation in Venice’s Maritime State. Baltimore: Johns Hopkins University Press, 2009.',
+  },
 ];
 
 export const BIBLIOGRAPHY: BibEntry[] = RAW.map((b) => BibEntrySchema.parse(b));

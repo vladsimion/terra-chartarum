@@ -1,3 +1,73 @@
+---
+title: Invisible Maps of Trade
+subtitle: The Routes Beneath the Portolan
+summary: >-
+  Portolan charts made Mediterranean trade look effortless. The VMN authority
+  tables reveal the jurisdictions, schedules, labour and negotiated privileges
+  beneath every clean line.
+cover: /covers/invisible-maps-trade.svg
+status: native
+eras: [Medieval, Renaissance]
+regions: [Mediterranean, Venice, Levant]
+lenses: [Network, Jurisdiction, Schedule, Labour, Commodity, Silence]
+yearFrom: 1275
+yearTo: 1571
+mapCount: 9
+readingMinutes: 18
+accent: '#79b8b2'
+order: 5
+featured: true
+room: road
+secondaryRooms: [border, city]
+sections:
+  - id: coast-as-infrastructure
+    title: The coast as infrastructure
+    room: road
+    secondaryRooms: [border]
+  - id: route-before-territory
+    title: A route before a territory
+    room: border
+    secondaryRooms: [road]
+  - id: lagoon-ledger
+    title: The lagoon and the ledger
+    room: city
+    secondaryRooms: [road]
+  - id: convoy-calendar
+    title: The convoy calendar
+    room: road
+    secondaryRooms: [archive]
+  - id: world-collected
+    title: A world collected in Venice
+    room: theatre
+    secondaryRooms: [road]
+  - id: invisible-below-route
+    title: What disappears below the route
+    room: border
+    secondaryRooms: [road, city]
+publishedAt: '2026-07-29'
+updatedAt: '2026-07-29'
+metaScores:
+  measure: 0.62
+  witness: 0.72
+  use: 0.9
+  cosmos: 0.58
+  power: 0.88
+  silence: 0.9
+---
+
+import Section from '../../components/Section.astro';
+import AdaptiveTimeline from '../../components/islands/AdaptiveTimeline.astro';
+import AtlasMap from '../../components/islands/AtlasMap.astro';
+import CompareSlider from '../../components/islands/CompareSlider.astro';
+import VmnNetworkExplorer from '../../components/islands/VmnNetworkExplorer.astro';
+
+<p class="essay-kicker">The Road · The Border · The City · c. 1275–1571</p>
+
+<p>
+  <a href="/series/invisible-maps/">Part of the Invisible Maps series</a> · Read beside{' '}
+  <a href="/essays/venice-sicily/">La Rotta e il Catasto</a>.
+</p>
+
 # Invisible Maps of Trade
 
 ## The sea that looks ready
@@ -42,7 +112,7 @@ authority, ordered calls and controlled commodity tags beside the historical ima
 The result is not a correction of the chart. It is an interrogation of what the
 chart’s clarity costs.
 
-## The coast as infrastructure
+<Section id="coast-as-infrastructure" title="The coast as infrastructure" rooms={['road', 'border']}>
 
 Compare the Carta Pisana with the anonymous fourteenth-century chart held by the
 Library of Congress. Their outlines are not identical, nor are their surviving
@@ -86,7 +156,30 @@ creditors, guards, sailors and coerced workers who made connection repeatable.
 
 The coast looks ready because countless people kept making it ready.
 
-## A route before a territory
+<CompareSlider
+  beforeLabel="Carta Pisana · c. 1290"
+  afterLabel="Anonymous portolan · c. 1320–50"
+  caption="Two public-domain portolans make the sea dense with relations while leaving most inland territory outside the instrument’s task."
+>
+  <img
+    slot="before"
+    src="https://commons.wikimedia.org/wiki/Special:FilePath/Carte%20Pisane%20Portolan.jpg?width=1600"
+    alt="Carta Pisana, a late-thirteenth-century portolan chart of the Mediterranean"
+    loading="lazy"
+    decoding="async"
+  />
+  <img
+    slot="after"
+    src="https://commons.wikimedia.org/wiki/Special:FilePath/Portolan%20chart%20of%20the%20Mediterranean%20Sea%20ca.%201320-1350%20-%20manuscript%20chart%20of%20the%20Mediterranean%20and%20Black%20seas%20on%20vellum.%20LOC%202003630429.jpg?width=1600"
+    alt="Anonymous portolan chart of the Mediterranean and Black Seas, around 1320 to 1350"
+    loading="lazy"
+    decoding="async"
+  />
+</CompareSlider>
+
+</Section>
+
+<Section id="route-before-territory" title="A route before a territory" rooms={['border', 'road']}>
 
 Pietro Vesconte’s signed chart of 1311 offers a useful resistance to the political
 map. It gives the eastern Mediterranean as a set of coasts that can be followed and
@@ -132,7 +225,16 @@ rows.
 The route comes before territory in the image. In history, route and territory keep
 remaking one another.
 
-## The lagoon and the ledger
+<p>
+  The Atlas below exposes the published ports and routes. Its paths are schematic corridors; select
+  ports and move the time control to inspect the dated authority model.
+</p>
+
+<AtlasMap />
+
+</Section>
+
+<Section id="lagoon-ledger" title="The lagoon and the ledger" rooms={['city', 'road']}>
 
 Jacopo de’ Barbari’s immense _View of Venice_ seems at first to offer the opposite of
 a portolan. Where the marine chart strips the city to a coastal name, de’ Barbari
@@ -178,7 +280,9 @@ These are small words with large historiographical effects. They stop the networ
 from hardening into an empire-shaped diagram. They remind us that an invisible map of
 trade is also a map of permissions.
 
-## The convoy calendar
+</Section>
+
+<Section id="convoy-calendar" title="The convoy calendar" rooms={['road', 'archive']}>
 
 Lines alone do not make a route. Repetition does.
 
@@ -224,7 +328,39 @@ as history because it looks persuasive.
 The convoy is invisible on the portolan not because time is unimportant, but because
 the chart delegates time to other practices. The map waits. The institution moves.
 
-## Commodities without arrows
+<AdaptiveTimeline
+  from={1275}
+  to={1571}
+  ticks={[1275, 1350, 1450, 1500, 1571]}
+  caption="The secured map corpus and political interval discussed by the essay. Map dates are not route operating windows."
+  events={[
+    { year: 1290, label: 'Carta Pisana', href: '/collection/carta-pisana/' },
+    {
+      year: 1311,
+      label: 'Pietro Vesconte, signed portolan',
+      href: '/collection/trade-vesconte-1311/',
+    },
+    { year: 1436, label: 'Andrea Bianco atlas', href: '/collection/trade-bianco-1436/' },
+    { year: 1459, label: 'Fra Mauro world map', href: '/collection/fra-mauro/' },
+    {
+      year: 1466,
+      label: 'Petrus Roselli chart',
+      href: '/collection/trade-roselli-1466/',
+    },
+    {
+      year: 1500,
+      label: 'de’ Barbari, View of Venice',
+      href: '/collection/trade-barbari-1500/',
+    },
+    {
+      year: 1544,
+      label: 'Battista Agnese atlas',
+      href: '/collection/trade-agnese-1544/',
+    },
+  ]}
+/>
+
+### Commodities without arrows
 
 Trade maps often begin with arrows and end with inevitability. Pepper flows west.
 Timber flows south. Grain moves towards a hungry city. The thicker the arrow, the more
@@ -265,7 +401,11 @@ Neither is the true shape of trade. Their disagreement is useful. A distant port
 be structurally close; neighbouring harbours can belong to different circuits. The
 reader learns to ask what each diagram preserves and what it sacrifices.
 
-## A world collected in Venice
+<VmnNetworkExplorer />
+
+</Section>
+
+<Section id="world-collected" title="A world collected in Venice" rooms={['theatre', 'road']}>
 
 Fra Mauro’s world map expands the argument beyond the Mediterranean without leaving
 the logic of collection. The map is crowded with text and places, turned south-up,
@@ -298,7 +438,9 @@ effective navigational technology and a diagram whose clarity hides labour and
 jurisdiction. Critical reading does not diminish the object. It restores the
 conditions that made the object possible.
 
-## What disappears below the route
+</Section>
+
+<Section id="invisible-below-route" title="What disappears below the route" rooms={['border', 'road', 'city']}>
 
 Return to the Carta Pisana after passing through the authority table, timeline and
 network. The image has not changed. The same names line the coast. The same rhumbs
@@ -342,6 +484,8 @@ trade as a route continually produced by people who did not share one status, on
 interest or one freedom of movement. The lines remain beautiful. They are no longer
 innocent.
 
+</Section>
+
 ## Working references
 
 - Campbell, Tony. “Portolan Charts from the Late Thirteenth Century to 1500.” In
@@ -355,3 +499,8 @@ innocent.
   State_. Baltimore: Johns Hopkins University Press, 2009.
 - Terra Chartarum. _Venetian Maritime Network authority tables and source log_,
   release 975f94e, 2026.
+
+Continue through <a href="/rooms/border/">The Border</a>, where jurisdiction becomes
+visible, or <a href="/rooms/city/">The City</a>, where networks acquire institutional
+form. The sacred-geography counterpoint is <a href="/essays/speculum/">Speculum
+Chartarum</a>.
