@@ -1,0 +1,214 @@
+---
+const fragments = [
+  {
+    id: '10a',
+    state: 'joined',
+    label: 'Fragment 10a',
+    evidence:
+      'A physical join and continuous wall lines place this piece within a known slab group.',
+  },
+  {
+    id: '24c',
+    state: 'attributed',
+    label: 'Fragment 24c',
+    evidence:
+      'Architectural form supports a proposed district, but the fragment has no secure physical join.',
+  },
+  {
+    id: '31bb',
+    state: 'unplaced',
+    label: 'Fragment 31bb',
+    evidence:
+      'The surviving incisions preserve a building, not enough context to place it safely in Rome.',
+  },
+  {
+    id: '37a',
+    state: 'joined',
+    label: 'Fragment 37a',
+    evidence:
+      'Break edges and the continuation of engraved geometry support its position in a larger assembly.',
+  },
+  {
+    id: '46',
+    state: 'attributed',
+    label: 'Fragment 46',
+    evidence:
+      'A named or recognisable structure suggests a neighbourhood without resolving the whole slab.',
+  },
+  {
+    id: 'unknown',
+    state: 'unplaced',
+    label: 'Unnumbered remainder',
+    evidence:
+      'A legible plan survives while its address does not. It remains evidence without a recovered location.',
+  },
+];
+
+const labels = {
+  all: 'All evidence states',
+  joined: 'Physically joined',
+  attributed: 'Proposed location',
+  unplaced: 'Unplaced',
+};
+---
+
+<section class="fl" data-fragment-ledger aria-labelledby="fragment-ledger-title">
+  <div class="fl-head">
+    <div>
+      <p class="fl-kicker">Evidence register</p>
+      <h3 id="fragment-ledger-title">What kind of “place” does a fragment have?</h3>
+    </div>
+    <p class="fl-status" role="status" aria-live="polite">
+      Showing {fragments.length} fragments across three evidence states.
+    </p>
+  </div>
+
+  <div class="fl-filters" role="group" aria-label="Filter fragment evidence">
+    {
+      Object.entries(labels).map(([key, label], index) => (
+        <button type="button" data-filter={key} aria-pressed={index === 0 ? 'true' : 'false'}>
+          {label}
+        </button>
+      ))
+    }
+  </div>
+
+  <ol class="fl-grid">
+    {
+      fragments.map((fragment) => (
+        <li data-fragment data-state={fragment.state}>
+          <p class="fl-state">{labels[fragment.state as keyof typeof labels]}</p>
+          <h4>{fragment.label}</h4>
+          <p>{fragment.evidence}</p>
+        </li>
+      ))
+    }
+  </ol>
+
+  <p class="fl-note">
+    Illustrative evidence classes, not a republication of the Stanford fragment photography.
+    Fragment identifiers demonstrate the editorial rule: a proposed location is never displayed as a
+    physical join. Inspect the searchable source record at{' '}
+    <a href="https://formaurbis.stanford.edu/docs/FURmap.html">Stanford Digital Forma Urbis</a>.
+  </p>
+</section>
+
+<script>
+  function initLedger(root: HTMLElement) {
+    const cards = [...root.querySelectorAll<HTMLElement>('[data-fragment]')];
+    const status = root.querySelector<HTMLElement>('.fl-status')!;
+    const buttons = [...root.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+
+    for (const button of buttons) {
+      button.addEventListener('click', () => {
+        const filter = button.dataset.filter ?? 'all';
+        let visible = 0;
+        for (const card of cards) {
+          card.hidden = filter !== 'all' && card.dataset.state !== filter;
+          if (!card.hidden) visible += 1;
+        }
+        for (const peer of buttons) peer.setAttribute('aria-pressed', String(peer === button));
+        status.textContent =
+          filter === 'all'
+            ? `Showing ${visible} fragments across three evidence states.`
+            : `Showing ${visible} fragments classified as ${button.textContent?.trim().toLowerCase()}.`;
+      });
+    }
+  }
+
+  const boot = () =>
+    document.querySelectorAll<HTMLElement>('[data-fragment-ledger]').forEach((root) => {
+      if (!root.dataset.ready) {
+        root.dataset.ready = '1';
+        initLedger(root);
+      }
+    });
+  boot();
+  document.addEventListener('astro:page-load', boot);
+</script>
+
+<style>
+  .fl {
+    margin: 2rem 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: clamp(1rem, 3vw, 2rem);
+    background: color-mix(in srgb, var(--panel) 92%, var(--gold) 8%);
+  }
+  .fl-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: end;
+    gap: 1rem;
+  }
+  .fl-kicker,
+  .fl-state {
+    margin: 0 0 0.25rem;
+    color: var(--gold);
+    font: 0.68rem/1.3 var(--font-mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  h3,
+  h4 {
+    margin: 0;
+  }
+  .fl-status {
+    margin: 0;
+    max-width: 28rem;
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+  }
+  .fl-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1.25rem 0;
+  }
+  button {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.45rem 0.8rem;
+    color: var(--ink-muted);
+    background: var(--canvas);
+    cursor: pointer;
+    font: 0.7rem/1 var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  button[aria-pressed='true'] {
+    color: var(--canvas);
+    border-color: var(--gold);
+    background: var(--gold);
+  }
+  button:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+  .fl-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .fl-grid li {
+    border: 1px solid var(--line);
+    border-radius: calc(var(--radius) * 0.75);
+    padding: 1rem;
+    background: var(--panel);
+  }
+  .fl-grid li[hidden] {
+    display: none;
+  }
+  .fl-grid li p:last-child,
+  .fl-note {
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+  }
+  .fl-note {
+    margin: 1rem 0 0;
+  }
+</style>

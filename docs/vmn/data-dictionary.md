@@ -63,6 +63,15 @@ carrying `port_id`, `name_historic`→`name`, `name_local`, `region`, `status`,
 `polity_id`, and provenance. The
 atlas registry graduates the point radius by **`status`** (see `src/lib/geo.ts`).
 
+### Merchant-quarter representation contract
+
+[`quarter-representations.json`](../../data/vmn/quarter-representations.json)
+freezes the display decision for Constantinople, Tana and Trebizond. Each record
+must resolve to a `ports.csv` authority id, use the `port_only` representation
+vocabulary, carry source keys and a written rationale, and omit geometry. The QA
+gate rejects missing ports, unknown sources, geometry fields, or accidental reuse
+of a quarter id as a possession territory.
+
 ## `waypoints.csv` (§5.2a)
 
 Authority table [`data/vmn/waypoints.csv`](../../data/vmn/waypoints.csv) for
@@ -90,7 +99,9 @@ or a `waypoint_id`.
 | `source_keys`, `notes`    | string | Provenance; `notes` must flag judgment calls                                                                           |
 
 **Geometry rule:** _never digitize coastline._ Draw generous inland/offshore
-extent polygons, then clip via intersection with the bundled Natural Earth land in the
+extent polygons in
+[`possessions-extents.geojson`](../../data/vmn/possessions-extents.geojson), keyed by
+`(territory, start_date)`, then clip via intersection with the bundled Natural Earth land in the
 pipeline. The clipping base is Natural Earth 1:10m land, release `v5.1.1`, pinned
 with the matching coastline and SHA-256 checksums in
 `data/vmn/base/manifest.json`.
@@ -124,12 +135,23 @@ declared anchors in order and rejects land intersections outside a 0.05° harbou
 approach around those anchors; the exception accounts for lagoon mouths and
 narrow inlets absent from the 1:10m base.
 
+The exact seven ordered sequences are also frozen in
+[`data/vmn/route-sequences.json`](../../data/vmn/route-sequences.json). That contract
+must match `routes.csv` field for field at validation time and is the acceptance
+artifact for KAN-155: it records route type, calls, commodities, operating window and
+source keys in a reviewable JSON shape. Its `structurally_verified` status means all
+references resolve, overlap temporally and occur on the authored sea paths in order.
+It does **not** promote the dates to page-verified evidence. The contract permanently
+attaches `pending_page_level_verification_KAN_154` until the cited Lane and O’Connell
+editions can be checked at page level.
+
 ## Supporting non-spatial tables (§5.5)
 
 - **`events.csv`** —
   `territory,name,status,start_date,end_date,source_keys,notes`. One row per
-  possession phase; expands the generalized traces in `possessions.geojson` into
-  coastline-clipped `venetian-possessions.fgb` features.
+  possession phase; expands the phase-keyed generalized traces in
+  `possessions-extents.geojson` into coastline-clipped
+  `venetian-possessions.fgb` features.
 - **`sources.csv`** — `key, citation, url, license`. Seeded in KAN-145.
 - **`atlas_links.csv`** — ID-only essay-beat → Atlas state mappings. Each row
   carries a `port`, `route`, or `possession` target id, year, pipe-separated
@@ -245,3 +267,12 @@ narrow inlets absent from the 1:10m base.
   value (Negroponte, 1209–1390) is normalized to `subject`: a bailiwick is an
   administrative jurisdiction, while this field models sovereignty/tenure. The
   phase note retains the original bailo/bailiwick distinction.
+
+- **D11 — Eastern merchant quarters are `port_only`.** The representation
+  vocabulary is intentionally separate from both port `status` and possession
+  `status`. `port_only` means that the authority-table Point is the complete
+  published geometry for the claim: it records a dated commercial presence, not
+  sovereignty over a mappable enclave. Constantinople resolves to its three phased
+  `constantinople_quarter` rows; Tana and Trebizond resolve to their single
+  authority records. This closes the requested representation work without
+  manufacturing symbolic possession polygons whose size would be arbitrary.

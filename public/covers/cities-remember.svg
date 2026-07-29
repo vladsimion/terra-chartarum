@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title description">
+  <title id="title">Cities Remember cover</title>
+  <desc id="description">An abstract palimpsest of an engraved city plan, fragmented blocks and a river seam.</desc>
+  <rect width="1200" height="630" fill="#171a1b"/>
+  <path d="M0 417c122-36 207-4 309-29 95-23 148-83 242-89 115-8 181 62 294 45 105-16 208-83 355-54v108c-145-25-246 43-357 59-121 18-191-52-294-44-88 7-149 66-246 88-102 23-190-7-303 29Z" fill="#7ba8a0" opacity=".72"/>
+  <g fill="none" stroke="#d6c49a" stroke-width="3" opacity=".74">
+    <path d="M70 91h252v101h102v94H277v88H103V249H70Z"/>
+    <path d="M460 73h172v72h109v126h-67v93H519v-71h-78V170h19Z"/>
+    <path d="M808 74h282v106h-76v82h116v102H961v-70H805V189h45Z"/>
+    <path d="M74 471h143v91H74zm211-42h179v139H285zm253 57h173v82H538zm236-39h133v121H774zm189-17h151v138H963Z"/>
+  </g>
+  <g fill="#b87952" opacity=".88">
+    <rect x="130" y="129" width="123" height="71"/>
+    <rect x="516" y="116" width="77" height="121"/>
+    <rect x="858" y="120" width="104" height="105"/>
+    <rect x="335" y="467" width="84" height="65"/>
+    <rect x="818" y="486" width="48" height="61"/>
+  </g>
+  <g fill="#171a1b">
+    <path d="M160 148h63v34h-63zM539 143h31v66h-31zM887 148h47v49h-47z"/>
+  </g>
+  <g stroke="#e5dcc4" stroke-width="2" opacity=".45">
+    <path d="M23 46 399 405M177 32l410 393M707 29l458 379M663 120l459 392M41 585 464 173M383 605 770 196M764 609l399-403"/>
+  </g>
+  <rect x="54" y="43" width="1092" height="544" fill="none" stroke="#d6c49a" stroke-width="2"/>
+  <text x="78" y="517" fill="#f2ebd9" font-family="Georgia,serif" font-size="78" letter-spacing="2">Cities Remember</text>
+  <text x="82" y="558" fill="#d6c49a" font-family="monospace" font-size="20" letter-spacing="5">THE MAP AFTER THE STREET</text>
+</svg>

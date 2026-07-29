@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "geo-b36f1d355ea91d09",
+  "release": "geo-26d1ffc789ed3dc2",
   "generatedBy": "scripts/geo-release.mjs",
   "assets": [
     {
@@ -170,10 +170,10 @@
       "source": "Terra Chartarum (compiled) — Lane 1973; O'Connell 2009",
       "license": "CC BY",
       "attribution": "Terra Chartarum; after Lane and O'Connell",
-      "bytes": 152872,
-      "sha256": "7d7fb10f617ef9771f7d8000c26c56f00cb0062e25594771333fdbb18492b1a2",
-      "version": "7d7fb10f617e",
-      "url": "/geo/venetian-possessions.fgb?v=7d7fb10f617e"
+      "bytes": 133592,
+      "sha256": "7d5be86fa5e594abe5d0ab6503dea50c3f68e09ee64193857bd16c1cf7d68847",
+      "version": "7d5be86fa5e5",
+      "url": "/geo/venetian-possessions.fgb?v=7d5be86fa5e5"
     }
   ]
 }

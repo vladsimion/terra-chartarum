@@ -1,0 +1,94 @@
+{
+  "@context": [
+    "http://www.w3.org/ns/anno.jsonld",
+    "https://iiif.io/api/extension/georef/1/context.json"
+  ],
+  "id": "https://terra-chartarum-atlas.vladsimion.chatgpt.site/annotations/cities-remember-nolli.json",
+  "type": "AnnotationPage",
+  "label": {
+    "en": ["Exploratory registration of Nolli sheet 1"]
+  },
+  "items": [
+    {
+      "id": "https://terra-chartarum-atlas.vladsimion.chatgpt.site/annotations/cities-remember-nolli.json#annotation",
+      "type": "Annotation",
+      "motivation": "georeferencing",
+      "target": {
+        "type": "SpecificResource",
+        "source": {
+          "id": "https://terra-chartarum-atlas.vladsimion.chatgpt.site/images/cities-remember/nolli-sheet-01.jpg",
+          "type": "Image",
+          "format": "image/jpeg",
+          "width": 1920,
+          "height": 1185
+        },
+        "selector": {
+          "type": "SvgSelector",
+          "value": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1920\" height=\"1185\"><polygon points=\"0,0 1920,0 1920,1185 0,1185\"/></svg>"
+        }
+      },
+      "body": {
+        "type": "FeatureCollection",
+        "transformation": {
+          "type": "polynomial",
+          "options": {
+            "order": 1
+          }
+        },
+        "features": [
+          {
+            "type": "Feature",
+            "properties": {
+              "pixel": [246, 665],
+              "label": "St Peter's / Vatican"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [12.4534, 41.9022]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "pixel": [1012, 530],
+              "label": "Castel Sant'Angelo"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [12.4663, 41.9031]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "pixel": [1438, 798],
+              "label": "Piazza Navona"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [12.4731, 41.8992]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "pixel": [1658, 1128],
+              "label": "Campo de' Fiori"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [12.4723, 41.8955]
+            }
+          }
+        ]
+      },
+      "_terraChartarum": {
+        "status": "exploratory",
+        "controlPointMethod": "Approximate visual correspondence on a cropped reproduction",
+        "residualDisclosure": "No evidence-grade residual has been calculated. Crop, engraving deformation and basemap projection make local error variable and visible.",
+        "prohibitedInference": "Do not infer parcel, wall or street survival from apparent coincidence.",
+        "sourceRecord": "https://commons.wikimedia.org/wiki/File:Giovanni_Battista_Nolli-Nuova_Pianta_di_Roma_(1748)_01-12.JPG"
+      }
+    }
+  ]
+}

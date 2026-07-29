@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://terra-chartarum.pages.dev/sitemap-index.xml
+Sitemap: https://terra-chartarum-atlas.vladsimion.chatgpt.site/sitemap-index.xml

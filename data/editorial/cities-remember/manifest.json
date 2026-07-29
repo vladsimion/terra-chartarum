@@ -1,16 +1,25 @@
 {
   "slug": "cities-remember",
   "title": "Cities Remember",
-  "stage": "outline",
+  "stage": "publish",
   "room": "city",
   "secondaryRooms": ["archive", "theatre"],
   "thesis": "A city map never records only the city that exists: it preserves demolished walls, monumental ambitions, property regimes and obsolete risks, allowing past urban orders to remain actionable long after the streets have changed.",
   "whyThisSite": "Terra Chartarum can place a rights-cleared historical town plan over a modern basemap, then connect the same city to bird’s-eye views, insurance sheets and catalogue records so continuity and erasure can be inspected rather than merely asserted.",
   "minimumDraftWords": 3000,
-  "draftPath": "docs/editorial/cities-remember/draft.md",
+  "draftPath": "src/content/essays/cities-remember.mdx",
   "contentPath": "src/content/essays/cities-remember.mdx",
   "coverPath": "public/covers/cities-remember.svg",
   "ogPath": "public/og/cities-remember.png",
+  "publishedPath": "src/content/essays/cities-remember.mdx",
+  "crossLinks": [
+    "/rooms/city/",
+    "/rooms/archive/",
+    "/rooms/theatre/",
+    "/essays/maps-that-age/",
+    "/essays/invisible-maps-trade/",
+    "/collection/"
+  ],
   "corpus": [
     {
       "id": "city-forma-urbis",

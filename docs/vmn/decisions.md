@@ -90,3 +90,37 @@ The three geometry-specific FGB layers are live and validated. The compilation
 gate now covers schema, geometry, temporal ranges, provenance, route references,
 and coastline containment; the atlas consumes the same frozen fields for
 interaction, filtering, and styling.
+
+## D10 — Possession phases and extents (KAN-158–162)
+
+The possession authority table is one row per political phase, and the authored
+extent file is keyed by the same `(territory, start_date)` pair. This prevents a
+later, wider phase from silently supplying geometry to an earlier, narrower one.
+
+- **Negroponte:** `condominium` (1209–1390) represents Venice’s jurisdiction within
+  the tripartite feudal island. It does not claim sole sovereignty over every point.
+  `direct_rule` begins in 1390 and ends with the Ottoman conquest in 1470. Both
+  phases use the island as a generalized reference extent; status carries the
+  jurisdictional difference.
+- **Dalmatia:** the 1409 purchase of rights did not instantly extinguish commune
+  autonomy. The table therefore uses a `contested` consolidation phase through 1420,
+  followed by `direct_rule`. The coastal polygon describes the mapped Venetian
+  administrative zone, not cadastral possession or homogeneous local government.
+- **Morea:** the 1207–1500 phase is represented by three disjoint envelopes around
+  Modon, Coron and the paired Nauplia/Argos holding. It must not render as rule over the entire
+  peninsula. The 1685–1715 phase uses a peninsular extent because it models de-facto
+  conquest-to-loss. Treaty recognition would instead yield 1699–1718 (Karlowitz to
+  Passarowitz); those dates are recorded but deliberately not used for the Atlas
+  time filter.
+- **Eastern merchant quarters:** Constantinople, Tana and Trebizond remain port
+  authority records, not possession polygons. A small enclave symbol would imply
+  boundary precision the sources do not support. Cyprus is the only KAN-162
+  territory promoted to a possession extent (`direct_rule`, 1489–1571).
+- **Reference plate:** Shepherd’s 1911 plate is georeferenced from its printed
+  graticule and mapped to every current `events.csv` territory. Its colour washes
+  constrain interpretation but do not supply the authored geometry. The plate’s
+  period also cannot be projected indiscriminately onto later phases.
+
+All dates remain derived scholarly assertions under `LANE1973` and
+`OCONNELL2009`. KAN-154 still owns page-level edition verification, so this decision
+does not manufacture page citations.

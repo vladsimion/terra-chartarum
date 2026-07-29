@@ -10,7 +10,7 @@ machine-readable through each compiled FlatGeobuf feature's `source_keys` field.
 | -------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | `LANE1973`     | Frederic C. Lane, _Venice: A Maritime Republic_ (Johns Hopkins University Press, 1973)                                      | Port phases, convoy routes, possession chronology                   | Copyright. Bibliographic facts and derived structured assertions only; page-level verification remains KAN-154. |
 | `OCONNELL2009` | Monique O'Connell, _Men of Empire: Power and Negotiation in Venice's Maritime State_ (Johns Hopkins University Press, 2009) | Political status, jurisdiction and territorial phases               | Copyright. Bibliographic facts and derived structured assertions only; page-level verification remains KAN-154. |
-| `SHEPHERD1911` | William R. Shepherd, _Historical Atlas_ (Henry Holt, 1911)                                                                  | Public-domain geographic cross-checks and reference-plate programme | Public domain. Georeferenced plate annotations remain KAN-158.                                                  |
+| `SHEPHERD1911` | William R. Shepherd, _Historical Atlas_ (Henry Holt, 1911)                                                                  | Public-domain geographic cross-checks and reference-plate programme | Public domain. Allmaps-compatible annotation and territory registry completed in KAN-158.                       |
 | `MCEVEDY`      | Colin McEvedy, _The Penguin Atlas of Medieval History_ (Penguin, 1961)                                                      | Broad chronology and western staging context                        | Copyright. Derived structured assertions only.                                                                  |
 
 ## Gazetteer and physical base data
@@ -32,8 +32,18 @@ versions and SHA-256 checksums live in
   this for every compiled feature.
 - A source key records provenance, not a claim of page-level verification. KAN-154
   remains the explicit scholarly pass for Lane/O'Connell page citations.
-- No copyrighted source scans are committed. Public-domain plate annotations, once
-  produced, belong under `data/vmn/reference/` (KAN-158).
+- KAN-155 freezes the seven ordered route sequences in
+  [`route-sequences.json`](../../data/vmn/route-sequences.json). The VMN gate requires
+  that contract to match every `routes.csv` field while retaining the explicit
+  `pending_page_level_verification_KAN_154` chronology status. Structural completion
+  therefore cannot silently close the scholarly verification task.
+- KAN-177–180 freeze the eastern merchant-quarter decisions in
+  [`quarter-representations.json`](../../data/vmn/quarter-representations.json).
+  The only accepted representation is `port_only`; the gate forbids embedded
+  geometry and checks that each decision resolves to a sourced port authority row.
+- No copyrighted source scans are committed. The KAN-158 public-domain plate registry,
+  Allmaps-compatible annotation and evidence boundary live under
+  [`data/vmn/reference/`](../../data/vmn/reference/).
 - Geometry is derived and generalized: port coordinates represent modern harbour
   locations; routes are schematic corridors; possession envelopes are clipped to the
   pinned Natural Earth land layer and are not cadastral boundaries.

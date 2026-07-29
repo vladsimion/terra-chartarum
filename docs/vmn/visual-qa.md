@@ -4,12 +4,14 @@ Run the scripted scrub before changing a VMN layer from pending to live and befo
 subsequent data release:
 
 ```sh
-npm run test:vmn-visual
+PLAYWRIGHT_PORT=4322 npm run test:vmn-visual
 ```
 
 The Chromium run opens all three VMN layers, checks six representative years at three
-map zooms, and attaches 18 PNG frames to the Playwright HTML report. CI archives that
-report for seven days on every pull request and `main` push.
+map zooms, and attaches 18 PNG frames to the Playwright HTML report. The explicit
+port prevents a pre-existing local preview from being mistaken for the release
+candidate. CI archives that report for seven days on every pull request and `main`
+push.
 
 ## Scripted matrix
 

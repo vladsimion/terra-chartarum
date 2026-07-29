@@ -1,0 +1,102 @@
+{
+  "@context": [
+    "http://www.w3.org/ns/anno.jsonld",
+    "https://iiif.io/api/extension/georef/1/context.json"
+  ],
+  "id": "https://terra-chartarum-atlas.vladsimion.chatgpt.site/data/vmn/reference/shepherd-byzantine-1265-1355.json",
+  "type": "AnnotationPage",
+  "label": {
+    "en": ["Reference registration: The Byzantine Empire, 1265–1355"]
+  },
+  "items": [
+    {
+      "id": "https://terra-chartarum-atlas.vladsimion.chatgpt.site/data/vmn/reference/shepherd-byzantine-1265-1355.json#georeference",
+      "type": "Annotation",
+      "motivation": "georeferencing",
+      "target": {
+        "type": "SpecificResource",
+        "source": {
+          "id": "https://archive.org/download/historicalatlas00shep_0/page/n88_w1600.jpg",
+          "type": "Image",
+          "format": "image/jpeg",
+          "width": 2459,
+          "height": 3975,
+          "service": [
+            {
+              "id": "https://iiif.archive.org/iiif/historicalatlas00shep_0$88",
+              "type": "ImageService2",
+              "profile": "level2"
+            }
+          ]
+        },
+        "selector": {
+          "type": "SvgSelector",
+          "value": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"2459\" height=\"3975\"><polygon points=\"70,180 2380,180 2380,1725 70,1725\"/></svg>"
+        }
+      },
+      "body": {
+        "type": "FeatureCollection",
+        "transformation": {
+          "type": "polynomial",
+          "options": {
+            "order": 1
+          }
+        },
+        "features": [
+          {
+            "type": "Feature",
+            "properties": {
+              "pixel": [282, 400],
+              "label": "17° E / 45° N graticule"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [17, 45]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "pixel": [2175, 400],
+              "label": "40° E / 45° N graticule"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [40, 45]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "pixel": [282, 1495],
+              "label": "17° E / 35° N graticule"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [17, 35]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "pixel": [2175, 1495],
+              "label": "40° E / 35° N graticule"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [40, 35]
+            }
+          }
+        ]
+      },
+      "_terraChartarum": {
+        "status": "reference_only",
+        "method": "Four printed graticule intersections on the upper 1265 map; first-order polynomial.",
+        "residualStatus": "Not calculated; the plate constrains interpretation and tracing but is not the published possession geometry.",
+        "geometryRule": "Possession extents are independently authored, generalized, and clipped to pinned Natural Earth land.",
+        "sourceRecord": "https://archive.org/details/historicalatlas00shep_0/page/n88/mode/1up",
+        "rights": "Public domain, 1911 edition."
+      }
+    }
+  ]
+}

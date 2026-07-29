@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "plates": [
+    {
+      "id": "shepherd-byzantine-1265-1355",
+      "title": "The Byzantine Empire, 1265–1355",
+      "sourceKey": "SHEPHERD1911",
+      "sourceRecord": "https://archive.org/details/historicalatlas00shep_0/page/n88/mode/1up",
+      "iiifManifest": "https://iiif.archive.org/iiif/historicalatlas00shep_0/manifest.json",
+      "annotation": "shepherd-byzantine-1265-1355.json",
+      "leaf": 88,
+      "rights": "Public domain. William R. Shepherd, Historical Atlas, 1911 edition.",
+      "territories": [
+        "crete",
+        "corfu",
+        "dalmatia",
+        "negroponte",
+        "morea",
+        "cyprus",
+        "albania_veneta"
+      ]
+    }
+  ]
+}

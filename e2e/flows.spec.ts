@@ -238,3 +238,56 @@ test.describe('flow: Invisible Maps of Religion interactive build', () => {
     ).toBeVisible();
   });
 });
+
+test.describe('flow: Cities Remember publication', () => {
+  test('fragment evidence and exploratory overlay remain explicit and operable', async ({
+    page,
+  }) => {
+    await page.goto('/essays/cities-remember/');
+
+    await expect(page.getByRole('heading', { level: 1, name: 'Cities Remember' })).toBeVisible();
+
+    const ledger = page.locator('[data-fragment-ledger]');
+    await ledger.getByRole('button', { name: 'Proposed location' }).click();
+    await expect(ledger.locator('.fl-status')).toHaveText(
+      'Showing 2 fragments classified as proposed location.',
+    );
+    await expect(ledger.locator('[data-fragment]:visible')).toHaveCount(2);
+
+    const comparison = page.getByRole('slider', {
+      name: 'Reveal slider between Nuremberg · 1493 civic portrait and Rome · Nolli sheet, 1748',
+    });
+    await comparison.focus();
+    await page.keyboard.press('Home');
+    await expect(comparison).toHaveAttribute('aria-valuenow', '0');
+
+    const opacity = page.getByRole('slider', { name: 'Historical map opacity' });
+    await opacity.focus();
+    await page.keyboard.press('ArrowRight');
+    await expect(page.locator('.cmo-status')).toHaveText('Historical layer at 60% opacity.');
+    await expect(
+      page.getByRole('link', { name: 'Download the Allmaps-compatible Web Annotation' }),
+    ).toHaveAttribute('href', '/annotations/cities-remember-nolli.json');
+
+    await expect(
+      page.getByRole('navigation', { name: 'Reading path through The City' }),
+    ).toBeVisible();
+    const roomPath = page.getByRole('navigation', { name: 'Reading path through The City' });
+    await expect(roomPath.getByRole('link', { name: /The City/ })).toHaveAttribute(
+      'href',
+      '/rooms/city/',
+    );
+    await expect(roomPath).toContainText('1 of 1');
+
+    for (const [name, href] of [
+      ['The City', '/rooms/city/'],
+      ['The Archive', '/rooms/archive/'],
+      ['The Theatre', '/rooms/theatre/'],
+    ] as const) {
+      await expect(page.getByRole('link', { name, exact: true }).first()).toHaveAttribute(
+        'href',
+        href,
+      );
+    }
+  });
+});

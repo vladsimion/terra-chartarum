@@ -34,10 +34,12 @@ from pathlib import Path
 # never drift from what the compiler writes.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build import (  # noqa: E402
+    EVENTS_CSV,
     LAND_GEOJSON,
     OPEN_ENDED,
     PORTS_CSV,
     POSSESSION_STATUS_VOCAB,
+    ROUTES_CSV,
     ROUTE_TYPE_VOCAB,
     SOURCES_CSV,
     STATUS_VOCAB,
@@ -48,6 +50,10 @@ from build import (  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[2]
 GEO_OUT = REPO / "public" / "geo"
+ROUTE_SEQUENCE_CONTRACT = REPO / "data" / "vmn" / "route-sequences.json"
+REFERENCE_ROOT = REPO / "data" / "vmn" / "reference"
+REFERENCE_MANIFEST = REFERENCE_ROOT / "manifest.json"
+QUARTER_REPRESENTATION_CONTRACT = REPO / "data" / "vmn" / "quarter-representations.json"
 
 # Sanity envelope for every VMN feature: the Mediterranean, Black Sea and the
 # Atlantic approach (Aigues-Mortes, Flanders, London). A bbox outside this window
@@ -357,6 +363,164 @@ def check_port_projection(port_rows, errors: list[str]) -> None:
         errors.append("ports: FGB (port_id, valid_from) keys differ from ports.csv")
 
 
+def check_route_sequence_contract(errors: list[str]) -> None:
+    """Freeze all seven ordered route sequences without overstating chronology."""
+    import json
+
+    if not ROUTE_SEQUENCE_CONTRACT.exists():
+        errors.append("routes: route-sequences.json contract is missing")
+        return
+
+    with ROUTE_SEQUENCE_CONTRACT.open(encoding="utf-8") as handle:
+        contract = json.load(handle)
+    _, route_rows = read_csv(ROUTES_CSV)
+    contract_routes = contract.get("routes", [])
+
+    if contract.get("status") != "structurally_verified":
+        errors.append("routes: sequence contract must be structurally_verified")
+    if contract.get("chronologyStatus") != "pending_page_level_verification_KAN_154":
+        errors.append("routes: chronology boundary must remain attached to KAN-154")
+    if not (6 <= len(contract_routes) <= 8):
+        errors.append(
+            f"routes: sequence contract has {len(contract_routes)} routes; expected 6–8"
+        )
+
+    expected = {}
+    for row in route_rows:
+        expected[row["route_id"].strip()] = {
+            "name": row["name"].strip(),
+            "routeType": row["route_type"].strip(),
+            "waypoints": row["waypoints"].strip().split("|"),
+            "commodities": row["commodities"].strip().split("|"),
+            "startDate": row["start_date"].strip(),
+            "endDate": row["end_date"].strip(),
+            "sourceKeys": row["source_keys"].strip().split(";"),
+        }
+
+    actual = {}
+    for route in contract_routes:
+        route_id = str(route.get("routeId", ""))
+        if route_id in actual:
+            errors.append(f"routes: duplicate contract route '{route_id}'")
+        actual[route_id] = {
+            key: route.get(key)
+            for key in (
+                "name",
+                "routeType",
+                "waypoints",
+                "commodities",
+                "startDate",
+                "endDate",
+                "sourceKeys",
+            )
+        }
+
+    if actual != expected:
+        errors.append("routes: route-sequences.json differs from routes.csv authority rows")
+
+
+def check_reference_plate_contract(errors: list[str]) -> None:
+    """Require every possession territory to resolve to an inspectable annotation."""
+    import json
+
+    if not REFERENCE_MANIFEST.exists():
+        errors.append("reference: public-domain plate manifest is missing")
+        return
+    with REFERENCE_MANIFEST.open(encoding="utf-8") as handle:
+        manifest = json.load(handle)
+    _, event_rows = read_csv(EVENTS_CSV)
+    expected = {row["territory"].strip() for row in event_rows}
+    covered = set()
+
+    for plate in manifest.get("plates", []):
+        covered.update(str(value) for value in plate.get("territories", []))
+        annotation_path = REFERENCE_ROOT / str(plate.get("annotation", ""))
+        if not annotation_path.exists():
+            errors.append(f"reference: annotation '{annotation_path.name}' is missing")
+            continue
+        with annotation_path.open(encoding="utf-8") as handle:
+            annotation_page = json.load(handle)
+        items = annotation_page.get("items", [])
+        if annotation_page.get("type") != "AnnotationPage" or not items:
+            errors.append(f"reference: '{annotation_path.name}' is not an AnnotationPage")
+            continue
+        annotation = items[0]
+        source = annotation.get("target", {}).get("source", {})
+        features = annotation.get("body", {}).get("features", [])
+        if annotation.get("motivation") != "georeferencing":
+            errors.append(f"reference: '{annotation_path.name}' has wrong motivation")
+        if not source.get("service") or len(features) < 4:
+            errors.append(
+                f"reference: '{annotation_path.name}' needs a IIIF service and ≥4 GCPs"
+            )
+
+    if covered != expected:
+        errors.append(
+            f"reference: territory coverage differs from events.csv "
+            f"(missing={sorted(expected - covered)}, extra={sorted(covered - expected)})"
+        )
+
+
+def check_quarter_representation_contract(
+    port_rows, source_keys: set[str], errors: list[str]
+) -> None:
+    """Keep merchant quarters as auditable authority points, never faux territories."""
+    import json
+
+    if not QUARTER_REPRESENTATION_CONTRACT.exists():
+        errors.append("quarters: quarter-representations.json contract is missing")
+        return
+
+    with QUARTER_REPRESENTATION_CONTRACT.open(encoding="utf-8") as handle:
+        contract = json.load(handle)
+    _, event_rows = read_csv(EVENTS_CSV)
+    possession_ids = {row["territory"].strip() for row in event_rows}
+    port_ids = {row["port_id"].strip() for row in port_rows}
+    expected = {
+        "constantinople_quarter": "constantinople_quarter",
+        "tana_fondaco": "tana",
+        "trebizond_quarter": "trebizond",
+    }
+    actual = {}
+
+    if contract.get("status") != "decided":
+        errors.append("quarters: representation contract must have status 'decided'")
+    for representation in contract.get("representations", []):
+        representation_id = str(representation.get("id", ""))
+        port_id = str(representation.get("portId", ""))
+        if representation_id in actual:
+            errors.append(f"quarters: duplicate representation '{representation_id}'")
+        actual[representation_id] = port_id
+        if representation.get("representation") != "port_only":
+            errors.append(
+                f"quarters: '{representation_id}' must use the port_only vocabulary"
+            )
+        if "geometry" in representation:
+            errors.append(
+                f"quarters: '{representation_id}' must not carry possession geometry"
+            )
+        if port_id not in port_ids:
+            errors.append(
+                f"quarters: '{representation_id}' references unknown port '{port_id}'"
+            )
+        if port_id in possession_ids or representation_id in possession_ids:
+            errors.append(
+                f"quarters: '{representation_id}' leaks into possession territories"
+            )
+        for source_key in representation.get("sourceKeys", []):
+            if source_key not in source_keys:
+                errors.append(
+                    f"quarters: '{representation_id}' source '{source_key}' is unknown"
+                )
+        if not str(representation.get("rationale", "")).strip():
+            errors.append(f"quarters: '{representation_id}' lacks a rationale")
+
+    if actual != expected:
+        errors.append(
+            "quarters: representation ids/port mappings differ from the frozen contract"
+        )
+
+
 def validate_layer(layer: Layer, source_keys: set[str], errors: list[str]) -> str:
     if not layer.path.exists():
         return "pending (asset not built)"
@@ -381,6 +545,9 @@ def main() -> int:
 
     errors: list[str] = validate_port_contract(port_rows)
     check_port_projection(port_rows, errors)
+    check_route_sequence_contract(errors)
+    check_reference_plate_contract(errors)
+    check_quarter_representation_contract(port_rows, source_keys, errors)
     for layer in LAYERS:
         status = validate_layer(layer, source_keys, errors)
         print(f"  {layer.name:12s}: {status}")

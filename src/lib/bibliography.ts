@@ -177,6 +177,73 @@ const RAW: unknown[] = [
     citation:
       'Nuti, Lucia. “The World Map as an Emblem: Abraham Ortelius and the Stoic Contemplation.” Imago Mundi 55 (2003): 38–55.',
   },
+  {
+    id: 'stanford-forma-urbis',
+    author: 'Trimble, Jennifer; Levoy, Marc; Najbjerg, Tina',
+    title: 'Stanford Digital Forma Urbis Romae Project',
+    citation:
+      'Trimble, Jennifer, Marc Levoy and Tina Najbjerg. Stanford Digital Forma Urbis Romae Project. Stanford University.',
+    url: 'https://formaurbis.stanford.edu/docs/FURproject.html',
+  },
+  {
+    id: 'mia-barbari',
+    author: 'Minneapolis Institute of Art',
+    year: 1500,
+    title: 'Jacopo de’ Barbari, View of Venice',
+    citation:
+      'Minneapolis Institute of Art. Jacopo de’ Barbari, View of Venice, 1500. Accession 2010.88.',
+    url: 'https://collections.artsmia.org/art/111219/view-of-venice-jacopo-de-barbari',
+  },
+  {
+    id: 'moeml-agas',
+    author: 'Map of Early Modern London',
+    title: 'The Agas Map of Early Modern London',
+    citation:
+      'Map of Early Modern London. “The Agas Map of Early Modern London.” University of Victoria.',
+    url: 'https://mapoflondon.uvic.ca/agas.htm',
+  },
+  {
+    id: 'loc-civitates',
+    author: 'Library of Congress',
+    year: 1572,
+    title: 'Civitates Orbis Terrarum',
+    citation:
+      'Library of Congress. Braun, Georg, Frans Hogenberg et al. Civitates Orbis Terrarum. Six-volume digitised atlas witness.',
+    url: 'https://www.loc.gov/item/2008627031/',
+  },
+  {
+    id: 'tice-steiner-nolli',
+    author: 'Tice, James; Steiner, Erik',
+    title: 'The Interactive Nolli Map Website',
+    citation:
+      'Tice, James and Erik Steiner. The Interactive Nolli Map Website. University of Oregon.',
+    url: 'https://nolli.uoregon.edu/',
+  },
+  {
+    id: 'loc-sanborn-guide',
+    author: 'Library of Congress',
+    title: 'About the Sanborn Maps Collection',
+    citation:
+      'Library of Congress. “About this Collection.” Sanborn Maps, Geography and Map Division.',
+    url: 'https://www.loc.gov/collections/sanborn-maps/about-this-collection/',
+  },
+  {
+    id: 'boutier-2007',
+    author: 'Boutier, Jean',
+    year: 2007,
+    title: 'Les Plans de Paris',
+    citation:
+      'Boutier, Jean. Les Plans de Paris: des origines (1493) à la fin du XVIIIe siècle. 2nd ed. Paris: Bibliothèque nationale de France, 2007.',
+  },
+  {
+    id: 'loc-nuremberg-chronicle',
+    author: 'Library of Congress',
+    year: 1493,
+    title: 'Liber chronicarum (Nuremberg Chronicle)',
+    citation:
+      'Library of Congress. Schedel, Hartmann. Liber chronicarum. Nuremberg: Anton Koberger, 1493. World Digital Library record.',
+    url: 'https://www.loc.gov/item/2021667043/',
+  },
 ];
 
 export const BIBLIOGRAPHY: BibEntry[] = RAW.map((b) => BibEntrySchema.parse(b));

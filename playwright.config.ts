@@ -7,7 +7,9 @@ import { defineConfig, devices } from '@playwright/test';
 // `flows.spec.ts` run on every engine and on two mobile viewports; the heavier
 // axe + keyboard-focus suite in `smoke.spec.ts` stays chromium-only (a11y and
 // focus semantics are engine-independent and needn't pay the ×5 cost).
-const PORT = 4321;
+// A developer may already have the normal preview port open. Release scrubs use
+// PLAYWRIGHT_PORT to guarantee they build and inspect this checkout's own dist/.
+const PORT = Number(process.env.PLAYWRIGHT_PORT ?? 4321);
 
 // Non-chromium projects only run the browser-agnostic core-flow spec.
 const CROSS_BROWSER_TESTS = /flows\.spec\.ts/;
@@ -51,7 +53,7 @@ export default defineConfig({
     // Test the real built output, not the dev server.
     command: 'npm run build && npm run preview -- --port ' + PORT,
     port: PORT,
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: !process.env.CI && !process.env.PLAYWRIGHT_PORT,
     timeout: 120_000,
   },
 });
