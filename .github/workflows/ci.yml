@@ -52,6 +52,9 @@ jobs:
       - name: Geo release manifest and asset QA
         run: npm run geo:validate
 
+      - name: Editorial package completeness
+        run: npm run editorial:validate
+
       - name: Build (static output)
         run: npm run build
 

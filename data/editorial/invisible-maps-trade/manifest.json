@@ -1,0 +1,194 @@
+{
+  "slug": "invisible-maps-trade",
+  "title": "Invisible Maps of Trade",
+  "stage": "draft",
+  "room": "road",
+  "secondaryRooms": ["border", "city"],
+  "thesis": "A portolan chart did not merely picture Mediterranean trade: by reducing land to a named coast and sea to a routable field, it made a commercial network appear natural while concealing the jurisdictions, labour, coercion and negotiated privileges that kept that network moving.",
+  "whyThisSite": "Terra Chartarum can read the chart beside the VMN authority tables, route paths and commodity vocabulary, letting the reader compare the elegant visual promise of frictionless movement with the dated political arrangements beneath every call.",
+  "minimumDraftWords": 3000,
+  "draftPath": "docs/editorial/invisible-maps-trade/draft.md",
+  "corpus": [
+    {
+      "id": "trade-carta-pisana",
+      "title": "Carta Pisana",
+      "maker": "Anonymous",
+      "year": 1290,
+      "holding": "Bibliothèque nationale de France",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Carte_Pisane_Portolan.jpg",
+      "rights": "Public domain reproduction; Commons file page records BnF source and public-domain dedication.",
+      "scanQuality": "3481 × 1848 digital reproduction",
+      "hero": true
+    },
+    {
+      "id": "trade-loc-portolan",
+      "title": "Portolan chart of the Mediterranean and Black Seas",
+      "maker": "Anonymous",
+      "year": 1335,
+      "holding": "Library of Congress",
+      "sourceUrl": "https://www.loc.gov/resource/g5672m.ct000821/",
+      "rights": "Library of Congress item; public-domain medieval work and downloadable institutional reproduction.",
+      "scanQuality": "High-resolution Library of Congress scan"
+    },
+    {
+      "id": "trade-vesconte-1311",
+      "title": "Eastern Mediterranean portolan",
+      "maker": "Pietro Vesconte",
+      "year": 1311,
+      "holding": "Archivio di Stato di Firenze",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:1311_portolan_of_Pietro_Vesconte.jpg",
+      "rights": "Public domain",
+      "scanQuality": "588 × 490 reference image; suitable for contextual display, not hero use"
+    },
+    {
+      "id": "trade-vesconte-1321",
+      "title": "Western Mediterranean from a portolan atlas",
+      "maker": "Pietro Vesconte",
+      "year": 1321,
+      "holding": "Bibliothèque municipale de Lyon",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:West_Mediterranean_from_Vesconte_c.1321_(Lyon)_atlas.jpg",
+      "rights": "Public domain",
+      "scanQuality": "Institutional digital reproduction"
+    },
+    {
+      "id": "trade-bianco-1436",
+      "title": "Portolan leaves from the Andrea Bianco atlas",
+      "maker": "Andrea Bianco",
+      "year": 1436,
+      "holding": "Biblioteca Nazionale Marciana",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/Atlante_di_Andrea_Bianco_dell%27_anno_1436",
+      "rights": "Public-domain fifteenth-century manuscript; Commons-hosted reproductions require file-level credit.",
+      "scanQuality": "Multiple digitised atlas leaves"
+    },
+    {
+      "id": "trade-roselli-1466",
+      "title": "Portolan chart of the Mediterranean",
+      "maker": "Petrus Roselli",
+      "year": 1466,
+      "holding": "James Ford Bell Library",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Petrus_Roselli_-_Portolan_Chart_of_the_Mediterranean_(1466).png",
+      "rights": "Public domain",
+      "scanQuality": "3651 × 2144 digital reproduction"
+    },
+    {
+      "id": "trade-fra-mauro",
+      "title": "Fra Mauro world map",
+      "maker": "Fra Mauro",
+      "year": 1459,
+      "holding": "Biblioteca Nazionale Marciana",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:FraMauroDetailedMap.jpg",
+      "rights": "Public-domain work and reproduction",
+      "scanQuality": "5000 × 5000 digital reproduction"
+    },
+    {
+      "id": "trade-agnese-1544",
+      "title": "Portolan atlas of nine charts and a world map",
+      "maker": "Battista Agnese",
+      "year": 1544,
+      "holding": "Library of Congress",
+      "sourceUrl": "https://www.loc.gov/resource/gmdatlases.98687206/?st=gallery",
+      "rights": "Library of Congress states the collection item is public domain and free to use and reuse.",
+      "scanQuality": "Seventeen-image institutional sequence"
+    },
+    {
+      "id": "trade-barbari-1500",
+      "title": "View of Venice",
+      "maker": "Jacopo de' Barbari",
+      "year": 1500,
+      "holding": "Minneapolis Institute of Art",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Jacopo_de%27_Barbari_-_View_of_Venice_-_Minneapolis_Institute_of_Art.jpg",
+      "rights": "Public Domain Mark",
+      "scanQuality": "25616 × 12341 institutional reproduction"
+    }
+  ],
+  "bibliography": [
+    {
+      "id": "campbell-1987",
+      "citation": "Campbell, Tony. “Portolan Charts from the Late Thirteenth Century to 1500.” In The History of Cartography, vol. 1. Chicago: University of Chicago Press, 1987.",
+      "url": "https://press.uchicago.edu/books/HOC/HOC_V1/HOC_VOLUME1_chapter19.pdf"
+    },
+    {
+      "id": "lane-1973",
+      "citation": "Lane, Frederic C. Venice: A Maritime Republic. Baltimore: Johns Hopkins University Press, 1973."
+    },
+    {
+      "id": "oconnell-2009",
+      "citation": "O’Connell, Monique. Men of Empire: Power and Negotiation in Venice’s Maritime State. Baltimore: Johns Hopkins University Press, 2009."
+    },
+    {
+      "id": "harley-2001",
+      "citation": "Harley, J. B. The New Nature of Maps: Essays in the History of Cartography. Baltimore: Johns Hopkins University Press, 2001."
+    },
+    {
+      "id": "lane-1934",
+      "citation": "Lane, Frederic C. Venetian Ships and Shipbuilders of the Renaissance. Baltimore: Johns Hopkins University Press, 1934."
+    },
+    {
+      "id": "vmn-authority",
+      "citation": "Terra Chartarum. Venetian Maritime Network authority tables: ports.csv, routes.csv and commodities.csv, release 975f94e, 2026."
+    }
+  ],
+  "claims": [
+    {
+      "id": "trade-claim-portolan",
+      "claim": "Portolan charts encode coasts, place-names, compass networks and practical sailing relations rather than a continuous territorial surface.",
+      "citationIds": ["campbell-1987"]
+    },
+    {
+      "id": "trade-claim-state",
+      "claim": "Venice’s maritime dominion depended on differentiated jurisdictions and negotiation, not a single uniform colonial status.",
+      "citationIds": ["lane-1973", "oconnell-2009"]
+    },
+    {
+      "id": "trade-claim-shipping",
+      "claim": "Ships, convoy organisation and specialised construction made mapped connectivity operational.",
+      "citationIds": ["lane-1934", "lane-1973"]
+    },
+    {
+      "id": "trade-claim-data",
+      "claim": "The published VMN layer models seven authored route sequences, dated port-authority phases and a controlled commodity vocabulary.",
+      "citationIds": ["vmn-authority"]
+    },
+    {
+      "id": "trade-claim-silence",
+      "claim": "Cartographic omission is an active selection that can naturalise the interests of the map’s makers and users.",
+      "citationIds": ["harley-2001"]
+    }
+  ],
+  "sections": [
+    {
+      "id": "coast-as-infrastructure",
+      "title": "The coast as infrastructure",
+      "mapIds": ["trade-carta-pisana", "trade-loc-portolan"],
+      "interactive": "CompareSlider between the Carta Pisana and the Library of Congress portolan"
+    },
+    {
+      "id": "route-before-territory",
+      "title": "A route before a territory",
+      "mapIds": ["trade-vesconte-1311", "trade-vesconte-1321"],
+      "interactive": "Atlas layer embed scoped to 1350–1450"
+    },
+    {
+      "id": "lagoon-ledger",
+      "title": "The lagoon and the ledger",
+      "mapIds": ["trade-barbari-1500", "trade-bianco-1436"]
+    },
+    {
+      "id": "convoy-calendar",
+      "title": "The convoy calendar",
+      "mapIds": ["trade-roselli-1466", "trade-agnese-1544"],
+      "interactive": "AdaptiveTimeline of route operating windows"
+    },
+    {
+      "id": "world-collected",
+      "title": "A world collected in Venice",
+      "mapIds": ["trade-fra-mauro", "trade-agnese-1544"]
+    },
+    {
+      "id": "invisible-below-route",
+      "title": "What disappears below the route",
+      "mapIds": ["trade-carta-pisana", "trade-barbari-1500"],
+      "interactive": "VMN force-directed commodity and waypoint explorer"
+    }
+  ]
+}
