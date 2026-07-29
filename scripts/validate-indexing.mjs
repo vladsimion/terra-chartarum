@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 const ROOT = resolve(import.meta.dirname, '..');
 const DIST = resolve(ROOT, 'dist');
 const ESSAYS = resolve(ROOT, 'src/content/essays');
-const ORIGIN = 'https://terra-chartarum-atlas.vladsimion.chatgpt.site';
+const ORIGIN = 'https://terra-chartarum.pages.dev';
 const errors = [];
 
 function check(condition, message) {
