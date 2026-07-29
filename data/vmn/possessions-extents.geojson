@@ -44,7 +44,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "territory": "negroponte", "start_date": "1209-01-01" },
+      "properties": { "territory": "negroponte", "start_date": "1211-01-01" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [[[22.75, 37.75], [24.25, 37.75], [24.25, 39.15], [22.75, 39.15], [22.75, 37.75]]]
@@ -60,7 +60,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "territory": "morea", "start_date": "1207-01-01" },
+      "properties": { "territory": "morea", "start_date": "1206-01-01" },
       "geometry": {
         "type": "MultiPolygon",
         "coordinates": [

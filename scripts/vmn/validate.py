@@ -241,8 +241,9 @@ def check_provenance(layer: Layer, fields, source_keys: set[str], errors: list[s
         if not keys:
             errors.append(f"{layer.name} row {i}: unsourced feature (empty source_keys)")
         for k in keys:
-            if k not in source_keys:
-                errors.append(f"{layer.name} row {i}: source key '{k}' not in sources.csv")
+            base = k.partition(":")[0]  # KEY:pNN carries a KAN-154 page citation
+            if base not in source_keys:
+                errors.append(f"{layer.name} row {i}: source key '{base}' not in sources.csv")
 
 
 def check_route_references(fields, geometry, errors: list[str]) -> None:
@@ -380,8 +381,8 @@ def check_route_sequence_contract(errors: list[str]) -> None:
 
     if contract.get("status") != "structurally_verified":
         errors.append("routes: sequence contract must be structurally_verified")
-    if contract.get("chronologyStatus") != "pending_page_level_verification_KAN_154":
-        errors.append("routes: chronology boundary must remain attached to KAN-154")
+    if contract.get("chronologyStatus") != "page_level_verified_KAN_154":
+        errors.append("routes: chronology status must record the KAN-154 page verification")
     if not (6 <= len(contract_routes) <= 8):
         errors.append(
             f"routes: sequence contract has {len(contract_routes)} routes; expected 6–8"
@@ -421,9 +422,17 @@ def check_route_sequence_contract(errors: list[str]) -> None:
         errors.append("routes: route-sequences.json differs from routes.csv authority rows")
 
 
+CHRONOLOGY_RESOLUTIONS = {
+    "confirmed_spec",
+    "corrected_to_source",
+    "retained_spec_envelope",
+}
+
+
 def check_chronology_handoff(errors: list[str]) -> None:
-    """Freeze the source-independent route handoff while page checks stay blocked."""
+    """KAN-154: every §5.5 boundary carries page-verified Lane/O'Connell values."""
     _, route_rows = read_csv(ROUTES_CSV)
+    _, event_rows = read_csv(EVENTS_CSV)
 
     if not CHRONOLOGY_DISCREPANCIES.exists():
         errors.append("chronology: discrepancy ledger is missing")
@@ -431,35 +440,63 @@ def check_chronology_handoff(errors: list[str]) -> None:
 
     _, discrepancy_rows = read_csv(CHRONOLOGY_DISCREPANCIES)
     expected = {
-        (row["route_id"].strip(), field): row[field].strip()
+        ("route", row["route_id"].strip(), field): row[field].strip()
         for row in route_rows
         for field in ("start_date", "end_date")
     }
+    for row in event_rows:
+        subject_id = f"{row['territory'].strip()}_{row['start_date'].strip()[:4]}"
+        for field in ("start_date", "end_date"):
+            expected[("possession", subject_id, field)] = row[field].strip()
+
     actual = {}
     for row in discrepancy_rows:
-        key = (row["route_id"].strip(), row["event_field"].strip())
+        key = (
+            row["subject_type"].strip(),
+            row["subject_id"].strip(),
+            row["event_field"].strip(),
+        )
         if key in actual:
             errors.append(f"chronology: duplicate discrepancy row {key}")
         actual[key] = row["spec_value"].strip()
-        if row["event_id"].strip() != f"{key[0]}_{key[1].removesuffix('_date')}":
+        if row["event_id"].strip() != f"{key[1]}_{key[2].removesuffix('_date')}":
             errors.append(f"chronology: unstable event id '{row['event_id']}'")
-        if row["lane_value"].strip() or row["oconnell_value"].strip():
+        if not row["lane_value"].strip() or not row["oconnell_value"].strip():
             errors.append(
-                f"chronology: '{row['event_id']}' invents an unverified anchor-source value"
+                f"chronology: '{row['event_id']}' is missing a page-verified anchor value"
+                " (use not_in_source for a source that is silent)"
             )
-        if row["resolution"].strip() != "retain_spec_provisionally":
+        if row["resolution"].strip() not in CHRONOLOGY_RESOLUTIONS:
             errors.append(
-                f"chronology: '{row['event_id']}' must retain the spec provisionally"
+                f"chronology: '{row['event_id']}' resolution must be one of "
+                f"{sorted(CHRONOLOGY_RESOLUTIONS)}"
             )
-        if row["status"].strip() != "blocked_page_verification":
+        if row["status"].strip() != "verified_page_level":
             errors.append(
-                f"chronology: '{row['event_id']}' must remain blocked_page_verification"
+                f"chronology: '{row['event_id']}' must be verified_page_level"
             )
         if not row["notes"].strip():
             errors.append(f"chronology: '{row['event_id']}' lacks an editorial note")
 
     if actual != expected:
-        errors.append("chronology: discrepancy ledger does not cover every route boundary")
+        missing = sorted(set(expected) - set(actual))
+        extra = sorted(set(actual) - set(expected))
+        mismatched = sorted(
+            k for k in set(actual) & set(expected) if actual[k] != expected[k]
+        )
+        detail = "; ".join(
+            part
+            for part in (
+                f"missing {missing}" if missing else "",
+                f"extra {extra}" if extra else "",
+                f"spec mismatch {mismatched}" if mismatched else "",
+            )
+            if part
+        )
+        errors.append(
+            "chronology: ledger does not mirror every route and possession boundary"
+            + (f" ({detail})" if detail else "")
+        )
 
     _, atlas_links = read_csv(ATLAS_LINKS_CSV)
     first_flip = [

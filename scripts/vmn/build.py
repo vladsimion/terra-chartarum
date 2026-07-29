@@ -20,6 +20,7 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
+import re
 import struct
 import sys
 from pathlib import Path
@@ -125,15 +126,22 @@ def iso_year(value: str, *, field: str, row: int, errors: list[str]) -> int | No
     return int(parts[0])
 
 
+PAGE_REF_RE = re.compile(r"p(?:[0-9]+(?:-[0-9]+)?|[ivxlc]+(?:-[ivxlc]+)?)")
+
+
 def validate_source_keys(
     raw: str, *, row: int, source_keys: set[str], errors: list[str]
 ) -> None:
+    """A key is `KEY` or `KEY:pNN[-NN]` (KAN-154 page-level citation)."""
     keys = [k for k in raw.strip().split(";") if k]
     if not keys:
         errors.append(f"row {row}: unsourced phase (empty source_keys)")
     for key in keys:
-        if key not in source_keys:
-            errors.append(f"row {row}: source key '{key}' not in sources.csv")
+        base, _, page = key.partition(":")
+        if base not in source_keys:
+            errors.append(f"row {row}: source key '{base}' not in sources.csv")
+        if page and not PAGE_REF_RE.fullmatch(page):
+            errors.append(f"row {row}: malformed page citation '{key}'")
 
 
 def validate_ports(

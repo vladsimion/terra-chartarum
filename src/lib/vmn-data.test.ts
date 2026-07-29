@@ -80,7 +80,7 @@ describe('VMN compiled datasets', () => {
 
     const moreaEarly = possessions.find(
       (feature) =>
-        feature.properties?.territory === 'morea' && feature.properties?.valid_from === 1207,
+        feature.properties?.territory === 'morea' && feature.properties?.valid_from === 1206,
     );
     const moreaLate = possessions.find(
       (feature) =>
