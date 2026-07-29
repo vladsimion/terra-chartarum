@@ -6,12 +6,12 @@ machine-readable through each compiled FlatGeobuf feature's `source_keys` field.
 
 ## Historical authorities
 
-| Key            | Source                                                                                                                      | Used for                                                            | Rights / constraint                                                                                             |
-| -------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `LANE1973`     | Frederic C. Lane, _Venice: A Maritime Republic_ (Johns Hopkins University Press, 1973)                                      | Port phases, convoy routes, possession chronology                   | Copyright. Bibliographic facts and derived structured assertions only; page-level verification remains KAN-154. |
-| `OCONNELL2009` | Monique O'Connell, _Men of Empire: Power and Negotiation in Venice's Maritime State_ (Johns Hopkins University Press, 2009) | Political status, jurisdiction and territorial phases               | Copyright. Bibliographic facts and derived structured assertions only; page-level verification remains KAN-154. |
-| `SHEPHERD1911` | William R. Shepherd, _Historical Atlas_ (Henry Holt, 1911)                                                                  | Public-domain geographic cross-checks and reference-plate programme | Public domain. Allmaps-compatible annotation and territory registry completed in KAN-158.                       |
-| `MCEVEDY`      | Colin McEvedy, _The Penguin Atlas of Medieval History_ (Penguin, 1961)                                                      | Broad chronology and western staging context                        | Copyright. Derived structured assertions only.                                                                  |
+| Key            | Source                                                                                                                      | Used for                                                            | Rights / constraint                                                                                                  |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `LANE1973`     | Frederic C. Lane, _Venice: A Maritime Republic_ (Johns Hopkins University Press, 1973)                                      | Port phases, convoy routes, possession chronology                   | Copyright. Bibliographic facts and derived structured assertions only; page-level verification completed in KAN-154. |
+| `OCONNELL2009` | Monique O'Connell, _Men of Empire: Power and Negotiation in Venice's Maritime State_ (Johns Hopkins University Press, 2009) | Political status, jurisdiction and territorial phases               | Copyright. Bibliographic facts and derived structured assertions only; page-level verification completed in KAN-154. |
+| `SHEPHERD1911` | William R. Shepherd, _Historical Atlas_ (Henry Holt, 1911)                                                                  | Public-domain geographic cross-checks and reference-plate programme | Public domain. Allmaps-compatible annotation and territory registry completed in KAN-158.                            |
+| `MCEVEDY`      | Colin McEvedy, _The Penguin Atlas of Medieval History_ (Penguin, 1961)                                                      | Broad chronology and western staging context                        | Copyright. Derived structured assertions only.                                                                       |
 
 ## Gazetteer and physical base data
 
@@ -29,14 +29,18 @@ versions and SHA-256 checksums live in
 ## Publication rules
 
 - `source_keys` must be non-empty and resolve to `sources.csv`; the VMN QA gate enforces
-  this for every compiled feature.
-- A source key records provenance, not a claim of page-level verification. KAN-154
-  remains the explicit scholarly pass for Lane/O'Connell page citations.
+  this for every compiled feature. Keys may carry a `:pNN` or `:pNN-NN` page suffix
+  (`LANE1973:p436`), the KAN-154 page-level citation form; the gate resolves the base
+  key and validates the page syntax.
+- KAN-154 completed the scholarly page-level pass against the anchor editions — Lane,
+  _Venice: A Maritime Republic_ (JHU Press, 1973) and O'Connell, _Men of Empire_ (JHU
+  Press, 2009). Every dated §5.5 boundary carries both anchors' page-cited values in
+  [`chronology-discrepancies.csv`](../../data/vmn/chronology-discrepancies.csv);
+  `not_in_source` marks a silent anchor, never an invented citation.
 - KAN-155 freezes the seven ordered route sequences in
   [`route-sequences.json`](../../data/vmn/route-sequences.json). The VMN gate requires
-  that contract to match every `routes.csv` field while retaining the explicit
-  `pending_page_level_verification_KAN_154` chronology status. Structural completion
-  therefore cannot silently close the scholarly verification task.
+  that contract to match every `routes.csv` field and to carry the explicit
+  `page_level_verified_KAN_154` chronology status.
 - KAN-177–180 freeze the eastern merchant-quarter decisions in
   [`quarter-representations.json`](../../data/vmn/quarter-representations.json).
   The only accepted representation is `port_only`; the gate forbids embedded

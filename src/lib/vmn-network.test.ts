@@ -39,7 +39,7 @@ describe('VMN route-waypoint network', () => {
     ]);
     const contract = JSON.parse(raw);
     expect(contract.status).toBe('structurally_verified');
-    expect(contract.chronologyStatus).toBe('pending_page_level_verification_KAN_154');
+    expect(contract.chronologyStatus).toBe('page_level_verified_KAN_154');
     expect(contract.routes).toHaveLength(7);
 
     const published = new Map(network.routes.map((route) => [route.id, route]));

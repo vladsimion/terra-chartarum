@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "structurally_verified",
-  "chronologyStatus": "pending_page_level_verification_KAN_154",
-  "evidenceBoundary": "Ordered route calls, commodities and operating windows are derived scholarly assertions keyed to Lane 1973 and O’Connell 2009. They are structurally final for the VMN build, but the exact chronology remains provisional until KAN-154 records page-level citations from verified editions.",
+  "chronologyStatus": "page_level_verified_KAN_154",
+  "evidenceBoundary": "Ordered route calls, commodities and operating windows are derived scholarly assertions keyed to Lane 1973 and O’Connell 2009. KAN-154 verified the chronology at page level against the 1973 and 2009 Johns Hopkins editions; spec-only envelope windows are documented per boundary in chronology-discrepancies.csv.",
   "routes": [
     {
       "routeId": "muda_romania",
@@ -21,7 +21,7 @@
       "commodities": ["spices", "silk", "wax", "fur"],
       "startDate": "1332-01-01",
       "endDate": "1453-05-29",
-      "sourceKeys": ["LANE1973"]
+      "sourceKeys": ["LANE1973:p70", "LANE1973:p128-129", "LANE1973:p348-349"]
     },
     {
       "routeId": "muda_alexandria",
@@ -31,7 +31,7 @@
       "commodities": ["spices", "cotton", "sugar"],
       "startDate": "1300-01-01",
       "endDate": "1500-12-31",
-      "sourceKeys": ["LANE1973"]
+      "sourceKeys": ["LANE1973:p70", "LANE1973:p130-131", "LANE1973:p348"]
     },
     {
       "routeId": "muda_syria",
@@ -41,7 +41,7 @@
       "commodities": ["spices", "silk", "cotton", "sugar"],
       "startDate": "1300-01-01",
       "endDate": "1500-12-31",
-      "sourceKeys": ["LANE1973"]
+      "sourceKeys": ["LANE1973:p70", "LANE1973:p130-131", "LANE1973:p348"]
     },
     {
       "routeId": "muda_cyprus",
@@ -51,7 +51,7 @@
       "commodities": ["wine", "sugar", "cotton"],
       "startDate": "1300-01-01",
       "endDate": "1500-12-31",
-      "sourceKeys": ["LANE1973"]
+      "sourceKeys": ["LANE1973:p130-131", "LANE1973:p348"]
     },
     {
       "routeId": "muda_dalmatia",
@@ -61,7 +61,7 @@
       "commodities": ["grain", "wine", "salt"],
       "startDate": "1409-01-01",
       "endDate": "1500-12-31",
-      "sourceKeys": ["LANE1973", "OCONNELL2009"]
+      "sourceKeys": ["LANE1973:p303", "OCONNELL2009:p28", "OCONNELL2009:p30"]
     },
     {
       "routeId": "private_adriatic",
@@ -71,7 +71,7 @@
       "commodities": ["grain", "wine", "salt"],
       "startDate": "1200-01-01",
       "endDate": "1500-12-31",
-      "sourceKeys": ["LANE1973"]
+      "sourceKeys": ["LANE1973:p68-70"]
     },
     {
       "routeId": "private_aegean",
@@ -79,9 +79,9 @@
       "routeType": "private",
       "waypoints": ["venice", "modon", "coron", "negroponte", "tino", "naxos", "candia"],
       "commodities": ["wine", "cotton", "wax"],
-      "startDate": "1207-01-01",
+      "startDate": "1206-01-01",
       "endDate": "1500-12-31",
-      "sourceKeys": ["LANE1973"]
+      "sourceKeys": ["LANE1973:p68-70", "OCONNELL2009:p19"]
     }
   ]
 }

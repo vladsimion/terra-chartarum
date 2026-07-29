@@ -141,9 +141,12 @@ must match `routes.csv` field for field at validation time and is the acceptance
 artifact for KAN-155: it records route type, calls, commodities, operating window and
 source keys in a reviewable JSON shape. Its `structurally_verified` status means all
 references resolve, overlap temporally and occur on the authored sea paths in order.
-It does **not** promote the dates to page-verified evidence. The contract permanently
-attaches `pending_page_level_verification_KAN_154` until the cited Lane and O’Connell
-editions can be checked at page level.
+The chronology was verified at page level in KAN-154 against the anchor editions
+(Lane 1973 and O’Connell 2009, both Johns Hopkins University Press); the contract
+carries `page_level_verified_KAN_154`, and every route and possession boundary has a
+page-cited row in `chronology-discrepancies.csv`. Windows the anchors do not date
+(round-century route boundaries, the Dalmatia coastal service) remain documented
+editorial envelopes in that ledger rather than source claims.
 
 ## Supporting non-spatial tables (§5.5)
 
