@@ -1,11 +1,11 @@
-# Editorial thirty — six-batch release ledger
+# Editorial thirty - six-batch release ledger
 
 This release follows `codex/next-thirty` and implements the next 30 Jira tickets in
 six dependency-ordered batches of five. The live Jira board and Cosmography roadmap
 are read again after each batch; blocked VMN chronology/reference-plate work and
 parked optional platform tickets are not substituted merely to increase the count.
 
-## Batch 1 — Invisible Maps of Trade: editorial foundation
+## Batch 1 - Invisible Maps of Trade: editorial foundation
 
 **Tickets:** KAN-104, KAN-105, KAN-106, KAN-107, KAN-108.
 
@@ -21,7 +21,7 @@ parked optional platform tickets are not substituted merely to increase the coun
 **Evidence:** editorial QA, lint, 109 unit tests, Astro check, formatting and Git diff
 hygiene pass.
 
-## Batch 2 — Trade publication and next anchor
+## Batch 2 - Trade publication and next anchor
 
 **Tickets:** KAN-109, KAN-110, KAN-111, KAN-112, KAN-113.
 
@@ -47,7 +47,7 @@ That Age corpus → research → outline → draft → interactive build. KAN-11
 stay immediately behind it because design QA, publication and Cartometry export
 depend on that build.
 
-## Batch 3 — Maps That Age build
+## Batch 3 - Maps That Age build
 
 **Tickets:** KAN-114, KAN-115, KAN-116, KAN-117, KAN-118.
 
@@ -71,7 +71,7 @@ Maps That Age through design QA, publication and the evidence export. KAN-122 an
 KAN-123 then start the next required Wave-1 anchor, Invisible Maps of Religion. Its
 “Relates” links are contextual, not blocking dependencies.
 
-## Batch 4 — Maps That Age publication and Religion foundation
+## Batch 4 - Maps That Age publication and Religion foundation
 
 **Tickets:** KAN-119, KAN-120, KAN-121, KAN-122, KAN-123.
 
@@ -100,7 +100,7 @@ of Cities Remember. Jira confirms KAN-124–KAN-128 are all To Do, Medium and
 unblocked, so Batch 5 follows the editorial dependency chain: research → outline →
 draft → interactive build → design QA.
 
-## Batch 5 — Invisible Maps of Religion build
+## Batch 5 - Invisible Maps of Religion build
 
 **Tickets:** KAN-124, KAN-125, KAN-126, KAN-127, KAN-128.
 
@@ -128,7 +128,7 @@ through concept, rights-cleared corpus, research and fully mapped outline. The
 “Relates” issues attached to KAN-129 supply context and follow-up checks; they do not
 block this release.
 
-## Batch 6 — Religion publication and Cities Remember foundation
+## Batch 6 - Religion publication and Cities Remember foundation
 
 **Tickets:** KAN-129, KAN-130, KAN-131, KAN-132, KAN-133.
 

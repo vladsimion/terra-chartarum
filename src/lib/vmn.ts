@@ -1,8 +1,8 @@
 /**
  * Venetian Maritime Network resolver (VMN-24).
  *
- * Reads the *published* cloud-native bundle — the compiled FlatGeobuf artifacts in
- * public/geo — and projects it into typed port profiles for the essay layer. The
+ * Reads the *published* cloud-native bundle - the compiled FlatGeobuf artifacts in
+ * public/geo - and projects it into typed port profiles for the essay layer. The
  * FGB is the single source of truth the atlas map already renders, so resolving
  * port content here duplicates neither geometry nor prose: name triples, phase
  * timelines, notes and route membership all come out of the same binaries. The
@@ -29,7 +29,7 @@ async function readFgb(name: string): Promise<GeoJSON.Feature[]> {
   return features;
 }
 
-/** One tenure phase of a port — a single authority-table row in the published FGB. */
+/** One tenure phase of a port - a single authority-table row in the published FGB. */
 export interface PortPhase {
   status: string;
   validFrom: number;

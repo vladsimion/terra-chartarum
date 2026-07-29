@@ -1,4 +1,4 @@
-# Invisible Maps of Trade — concept brief
+# Invisible Maps of Trade - concept brief
 
 **Tickets:** KAN-104 · **Primary room:** The Road · **Secondary rooms:** The Border,
 The City

@@ -1,4 +1,4 @@
-# Maps That Age — corpus and rights log
+# Maps That Age - corpus and rights log
 
 **Ticket:** KAN-114  
 **Hero:** `age-ort1-1579`

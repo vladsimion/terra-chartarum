@@ -40,7 +40,7 @@ rights clearance for a reproduction.
 - Dates describe artifacts or institutional events explicitly and do not imply
   an uninterrupted causal line.
 - Political boundaries are described as claims, practices and administrative
-  effects—not natural facts.
+  effects-not natural facts.
 - Projection comparisons state what is preserved and sacrificed.
 - Cross-links resolve to existing local routes.
 - The backlog validator fixes the eight-ticket order and rejects missing

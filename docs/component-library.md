@@ -69,5 +69,5 @@ starter imports and author guide.
 
 Start from `starter/essay.mdx.template`, delete unused imports, and add at most
 one new interactive pattern per essay. A proposed extraction belongs here only
-after two real uses—or when one complex, data-backed pattern has a clear second
+after two real uses-or when one complex, data-backed pattern has a clear second
 consumer.

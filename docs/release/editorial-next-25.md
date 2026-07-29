@@ -1,10 +1,10 @@
-# Editorial next 25 — five-batch release ledger
+# Editorial next 25 - five-batch release ledger
 
 This release implements 25 Jira tickets in five dependency-ordered batches of five.
 The live Jira backlog was read again after every batch; ticket selection follows
 unblocked evidence and publication dependencies rather than numeric order alone.
 
-## Batch 1 — Cities Remember publication and route contract
+## Batch 1 - Cities Remember publication and route contract
 
 **Tickets:** KAN-134, KAN-135, KAN-136, KAN-137, KAN-155.
 
@@ -19,7 +19,7 @@ unblocked evidence and publication dependencies rather than numeric order alone.
 dependency block: public-domain reference plates, contested phase decisions and the
 regional possession extents required before the possessions pipeline could close.
 
-## Batch 2 — possession evidence and phase extents
+## Batch 2 - possession evidence and phase extents
 
 **Tickets:** KAN-158, KAN-159, KAN-160, KAN-161, KAN-162.
 
@@ -34,7 +34,7 @@ regional possession extents required before the possessions pipeline could close
 KAN-177–180 were selected beside it because their quarter decisions were the
 remaining children of the eastern possession work.
 
-## Batch 3 — quarter representation and VMN release QA
+## Batch 3 - quarter representation and VMN release QA
 
 **Tickets:** KAN-163, KAN-177, KAN-178, KAN-179, KAN-180.
 
@@ -48,7 +48,7 @@ remaining children of the eastern possession work.
 were KAN-181–182. KAN-183–185 followed immediately because publication, RoomPath and
 cross-room checks depended on the now-validated content.
 
-## Batch 4 — Cyprus, RoomPath and cross-room publication
+## Batch 4 - Cyprus, RoomPath and cross-room publication
 
 **Tickets:** KAN-181, KAN-182, KAN-183, KAN-184, KAN-185.
 
@@ -64,7 +64,7 @@ task. KAN-220–223 then formed the next coherent backlog-normalization block. K
 and KAN-225 remain open because their candidate-ticket and component-assignment work
 follows this release.
 
-## Batch 5 — indexing and Wave 3 normalization
+## Batch 5 - indexing and Wave 3 normalization
 
 **Tickets:** KAN-186, KAN-220, KAN-221, KAN-222, KAN-223.
 

@@ -2,7 +2,7 @@
 title: __TITLE__
 subtitle: __SUBTITLE__
 summary: >-
-  __SUMMARY__ One to two sentences — this is the hook shown on gallery cards and
+  __SUMMARY__ One to two sentences - this is the hook shown on gallery cards and
   in social/OG previews.
 cover: /covers/__SLUG__.svg
 status: native

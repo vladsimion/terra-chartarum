@@ -1,6 +1,6 @@
 # Terra Chartarum
 
-An interactive historical-atlas portal — a gallery of cartographic visual essays
+An interactive historical-atlas portal - a gallery of cartographic visual essays
 under one publication of record. Bespoke long-form essays on the history and
 politics of mapmaking are unified by a shared shell (landing, navigation, design
 tokens, motion) while each keeps its own immersive interior.
@@ -11,7 +11,7 @@ TypeScript, Tailwind, and a CSS custom-property design-token layer.
 > **Status:** Live. The unified portal, reusable component/island library, MDX
 > authoring pipeline, interactive Atlas + historical-GIS tier, collection catalogue,
 > cartographer & bibliography registries, unified search, and the seven-room
-> cosmography have all shipped — the four founding essays have grown into a
+> cosmography have all shipped - the four founding essays have grown into a
 > multi-room corpus. The Venetian Maritime Network atlas layer is live; only its
 > chronology source-verification (Jira KAN-140 / KAN-154) remains open, pending
 > page-level Lane & O'Connell excerpts.
@@ -25,10 +25,10 @@ TypeScript, Tailwind, and a CSS custom-property design-token layer.
 | **Speculum Chartarum**                       | Antiquity → early-modern geodesy | Six Bearings: Geodesy · Witness · Cosmos · Fitness · Reach · Hand                  |
 | **La Rotta e il Catasto** (Venice vs Sicily) | 1150–1750, Mediterranean         | Harley theory, 6-axis radar                                                        |
 
-_These four founding essays now sit within a larger seven-room corpus — browse the
+_These four founding essays now sit within a larger seven-room corpus - browse the
 full set at [`/essays`](src/pages/essays/index.astro)._
 
-The four analytical vocabularies are harmonized — additively, never replacing —
+The four analytical vocabularies are harmonized - additively, never replacing -
 onto **six canonical meta-lens dimensions** (Measure, Witness, Use, Cosmos, Power,
 Silence) that power cross-essay discovery. The full crosswalk is published at
 [`/colophon`](src/pages/colophon.astro).
@@ -95,7 +95,7 @@ npm run create-essay -- --slug my-essay --title "My Essay Title"
 
 This scaffolds a native MDX essay + placeholder cover from `starter/`. Edit the
 frontmatter and body, then it appears automatically in the gallery, atlas
-timeline, and facets — no registration step. Full guide in
+timeline, and facets - no registration step. Full guide in
 [`starter/README.md`](starter/README.md).
 
 Historical GIS assets are provenance-tracked, integrity-checked and served at
@@ -116,12 +116,12 @@ procedure - gates, smoke tests, rollback - in the
 
 ## Roadmap
 
-- **M1 — Portal MVP** ✅ unified site, the founding essays live under one shell.
-- **M2 — Platform** ✅ shared component library + MDX essay starter.
-- **M3 — Atlas** ✅ cross-essay MapLibre map + historical-GIS layer tier
+- **M1 - Portal MVP** ✅ unified site, the founding essays live under one shell.
+- **M2 - Platform** ✅ shared component library + MDX essay starter.
+- **M3 - Atlas** ✅ cross-essay MapLibre map + historical-GIS layer tier
   (PMTiles/COG/FlatGeobuf), time-slider, faceted discovery.
-- **M4 — Launch** ✅ accessibility, performance, deploy.
-- **M5 — Collection catalogue** ✅ rich map schema, cartographer & bibliography
+- **M4 - Launch** ✅ accessibility, performance, deploy.
+- **M5 - Collection catalogue** ✅ rich map schema, cartographer & bibliography
   registries, unified search, citation export.
 - **Cosmography & editorial waves** ✅ seven-room taxonomy, Wave 1–2 essays, and the
   Venetian Maritime Network GIS layer. See [`docs/roadmap.md`](docs/roadmap.md) and

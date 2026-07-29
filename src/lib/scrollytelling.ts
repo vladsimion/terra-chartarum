@@ -4,7 +4,7 @@
  * A small, framework-agnostic IntersectionObserver scroll-spy that any essay
  * island can reuse: give it the step elements, and it reports which step is
  * "active" as the reader scrolls, so a sticky graphic can react. It is
- * reduced-motion aware and SSR-safe — importing it never touches the DOM, and
+ * reduced-motion aware and SSR-safe - importing it never touches the DOM, and
  * `createScrollSpy` degrades to an inert handle where IntersectionObserver is
  * unavailable.
  *
@@ -12,7 +12,7 @@
  * unit-tested without a browser; the observer is a thin wrapper around it.
  */
 
-/** Minimal per-step visibility record — the shared shape of IntersectionObserverEntry data. */
+/** Minimal per-step visibility record - the shared shape of IntersectionObserverEntry data. */
 export interface VisibilityRecord {
   index: number;
   isIntersecting: boolean;
@@ -21,7 +21,7 @@ export interface VisibilityRecord {
 
 /**
  * Pure selector: given the current visibility of every tracked step, decide
- * which index should be active — the intersecting step with the greatest
+ * which index should be active - the intersecting step with the greatest
  * ratio, ties broken toward the earlier step. Returns `fallback` (the previously
  * active index) when nothing is intersecting, so the active step is "sticky"
  * through the gaps between steps rather than flickering to none.

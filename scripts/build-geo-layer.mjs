@@ -5,7 +5,7 @@
  * Turns a sourced vector dataset into a cloud-native GeoLayer asset the atlas can
  * serve statically (Regime A): PMTiles via tippecanoe, or FlatGeobuf via GDAL's
  * ogr2ogr. Output lands in public/geo/ under the exact filename a GeoLayer's `url`
- * points at (src/lib/geo.ts) — the AtlasMap toggle auto-enables the moment its
+ * points at (src/lib/geo.ts) - the AtlasMap toggle auto-enables the moment its
  * asset is present, so no code change is needed once the file is generated.
  *
  * The format is inferred from the output extension (.pmtiles / .fgb).

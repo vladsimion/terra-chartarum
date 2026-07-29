@@ -1,4 +1,4 @@
-# Invisible Maps of Trade — research dossier
+# Invisible Maps of Trade - research dossier
 
 **Ticket:** KAN-106
 

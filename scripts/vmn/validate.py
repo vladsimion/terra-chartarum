@@ -6,12 +6,12 @@ malformed layer can't merge green. Run in CI (see .github/workflows/ci.yml) and
 locally via ``make vmn-validate`` (needs the pyogrio venv from ``make vmn-venv``).
 
 Spec §8 check families:
-  * Schema        — required fields present, enums valid, ids unique & slug-shaped
-  * Geometry      — valid, correct type per file, EPSG:4326, bbox within window
-  * Time          — valid_from <= valid_to; phases non-overlapping where required
-  * Referential   — routes' waypoints resolve to a port whose lifespan overlaps
-  * Coastline     — possessions stay on land; route interiors stay at sea
-  * Provenance    — every feature's source_keys resolve in sources.csv
+  * Schema        - required fields present, enums valid, ids unique & slug-shaped
+  * Geometry      - valid, correct type per file, EPSG:4326, bbox within window
+  * Time          - valid_from <= valid_to; phases non-overlapping where required
+  * Referential   - routes' waypoints resolve to a port whose lifespan overlaps
+  * Coastline     - possessions stay on land; route interiors stay at sea
+  * Provenance    - every feature's source_keys resolve in sources.csv
 
 This validates the *derived* artifacts, complementing the CSV-level validation in
 build.py. Route references are checked against port lifespans and time-neutral
@@ -112,7 +112,7 @@ LAYERS = [
         "port_id",
         vocab_field="status",
         vocab=STATUS_VOCAB,
-        # D2: a port may hold two statuses at once — phases are NOT disjoint.
+        # D2: a port may hold two statuses at once - phases are NOT disjoint.
     ),
     Layer(
         "routes",
@@ -174,7 +174,7 @@ def check_schema(layer: Layer, info, fields, errors: list[str]) -> None:
                     "not in controlled vocab"
                 )
 
-    # Uniqueness of (id, valid_from) — the derived form of the (id, start_date) key.
+    # Uniqueness of (id, valid_from) - the derived form of the (id, start_date) key.
     if ids is not None and "valid_from" in fields:
         seen: set[tuple[str, int]] = set()
         for i in range(len(ids)):

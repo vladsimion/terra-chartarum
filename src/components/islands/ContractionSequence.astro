@@ -6,7 +6,7 @@
  * directly from the published possessions layer (public/geo/venetian-possessions.fgb
  * via src/lib/vmn.ts). Every phased extent is projected to an SVG path at BUILD
  * time and tagged with its valid_from/valid_to; a zero-dependency client scrubber
- * steps through the frame years, showing the phases valid at each — the same
+ * steps through the frame years, showing the phases valid at each - the same
  * inclusive temporal reveal the atlas uses. No geometry is hand-drawn or
  * duplicated: this is the compiled layer, re-projected.
  *
@@ -184,7 +184,7 @@ const statusClass = (status: string) => `cs-${status.replaceAll('_', '-')}`;
     if (!scrub || !yearOut || !captionEl) return;
 
     // Recompute the caption client-side from the phases active at the frame year,
-    // reading each path's <title> (name · span) — the same data-driven list the
+    // reading each path's <title> (name · span) - the same data-driven list the
     // server rendered for the first frame.
     const render = (index: number) => {
       const year = years[index];

@@ -1,7 +1,7 @@
 // Section-level room membership (TC-104 / KAN-95).
 //
 // An essay carries a primary `room` (and up to two secondaries), but a single
-// chapter can belong somewhere else entirely — e.g. the Sicilian cadastre
+// chapter can belong somewhere else entirely - e.g. the Sicilian cadastre
 // chapter of a Road essay is really about The Border. Authors declare those
 // chapters in the essay's `sections` frontmatter (each with an `id` matching an
 // anchor in the rendered body). This module flattens those declarations into a

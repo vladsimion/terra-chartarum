@@ -1,8 +1,8 @@
-# Venetian Maritime Network (VMN) — data track
+# Venetian Maritime Network (VMN) - data track
 
-Scaffolding for the "Venetian Maritime Network, c.1400 — Dataset & Essay
+Scaffolding for the "Venetian Maritime Network, c.1400 - Dataset & Essay
 Enrichment" sub-project (KAN-145). The authoritative spec lives in Confluence:
-_Venetian Maritime Network, c.1400 — Dataset & Essay Enrichment_.
+_Venetian Maritime Network, c.1400 - Dataset & Essay Enrichment_.
 
 ## Layout
 
@@ -38,7 +38,7 @@ as the served asset.
 ### Toolchain
 
 The writer is GDAL's FlatGeobuf driver via
-[`pyogrio`](https://pyogrio.readthedocs.io/) — whose wheel bundles GDAL, so no
+[`pyogrio`](https://pyogrio.readthedocs.io/) - whose wheel bundles GDAL, so no
 system GDAL/PROJ is needed. Shapely compiles the authored, coastline-corrected
 route paths and clips generalized possession traces to the checksummed Natural
 Earth 1:10m land layer in

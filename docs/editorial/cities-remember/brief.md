@@ -1,4 +1,4 @@
-# Cities Remember — concept brief
+# Cities Remember - concept brief
 
 **Ticket:** KAN-130
 

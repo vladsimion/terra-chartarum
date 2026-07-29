@@ -1,4 +1,4 @@
-# Invisible Maps of Religion — corpus and rights log
+# Invisible Maps of Religion - corpus and rights log
 
 **Ticket:** KAN-123  
 **Hero:** `hereford`

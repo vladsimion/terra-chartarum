@@ -5,7 +5,7 @@ dist/
 # Dependencies
 node_modules/
 
-# Legacy essays and embeds are preserved verbatim (KAN-17 / ATLAS-105) — never reformat them
+# Legacy essays and embeds are preserved verbatim (KAN-17 / ATLAS-105) - never reformat them
 public/essays/
 public/embed/
 

@@ -1,4 +1,4 @@
-# Maps That Age — research dossier
+# Maps That Age - research dossier
 
 **Ticket:** KAN-115
 

@@ -9,7 +9,7 @@ import { GEO_LAYERS } from './geo';
 // must be canonical too (schema already caps them at 2, charter decision D2).
 // `room` is optional on these three collections at the schema level so future
 // records validate before they are tagged, so we assert full coverage here
-// instead — this test is the "zero untagged items" gate.
+// instead - this test is the "zero untagged items" gate.
 const SLUGS = new Set<string>(ROOM_SLUGS);
 
 const collections = [

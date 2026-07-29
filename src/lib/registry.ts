@@ -6,7 +6,7 @@ export type CanonicalDimension = (typeof CANONICAL_DIMENSIONS)[number];
 
 /**
  * The harmonized meta-lens (ATLAS-EL1).
- * Additive layer only — each essay keeps its native lens; this maps native axes
+ * Additive layer only - each essay keeps its native lens; this maps native axes
  * onto six canonical dimensions derived from the essays' shared Harley spine.
  */
 export const DIMENSION_META: Record<CanonicalDimension, { label: string; blurb: string }> = {
@@ -21,7 +21,7 @@ export const DIMENSION_META: Record<CanonicalDimension, { label: string; blurb: 
 /**
  * Crosswalk: native axis (per essay) -> canonical dimension.
  * Parenthetical/partial mappings from the plan are included where meaningful.
- * Note: Dacia's "Sex Lectiones" is a reading METHOD, not a scoring set — only
+ * Note: Dacia's "Sex Lectiones" is a reading METHOD, not a scoring set - only
  * rasura/vacat feed Silence; the rest is a reading protocol, not an axis.
  */
 export const CROSSWALK: Record<string, Partial<Record<CanonicalDimension, number>>> = {

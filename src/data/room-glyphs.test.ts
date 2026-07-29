@@ -6,7 +6,7 @@ import { ROOMS } from './rooms';
 // Glyph asset invariant (KAN-101): every room in the cosmography must have a
 // house-style glyph SVG on disk at the path its Room record advertises. These
 // assets are consumed by RoomBadge, the rooms grid, and OG images, so a missing
-// or malformed file would surface as a broken image far from here — this test is
+// or malformed file would surface as a broken image far from here - this test is
 // the gate that keeps the seven glyphs in lockstep with src/data/rooms.ts.
 const publicDir = fileURLToPath(new URL('../../public', import.meta.url));
 

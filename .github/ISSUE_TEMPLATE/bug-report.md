@@ -30,7 +30,7 @@ assignees: ''
 
 - **Browser & version** (Chrome / Firefox / Safari, desktop or mobile):
 - **OS / device:**
-- **Reduced motion enabled?** (yes / no — relevant for any motion or scroll bug)
+- **Reduced motion enabled?** (yes / no - relevant for any motion or scroll bug)
 
 ## Accessibility impact
 

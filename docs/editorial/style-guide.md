@@ -1,6 +1,6 @@
 # Terra Chartarum editorial style guide
 
-Status: Final — approved for release use under KAN-276.
+Status: Final - approved for release use under KAN-276.
 
 Owner: Editorial
 
@@ -10,8 +10,8 @@ and interpretive catalogue copy
 ## Editorial promise
 
 Terra Chartarum reads maps as made arguments. An essay should help a curious
-reader see a specific cartographic operation—measurement, selection,
-orientation, naming, circulation, classification, omission—without turning
+reader see a specific cartographic operation-measurement, selection,
+orientation, naming, circulation, classification, omission-without turning
 every map into proof of one total theory.
 
 The publication is scholarly but not ceremonial. It makes evidence boundaries
@@ -19,7 +19,7 @@ plain, defines specialist terms when they begin useful work, and prefers a
 precise qualification to a grand but unsupported claim. Interactive elements
 are part of the argument, never a reward placed between sections.
 
-## Voice — KAN-270
+## Voice - KAN-270
 
 ### The publication speaks as a close reader
 
@@ -65,7 +65,7 @@ meta-lens is additive discovery metadata; it must not flatten a native
 historical vocabulary into portal jargon. Translate a specialist term once,
 then retain it when its distinction matters.
 
-## Structure — KAN-271
+## Structure - KAN-271
 
 ### Recommended essay movement
 
@@ -81,8 +81,8 @@ The default structure is a reasoning sequence, not a fixed number of headings:
 7. **Return:** revisit the opening artifact with a sharper question.
 
 Writers may combine or reorder these moves. Every major section still needs one
-clear job. If a section cannot be described with an active verb—compare,
-distinguish, trace, test, qualify—it is probably a container rather than a step.
+clear job. If a section cannot be described with an active verb-compare,
+distinguish, trace, test, qualify-it is probably a container rather than a step.
 
 ### Opening
 
@@ -121,7 +121,7 @@ differently. Do not introduce a new corpus, moral crisis or technology in the
 final paragraph. A reading trail may extend inquiry after the argument has
 closed.
 
-## Transitions — KAN-272
+## Transitions - KAN-272
 
 Transitions should expose the relation between ideas rather than announce page
 movement.
@@ -168,7 +168,7 @@ argument.
 Never write “play with the map below.” Name what changes and what remains fixed.
 If scans are not registered for measurement, say so before the slider.
 
-## Tone — KAN-273
+## Tone - KAN-273
 
 The tone is exact, curious and calmly critical.
 
@@ -196,14 +196,14 @@ historical quotation.
 ### Formality and address
 
 Use clear contemporary English with contractions only where they prevent
-stiffness. Address the reader through invitations to inspect—“notice,”
-“compare,” “follow”—not presumed emotions. Do not claim that an image is
+stiffness. Address the reader through invitations to inspect-“notice,”
+“compare,” “follow”-not presumed emotions. Do not claim that an image is
 shocking, beautiful or confusing for everyone.
 
 Humour may clarify a convention or puncture false neutrality, but it must not
 target historical subjects, affected communities or a reader's knowledge.
 
-## Pacing — KAN-274
+## Pacing - KAN-274
 
 Pacing is the management of attention, not a target sentence length.
 
@@ -271,7 +271,7 @@ cutting the qualification that keeps a claim honest.
 - No publication-stage manifest without approved outline and narrative review.
 - No broken section anchors or cross-links.
 
-## Worked cohesion examples — KAN-275
+## Worked cohesion examples - KAN-275
 
 ### Observation before interpretation
 
@@ -348,7 +348,7 @@ Preferred:
 
 The revision closes the established argument instead of opening a new one.
 
-## Quick-reference review checklist — KAN-275
+## Quick-reference review checklist - KAN-275
 
 ### Argument and evidence
 
@@ -383,7 +383,7 @@ The revision closes the established argument instead of opening a new one.
 - [ ] `npm run build` passes with the editorial gate enabled.
 - [ ] No hold criterion in `data/editorial/release-policy.json` applies.
 
-## Final review record — KAN-276
+## Final review record - KAN-276
 
 Reviewer: Codex implementation review
 

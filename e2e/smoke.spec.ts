@@ -5,7 +5,7 @@ import AxeBuilder from '@axe-core/playwright';
 // from the KAN-176 core set to the whole surface: static pages, both index
 // listings, both detail templates, and a legacy essay host).
 // `heading: true` routes render their own <h1> in the portal DOM. Legacy essays
-// host their <h1> inside an isolated iframe, so the wrapper has none of its own —
+// host their <h1> inside an isolated iframe, so the wrapper has none of its own -
 // its title lives in the essay-bar breadcrumb instead.
 const ROUTES = [
   { path: '/', name: 'home', heading: true },
@@ -53,7 +53,7 @@ test.describe('a11y: axe is clean (zero WCAG A/AA violations)', () => {
         results.violations,
         results.violations
           .map(
-            (v) => `[${v.impact}] ${v.id}: ${v.help} — ${v.nodes.map((n) => n.target).join('; ')}`,
+            (v) => `[${v.impact}] ${v.id}: ${v.help} - ${v.nodes.map((n) => n.target).join('; ')}`,
           )
           .join('\n'),
       ).toEqual([]);

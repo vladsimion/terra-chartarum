@@ -15,8 +15,8 @@ import type { RoomSlug } from '../data/rooms';
 
 // Room cross-linking queries (KAN-99). The async getRoomPath / getRelatedByRoom
 // wrappers pull live collections (not runnable under the astro:content vitest
-// shim), so the pure query logic — membership, reading-path position, and the
-// mixed round-robin — is exercised here against hand-built fixtures.
+// shim), so the pure query logic - membership, reading-path position, and the
+// mixed round-robin - is exercised here against hand-built fixtures.
 
 /** Minimal Essay stub: only slug + the room fields the queries read. */
 function essay(slug: string, room: RoomSlug, secondaryRooms: RoomSlug[] = []): Essay {

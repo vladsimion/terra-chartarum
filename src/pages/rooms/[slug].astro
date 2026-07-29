@@ -45,7 +45,7 @@ const sheets = CORPUS.filter((m) => inRoom(m, room.slug));
 const mapThumb = (m: (typeof sheets)[number]) => m.images?.[0]?.src;
 ---
 
-<PortalLayout title={`${room.title} — The Seven Rooms`} description={room.blurb}>
+<PortalLayout title={`${room.title} - The Seven Rooms`} description={room.blurb}>
   <article class="shell room" style="--accent: var(--gold)">
     <nav class="room-crumbs" aria-label="Breadcrumb">
       <a href="/rooms/">← The Seven Rooms</a>

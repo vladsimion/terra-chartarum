@@ -1,4 +1,4 @@
-# Invisible Maps of Religion — research dossier
+# Invisible Maps of Religion - research dossier
 
 **Ticket:** KAN-124
 
@@ -8,7 +8,7 @@ This is a case study of medieval European and Byzantine Christian map forms,
 approximately 570–1581. It does not propose a universal theory of “religious
 maps,” does not treat Christianity as a proxy for religion, and does not infer a
 single medieval viewer. The argument is narrower: selected maps make sacred
-orientation operational through three visible grammars — centre, direction and
+orientation operational through three visible grammars - centre, direction and
 route.
 
 ## Claims ledger

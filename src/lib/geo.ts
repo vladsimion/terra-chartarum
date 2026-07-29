@@ -4,7 +4,7 @@
  * Typed, Zod-validated manifest of historical-GIS layers for the atlas map.
  * Mirrors the essay registry. Regime A (serverless, cloud-native): layers are
  * static, cloud-native formats (PMTiles / COG / FlatGeobuf / GeoJSON) served
- * from a CDN and versioned with the repo — no database. Escalation to Regime B
+ * from a CDN and versioned with the repo - no database. Escalation to Regime B
  * (PostGIS + Martin/TiTiler) is deferred until a spatial-query/scale trigger.
  *
  * The full tile-rendering pipeline (attaching the pmtiles protocol, adding COG
@@ -79,7 +79,7 @@ export type GeoLayer = z.infer<typeof GeoLayerSchema>;
 // Layers. The Natural Earth base layers and the AWMC Roman Empire extent are real
 // GeoJSON assets served from /public/geo and rendered live by the MapLibre pipeline
 // (ATLAS-EG3). The remaining essay-linked historical layer (venetian-maritime-1400)
-// is registered with its metadata but ships no binary yet — producing it needs
+// is registered with its metadata but ships no binary yet - producing it needs
 // tippecanoe/GDAL tooling and sourced data (ATLAS-EG3 remainder / EG6). The atlas
 // enables a toggle only when its asset is actually present, so a layer goes live
 // the moment its file is dropped in.
@@ -88,7 +88,7 @@ const RAW: unknown[] = [
   {
     id: 'ne-coastline',
     room: 'earth',
-    title: 'Natural Earth — Coastline',
+    title: 'Natural Earth - Coastline',
     description: 'Small-scale physical coastline, a neutral base for historical overlays.',
     kind: 'vector',
     format: 'geojson',
@@ -105,8 +105,8 @@ const RAW: unknown[] = [
   {
     id: 'ne-land',
     room: 'earth',
-    title: 'Natural Earth — Land outline',
-    description: 'Coastal landmass outlines — a subtle physical frame for the corpus.',
+    title: 'Natural Earth - Land outline',
+    description: 'Coastal landmass outlines - a subtle physical frame for the corpus.',
     kind: 'vector',
     format: 'geojson',
     url: '/geo/ne_110m_land.geojson',
@@ -123,8 +123,8 @@ const RAW: unknown[] = [
     id: 'ne-rivers',
     room: 'earth',
     secondaryRooms: ['road'],
-    title: 'Natural Earth — Rivers',
-    description: 'Major river and lake centrelines — waterways that carried maps and trade.',
+    title: 'Natural Earth - Rivers',
+    description: 'Major river and lake centrelines - waterways that carried maps and trade.',
     kind: 'vector',
     format: 'geojson',
     url: '/geo/ne_110m_rivers_lake_centerlines.geojson',
@@ -141,7 +141,7 @@ const RAW: unknown[] = [
     id: 'ne-boundaries',
     room: 'border',
     title: 'Modern national boundaries',
-    description: 'Present-day land borders — an anachronistic reference grid over historical maps.',
+    description: 'Present-day land borders - an anachronistic reference grid over historical maps.',
     kind: 'vector',
     format: 'geojson',
     url: '/geo/ne_110m_admin_0_boundary_lines_land.geojson',
@@ -159,7 +159,7 @@ const RAW: unknown[] = [
     room: 'map',
     title: 'Depicted extents (corpus)',
     description:
-      'The area each corpus map depicts — one footprint polygon per map, keyed by mapId.',
+      'The area each corpus map depicts - one footprint polygon per map, keyed by mapId.',
     kind: 'vector',
     format: 'geojson',
     url: '/geo/coverage.geojson',
@@ -177,13 +177,13 @@ const RAW: unknown[] = [
     room: 'border',
     secondaryRooms: ['archive'],
     title: 'Roman Empire, AD 117',
-    description: "Imperial extent at Trajan's greatest reach — context for the Dacia essay.",
+    description: "Imperial extent at Trajan's greatest reach - context for the Dacia essay.",
     kind: 'vector',
     format: 'geojson',
     url: '/geo/roman-empire-117.geojson',
     yearFrom: 106,
     yearTo: 271,
-    source: 'Ancient World Mapping Center (AWMC), UNC Chapel Hill — roman_empire_ce_117_extent',
+    source: 'Ancient World Mapping Center (AWMC), UNC Chapel Hill - roman_empire_ce_117_extent',
     license: 'ODbL 1.0',
     attribution:
       'Ancient World Mapping Center; derived from the Barrington Atlas and OpenStreetMap (ODbL)',
@@ -202,13 +202,13 @@ const RAW: unknown[] = [
     secondaryRooms: ['border'],
     title: 'Venetian maritime ports, c.1200–1500',
     description:
-      'Stato da màr nodes — the metropole and its capital, subject cities, colonies and independent rivals — graduated by status, each phase a separate feature.',
+      'Stato da màr nodes - the metropole and its capital, subject cities, colonies and independent rivals - graduated by status, each phase a separate feature.',
     kind: 'vector',
     format: 'flatgeobuf',
     url: '/geo/venetian-ports.fgb',
     yearFrom: 1200,
     yearTo: 1500,
-    source: "Terra Chartarum (compiled) — Lane 1973; O'Connell 2009",
+    source: "Terra Chartarum (compiled) - Lane 1973; O'Connell 2009",
     license: 'CC BY',
     attribution: "Terra Chartarum; after Lane and O'Connell",
     documentationLinks: [
@@ -273,7 +273,7 @@ const RAW: unknown[] = [
     url: '/geo/venetian-routes.fgb',
     yearFrom: 1200,
     yearTo: 1500,
-    source: 'Terra Chartarum (compiled) — Lane 1973',
+    source: 'Terra Chartarum (compiled) - Lane 1973',
     license: 'CC BY',
     attribution: 'Terra Chartarum; after Lane',
     documentationLinks: [
@@ -316,13 +316,13 @@ const RAW: unknown[] = [
     secondaryRooms: ['road'],
     title: 'Venetian possessions, c.1200–1500',
     description:
-      'Territorial extent of the stato da màr — direct rule, protectorates, condominia and contested ground — as phased fills clipped to the coastline.',
+      'Territorial extent of the stato da màr - direct rule, protectorates, condominia and contested ground - as phased fills clipped to the coastline.',
     kind: 'vector',
     format: 'flatgeobuf',
     url: '/geo/venetian-possessions.fgb',
     yearFrom: 1200,
     yearTo: 1500,
-    source: "Terra Chartarum (compiled) — Lane 1973; O'Connell 2009",
+    source: "Terra Chartarum (compiled) - Lane 1973; O'Connell 2009",
     license: 'CC BY',
     attribution: "Terra Chartarum; after Lane and O'Connell",
     documentationLinks: [
