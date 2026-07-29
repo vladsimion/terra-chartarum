@@ -26,20 +26,20 @@ artifacts rather than calling Jira during a local build.
 
 ## Batch 10
 
-| Epic   | Outcome reverified                                           |
-| ------ | ------------------------------------------------------------ |
-| KAN-82 | Room-aware search, glyph system and navigation discovery     |
-| KAN-83 | Expanded About manifesto and its two governing arguments     |
-| KAN-85 | Invisible Maps of Trade, VMN network and series shell        |
-| KAN-86 | Maps That Age, plate-state interaction and cartometry export |
+| Epic   | Outcome reverified                                            |
+| ------ | ------------------------------------------------------------- |
+| KAN-82 | Room-aware search, glyph system and navigation discovery      |
+| KAN-83 | Expanded About manifesto and its two governing arguments      |
+| KAN-85 | Invisible Maps of Trade, VMN network and series shell         |
+| KAN-86 | Maps That Age, plate-state interaction and cartometry export  |
 | KAN-87 | Invisible Maps of Religion and sacred-orientation interaction |
 
 ## Batch 11
 
-| Epic    | Outcome reverified                                                     | Board outcome |
-| ------- | ---------------------------------------------------------------------- | ------------- |
-| KAN-9   | Serverless geo tier, temporal layers, LPF and historical overlay       | Done          |
-| KAN-84  | VMN roadmap umbrella linked to the Atlas and Invisible Maps of Trade   | Done          |
+| Epic    | Outcome reverified                                                    | Board outcome |
+| ------- | --------------------------------------------------------------------- | ------------- |
+| KAN-9   | Serverless geo tier, temporal layers, LPF and historical overlay      | Done          |
+| KAN-84  | VMN roadmap umbrella linked to the Atlas and Invisible Maps of Trade  | Done          |
 | KAN-89  | Eight normalized Wave-2 essays and component-assignment gate          | Done          |
 | KAN-140 | Routes, paths, first flip and chronology handoff; page checks blocked | In Progress   |
 

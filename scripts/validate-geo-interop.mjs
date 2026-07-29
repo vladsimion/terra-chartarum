@@ -16,7 +16,10 @@ requireValue(
   annotationItem?.motivation === 'georeferencing',
   'Nolli annotation motivation must be georeferencing',
 );
-requireValue(controlPoints.length >= 4, 'Nolli annotation must publish at least four control points');
+requireValue(
+  controlPoints.length >= 4,
+  'Nolli annotation must publish at least four control points',
+);
 requireValue(
   controlPoints.every(
     (feature) =>

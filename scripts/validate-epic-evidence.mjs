@@ -2,9 +2,7 @@ import { existsSync, readFileSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const ROOT = resolve(import.meta.dirname, '..');
-const register = JSON.parse(
-  readFileSync(resolve(ROOT, 'data/release/epic-evidence.json'), 'utf8'),
-);
+const register = JSON.parse(readFileSync(resolve(ROOT, 'data/release/epic-evidence.json'), 'utf8'));
 const failures = [];
 const seen = new Set();
 
