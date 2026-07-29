@@ -1,0 +1,221 @@
+---
+const maps = [
+  {
+    id: 'religion-madaba',
+    title: 'Madaba mosaic map',
+    year: 570,
+    grammars: ['centre'],
+    note: 'Jerusalem enlarged inside a mapped Holy Land.',
+  },
+  {
+    id: 'religion-beatus',
+    title: 'Saint-Sever Beatus world map',
+    year: 1050,
+    grammars: ['centre', 'orientation'],
+    note: 'An east-up world organised through inherited sacred history.',
+  },
+  {
+    id: 'religion-ebstorf',
+    title: 'Ebstorf world map',
+    year: 1235,
+    grammars: ['centre', 'orientation'],
+    note: 'The inhabited world figured within the body of Christ.',
+  },
+  {
+    id: 'religion-psalter',
+    title: 'Psalter world map',
+    year: 1250,
+    grammars: ['centre', 'orientation'],
+    note: 'A compact east-up world image bound into devotional reading.',
+  },
+  {
+    id: 'religion-matthew-paris',
+    title: 'Matthew Paris itinerary',
+    year: 1255,
+    grammars: ['route'],
+    note: 'London-to-Holy-Land travel rendered as an ordered chain of stations.',
+  },
+  {
+    id: 'hereford',
+    title: 'Hereford Mappa Mundi',
+    year: 1300,
+    grammars: ['centre', 'orientation'],
+    note: 'Jerusalem at the centre and east at the top of an encyclopedic world.',
+  },
+  {
+    id: 'religion-to-1472',
+    title: 'Printed T–O diagram',
+    year: 1472,
+    grammars: ['centre', 'orientation', 'print'],
+    note: 'A small schematic world transmitted through the printed book.',
+  },
+  {
+    id: 'religion-rudimentum',
+    title: 'Rudimentum Novitiorum world map',
+    year: 1475,
+    grammars: ['centre', 'print'],
+    note: 'World history and sacred geography assembled in an incunable.',
+  },
+  {
+    id: 'religion-bunting',
+    title: 'Bünting clover-leaf world',
+    year: 1581,
+    grammars: ['centre', 'orientation', 'print'],
+    note: 'Three continents made into a Christian emblem around Jerusalem.',
+  },
+];
+
+const filters = [
+  ['all', 'All nine'],
+  ['centre', 'Sacred centre'],
+  ['orientation', 'Directional order'],
+  ['route', 'Pilgrimage route'],
+  ['print', 'Printed afterlife'],
+] as const;
+---
+
+<section class="soe" data-sacred-orientation>
+  <header>
+    <p class="eyebrow">Reading grammar · overlapping, not exclusive</p>
+    <h3>What does this map ask the reader to face, centre or follow?</h3>
+    <p>
+      Filter by a visible spatial operation. A map may use more than one grammar; the labels
+      describe this corpus, not all religious mapping.
+    </p>
+  </header>
+
+  <div class="soe-controls" role="group" aria-label="Filter maps by spatial grammar">
+    {
+      filters.map(([value, label], index) => (
+        <button
+          type="button"
+          class:list={{ 'is-active': index === 0 }}
+          data-grammar={value}
+          aria-pressed={index === 0 ? 'true' : 'false'}
+        >
+          {label}
+        </button>
+      ))
+    }
+  </div>
+
+  <p class="soe-status" aria-live="polite">Showing all nine corpus maps.</p>
+
+  <ol class="soe-list">
+    {
+      maps.map((map) => (
+        <li data-map data-grammars={map.grammars.join(' ')}>
+          <p class="soe-meta">
+            {map.year} · {map.grammars.join(' · ')}
+          </p>
+          <h4>{map.title}</h4>
+          <p>{map.note}</p>
+          <a href={`/collection/${map.id}/`}>Open catalogue record</a>
+        </li>
+      ))
+    }
+  </ol>
+</section>
+
+<script>
+  const bootSacredOrientation = () => {
+    document.querySelectorAll<HTMLElement>('[data-sacred-orientation]').forEach((root) => {
+      if (root.dataset.ready) return;
+      root.dataset.ready = 'true';
+      const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-grammar]'));
+      const rows = Array.from(root.querySelectorAll<HTMLElement>('[data-map]'));
+      const status = root.querySelector<HTMLElement>('.soe-status');
+
+      for (const button of buttons) {
+        button.addEventListener('click', () => {
+          const grammar = button.dataset.grammar ?? 'all';
+          let shown = 0;
+          for (const candidate of buttons) {
+            const active = candidate === button;
+            candidate.classList.toggle('is-active', active);
+            candidate.setAttribute('aria-pressed', String(active));
+          }
+          for (const row of rows) {
+            const grammars = (row.dataset.grammars ?? '').split(' ');
+            const visible = grammar === 'all' || grammars.includes(grammar);
+            row.hidden = !visible;
+            if (visible) shown += 1;
+          }
+          if (status) {
+            status.textContent =
+              grammar === 'all'
+                ? 'Showing all nine corpus maps.'
+                : `Showing ${shown} maps using the ${grammar} grammar.`;
+          }
+        });
+      }
+    });
+  };
+
+  bootSacredOrientation();
+  document.addEventListener('astro:page-load', bootSacredOrientation);
+</script>
+
+<style>
+  .soe {
+    margin: 2.5rem 0;
+    padding: clamp(1rem, 3vw, 1.6rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+  }
+  .soe header {
+    max-width: 46rem;
+  }
+  .soe h3 {
+    margin: 0.3rem 0 0.5rem;
+  }
+  .soe-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin: 1.2rem 0 0.7rem;
+  }
+  .soe-controls button {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--ink-muted);
+    background: var(--panel-2);
+    padding: 0.45rem 0.8rem;
+    font: inherit;
+    cursor: pointer;
+  }
+  .soe-controls button:hover,
+  .soe-controls button:focus-visible,
+  .soe-controls button.is-active {
+    color: var(--gold);
+    border-color: var(--gold);
+  }
+  .soe-status,
+  .soe-meta {
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+  }
+  .soe-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 0.75rem;
+    padding: 0;
+    list-style: none;
+  }
+  .soe-list li {
+    padding: 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--canvas);
+  }
+  .soe-list h4,
+  .soe-list p {
+    margin: 0.35rem 0;
+  }
+  .soe-list a {
+    display: inline-block;
+    margin-top: 0.5rem;
+  }
+</style>

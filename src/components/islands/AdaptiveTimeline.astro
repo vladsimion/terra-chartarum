@@ -42,7 +42,7 @@ const tickYears = ticks ?? [minY, maxY];
 ---
 
 <figure class="atl">
-  <div class="atl-track" role="list">
+  <div class="atl-track">
     <div class="atl-axis" aria-hidden="true">
       {
         tickYears.map((t) => (
@@ -66,22 +66,11 @@ const tickYears = ticks ?? [minY, maxY];
           </>
         );
         return e.href ? (
-          <a
-            class="atl-node"
-            role="listitem"
-            style={style}
-            href={e.href}
-            title={`${e.label} (${fmt(e.year)})`}
-          >
+          <a class="atl-node" style={style} href={e.href} title={`${e.label} (${fmt(e.year)})`}>
             {inner}
           </a>
         ) : (
-          <span
-            class="atl-node"
-            role="listitem"
-            style={style}
-            title={`${e.label} (${fmt(e.year)})`}
-          >
+          <span class="atl-node" style={style} title={`${e.label} (${fmt(e.year)})`}>
             {inner}
           </span>
         );

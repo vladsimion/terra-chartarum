@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Maps That Age">
+  <rect width="800" height="500" fill="#0a0806"/>
+  <g fill="none" stroke="#b78d62">
+    <ellipse cx="520" cy="218" rx="216" ry="132" opacity="0.22"/>
+    <ellipse cx="510" cy="214" rx="210" ry="128" opacity="0.4"/>
+    <ellipse cx="500" cy="210" rx="204" ry="124" opacity="0.68"/>
+    <path d="M326 294 L344 275 L336 254 L356 238" stroke-width="3"/>
+    <path d="M500 86 V334 M296 210 H704" opacity="0.18"/>
+  </g>
+  <g fill="#d4b87a">
+    <circle cx="326" cy="294" r="4"/>
+    <circle cx="344" cy="275" r="3"/>
+    <circle cx="336" cy="254" r="3"/>
+  </g>
+  <text x="54" y="68" fill="#b78d62" font-family="monospace" font-size="14" letter-spacing="4">PLATE · STATE · IMPRESSION</text>
+  <text x="54" y="408" fill="#e8dec5" font-family="Georgia, serif" font-size="58">Maps That</text>
+  <text x="54" y="466" fill="#b78d62" font-family="Georgia, serif" font-size="58" font-style="italic">Age</text>
+</svg>

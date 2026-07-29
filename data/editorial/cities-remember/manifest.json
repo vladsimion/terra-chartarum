@@ -1,0 +1,216 @@
+{
+  "slug": "cities-remember",
+  "title": "Cities Remember",
+  "stage": "outline",
+  "room": "city",
+  "secondaryRooms": ["archive", "theatre"],
+  "thesis": "A city map never records only the city that exists: it preserves demolished walls, monumental ambitions, property regimes and obsolete risks, allowing past urban orders to remain actionable long after the streets have changed.",
+  "whyThisSite": "Terra Chartarum can place a rights-cleared historical town plan over a modern basemap, then connect the same city to bird’s-eye views, insurance sheets and catalogue records so continuity and erasure can be inspected rather than merely asserted.",
+  "minimumDraftWords": 3000,
+  "draftPath": "docs/editorial/cities-remember/draft.md",
+  "contentPath": "src/content/essays/cities-remember.mdx",
+  "coverPath": "public/covers/cities-remember.svg",
+  "ogPath": "public/og/cities-remember.png",
+  "corpus": [
+    {
+      "id": "city-forma-urbis",
+      "title": "Forma Urbis Romae",
+      "maker": "Unknown Severan-period surveyors and stonecutters",
+      "year": 210,
+      "holding": "Museo della Forma Urbis, Rome",
+      "sourceUrl": "https://formaurbis.stanford.edu/docs/FURmap.html",
+      "rights": "The ancient marble plan is public domain. Stanford photography is explicitly excluded from republication; the future build will use cited measurements and a newly drawn vector footprint.",
+      "scanQuality": "Searchable record of 1,186 surviving fragments; measurements and slab arrangement documented"
+    },
+    {
+      "id": "city-schedel-nuremberg",
+      "title": "Nuremberg in the Liber Chronicarum",
+      "maker": "Workshop of Michael Wolgemut and Wilhelm Pleydenwurff",
+      "year": 1493,
+      "holding": "Public-domain printed-book witnesses",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/Category:Nuremberg_Chronicle",
+      "rights": "Public-domain incunable and faithful reproductions.",
+      "scanQuality": "Multiple high-resolution institutional page scans"
+    },
+    {
+      "id": "trade-barbari-1500",
+      "title": "View of Venice",
+      "maker": "Jacopo de’ Barbari; published by Anton Kolb",
+      "year": 1500,
+      "holding": "Minneapolis Institute of Art",
+      "sourceUrl": "https://collections.artsmia.org/art/111219/view-of-venice-jacopo-de-barbari",
+      "rights": "The museum and National Gallery of Art identify media for this public-domain woodcut as free to use.",
+      "scanQuality": "25616 × 12341 public-domain composite reproduction"
+    },
+    {
+      "id": "city-bufalini-1551",
+      "title": "Pianta di Roma",
+      "maker": "Leonardo Bufalini",
+      "year": 1551,
+      "holding": "Accademia delle Scienze di Torino reproduction",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mappa_di_Roma,_1551_-_Archivio_Accademia_delle_Scienze_Torino,_Millon_66_28_328.jpg",
+      "rights": "Public Domain Mark on the institutional reproduction.",
+      "scanQuality": "5113 × 3692 institutional reproduction"
+    },
+    {
+      "id": "city-agas-london",
+      "title": "Civitas Londinum (the Agas map)",
+      "maker": "Anonymous woodcut-map tradition",
+      "year": 1561,
+      "holding": "London Metropolitan Archives; scholarly digital edition at the University of Victoria",
+      "sourceUrl": "https://mapoflondon.uvic.ca/agas.htm",
+      "rights": "Public-domain sixteenth-century work; MoEML scholarly data is cited and not bulk-republished.",
+      "scanQuality": "Zoomable, hyperlinked scholarly digital edition"
+    },
+    {
+      "id": "city-civitates-1572",
+      "title": "Civitates Orbis Terrarum, city-view atlas",
+      "maker": "Georg Braun, Frans Hogenberg and collaborators",
+      "year": 1572,
+      "holding": "Library of Congress, Geography and Map Division",
+      "sourceUrl": "https://www.loc.gov/item/2008627031/",
+      "rights": "Library of Congress Geography and Map Division digitised content is free to use and reuse unless a contrary advisory appears; none appears on this item.",
+      "scanQuality": "801-image IIIF sequence across the six-volume atlas witness",
+      "hero": false
+    },
+    {
+      "id": "city-turgot-paris",
+      "title": "Plan de Turgot",
+      "maker": "Louis Bretez; engraved by Claude Lucas",
+      "year": 1739,
+      "holding": "Kyoto University Library and Bibliothèque nationale de France witnesses",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/Turgot_map_of_Paris",
+      "rights": "Public-domain work with high-resolution institutional reproductions.",
+      "scanQuality": "Twenty sectional plates plus key map; individual plates up to 10258 × 6851"
+    },
+    {
+      "id": "city-nolli-1748",
+      "title": "Nuova Pianta di Roma",
+      "maker": "Giambattista Nolli and collaborators",
+      "year": 1748,
+      "holding": "Public-domain Yale, BnF and other institutional witnesses",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:1748_map_of_Rome.jpg",
+      "rights": "Public-domain eighteenth-century engraving and faithful reproduction.",
+      "scanQuality": "16826 × 11648 stitched reproduction suitable for georeferencing",
+      "hero": true
+    },
+    {
+      "id": "city-sanborn-buffalo",
+      "title": "Sanborn fire insurance map of Buffalo, volume 1",
+      "maker": "Sanborn Map Company",
+      "year": 1899,
+      "holding": "Library of Congress, Geography and Map Division",
+      "sourceUrl": "https://www.loc.gov/item/sanborn05793_005/",
+      "rights": "Library of Congress states that the online Sanborn Maps Collection is public domain and free to use and reuse.",
+      "scanQuality": "110-sheet IIIF sequence with key and skeleton maps"
+    }
+  ],
+  "bibliography": [
+    {
+      "id": "stanford-forma-urbis",
+      "citation": "Trimble, Jennifer, Marc Levoy and Tina Najbjerg. Stanford Digital Forma Urbis Romae Project.",
+      "url": "https://formaurbis.stanford.edu/docs/FURproject.html"
+    },
+    {
+      "id": "mia-barbari",
+      "citation": "Minneapolis Institute of Art. Jacopo de’ Barbari, View of Venice, 1500, accession 2010.88.",
+      "url": "https://collections.artsmia.org/art/111219/view-of-venice-jacopo-de-barbari"
+    },
+    {
+      "id": "moeml-agas",
+      "citation": "Map of Early Modern London. “The Agas Map of Early Modern London.” University of Victoria.",
+      "url": "https://mapoflondon.uvic.ca/agas.htm"
+    },
+    {
+      "id": "loc-civitates",
+      "citation": "Library of Congress. Braun, Georg, Frans Hogenberg et al. Civitates Orbis Terrarum. Six-volume digitised atlas witness.",
+      "url": "https://www.loc.gov/item/2008627031/"
+    },
+    {
+      "id": "tice-steiner-nolli",
+      "citation": "Tice, James and Erik Steiner. The Interactive Nolli Map Website. University of Oregon.",
+      "url": "https://nolli.uoregon.edu/"
+    },
+    {
+      "id": "loc-sanborn-guide",
+      "citation": "Library of Congress. “About this Collection.” Sanborn Maps, Geography and Map Division.",
+      "url": "https://www.loc.gov/collections/sanborn-maps/about-this-collection/"
+    },
+    {
+      "id": "boutier-2007",
+      "citation": "Boutier, Jean. Les Plans de Paris: des origines (1493) à la fin du XVIIIe siècle. 2nd ed. Paris: Bibliothèque nationale de France, 2007."
+    }
+  ],
+  "claims": [
+    {
+      "id": "city-claim-forma",
+      "claim": "The Severan marble plan measured about 18.1 by 13 metres, mapped architecture at approximately 1:240 and survives in 1,186 known fragments.",
+      "citationIds": ["stanford-forma-urbis"]
+    },
+    {
+      "id": "city-claim-boundaries",
+      "claim": "The Forma Urbis omitted political and sacred boundaries; even the Tiber appears through the blank between built edges, making architecture its principal urban memory system.",
+      "citationIds": ["stanford-forma-urbis"]
+    },
+    {
+      "id": "city-claim-view",
+      "claim": "De’ Barbari’s six-block View of Venice constructs a comprehensive, inspectable civic image at monumental scale rather than reproducing one possible viewpoint.",
+      "citationIds": ["mia-barbari"]
+    },
+    {
+      "id": "city-claim-edition",
+      "claim": "The Agas map now supports a hyperlinked scholarly atlas of sixteenth- and seventeenth-century London, demonstrating how a historical city view becomes an index to place memory.",
+      "citationIds": ["moeml-agas"]
+    },
+    {
+      "id": "city-claim-atlas",
+      "claim": "The Civitates Orbis Terrarum assembled hundreds of city plans and aerial views with descriptive texts, turning urban identity into a repeatable atlas genre.",
+      "citationIds": ["loc-civitates"]
+    },
+    {
+      "id": "city-claim-nolli",
+      "claim": "Nolli’s 1748 Rome plan provides a high-resolution ichnographic surface suitable for a documented historical-to-modern georeferenced overlay.",
+      "citationIds": ["tice-steiner-nolli"]
+    },
+    {
+      "id": "city-claim-sanborn",
+      "claim": "Sanborn sheets selected construction, use and risk for insurance underwriting and were periodically revised, so their urban detail reflects a commercial purpose rather than total memory.",
+      "citationIds": ["loc-sanborn-guide"]
+    }
+  ],
+  "sections": [
+    {
+      "id": "city-as-fragment",
+      "title": "The city survives as a fragment",
+      "mapIds": ["city-forma-urbis", "city-bufalini-1551", "city-nolli-1748"],
+      "interactive": "Fragment ledger connects lost Forma Urbis slabs to later Rome plans without filling unknown gaps"
+    },
+    {
+      "id": "city-performs-itself",
+      "title": "The city performs itself",
+      "mapIds": ["city-schedel-nuremberg", "trade-barbari-1500", "city-civitates-1572"],
+      "interactive": "CompareSlider contrasts a singular civic portrait with the repeatable city-atlas grammar"
+    },
+    {
+      "id": "walls-after-walls",
+      "title": "Walls after walls",
+      "mapIds": ["city-bufalini-1551", "city-agas-london", "city-turgot-paris"]
+    },
+    {
+      "id": "public-private-ground",
+      "title": "Public and private ground",
+      "mapIds": ["city-nolli-1748", "city-turgot-paris"],
+      "interactive": "Allmaps-compatible georeferenced Nolli overlay with opacity control and residual/error disclosure"
+    },
+    {
+      "id": "risk-remembers-block",
+      "title": "Risk remembers the block",
+      "mapIds": ["city-sanborn-buffalo", "city-agas-london"]
+    },
+    {
+      "id": "overlay-is-argument",
+      "title": "An overlay is an argument",
+      "mapIds": ["city-forma-urbis", "city-nolli-1748", "city-sanborn-buffalo"]
+    }
+  ]
+}

@@ -1,0 +1,222 @@
+{
+  "slug": "maps-that-age",
+  "title": "Maps That Age",
+  "stage": "publish",
+  "room": "archive",
+  "secondaryRooms": ["map", "theatre"],
+  "thesis": "Maps do not simply become old: printing plates accumulate repairs, recut borders and altered names, while later states preserve inherited geometries that make political change look continuous. Reading successive states exposes age as an editorial process rather than a date.",
+  "whyThisSite": "Terra Chartarum can place dated states of the same plate in a CompareSlider, record state-specific changes in the catalogue and expose a filterable state ledger, making revision visible without pretending that every difference is a new map.",
+  "minimumDraftWords": 3000,
+  "draftPath": "src/content/essays/maps-that-age.mdx",
+  "contentPath": "src/content/essays/maps-that-age.mdx",
+  "coverPath": "public/covers/maps-that-age.svg",
+  "ogPath": "public/og/maps-that-age.png",
+  "publishedPath": "src/content/essays/maps-that-age.mdx",
+  "crossLinks": [
+    "/essays/speculum/",
+    "/rooms/archive/",
+    "/rooms/theatre/",
+    "/collection/?essay=maps-that-age"
+  ],
+  "cartometryPaths": [
+    "public/data/cartometry/maps-that-age.csv",
+    "public/data/cartometry/maps-that-age.json"
+  ],
+  "corpus": [
+    {
+      "id": "age-ort1-1570",
+      "title": "Typus Orbis Terrarum, plate 1, state 1.1",
+      "maker": "Abraham Ortelius; engraved by Frans Hogenberg",
+      "year": 1570,
+      "holding": "Library of Congress",
+      "sourceUrl": "https://www.loc.gov/item/98687183/",
+      "rights": "Library of Congress states the digitised collection item is public domain and free to use and reuse.",
+      "scanQuality": "High-resolution institutional atlas sequence"
+    },
+    {
+      "id": "age-ort1-1571",
+      "title": "Typus Orbis Terrarum, plate 1, early impression",
+      "maker": "Abraham Ortelius; engraved by Frans Hogenberg",
+      "year": 1571,
+      "holding": "Bibliothèque nationale de France",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Typus_orbis_terrarum_-_Franciscus_Hogenbergus,_sculpsit_-_btv1b8446648x.jpg",
+      "rights": "Public-domain work; BnF reproduction made available through Wikimedia Commons.",
+      "scanQuality": "9978 × 7608 institutional reproduction"
+    },
+    {
+      "id": "age-ort1-1572",
+      "title": "Typus Orbis Terrarum, plate 1, 1572 impression",
+      "maker": "Abraham Ortelius; engraved by Frans Hogenberg",
+      "year": 1572,
+      "holding": "Private collection reproduction",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:1572_Typus_Orbis_Terrarum_Ortelius.jpg",
+      "rights": "Public-domain work and reproduction on Wikimedia Commons.",
+      "scanQuality": "2923 × 2019 reference reproduction"
+    },
+    {
+      "id": "age-ort1-1575",
+      "title": "Typus Orbis Terrarum, plate 1, state 1.3",
+      "maker": "Abraham Ortelius; engraved by Frans Hogenberg",
+      "year": 1575,
+      "holding": "State documented in the Van den Broecke census",
+      "sourceUrl": "https://orteliusmaps.com/book/ort1.html",
+      "rights": "State record is cited for scholarship; no unverified scan is republished for this row.",
+      "scanQuality": "Textual state record; visual claim limited to documented bolt impressions"
+    },
+    {
+      "id": "age-ort1-1579",
+      "title": "Typus Orbis Terrarum, plate 1, state 1.4",
+      "maker": "Abraham Ortelius; engraved by Frans Hogenberg",
+      "year": 1579,
+      "holding": "National Library of Norway",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ortelius_verdenskart_1579_(12085012186).jpg",
+      "rights": "No known copyright restrictions through the Flickr Commons programme.",
+      "scanQuality": "4700 × 3483 institutional reproduction",
+      "hero": true
+    },
+    {
+      "id": "age-ort1-1584",
+      "title": "Typus Orbis Terrarum, plate 1, state 1.5",
+      "maker": "Abraham Ortelius; engraved by Frans Hogenberg",
+      "year": 1584,
+      "holding": "State documented in the Van den Broecke census",
+      "sourceUrl": "https://orteliusmaps.com/book/ort1.html",
+      "rights": "State record is cited for scholarship; no unverified scan is republished for this row.",
+      "scanQuality": "Textual state record; date addition and worn hachuring documented"
+    },
+    {
+      "id": "age-ort2-1587",
+      "title": "Typus Orbis Terrarum, plate 2, state 2.1",
+      "maker": "Abraham Ortelius",
+      "year": 1587,
+      "holding": "Fundação Biblioteca Nacional, Brazil",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Typus_Orbis_Terrarum.jpg",
+      "rights": "Public-domain work and reproduction.",
+      "scanQuality": "800 × 588 institutional reference reproduction"
+    },
+    {
+      "id": "age-ort2-1588",
+      "title": "Typus Orbis Terrarum, plate 2, state 2.3",
+      "maker": "Abraham Ortelius",
+      "year": 1588,
+      "holding": "State documented in the Van den Broecke census",
+      "sourceUrl": "https://orteliusmaps.com/book/ort2.html",
+      "rights": "State record is cited for scholarship; no unverified scan is republished for this row.",
+      "scanQuality": "Textual state record; corrected South American coastline documented"
+    },
+    {
+      "id": "age-ort3-1613",
+      "title": "Typus Orbis Terrarum, plate 3, state 3.2",
+      "maker": "Abraham Ortelius workshop and successors",
+      "year": 1613,
+      "holding": "State documented in the Van den Broecke census",
+      "sourceUrl": "https://orteliusmaps.com/book/ort3.html",
+      "rights": "State record is cited for scholarship; no unverified scan is republished for this row.",
+      "scanQuality": "Textual state record; Le Maire Strait addition documented"
+    }
+  ],
+  "bibliography": [
+    {
+      "id": "vandenbroecke-1996",
+      "citation": "Van den Broecke, Marcel P. R. Ortelius Atlas Maps: An Illustrated Guide. ’t Goy-Houten: HES Publishers, 1996.",
+      "url": "https://orteliusmaps.com/ortindexnumber.html"
+    },
+    {
+      "id": "vandenbroecke-ort1",
+      "citation": "Van den Broecke, Marcel P. R. “Ortelius Map No. 1: Typus Orbis Terrarum.” Cartographica Neerlandica.",
+      "url": "https://orteliusmaps.com/book/ort1.html"
+    },
+    {
+      "id": "vandenbroecke-ort2",
+      "citation": "Van den Broecke, Marcel P. R. “Ortelius Map No. 2: Typus Orbis Terrarum.” Cartographica Neerlandica.",
+      "url": "https://orteliusmaps.com/book/ort2.html"
+    },
+    {
+      "id": "vandenbroecke-ort3",
+      "citation": "Van den Broecke, Marcel P. R. “Ortelius Map No. 3: Typus Orbis Terrarum.” Cartographica Neerlandica.",
+      "url": "https://orteliusmaps.com/book/ort3.html"
+    },
+    {
+      "id": "loc-ortelius",
+      "citation": "Library of Congress. “Ortelius Atlas.” General Atlases, Geography and Map Division.",
+      "url": "https://www.loc.gov/collections/general-maps/articles-and-essays/general-atlases/ortelius-atlas/"
+    },
+    {
+      "id": "nuti-2003",
+      "citation": "Nuti, Lucia. “The World Map as an Emblem: Abraham Ortelius and the Stoic Contemplation.” Imago Mundi 55 (2003): 38–55."
+    }
+  ],
+  "claims": [
+    {
+      "id": "age-claim-editions",
+      "claim": "The Theatrum was repeatedly revised across thirty-one editions and seven languages between 1570 and 1612.",
+      "citationIds": ["loc-ortelius"]
+    },
+    {
+      "id": "age-claim-plate-one",
+      "claim": "The first world-map plate accumulated hachuring changes, repair marks, a partly mended crack, fading linework and added dates across six documented states.",
+      "citationIds": ["vandenbroecke-ort1"]
+    },
+    {
+      "id": "age-claim-plate-two",
+      "claim": "The short-lived second plate moved through three states, including removal of its date and correction of the South American coastline.",
+      "citationIds": ["vandenbroecke-ort2"]
+    },
+    {
+      "id": "age-claim-plate-three",
+      "claim": "The third plate replaced the earlier plates and was itself altered after 1613 by adding Le Maire Strait and changing the surrounding hachuring.",
+      "citationIds": ["vandenbroecke-ort3"]
+    },
+    {
+      "id": "age-claim-method",
+      "claim": "Close plate comparison can reveal differences missed when similar maps are inspected in alternation rather than superimposed.",
+      "citationIds": ["vandenbroecke-1996"]
+    },
+    {
+      "id": "age-claim-emblem",
+      "claim": "Ortelius’s world map also functioned as a philosophical and emblematic image, so revision preserved a visual argument as well as geography.",
+      "citationIds": ["nuti-2003"]
+    }
+  ],
+  "sections": [
+    {
+      "id": "plate-not-file",
+      "title": "A plate is not a file",
+      "mapIds": ["age-ort1-1570", "age-ort1-1579", "age-ort2-1587"],
+      "interactive": "CompareSlider between the 1579 first plate and the 1587 replacement"
+    },
+    {
+      "id": "wear-writes",
+      "title": "Wear writes itself",
+      "mapIds": [
+        "age-ort1-1570",
+        "age-ort1-1571",
+        "age-ort1-1572",
+        "age-ort1-1575",
+        "age-ort1-1579"
+      ]
+    },
+    {
+      "id": "correction-without-rupture",
+      "title": "Correction without rupture",
+      "mapIds": ["age-ort1-1584", "age-ort2-1587", "age-ort2-1588"],
+      "interactive": "Filterable PlateStateExplorer with evidence and confidence"
+    },
+    {
+      "id": "edition-fiction",
+      "title": "The fiction of the edition",
+      "mapIds": ["age-ort1-1570", "age-ort1-1584", "age-ort2-1587", "age-ort2-1588"],
+      "interactive": "Linear AdaptiveTimeline linked to catalogue records"
+    },
+    {
+      "id": "error-accumulates",
+      "title": "What measurement can and cannot say",
+      "mapIds": ["age-ort1-1579", "age-ort2-1587", "age-ort2-1588"]
+    },
+    {
+      "id": "archive-makes-age",
+      "title": "The archive makes age",
+      "mapIds": ["age-ort1-1570", "age-ort3-1613"]
+    }
+  ]
+}

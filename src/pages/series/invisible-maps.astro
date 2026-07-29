@@ -1,0 +1,87 @@
+---
+import EssayCard from '../../components/EssayCard.astro';
+import PortalLayout from '../../layouts/PortalLayout.astro';
+import { getEssays } from '../../lib/registry';
+
+const essays = (await getEssays()).filter((essay) =>
+  essay.data.title.toLowerCase().startsWith('invisible maps of '),
+);
+---
+
+<PortalLayout
+  title="Invisible Maps"
+  description="Essays about spatial systems that govern movement, belief and memory without appearing as ordinary maps."
+>
+  <main class="shell series">
+    <header class="series-head">
+      <p class="eyebrow">A Terra Chartarum series</p>
+      <h1>Invisible Maps</h1>
+      <p class="lede">
+        Not every map is a sheet. Routes, rituals, classifications and expectations organise space
+        before a line is drawn. This series reads those systems beside the historical images that
+        made them appear natural.
+      </p>
+      <dl class="series-facts">
+        <div><dt>Published</dt><dd>{essays.length}</dd></div>
+        <div><dt>Rooms</dt><dd>The Road · The Theatre</dd></div>
+        <div><dt>Method</dt><dd>Map against system</dd></div>
+      </dl>
+    </header>
+
+    <section aria-labelledby="series-essays">
+      <h2 id="series-essays">Essays in the series</h2>
+      <div class="series-grid">
+        {essays.map((essay) => <EssayCard essay={essay} />)}
+      </div>
+    </section>
+  </main>
+</PortalLayout>
+
+<style>
+  .series {
+    padding-block: clamp(2.8rem, 7vw, 5.5rem);
+  }
+  .series-head {
+    max-width: var(--prose-max);
+    margin-bottom: 3rem;
+  }
+  .series-head h1 {
+    margin: 0.25rem 0 0.8rem;
+    font-size: var(--step-5);
+  }
+  .lede {
+    color: var(--ink-muted);
+    font-size: var(--step-1);
+  }
+  .series-facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin: 2rem 0 0;
+  }
+  .series-facts div {
+    border-top: 1px solid var(--line);
+    padding-top: 0.65rem;
+  }
+  .series-facts dt {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .series-facts dd {
+    margin: 0.25rem 0 0;
+    color: var(--ink-muted);
+  }
+  .series-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+    gap: 1.25rem;
+  }
+  @media (max-width: 42rem) {
+    .series-facts {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

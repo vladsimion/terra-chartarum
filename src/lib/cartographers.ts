@@ -61,7 +61,7 @@ const RAW: unknown[] = [
     died: 1598,
     places: ['Antwerp'],
     bio: 'Brabantian cartographer and geographer whose Theatrum Orbis Terrarum (1570) is regarded as the first modern atlas: a uniform, bound set of map sheets with a credited list of sources.',
-    essaySlugs: ['speculum'],
+    essaySlugs: ['speculum', 'maps-that-age'],
     links: [{ label: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Abraham_Ortelius' }],
   },
   {
@@ -118,6 +118,139 @@ const RAW: unknown[] = [
     bio: 'Transylvanian Saxon humanist, cosmographer and reformer who mapped his own Carpathian homeland and produced widely reprinted cosmographic works.',
     essaySlugs: ['dacia'],
     links: [{ label: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Johannes_Honterus' }],
+  },
+  {
+    id: 'pietro-vesconte',
+    room: 'road',
+    secondaryRooms: ['map'],
+    name: 'Pietro Vesconte',
+    sortName: 'Vesconte, Pietro',
+    places: ['Genoa', 'Venice'],
+    bio: 'Fourteenth-century chartmaker associated with the earliest signed and dated surviving portolan chart. His nautical charts and atlas work made ordered Mediterranean coasts available to both navigation and crusading geography.',
+    essaySlugs: ['invisible-maps-trade'],
+    links: [
+      {
+        label: 'Digital Bodleian',
+        url: 'https://digital.bodleian.ox.ac.uk/search/?q=Pietro%20Vesconte',
+      },
+    ],
+  },
+  {
+    id: 'andrea-bianco',
+    room: 'road',
+    secondaryRooms: ['map'],
+    name: 'Andrea Bianco',
+    sortName: 'Bianco, Andrea',
+    places: ['Venice'],
+    bio: 'Fifteenth-century Venetian mariner and chartmaker whose 1436 atlas joins portolan leaves, tables and cosmographic material in a single working manuscript.',
+    essaySlugs: ['invisible-maps-trade'],
+    links: [
+      {
+        label: 'Wikimedia Commons atlas',
+        url: 'https://commons.wikimedia.org/wiki/Atlante_di_Andrea_Bianco_dell%27_anno_1436',
+      },
+    ],
+  },
+  {
+    id: 'petrus-roselli',
+    room: 'road',
+    name: 'Petrus Roselli',
+    sortName: 'Roselli, Petrus',
+    places: ['Majorca'],
+    bio: 'Fifteenth-century chartmaker in the Majorcan portolan tradition. His signed Mediterranean charts preserve the dense coastal names and rhumb networks through which the sea was made operational.',
+    essaySlugs: ['invisible-maps-trade'],
+    links: [
+      {
+        label: 'Wikimedia Commons chart',
+        url: 'https://commons.wikimedia.org/wiki/File:Petrus_Roselli_-_Portolan_Chart_of_the_Mediterranean_(1466).png',
+      },
+    ],
+  },
+  {
+    id: 'battista-agnese',
+    room: 'road',
+    secondaryRooms: ['theatre'],
+    name: 'Battista Agnese',
+    sortName: 'Agnese, Battista',
+    places: ['Genoa', 'Venice'],
+    bio: 'Genoese-born cartographer active in Venice, where his workshop produced richly illuminated portolan atlases for elite patrons during the sixteenth century.',
+    essaySlugs: ['invisible-maps-trade'],
+    links: [
+      {
+        label: 'Library of Congress atlas',
+        url: 'https://www.loc.gov/item/98687206/',
+      },
+    ],
+  },
+  {
+    id: 'fra-mauro',
+    room: 'road',
+    secondaryRooms: ['theatre'],
+    name: 'Fra Mauro',
+    sortName: 'Mauro, Fra',
+    born: 1385,
+    died: 1459,
+    places: ['Murano', 'Venice'],
+    bio: 'Camaldolese monk and cartographer whose monumental world map assembled travel reports, inherited geography and Venetian information networks into a densely annotated south-up image.',
+    essaySlugs: ['venice-sicily', 'invisible-maps-trade'],
+    links: [
+      {
+        label: 'Biblioteca Nazionale Marciana',
+        url: 'https://bibliotecanazionalemarciana.cultura.gov.it/mappa-mondo-fra-mauro',
+      },
+    ],
+  },
+  {
+    id: 'jacopo-de-barbari',
+    room: 'city',
+    secondaryRooms: ['road'],
+    name: 'Jacopo de’ Barbari',
+    sortName: 'Barbari, Jacopo de’',
+    places: ['Venice', 'Nuremberg'],
+    bio: 'Venetian painter and printmaker whose monumental bird’s-eye View of Venice (1500) turns the lagoon city into a single inspectable object while recording its extraordinary material density.',
+    essaySlugs: ['invisible-maps-trade'],
+    links: [
+      {
+        label: 'Minneapolis Institute of Art',
+        url: 'https://collections.artsmia.org/art/111219/view-of-venice-jacopo-de-barbari',
+      },
+    ],
+  },
+  {
+    id: 'matthew-paris',
+    room: 'road',
+    secondaryRooms: ['theatre', 'city'],
+    name: 'Matthew Paris',
+    sortName: 'Paris, Matthew',
+    born: 1200,
+    died: 1259,
+    places: ['St Albans', 'London'],
+    bio: 'Benedictine monk, chronicler, artist and mapmaker at St Albans Abbey. His manuscript itineraries organise travel from England toward the Holy Land as ordered stations, making sequence more important than uniform geographic scale.',
+    essaySlugs: ['invisible-maps-religion'],
+    links: [
+      {
+        label: 'British Library manuscript record',
+        url: 'https://searcharchives.bl.uk/catalog/040-002106988',
+      },
+    ],
+  },
+  {
+    id: 'heinrich-bunting',
+    room: 'theatre',
+    secondaryRooms: ['archive'],
+    name: 'Heinrich Bünting',
+    sortName: 'Bünting, Heinrich',
+    born: 1545,
+    died: 1606,
+    places: ['Hanover', 'Gronau'],
+    bio: 'German Protestant pastor and author of the Itinerarium Sacrae Scripturae. His memorable clover-leaf world map turns Europe, Asia and Africa into a Christian emblem whose leaves meet at Jerusalem.',
+    essaySlugs: ['invisible-maps-religion'],
+    links: [
+      {
+        label: 'Wikimedia Commons map',
+        url: 'https://commons.wikimedia.org/wiki/File:1581_Clover_Leaf_World_Map_by_Heinrich_Buenting.jpg',
+      },
+    ],
   },
 ];
 

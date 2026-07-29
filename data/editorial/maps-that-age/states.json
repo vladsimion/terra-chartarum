@@ -1,0 +1,90 @@
+[
+  {
+    "id": "ort1-1",
+    "mapId": "age-ort1-1570",
+    "year": 1570,
+    "plate": 1,
+    "state": "1.1",
+    "sourceId": "vandenbroecke-ort1",
+    "intervention": "First documented state",
+    "evidence": "Complete oblique hachuring around the lower Cicero cartouche.",
+    "confidence": "high"
+  },
+  {
+    "id": "ort1-2",
+    "mapId": "age-ort1-1575",
+    "year": 1575,
+    "plate": 1,
+    "state": "1.3",
+    "sourceId": "vandenbroecke-ort1",
+    "intervention": "Plate repair",
+    "evidence": "Bolt impressions appear at the lower-left corner around a crack.",
+    "confidence": "high"
+  },
+  {
+    "id": "ort1-3",
+    "mapId": "age-ort1-1579",
+    "year": 1579,
+    "plate": 1,
+    "state": "1.4",
+    "sourceId": "vandenbroecke-ort1",
+    "intervention": "Crack mended; clouds reworked",
+    "evidence": "The crack is less visible and cloud linework has been reworked.",
+    "confidence": "high"
+  },
+  {
+    "id": "ort1-4",
+    "mapId": "age-ort1-1584",
+    "year": 1584,
+    "plate": 1,
+    "state": "1.5",
+    "sourceId": "vandenbroecke-ort1",
+    "intervention": "Date added amid wear",
+    "evidence": "The date 1584 appears beside Hogenberg’s signature while cartouche hachuring has faded.",
+    "confidence": "high"
+  },
+  {
+    "id": "ort2-1",
+    "mapId": "age-ort2-1587",
+    "year": 1587,
+    "plate": 2,
+    "state": "2.1",
+    "sourceId": "vandenbroecke-ort2",
+    "intervention": "Replacement plate",
+    "evidence": "A newly cut plate is dated 1586 and retains clouds in the corners.",
+    "confidence": "high"
+  },
+  {
+    "id": "ort2-2",
+    "mapId": "age-ort2-1588",
+    "year": 1588,
+    "plate": 2,
+    "state": "2.3",
+    "sourceId": "vandenbroecke-ort2",
+    "intervention": "Coastline corrected",
+    "evidence": "The South American coastline is corrected while corner clouds remain.",
+    "confidence": "high"
+  },
+  {
+    "id": "ort3-1",
+    "mapId": "age-ort3-1613",
+    "year": 1589,
+    "plate": 3,
+    "state": "3.1",
+    "sourceId": "vandenbroecke-ort3",
+    "intervention": "Third plate replaces predecessors",
+    "evidence": "Corrected South America, four corner medallions and no clouds distinguish the plate.",
+    "confidence": "high"
+  },
+  {
+    "id": "ort3-2",
+    "mapId": "age-ort3-1613",
+    "year": 1613,
+    "plate": 3,
+    "state": "3.2",
+    "sourceId": "vandenbroecke-ort3",
+    "intervention": "Posthumous geographic update",
+    "evidence": "Le Maire Strait is added, the 1587 date is removed and strapwork hachuring changes.",
+    "confidence": "medium"
+  }
+]

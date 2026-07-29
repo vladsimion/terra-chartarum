@@ -54,6 +54,129 @@ const RAW: unknown[] = [
     citation:
       'Edney, Matthew H. Cartography: The Ideal and Its History. Chicago: University of Chicago Press, 2019.',
   },
+  {
+    id: 'campbell-1987',
+    author: 'Campbell, Tony',
+    year: 1987,
+    title: 'Portolan Charts from the Late Thirteenth Century to 1500',
+    citation:
+      'Campbell, Tony. “Portolan Charts from the Late Thirteenth Century to 1500.” In The History of Cartography, vol. 1. Chicago: University of Chicago Press, 1987.',
+    url: 'https://press.uchicago.edu/books/HOC/HOC_V1/HOC_VOLUME1_chapter19.pdf',
+  },
+  {
+    id: 'lane-1934',
+    author: 'Lane, Frederic C.',
+    year: 1934,
+    title: 'Venetian Ships and Shipbuilders of the Renaissance',
+    citation:
+      'Lane, Frederic C. Venetian Ships and Shipbuilders of the Renaissance. Baltimore: Johns Hopkins University Press, 1934.',
+  },
+  {
+    id: 'lane-1973',
+    author: 'Lane, Frederic C.',
+    year: 1973,
+    title: 'Venice: A Maritime Republic',
+    citation:
+      'Lane, Frederic C. Venice: A Maritime Republic. Baltimore: Johns Hopkins University Press, 1973.',
+  },
+  {
+    id: 'oconnell-2009',
+    author: 'O’Connell, Monique',
+    year: 2009,
+    title: 'Men of Empire: Power and Negotiation in Venice’s Maritime State',
+    citation:
+      'O’Connell, Monique. Men of Empire: Power and Negotiation in Venice’s Maritime State. Baltimore: Johns Hopkins University Press, 2009.',
+  },
+  {
+    id: 'woodward-1987-mappaemundi',
+    author: 'Woodward, David',
+    year: 1987,
+    title: 'Medieval Mappaemundi',
+    citation:
+      'Woodward, David. “Medieval Mappaemundi.” In The History of Cartography, vol. 1, 286–370. Chicago: University of Chicago Press, 1987.',
+    url: 'https://press.uchicago.edu/books/hoc/HOC_V1/HOC_VOLUME1_chapter18.pdf',
+  },
+  {
+    id: 'edson-1997',
+    author: 'Edson, Evelyn',
+    year: 1997,
+    title: 'Mapping Time and Space: How Medieval Mapmakers Viewed Their World',
+    citation:
+      'Edson, Evelyn. Mapping Time and Space: How Medieval Mapmakers Viewed Their World. London: British Library, 1997.',
+  },
+  {
+    id: 'hereford-cathedral',
+    author: 'Hereford Cathedral',
+    year: 2021,
+    title: 'Mappa Mundi',
+    citation: 'Hereford Cathedral. “Mappa Mundi.” Collection guide, updated 20 July 2021.',
+    url: 'https://www.herefordcathedral.org/mappa-mundi',
+  },
+  {
+    id: 'bl-royal-14-c-vii',
+    author: 'British Library',
+    title: 'Royal MS 14 C VII',
+    citation:
+      'British Library. Royal MS 14 C VII, Matthew Paris, Historia Anglorum and prefatory itinerary materials. Archives and Manuscripts Catalogue.',
+    url: 'https://searcharchives.bl.uk/catalog/040-002106988',
+  },
+  {
+    id: 'loc-rudimentum',
+    author: 'Library of Congress',
+    year: 1475,
+    title: 'Rudimentum Novitiorum',
+    citation:
+      'Library of Congress. Rudimentum Novitiorum. Lübeck: Lucas Brandis, 5 August 1475. Lessing J. Rosenwald Collection.',
+    url: 'https://www.loc.gov/item/48043282/',
+  },
+  {
+    id: 'vandenbroecke-1996',
+    author: 'Van den Broecke, Marcel P. R.',
+    year: 1996,
+    title: 'Ortelius Atlas Maps: An Illustrated Guide',
+    citation:
+      'Van den Broecke, Marcel P. R. Ortelius Atlas Maps: An Illustrated Guide. ’t Goy-Houten: HES Publishers, 1996.',
+    url: 'https://orteliusmaps.com/ortindexnumber.html',
+  },
+  {
+    id: 'vandenbroecke-ort1',
+    author: 'Van den Broecke, Marcel P. R.',
+    title: 'Ortelius Map No. 1: Typus Orbis Terrarum',
+    citation:
+      'Van den Broecke, Marcel P. R. “Ortelius Map No. 1: Typus Orbis Terrarum.” Cartographica Neerlandica.',
+    url: 'https://orteliusmaps.com/book/ort1.html',
+  },
+  {
+    id: 'vandenbroecke-ort2',
+    author: 'Van den Broecke, Marcel P. R.',
+    title: 'Ortelius Map No. 2: Typus Orbis Terrarum',
+    citation:
+      'Van den Broecke, Marcel P. R. “Ortelius Map No. 2: Typus Orbis Terrarum.” Cartographica Neerlandica.',
+    url: 'https://orteliusmaps.com/book/ort2.html',
+  },
+  {
+    id: 'vandenbroecke-ort3',
+    author: 'Van den Broecke, Marcel P. R.',
+    title: 'Ortelius Map No. 3: Typus Orbis Terrarum',
+    citation:
+      'Van den Broecke, Marcel P. R. “Ortelius Map No. 3: Typus Orbis Terrarum.” Cartographica Neerlandica.',
+    url: 'https://orteliusmaps.com/book/ort3.html',
+  },
+  {
+    id: 'loc-ortelius',
+    author: 'Library of Congress',
+    title: 'Ortelius Atlas',
+    citation: 'Library of Congress. “Ortelius Atlas.” General Atlases, Geography and Map Division.',
+    url: 'https://www.loc.gov/collections/general-maps/articles-and-essays/general-atlases/ortelius-atlas/',
+  },
+  {
+    id: 'nuti-2003',
+    author: 'Nuti, Lucia',
+    year: 2003,
+    title: 'The World Map as an Emblem: Abraham Ortelius and the Stoic Contemplation',
+    citation:
+      'Nuti, Lucia. “The World Map as an Emblem: Abraham Ortelius and the Stoic Contemplation.” Imago Mundi 55 (2003): 38–55.',
+  },
 ];
 
 export const BIBLIOGRAPHY: BibEntry[] = RAW.map((b) => BibEntrySchema.parse(b));

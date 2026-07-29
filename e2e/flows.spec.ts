@@ -141,3 +141,100 @@ test.describe('flow: VMN standalone network', () => {
     await expect(page.locator('[data-edge].is-active').first()).toBeVisible();
   });
 });
+
+test.describe('flow: Invisible Maps of Trade publication', () => {
+  test('essay interactions and series index are connected', async ({ page }) => {
+    await page.goto('/essays/invisible-maps-trade/');
+
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Invisible Maps of Trade' }),
+    ).toBeVisible();
+
+    const comparison = page.getByRole('slider', {
+      name: 'Reveal slider between Carta Pisana · c. 1290 and Anonymous portolan · c. 1320–50',
+    });
+    await expect(comparison).toHaveAttribute('aria-valuenow', '50');
+    await comparison.focus();
+    await page.keyboard.press('ArrowRight');
+    await expect(comparison).toHaveAttribute('aria-valuenow', '52');
+
+    await expect(page.locator('[data-vmn-network]')).toBeVisible();
+    await page.getByRole('button', { name: /spices/i }).click();
+    await expect(page.locator('[data-vmn-network] .vn-status')).toHaveText(
+      '3 routes carry spices.',
+    );
+
+    await page.getByRole('link', { name: 'Part of the Invisible Maps series' }).click();
+    await page.waitForURL(/\/series\/invisible-maps\/?$/);
+    await expect(page.getByRole('heading', { level: 1, name: 'Invisible Maps' })).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: /Invisible Maps of Trade/i }).first(),
+    ).toBeVisible();
+  });
+});
+
+test.describe('flow: Maps That Age interactive build', () => {
+  test('comparison and plate-state filters expose the documented evidence', async ({ page }) => {
+    await page.goto('/essays/maps-that-age/');
+
+    await expect(page.getByRole('heading', { level: 1, name: 'Maps That Age' })).toBeVisible();
+
+    const comparison = page.getByRole('slider', {
+      name: 'Reveal slider between First plate · 1579 impression and Replacement plate · 1587',
+    });
+    await comparison.focus();
+    await page.keyboard.press('End');
+    await expect(comparison).toHaveAttribute('aria-valuenow', '100');
+
+    const explorer = page.locator('[data-plate-state-explorer]');
+    await explorer.getByRole('button', { name: 'Plate 2', exact: true }).click();
+    await expect(explorer.locator('.pse-status')).toHaveText(
+      'Showing 2 documented moments for plate 2.',
+    );
+    await expect(explorer.locator('[data-state]:visible')).toHaveCount(2);
+    await expect(
+      explorer.getByRole('link', { name: 'Open catalogue record' }).first(),
+    ).toBeVisible();
+
+    await expect(page.locator('[data-cartometry-chart]')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'CSV' })).toHaveAttribute(
+      'href',
+      '/data/cartometry/maps-that-age.csv',
+    );
+    await expect(
+      page.getByRole('navigation', { name: 'Reading path through The Archive' }),
+    ).toBeVisible();
+  });
+});
+
+test.describe('flow: Invisible Maps of Religion interactive build', () => {
+  test('grammar filters and comparison remain operable across viewports', async ({ page }) => {
+    await page.goto('/essays/invisible-maps-religion/');
+
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Invisible Maps of Religion' }),
+    ).toBeVisible();
+
+    const explorer = page.locator('[data-sacred-orientation]');
+    await explorer.getByRole('button', { name: 'Pilgrimage route' }).click();
+    await expect(explorer.locator('.soe-status')).toHaveText(
+      'Showing 1 maps using the route grammar.',
+    );
+    await expect(explorer.locator('[data-map]:visible')).toHaveCount(1);
+    await expect(explorer.getByRole('link', { name: 'Open catalogue record' })).toHaveAttribute(
+      'href',
+      '/collection/religion-matthew-paris/',
+    );
+
+    const comparison = page.getByRole('slider', {
+      name: 'Reveal slider between Centred world · Hereford and Sequential route · Matthew Paris',
+    });
+    await comparison.focus();
+    await page.keyboard.press('ArrowRight');
+    await expect(comparison).toHaveAttribute('aria-valuenow', '52');
+
+    await expect(
+      page.getByRole('navigation', { name: 'Reading path through The Theatre' }),
+    ).toBeVisible();
+  });
+});
