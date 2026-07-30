@@ -1,6 +1,8 @@
 // Flat ESLint config (KAN-176). Lints the TypeScript + Astro source that the
 // portal ships; the legacy essays under public/embed are preserved verbatim and
-// deliberately excluded, as are build artifacts and generated bundles.
+// deliberately excluded, as are build artifacts and generated bundles. House
+// punctuation is the one rule that does reach into those files - it is enforced
+// separately by scripts/validate-typography.mjs (KAN-66), not here.
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import astro from 'eslint-plugin-astro';

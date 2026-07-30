@@ -82,4 +82,19 @@ test.describe('a11y: keyboard & focus management', () => {
     // The after-swap handler should have parked focus on the new page's main.
     await expect(page.locator('#main-content')).toBeFocused();
   });
+
+  test('the search shortcut still opens the dialog after a swap (KAN-64)', async ({ page }) => {
+    await page.goto('/');
+    await page
+      .getByRole('navigation', { name: 'Primary' })
+      .getByRole('link', { name: 'About' })
+      .click();
+    await page.waitForURL(/\/about\/?$/);
+
+    // Bound once at module scope and resolved at event time, so the shortcut has
+    // to reach the header rendered by the swap, not the one it closed over.
+    await page.keyboard.press('ControlOrMeta+k');
+    await expect(page.getByRole('dialog', { name: 'Site search' })).toBeVisible();
+    await expect(page.getByRole('searchbox', { name: 'Search' })).toBeFocused();
+  });
 });

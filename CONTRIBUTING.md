@@ -56,6 +56,12 @@ under `public/embed/<slug>/` and the essay record sets `status: legacy` with an
 `embedPath`. Do not add redirects that touch `/embed/` - those paths are iframed
 directly.
 
+Legacy documents are preserved verbatim: no reformatting, no refactoring. The one
+exception is house punctuation - em dashes are hyphens everywhere on the site,
+including inside the embeds - which `npm run typography:validate` enforces as part
+of the build. En dashes in numeric and date ranges (`1150–1750`) are correct and
+left alone.
+
 ## Design & tokens
 
 Use the shared visual language. The [design token reference](docs/design-tokens.md)

@@ -61,7 +61,7 @@ const tagged = rooms.map((slug) => getRoom(slug)).filter((room) => room !== unde
 
 <style>
   .essay-section {
-    scroll-margin-top: 4rem;
+    scroll-margin-top: calc(var(--header-h) + 1rem);
   }
   .section-head {
     display: flex;

@@ -28,6 +28,7 @@
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
   /* Fluid modular type scale */
+  --step--2: clamp(0.69rem, 0.66rem + 0.15vw, 0.78rem);
   --step--1: clamp(0.83rem, 0.79rem + 0.2vw, 0.94rem);
   --step-0: clamp(1rem, 0.95rem + 0.25vw, 1.15rem);
   --step-1: clamp(1.2rem, 1.1rem + 0.5vw, 1.5rem);
@@ -38,6 +39,10 @@
 
   /* Spacing / layout */
   --shell-max: 1200px;
+  /* Height of the sticky header, used as the offset for in-page anchors. The
+     primary nav wraps on narrow viewports (KAN-65), so the real value is
+     published from PortalLayout; this is the one-row fallback before JS runs. */
+  --header-h: 4.5rem;
   --prose-max: 68ch;
   --radius: 4px;
 

@@ -96,6 +96,23 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       document.addEventListener('astro:after-swap', () => {
         document.getElementById('main-content')?.focus({ preventScroll: true });
       });
+
+      // The sticky header grows a row when the primary nav wraps (KAN-65), so
+      // publish its measured height as --header-h rather than letting anchor
+      // offsets hardcode a one-row guess and land sections under the header.
+      let headerObserver: ResizeObserver | undefined;
+      const trackHeaderHeight = () => {
+        const header = document.querySelector<HTMLElement>('.site-header');
+        if (!header) return;
+        const publish = () =>
+          document.documentElement.style.setProperty('--header-h', `${header.offsetHeight}px`);
+        headerObserver?.disconnect();
+        headerObserver = new ResizeObserver(publish);
+        headerObserver.observe(header);
+        publish();
+      };
+      trackHeaderHeight();
+      document.addEventListener('astro:page-load', trackHeaderHeight);
     </script>
   </body>
 </html>

@@ -13,7 +13,7 @@ The application ranks, tracks, and isolates historical maps along **7 Analytic D
 3. **◇ Navigation:** Practical capacity to calculate real-time orientation, routes, straight bearings, or point-to-point intervals.
 4. **◉ Symbolism:** Architectural depth encoding myth, cultural metadata, theology, cosmology, or moral spatial structures.
 5. **◆ Politics:** Active deployment of territory delimitation, administrative claims, sovereignty enforcement, or spatial erasures.
-6. **○ Completeness:** Ambition of geographic scope—ranging from highly local networks up to total planetary coverage.
+6. **○ Completeness:** Ambition of geographic scope-ranging from highly local networks up to total planetary coverage.
 7. **◐ Richness:** Density of layered, heterogeneous metadata (e.g., historical chronicles, biological cross-sections, ecological place-lore).
 
 ---
