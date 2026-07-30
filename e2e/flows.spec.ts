@@ -164,7 +164,11 @@ test.describe('flow: VMN standalone network', () => {
   });
 });
 
-test.describe('flow: Invisible Maps of Trade publication', () => {
+// Held by the staged release gate (KAN-263): invisible-maps-trade carries
+// releaseAt '2099-01-01', so /essays/invisible-maps-trade/ is not built and
+// these assertions would hit a 404. Re-enable in the same commit that releases
+// the essay - `npm run essay:release invisible-maps-trade`.
+test.describe.skip('flow: Invisible Maps of Trade publication', () => {
   test('essay interactions and series index are connected', async ({ page }) => {
     await page.goto('/essays/invisible-maps-trade/');
 
@@ -299,7 +303,9 @@ test.describe('flow: Cities Remember publication', () => {
       'href',
       '/rooms/city/',
     );
-    await expect(roomPath).toContainText('1 of 2');
+    // Position, not room size: the denominator moves with the staged release
+    // schedule (KAN-263) as the rest of The City is published.
+    await expect(roomPath).toContainText(/1 of \d+/);
 
     for (const [name, href] of [
       ['The City', '/rooms/city/'],

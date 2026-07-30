@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "npm run editorial:validate && npm run epic:validate && npm run release:validate && astro build && npm run indexing:validate && npm run geo:interop:validate",
+    "build": "npm run editorial:validate && npm run epic:validate && npm run release:validate && astro build && npm run embed:prune && npm run indexing:validate && npm run geo:interop:validate",
     "preview": "astro preview",
     "check": "astro check",
     "lint": "eslint .",
@@ -25,6 +25,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "create-essay": "node scripts/create-essay.mjs",
+    "essay:release": "node scripts/release-essay.mjs",
+    "embed:prune": "node scripts/prune-held-embeds.mjs",
     "build-geo-layer": "node scripts/build-geo-layer.mjs",
     "build-og-images": "node scripts/build-og-images.mjs",
     "cartometry:export": "node scripts/export-cartometry.mjs",

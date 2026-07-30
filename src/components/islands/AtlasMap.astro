@@ -36,13 +36,6 @@ const coverage = coveragePolygons()
   .map((c) => ({ id: c.mapId, title: corpusTitle.get(c.mapId)!, ring: c.ring }))
   .sort((a, b) => corpus.findIndex((m) => m.id === a.id) - corpus.findIndex((m) => m.id === b.id));
 
-// A layer is toggleable only when its asset is actually on disk under /public.
-const publicDir = join(process.cwd(), 'public');
-const layerMeta = layers.map((l) => ({
-  ...l,
-  available: existsSync(join(publicDir, l.url.replace(/^\//, ''))),
-}));
-
 const essayMeta = Object.fromEntries(
   essays.map((e) => [
     e.slug,
@@ -57,6 +50,21 @@ const essayMeta = Object.fromEntries(
   ]),
 );
 
+// Staged release (KAN-263): `essays` holds only released essays, so essayMeta
+// is also the released set. The corpus, the GIS layers and the toponym
+// concordance are authored independently of the release schedule, so anything
+// they say about a held essay - its route, its title - has to be withheld too.
+// A corpus map falls back to its own catalogue page, which always exists.
+const isEssayReleased = (slug: string) => Boolean(essayMeta[slug]);
+
+// A layer is toggleable only when its asset is actually on disk under /public.
+const publicDir = join(process.cwd(), 'public');
+const layerMeta = layers.map((l) => ({
+  ...l,
+  essayLinks: l.essayLinks.filter((link) => isEssayReleased(link.slug)),
+  available: existsSync(join(publicDir, l.url.replace(/^\//, ''))),
+}));
+
 // Toponym concordance (KAN-75): a separate, toggleable pin set of places carrying
 // the ancient / medieval / variant names by which the corpus calls them, with the
 // essays and maps that reference each - resolved here so the popup is self-contained.
@@ -68,7 +76,9 @@ const toponyms = getToponyms().map((t) => ({
   coords: t.coords,
   authorityLinks: toponymAuthorityLinks(t),
   linkedPlacesUrl: `/geo/toponyms.lpf.json#${encodeURIComponent(t.id)}`,
-  essays: t.essaySlugs.map((s) => ({ slug: s, title: essayMeta[s]?.title ?? s })),
+  essays: t.essaySlugs
+    .filter((s) => isEssayReleased(s))
+    .map((s) => ({ slug: s, title: essayMeta[s]!.title })),
   maps: t.mapIds
     .filter((id) => corpusTitle.has(id))
     .map((id) => ({ id, title: corpusTitle.get(id)! })),
@@ -78,7 +88,9 @@ const payload = {
   corpus: corpus.map((m) => ({
     ...m,
     accent: essayMeta[m.essaySlug]?.accent ?? '#d4b87a',
-    essayTitle: essayMeta[m.essaySlug]?.title ?? m.essaySlug,
+    // Held source essay: name and link the map's catalogue entry instead.
+    essayHref: isEssayReleased(m.essaySlug) ? `/essays/${m.essaySlug}/` : `/collection/${m.id}/`,
+    essayTitle: essayMeta[m.essaySlug]?.title ?? m.title,
     essaySummary: essayMeta[m.essaySlug]?.summary ?? '',
     essayYearFrom: essayMeta[m.essaySlug]?.yearFrom ?? m.year,
     essayYearTo: essayMeta[m.essaySlug]?.yearTo ?? m.year,
@@ -261,7 +273,9 @@ const payload = {
     {
       corpus.map((m) => (
         <li>
-          <a href={`/essays/${m.essaySlug}/`}>
+          <a
+            href={isEssayReleased(m.essaySlug) ? `/essays/${m.essaySlug}/` : `/collection/${m.id}/`}
+          >
             <span class="am-list-year">{formatYear(m.year)}</span>
             <span class="am-list-title">{m.title}</span>
             <span class="am-list-region">{m.region}</span>
@@ -309,6 +323,9 @@ const payload = {
     year: number;
     yearLabel: string;
     essaySlug: string;
+    /** Where "read more" goes: the source essay, or the map's catalogue entry
+     *  while that essay is held by the staged release gate (KAN-263). */
+    essayHref: string;
     essayTitle: string;
     essaySummary: string;
     essayYearFrom: number;
@@ -448,7 +465,7 @@ const payload = {
             title: pt.title,
             summary: pt.blurb || pt.essaySummary,
             meta: `${pt.region} · ${pt.yearLabel} · ${pt.essayTitle}`,
-            href: `/essays/${pt.essaySlug}/`,
+            href: pt.essayHref,
             essaySlug: pt.essaySlug,
             year: Number(yearIn.value),
           },
@@ -916,7 +933,7 @@ const payload = {
             title: pt.title,
             summary: pt.blurb || pt.essaySummary,
             meta: `${pt.region} · ${pt.yearLabel} · ${pt.essayTitle}`,
-            href: `/essays/${pt.essaySlug}/`,
+            href: pt.essayHref,
             essaySlug: pt.essaySlug,
             year: Number(yearIn.value),
           });
@@ -925,7 +942,7 @@ const payload = {
           `<div class="am-pop"><span class="am-pop-year">${pt.yearLabel}</span>` +
             `<strong class="am-pop-title">${pt.title}</strong>` +
             (pt.blurb ? `<span class="am-pop-blurb">${pt.blurb}</span>` : '') +
-            `<a class="am-pop-link" href="/essays/${pt.essaySlug}/">${pt.essayTitle} →</a></div>`,
+            `<a class="am-pop-link" href="${pt.essayHref}">${pt.essayTitle} →</a></div>`,
         );
         entry.marker = new maplibregl.Marker({ element: el })
           .setLngLat(pt.coords)
@@ -1217,7 +1234,7 @@ const payload = {
         title: entry.pt.title,
         summary: entry.pt.blurb || entry.pt.essaySummary,
         meta: `${entry.pt.region} · ${entry.pt.yearLabel} · ${entry.pt.essayTitle}`,
-        href: `/essays/${entry.pt.essaySlug}/`,
+        href: entry.pt.essayHref,
         essaySlug: entry.pt.essaySlug,
         year: Number(yearIn.value),
       });

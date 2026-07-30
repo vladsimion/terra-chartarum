@@ -1,9 +1,9 @@
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { partitionEssays } from './lib/essay-release.mjs';
 
 const ROOT = resolve(import.meta.dirname, '..');
 const DIST = resolve(ROOT, 'dist');
-const ESSAYS = resolve(ROOT, 'src/content/essays');
 const ORIGIN = 'https://terra-chartarum.pages.dev';
 const errors = [];
 
@@ -11,13 +11,24 @@ function check(condition, message) {
   if (!condition) errors.push(message);
 }
 
+/** Every .html file under dist/, recursively. */
+function htmlFiles(dir) {
+  return readdirSync(dir).flatMap((entry) => {
+    const path = resolve(dir, entry);
+    if (statSync(path).isDirectory()) return htmlFiles(path);
+    return path.endsWith('.html') ? [path] : [];
+  });
+}
+
 check(existsSync(DIST), 'dist/ is missing; run the production build first');
 
 if (existsSync(DIST)) {
-  const essaySlugs = readdirSync(ESSAYS)
-    .filter((file) => /\.(md|mdx)$/.test(file))
-    .map((file) => file.replace(/\.(md|mdx)$/, ''))
-    .sort();
+  // Only released essays are expected in the index; held ones are asserted
+  // absent further down. Both halves matter - the first proves the site is
+  // complete, the second proves the embargo held.
+  const { released, held } = partitionEssays();
+  const essaySlugs = released.map((essay) => essay.slug).sort();
+  const heldSlugs = held.map((essay) => essay.slug).sort();
   const searchIndexPath = resolve(DIST, 'search-index.json');
   check(existsSync(searchIndexPath), 'search-index.json was not generated');
 
@@ -50,6 +61,32 @@ if (existsSync(DIST)) {
     check(
       sitemap.includes(`${ORIGIN}/essays/${slug}/`),
       `sitemap is missing the essay route '${slug}'`,
+    );
+  }
+
+  // Staged release (KAN-263): a held essay must leave no trace in the build -
+  // no route, no sitemap entry, no legacy embed payload, and no live essay
+  // linking into its 404. Use EssayLink.astro for prose cross-references.
+  const builtHtml = htmlFiles(DIST).map((path) => ({ path, html: readFileSync(path, 'utf8') }));
+  for (const slug of heldSlugs) {
+    check(
+      !existsSync(resolve(DIST, `essays/${slug}/index.html`)),
+      `held essay '${slug}' was built into dist/essays/`,
+    );
+    check(
+      !sitemap.includes(`${ORIGIN}/essays/${slug}/`),
+      `held essay '${slug}' appears in the sitemap`,
+    );
+    check(
+      !existsSync(resolve(DIST, `embed/${slug}`)),
+      `held essay '${slug}' still ships its legacy embed payload at /embed/${slug}/`,
+    );
+    const linked = builtHtml
+      .filter(({ html }) => html.includes(`/essays/${slug}/`))
+      .map(({ path }) => path.slice(DIST.length + 1));
+    check(
+      linked.length === 0,
+      `held essay '${slug}' is linked from ${linked.slice(0, 3).join(', ')}`,
     );
   }
 

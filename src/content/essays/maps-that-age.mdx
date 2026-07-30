@@ -19,6 +19,7 @@ order: 6
 featured: true
 room: archive
 secondaryRooms: [map, theatre]
+roomAnchor: true
 sections:
   - id: plate-not-file
     title: A plate is not a file
@@ -46,6 +47,7 @@ sections:
     secondaryRooms: [theatre]
 publishedAt: '2026-07-29'
 updatedAt: '2026-07-29'
+releaseAt: '2026-07-29'
 metaScores:
   measure: 0.78
   witness: 0.86
@@ -56,6 +58,7 @@ metaScores:
 ---
 
 import Section from '../../components/Section.astro';
+import EssayLink from '../../components/EssayLink.astro';
 import AdaptiveTimeline from '../../components/islands/AdaptiveTimeline.astro';
 import CartometryChart from '../../components/islands/CartometryChart.astro';
 import CompareSlider from '../../components/islands/CompareSlider.astro';
@@ -64,7 +67,7 @@ import PlateStateExplorer from '../../components/islands/PlateStateExplorer.astr
 <p class="essay-kicker">The Archive · The Map · The Theatre · 1570–1613</p>
 
 <p>
-  Read beside <a href="/essays/speculum/">Speculum Chartarum</a> and the{' '}
+  Read beside <EssayLink slug="speculum">Speculum Chartarum</EssayLink> and the{' '}
   <a href="/collection/">collection catalogue</a>.
 </p>
 

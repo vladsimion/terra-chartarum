@@ -18,6 +18,7 @@ order: 7
 featured: true
 room: theatre
 secondaryRooms: [road, city]
+roomAnchor: true
 sections:
   - id: centre-is-instruction
     title: A centre is an instruction
@@ -45,6 +46,7 @@ sections:
     secondaryRooms: [road, city]
 publishedAt: '2026-07-29'
 updatedAt: '2026-07-29'
+releaseAt: '2026-07-29'
 metaScores:
   measure: 0.24
   witness: 0.76
@@ -55,6 +57,7 @@ metaScores:
 ---
 
 import Section from '../../components/Section.astro';
+import EssayLink from '../../components/EssayLink.astro';
 import AdaptiveTimeline from '../../components/islands/AdaptiveTimeline.astro';
 import CompareSlider from '../../components/islands/CompareSlider.astro';
 import SacredOrientationExplorer from '../../components/islands/SacredOrientationExplorer.astro';
@@ -63,7 +66,7 @@ import SacredOrientationExplorer from '../../components/islands/SacredOrientatio
 
 <p>
   The second essay in <a href="/series/invisible-maps/">Invisible Maps</a>. Read beside{' '}
-  <a href="/essays/invisible-maps-trade/">Invisible Maps of Trade</a> and the{' '}
+  <EssayLink slug="invisible-maps-trade">Invisible Maps of Trade</EssayLink> and the{' '}
   <a href="/rooms/theatre/">Theatre room</a>.
 </p>
 

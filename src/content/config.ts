@@ -58,6 +58,13 @@ const essays = defineCollection({
       .default([]),
     publishedAt: z.string(),
     updatedAt: z.string(),
+    // Build-time release gate (KAN-263, see ../lib/release.ts). The essay is
+    // built into the site only once `releaseAt` <= the build date; '2099-01-01'
+    // means unscheduled. Required - a default would let a new essay surface on
+    // its first push. Distinct from `publishedAt` (the editorial date of
+    // record) and from `status` above, which is a render mode, not a workflow
+    // state.
+    releaseAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     // Harmonized meta-lens scores, normalized 0-1 (additive, optional).
     metaScores: z.record(z.enum(CANONICAL_DIMENSIONS), z.number().min(0).max(1)).optional(),
   }),

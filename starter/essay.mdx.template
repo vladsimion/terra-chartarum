@@ -18,6 +18,9 @@ order: 50
 featured: false
 publishedAt: '__DATE__'
 updatedAt: '__DATE__'
+# Born embargoed. Preview locally with SHOW_UNRELEASED=1 npm run dev, then
+# `npm run essay:release __SLUG__` when it is ready to go live.
+releaseAt: '2099-01-01'
 # Optional harmonized meta-lens scores (0–1). Remove if not scoring this essay.
 metaScores:
   measure: 0.5

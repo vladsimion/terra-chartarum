@@ -22,6 +22,7 @@ room: map
 roomAnchor: true
 publishedAt: '2025-01-01'
 updatedAt: '2026-07-15'
+releaseAt: '2025-01-01'
 metaScores:
   measure: 0.9
   witness: 0.7

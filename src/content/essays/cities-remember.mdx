@@ -48,6 +48,7 @@ sections:
     secondaryRooms: [city, archive]
 publishedAt: '2026-07-29'
 updatedAt: '2026-07-29'
+releaseAt: '2026-07-29'
 metaScores:
   measure: 0.77
   witness: 0.91
@@ -58,6 +59,7 @@ metaScores:
 ---
 
 import Section from '../../components/Section.astro';
+import EssayLink from '../../components/EssayLink.astro';
 import CompareSlider from '../../components/islands/CompareSlider.astro';
 import FragmentLedger from '../../components/islands/FragmentLedger.astro';
 import CityMemoryOverlay from '../../components/islands/CityMemoryOverlay.astro';
@@ -68,7 +70,7 @@ import CityMemoryOverlay from '../../components/islands/CityMemoryOverlay.astro'
   Begin in <a href="/rooms/city/">The City</a>, follow its surviving records into{' '}
   <a href="/rooms/archive/">The Archive</a>, and watch its civic images perform in{' '}
   <a href="/rooms/theatre/">The Theatre</a>. Read beside{' '}
-  <a href="/essays/invisible-maps-trade/">Invisible Maps of Trade</a>,{' '}
+  <EssayLink slug="invisible-maps-trade">Invisible Maps of Trade</EssayLink>,{' '}
   <a href="/essays/maps-that-age/">Maps That Age</a> and the{' '}
   <a href="/collection/">collection catalogue</a>.
 </p>

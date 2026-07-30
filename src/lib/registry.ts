@@ -1,5 +1,6 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { CANONICAL_DIMENSIONS } from '../content/config';
+import { isReleased, showUnreleased } from './release';
 
 export type Essay = CollectionEntry<'essays'>;
 export type CanonicalDimension = (typeof CANONICAL_DIMENSIONS)[number];
@@ -223,12 +224,32 @@ export function assertEssayLensCoverage(essay: LensAuditEssay): void {
   if (errors.length > 0) throw new Error(`${essay.slug}: ${errors.join('; ')}`);
 }
 
-/** All essays, sorted by their explicit `order` then title. */
+/** Sort helper shared by the released and unfiltered accessors. */
+function byOrderThenTitle(a: Essay, b: Essay): number {
+  return a.data.order - b.data.order || a.data.title.localeCompare(b.data.title);
+}
+
+/**
+ * Every essay in the collection, released or not. Tooling only - no page may
+ * use this, or embargoed work would leak into the build. See `getEssays`.
+ */
+export async function getAllEssays(): Promise<Essay[]> {
+  return (await getCollection('essays')).sort(byOrderThenTitle);
+}
+
+/**
+ * Released essays, sorted by their explicit `order` then title.
+ *
+ * This is the ONLY collection read the rendered site performs, so the release
+ * gate applied here propagates to every consumer: routes, gallery, room pages,
+ * RSS, search index, sitemap and the atlas.
+ */
 export async function getEssays(): Promise<Essay[]> {
   const essays = await getCollection('essays');
-  return essays.sort(
-    (a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title),
-  );
+  const visible = showUnreleased()
+    ? essays
+    : essays.filter((essay) => isReleased(essay.data.releaseAt));
+  return visible.sort(byOrderThenTitle);
 }
 
 export async function getFeaturedEssays(): Promise<Essay[]> {

@@ -23,7 +23,7 @@ const essayMeta = Object.fromEntries(
   essays.map((e) => [e.slug, { title: e.data.title, accent: e.data.accent ?? '#d4b87a' }]),
 );
 const accent = essayMeta[map.essaySlug]?.accent ?? 'var(--gold)';
-const sourceEssayTitle = essayMeta[map.essaySlug]?.title ?? map.essaySlug;
+const sourceEssayTitle = essayMeta[map.essaySlug]?.title ?? null;
 
 // Cartographer resolves to a registry profile when linked (KAN-71/72); the
 // name falls back to the free-text field otherwise.
@@ -103,7 +103,15 @@ const tileSource = cover?.dziTileSource ?? cover?.iiif;
       {map.blurb && <p class="lede">{map.blurb}</p>}
       <p class="detail-actions">
         <a class="btn" href={`/atlas/#${map.id}`}>View on the atlas →</a>
-        <a class="btn btn--ghost" href={`/essays/${map.essaySlug}/`}>{sourceEssayTitle}</a>
+        {
+          /* Omitted while the source essay is held by the staged release gate
+             (KAN-263) - the map keeps its catalogue entry either way. */
+          sourceEssayTitle && (
+            <a class="btn btn--ghost" href={`/essays/${map.essaySlug}/`}>
+              {sourceEssayTitle}
+            </a>
+          )
+        }
       </p>
     </header>
 

@@ -1,0 +1,38 @@
+---
+// EssayLink (KAN-263).
+//
+// A prose cross-reference to another essay that survives the staged release
+// gate. When the target essay is live it renders an ordinary anchor; when the
+// target is still embargoed it renders the same words as plain text, so a
+// released essay never links into a 404. The link heals itself on the build
+// after the target's releaseAt date - no prose edits on release day.
+import { getEssays } from '../lib/registry';
+
+interface Props {
+  /** Slug of the target essay, i.e. its filename under src/content/essays/. */
+  slug: string;
+}
+
+const { slug } = Astro.props;
+const released = (await getEssays()).some((essay) => essay.slug === slug);
+---
+
+{
+  released ? (
+    <a href={`/essays/${slug}/`}>
+      <slot />
+    </a>
+  ) : (
+    <span class="essay-link-held">
+      <slot />
+    </span>
+  )
+}
+
+<style>
+  /* Keep the sentence's rhythm intact when the anchor is withheld: same weight
+     and colour as surrounding prose, no underline, no affordance to click. */
+  .essay-link-held {
+    color: inherit;
+  }
+</style>

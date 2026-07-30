@@ -47,6 +47,39 @@ pipeline.
 - [ ] Search index (`/search-index.json`) loads and the search island returns
       results (essays, maps, cartographers, places).
 
+## 3a. Staged release
+
+Essays are published one at a time, not in bulk. Every essay carries a
+`releaseAt: 'YYYY-MM-DD'` frontmatter field (schema:
+`src/content/config.ts`; gate: `src/lib/release.ts`). The build includes an
+essay only once that date has arrived. `'2099-01-01'` means unscheduled.
+
+A held essay leaves no trace: no route, no sitemap entry, no RSS item, no
+search document, no room listing, and no `/embed/<slug>/` payload for legacy
+essays. `scripts/validate-indexing.mjs` asserts all of that after every build,
+so a leak fails CI rather than reaching the site.
+
+**The date does not publish anything by itself.** The site is static and
+Cloudflare Pages builds only on a push to `main`. A release is:
+
+```
+npm run essay:release <slug>     # or --on YYYY-MM-DD to schedule
+git commit -am "release: <slug>" && git push
+```
+
+Notes:
+
+- Prose cross-references between essays must use `EssayLink.astro`
+  (`<EssayLink slug="…">…</EssayLink>`), never a bare `<a href="/essays/…">`.
+  It degrades to plain text while the target is held and becomes a link on the
+  build after the target's date - no prose edits on release day.
+- `SHOW_UNRELEASED=1 npm run dev` renders the whole collection for local
+  authoring. It is never set in Cloudflare, so production and preview deploys
+  both apply the gate.
+- New essays scaffolded with `npm run create-essay` are born embargoed.
+- If an essay's e2e coverage was skipped while it was held, re-enable it in the
+  same commit that releases it.
+
 ## 4. Error pages
 
 - [ ] `/404` renders the branded "Off the edge of the map" page. Cloudflare

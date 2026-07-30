@@ -22,6 +22,7 @@ roomAnchor: true
 secondaryRooms: [archive]
 publishedAt: '2025-01-01'
 updatedAt: '2026-07-15'
+releaseAt: '2025-01-01'
 metaScores:
   measure: 0.7
   witness: 0.55
