@@ -37,6 +37,33 @@ test.describe('flow: primary navigation', () => {
     await page.waitForURL(/\/$/);
     await expect(page.locator('h1').first()).toBeVisible();
   });
+
+  test('every primary link is on screen without a horizontal scroll (KAN-65)', async ({ page }) => {
+    await page.goto('/');
+
+    const nav = page.getByRole('navigation', { name: 'Primary' });
+    const links = nav.getByRole('link');
+    await expect(links).toHaveCount(7);
+
+    // The nav used to sit in an overflow-x box with the scrollbar hidden, so the
+    // last items (About, Colophon) were off screen with no affordance. It now
+    // shrinks and wraps instead: nothing scrolls, everything is clickable.
+    const overflow = await nav.evaluate((el) => el.scrollWidth - el.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(1);
+    const pageOverflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
+    expect(pageOverflow).toBeLessThanOrEqual(1);
+
+    const viewport = page.viewportSize();
+    for (const link of await links.all()) {
+      await expect(link).toBeVisible();
+      const box = await link.boundingBox();
+      expect(box).not.toBeNull();
+      expect(box!.x).toBeGreaterThanOrEqual(0);
+      expect(box!.x + box!.width).toBeLessThanOrEqual((viewport?.width ?? 0) + 1);
+    }
+  });
 });
 
 test.describe('flow: gallery → essay', () => {
@@ -118,6 +145,38 @@ test.describe('flow: gallery search', () => {
     // At least the source card stays visible, and the count never exceeds total.
     await expect(page.locator('#count')).toHaveText(/\d+ of \d+ essays/);
     await expect(firstCard).toBeVisible();
+  });
+});
+
+test.describe('flow: site search', () => {
+  // KAN-64: search is mounted in the header, so it has to survive Astro's
+  // view-transition swaps. It used to die on the first client-side navigation -
+  // the header was replaced by unbound markup and the hoisted script never
+  // re-ran - which made the button dead on every page but the entry one.
+  test('the header search opens and returns hits after navigating away from home', async ({
+    page,
+  }) => {
+    await page.goto('/');
+
+    const header = page.getByRole('banner');
+    await header
+      .getByRole('navigation', { name: 'Primary' })
+      .getByRole('link', { name: 'Rooms' })
+      .click();
+    await page.waitForURL(/\/rooms\/?$/);
+
+    await header.getByRole('button', { name: 'Search' }).click();
+    const dialog = page.getByRole('dialog', { name: 'Site search' });
+    await expect(dialog).toBeVisible();
+
+    const results = dialog.locator('[data-ss-results] li');
+    await expect(results.first()).toBeVisible();
+    await expect(dialog.locator('[data-ss-status]')).toHaveText(/\d+ results?/);
+
+    // Typing narrows the same index rather than starting from an empty state.
+    await dialog.getByRole('searchbox', { name: 'Search' }).fill('venice');
+    await expect(dialog.locator('[data-ss-status]')).toHaveText(/\d+ results?/);
+    await expect(results.first()).toBeVisible();
   });
 });
 

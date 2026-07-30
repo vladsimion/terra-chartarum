@@ -79,6 +79,39 @@ import { ROOMS } from '../../data/rooms';
     toponym: 'Place',
   };
 
+  // The index and the Fuse instance live at module scope, not in the per-instance
+  // closure: the header re-renders on every view transition, so a closure cache
+  // would re-fetch and re-index on each navigation.
+  let docs: Doc[] = [];
+  let fuse: Fuse<Doc> | null = null;
+  let indexPromise: Promise<void> | null = null;
+
+  function loadIndex(): Promise<void> {
+    indexPromise ??= (async () => {
+      const [{ default: FuseCtor }, res] = await Promise.all([
+        import('fuse.js'),
+        fetch('/search-index.json'),
+      ]);
+      docs = (await res.json()) as Doc[];
+      fuse = new FuseCtor(docs, {
+        includeScore: true,
+        threshold: 0.4,
+        ignoreLocation: true,
+        keys: [
+          { name: 'title', weight: 3 },
+          { name: 'subtitle', weight: 1 },
+          { name: 'region', weight: 1 },
+          { name: 'tags', weight: 1 },
+          { name: 'text', weight: 0.5 },
+        ],
+      });
+    })().catch((err) => {
+      indexPromise = null; // let the next open retry
+      throw err;
+    });
+    return indexPromise;
+  }
+
   function initSiteSearch(root: HTMLElement) {
     if (root.dataset.ssReady) return; // guard against re-binding on view transitions
     root.dataset.ssReady = 'true';
@@ -90,45 +123,28 @@ import { ROOMS } from '../../data/rooms';
     const results = root.querySelector<HTMLElement>('[data-ss-results]')!;
     const facets = Array.from(root.querySelectorAll<HTMLSelectElement>('[data-ss-facet]'));
 
-    let docs: Doc[] = [];
-    let fuse: Fuse<Doc> | null = null;
-    let loaded = false;
+    // Per-instance: each freshly rendered header has its own empty facet selects.
+    let ready = false;
     let loading = false;
 
     const uniq = (xs: string[]) => Array.from(new Set(xs.filter(Boolean))).sort();
 
     async function ensureLoaded() {
-      if (loaded || loading) return;
+      if (ready || loading) return;
       loading = true;
       status.textContent = 'Loading index…';
       try {
-        const [{ default: FuseCtor }, res] = await Promise.all([
-          import('fuse.js'),
-          fetch('/search-index.json'),
-        ]);
-        docs = (await res.json()) as Doc[];
-        fuse = new FuseCtor(docs, {
-          includeScore: true,
-          threshold: 0.4,
-          ignoreLocation: true,
-          keys: [
-            { name: 'title', weight: 3 },
-            { name: 'subtitle', weight: 1 },
-            { name: 'region', weight: 1 },
-            { name: 'tags', weight: 1 },
-            { name: 'text', weight: 0.5 },
-          ],
-        });
+        await loadIndex();
         // Populate region/era/tag facets from the index.
         fill('region', uniq(docs.map((d) => d.region ?? '')));
         fill('era', uniq(docs.flatMap((d) => (d.era ? d.era.split(', ') : []))));
         fill('tag', uniq(docs.flatMap((d) => d.tags ?? [])));
-        loaded = true;
+        ready = true;
       } catch {
         status.textContent = 'Search is unavailable.';
       } finally {
         loading = false;
-        if (loaded) render();
+        if (ready) render();
       }
     }
 
@@ -148,7 +164,7 @@ import { ROOMS } from '../../data/rooms';
     }
 
     function render() {
-      if (!loaded) return;
+      if (!ready) return;
       const q = input.value.trim();
       const base: Doc[] = q && fuse ? fuse.search(q).map((r) => r.item) : docs;
 
@@ -194,21 +210,28 @@ import { ROOMS } from '../../data/rooms';
     input.addEventListener('input', render);
     input.addEventListener('focus', ensureLoaded);
     facets.forEach((f) => f.addEventListener('change', render));
-    // Keyboard: Cmd/Ctrl-K opens search anywhere.
-    document.addEventListener('keydown', (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        open();
-      }
-    });
     // Click on the backdrop (outside the dialog's content box) closes it.
     dialog.addEventListener('click', (e) => {
       if (e.target === dialog) dialog.close();
     });
   }
 
-  const root = document.querySelector<HTMLElement>('[data-sitesearch]');
-  if (root) initSiteSearch(root);
+  // Keyboard: Cmd/Ctrl-K opens search anywhere. Bound once at module scope rather
+  // than per instance, and the trigger is resolved at event time, so the shortcut
+  // never stacks listeners or reaches for a dialog a swap has already replaced.
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      document.querySelector<HTMLButtonElement>('[data-ss-open]')?.click();
+    }
+  });
+
+  const boot = () => {
+    const root = document.querySelector<HTMLElement>('[data-sitesearch]');
+    if (root) initSiteSearch(root);
+  };
+  boot();
+  document.addEventListener('astro:page-load', boot);
 </script>
 
 <style>

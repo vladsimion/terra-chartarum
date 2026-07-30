@@ -49,9 +49,10 @@ muted, humanist tone against the dark canvas - rather than a saturated hue.
 
 ### Fluid type scale
 
-`--step--1` through `--step-5` are `clamp()`-based fluid sizes that grow with the
+`--step--2` through `--step-5` are `clamp()`-based fluid sizes that grow with the
 viewport. Use the scale rather than fixed `rem`/`px`:
 
+- `--step--2` - dense chrome only, currently the primary nav.
 - `--step--1` - fine print, eyebrows, captions.
 - `--step-0` - body copy.
 - `--step-1` – `--step-2` - subheadings and lede.
@@ -62,6 +63,7 @@ viewport. Use the scale rather than fixed `rem`/`px`:
 | Token         | Role                                                       |
 | ------------- | ---------------------------------------------------------- |
 | `--shell-max` | Max width of the outer `.shell` container.                 |
+| `--header-h`  | Measured sticky-header height; use it for anchor offsets.  |
 | `--prose-max` | Comfortable measure for running prose (~68ch).             |
 | `--radius`    | The single corner radius used across cards, inputs, chips. |
 
