@@ -12,15 +12,23 @@ interface Props {
   beforeLabel?: string;
   afterLabel?: string;
   caption?: string;
+  /**
+   * Fixed frame for the stage, e.g. "5 / 4". Use it when the two layers do not
+   * share an aspect ratio: without it the stage takes its height from the
+   * `before` layer alone and the `after` layer floats in empty panel. Framed
+   * layers fill the stage with `object-fit: cover`; steer the crop per layer
+   * with the `--crop-pos` and `--crop-zoom` custom properties.
+   */
+  ratio?: string;
 }
 
-const { start = 50, beforeLabel = 'Before', afterLabel = 'After', caption } = Astro.props;
+const { start = 50, beforeLabel = 'Before', afterLabel = 'After', caption, ratio } = Astro.props;
 
 const clamped = Math.max(0, Math.min(100, start));
 ---
 
 <figure class="cmp" style={`--pos:${clamped}%`} data-compare>
-  <div class="cmp-stage">
+  <div class:list={['cmp-stage', ratio && 'cmp-framed']} style={ratio && `--ratio:${ratio}`}>
     <div class="cmp-layer cmp-before">
       <slot name="before" />
       <span class="cmp-tag tag-before">{beforeLabel}</span>
@@ -128,6 +136,23 @@ const clamped = Math.max(0, Math.min(100, start));
   }
   .cmp-before {
     position: relative;
+  }
+  /* Framed mode: the stage owns its height, so the before layer stops setting it. */
+  .cmp-framed {
+    aspect-ratio: var(--ratio);
+  }
+  .cmp-framed .cmp-before {
+    position: absolute;
+    inset: 0;
+  }
+  .cmp-framed .cmp-layer :global(img),
+  .cmp-framed .cmp-layer :global(svg) {
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--crop-pos, 50% 50%);
+    /* `cover` can only crop the overflowing axis; the zoom trims the other one. */
+    transform: scale(var(--crop-zoom, 1));
+    transform-origin: var(--crop-pos, 50% 50%);
   }
   /* The "after" layer is clipped from the right edge to the handle. */
   .cmp-after {
