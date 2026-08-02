@@ -81,7 +81,13 @@ const { align = 'right', label = 'Scrollytelling' } = Astro.props;
   }
   .scrolly-graphic {
     position: sticky;
-    top: 12vh;
+    /*
+     * Clear the pinned stack an essay page keeps above it. A flat 12vh tucks the
+     * top of the graphic under the essay bar on short viewports - visible the
+     * moment the graphic has a caption or title along its top edge. The token
+     * carries a two-bar fallback, so this holds before the measuring script runs.
+     */
+    top: max(12vh, calc(var(--essay-chrome-h) + 1rem));
     align-self: start;
     max-height: 76vh;
     display: grid;

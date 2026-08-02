@@ -266,6 +266,15 @@ const essayChromeScript = `(function () {
      */
     max-width: min(var(--prose-max, 44rem), 44rem);
   }
+  /*
+   * In-essay heading anchors, the targets of an essay's own deep links (dacia's
+   * core column into its strata, its timeline into the stelae). Section.astro
+   * already does this for chapter anchors; a bare heading inside a chapter needs
+   * it too, or the jump parks it behind the pinned header and essay bar.
+   */
+  .native-essay :global(:is(h3, h4)[id]) {
+    scroll-margin-top: calc(var(--essay-chrome-h) + 1rem);
+  }
   .legacy-hero {
     padding-block: 2.5rem 0;
   }
