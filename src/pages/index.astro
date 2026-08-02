@@ -2,8 +2,11 @@
 import PortalLayout from '../layouts/PortalLayout.astro';
 import EssayCard from '../components/EssayCard.astro';
 import { getEssays, getFeaturedEssays } from '../lib/registry';
+import { sortEssaysByRoom } from '../lib/essay-index';
 
-const featured = await getFeaturedEssays();
+// The featured strip walks the seven rooms in cosmography order, so the portal
+// reads in the same sequence as the gallery and the rooms overview.
+const featured = sortEssaysByRoom(await getFeaturedEssays());
 const all = await getEssays();
 const essayCount = all.length;
 const mapTotal = all.reduce((n, e) => n + (e.data.mapCount ?? 0), 0);
