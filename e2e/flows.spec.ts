@@ -92,7 +92,9 @@ test.describe('flow: essay sticky chrome', () => {
   // unreachable on every scrolled essay page.
   test('the essay bar stays visible and clickable below the header', async ({ page }) => {
     await page.goto('/essays/venice-sicily/');
-    await page.mouse.wheel(0, 1200);
+    // Scroll far enough that both bars are pinned. Not page.mouse.wheel: mobile
+    // WebKit has no wheel. Instant, because global.css scrolls smoothly.
+    await page.evaluate(() => window.scrollTo({ top: 1200, behavior: 'instant' }));
 
     const boxes = async () =>
       page.evaluate(() => {
@@ -127,19 +129,27 @@ test.describe('flow: legacy embed cross-links', () => {
   // the narrow viewports this suite also runs.
 
   test("dacia's IN SITV and IN MVSAEO links land clear of the sticky chrome", async ({ page }) => {
-    // The embed sets html{scroll-behavior:smooth}, so a jump would still be
-    // animating when the assertion reads the position. Its own
-    // prefers-reduced-motion branch turns that off - a real user setting, and it
-    // does not touch the offsets under test.
-    await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/essays/dacia/');
+
+    // The frame is loading="lazy", so bring it into view before waiting on its
+    // contents - WebKit is the strictest about not loading an off-screen frame.
+    await page.locator('iframe.essay-frame').scrollIntoViewIfNeeded();
 
     const frame = page.frameLocator('iframe.essay-frame');
     // The embed builds both wings with innerHTML after load, so wait for the full
-    // set of 13 stones: until then every link above the fold keeps being pushed
-    // down and never settles enough for Playwright to click it.
+    // set of 13 stones before touching any link inside it.
     await expect(frame.locator('.stratum')).toHaveCount(13);
     await expect(frame.locator('.stela')).toHaveCount(13);
+
+    // Both documents scroll smoothly (the embed's html{scroll-behavior:smooth},
+    // the portal's global.css), and a jump moves the parent as well as the frame.
+    // Land instantly so the assertion is not racing an animation. This changes
+    // only how the scroll is animated, never where it stops.
+    await page.evaluate(() => {
+      const f = document.querySelector<HTMLIFrameElement>('iframe.essay-frame')!;
+      document.documentElement.style.scrollBehavior = 'auto';
+      f.contentDocument!.documentElement.style.scrollBehavior = 'auto';
+    });
 
     // Follow the anchor from inside the frame rather than with a real mouse
     // click. What is under test is where the jump lands, and a synthetic click
@@ -148,41 +158,34 @@ test.describe('flow: legacy embed cross-links', () => {
     // the very sticky header this suite is checking and then fails on the header
     // intercepting the click. Pointer reachability of the chrome itself is covered
     // by the essay-bar test above.
-    //
-    // Returns the heading's top in page coordinates minus the bottom of the
-    // pinned stack, which ends at the essay bar. Assert on the heading rather
-    // than the section, whose own top may sit under the chrome by design.
-    const followAndMeasure = (linkSel: string, headingSel: string) =>
-      page.evaluate(
-        ([link, heading]) => {
-          const f = document.querySelector<HTMLIFrameElement>('iframe.essay-frame')!;
-          const doc = f.contentDocument!;
-          doc.querySelector<HTMLAnchorElement>(link)!.click();
-          const bar = document.querySelector('.essay-bar')!;
-          return (
-            f.getBoundingClientRect().top +
-            doc.querySelector(heading)!.getBoundingClientRect().top -
-            bar.getBoundingClientRect().bottom
-          );
-        },
-        [linkSel, headingSel],
-      );
+    const follow = (linkSel: string) =>
+      page.evaluate((sel) => {
+        const f = document.querySelector<HTMLIFrameElement>('iframe.essay-frame')!;
+        f.contentDocument!.querySelector<HTMLAnchorElement>(sel)!.click();
+      }, linkSel);
 
-    await expect(async () => {
-      const gap = await followAndMeasure(
-        'a.insitu[href="#stratum-ptolemy"]',
-        '#stratum-ptolemy .str-tag',
-      );
-      expect(gap).toBeGreaterThanOrEqual(0);
-    }).toPass();
+    // The heading's top in page coordinates minus the bottom of the pinned stack,
+    // which ends at the essay bar. Assert on the heading rather than the section,
+    // whose own top may sit under the chrome by design. Measured separately from
+    // the click and polled: WebKit applies a fragment scroll on the next rendering
+    // update, so reading the position in the same tick as the click returns the
+    // pre-jump box.
+    const clearance = (headingSel: string) =>
+      page.evaluate((sel) => {
+        const f = document.querySelector<HTMLIFrameElement>('iframe.essay-frame')!;
+        const bar = document.querySelector('.essay-bar')!;
+        return (
+          f.getBoundingClientRect().top +
+          f.contentDocument!.querySelector(sel)!.getBoundingClientRect().top -
+          bar.getBoundingClientRect().bottom
+        );
+      }, headingSel);
 
-    await expect(async () => {
-      const gap = await followAndMeasure(
-        'a.inmus[href="#stela-ptolemy"]',
-        '#stela-ptolemy .stela-num',
-      );
-      expect(gap).toBeGreaterThanOrEqual(0);
-    }).toPass();
+    await follow('a.insitu[href="#stratum-ptolemy"]');
+    await expect.poll(() => clearance('#stratum-ptolemy .str-tag')).toBeGreaterThanOrEqual(0);
+
+    await follow('a.inmus[href="#stela-ptolemy"]');
+    await expect.poll(() => clearance('#stela-ptolemy .stela-num')).toBeGreaterThanOrEqual(0);
   });
 });
 
