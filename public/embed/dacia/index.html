@@ -47,6 +47,13 @@
   --st8:#4e3b28; --st9:#4a4534; --st10:#403b2c; --st11:#3a3024; --st12:#312a20;
 
   --maxw:1020px;
+
+  /* height of the squeeze bar the lapidarium pins over the stelae, read by .stela's
+     scroll-margin. Constant at 105px across the whole range the bar is sticky in -
+     .wrap is capped at 1020px, so its inner width only travels 929-968px there, and
+     the notice holds two lines throughout. Zeroed below 980px, where it goes static
+     and the text is free to wrap taller. */
+  --notice-h:105px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -168,11 +175,13 @@ h2.sect{font-family:var(--disp);font-weight:600;font-size:clamp(24px,3.4vw,36px)
 .hall-intro{max-width:64ch;margin:22px 0 8px;font-size:17.5px;color:var(--ink-soft);font-style:italic}
 
 /* ---------- stela slabs ---------- */
-/* IN MVSAEO jumps land here. The 20px is this document's own breathing room (the
-   museum wing has nothing sticky); --portal-chrome is the height of whatever the
-   host page keeps pinned above the frame, pushed in by the portal. Unset when
-   this file is opened on its own, so the standalone offset stays 20px. */
-.stela{scroll-margin-top:calc(var(--portal-chrome, 0px) + 20px);
+/* IN MVSAEO jumps land here, and so do the timeline's. The 20px is this document's
+   own breathing room; --notice-h is the squeeze bar this wing pins above the stelae,
+   which the museum wing did not use to have (zero below 980px, where it goes static);
+   --portal-chrome is the height of whatever the host page keeps pinned above the
+   frame, pushed in by the portal. --portal-chrome is unset when this file is opened
+   on its own, so the standalone offset stays 20px clear of its own bar. */
+.stela{scroll-margin-top:calc(var(--portal-chrome, 0px) + var(--notice-h, 0px) + 20px);
   position:relative;margin:54px 0;padding:40px 38px 34px;
   background:
     url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2"/><feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .05 0"/></filter><rect width="220" height="220" filter="url(%23n)"/></svg>'),
@@ -191,9 +200,13 @@ h2.sect{font-family:var(--disp);font-weight:600;font-size:clamp(24px,3.4vw,36px)
 .stela:nth-of-type(even) .stela-grid{grid-template-columns:1fr 340px}
 .stela:nth-of-type(even) .vigcol{order:2}
 .vignette{border:1px solid rgba(42,34,24,.4);background:#efe9da;padding:10px;
-  box-shadow:inset 0 0 18px rgba(42,34,24,.12)}
+  box-shadow:inset 0 0 18px rgba(42,34,24,.12);transition:background .45s,box-shadow .45s}
 .vignette svg{width:100%;transition:filter .45s}
-body.squeeze .vignette svg{filter:invert(.92) hue-rotate(180deg) saturate(.55) contrast(1.04)}
+/* the calc: ink flattened into damp filter paper, read by raking light from the upper left */
+body.squeeze .vignette{background:#f6f3ea;box-shadow:inset 0 0 22px rgba(42,34,24,.07)}
+body.squeeze .vignette svg{filter:grayscale(1) invert(1) brightness(1.06) contrast(.94)
+  drop-shadow(-.5px -.5px 0 rgba(255,255,255,.9))
+  drop-shadow(.7px 1px .6px rgba(42,34,24,.5))}
 .vig-cap{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;color:var(--ink-soft);margin-top:9px;text-align:center}
 .facts{margin-top:16px;width:100%;border-collapse:collapse;font-size:14.5px}
 .facts td{padding:5px 0;border-top:1px dashed rgba(42,34,24,.3);vertical-align:top}
@@ -219,13 +232,20 @@ body.squeeze .vignette svg{filter:invert(.92) hue-rotate(180deg) saturate(.55) c
 .stela.blank .ghost{font-family:var(--disp);letter-spacing:.3em;font-size:15px;color:rgba(42,34,24,.34)}
 
 /* ---------- squeeze toggle / visitor notice ---------- */
-.notice{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;
-  border:1px solid rgba(42,34,24,.32);background:var(--trav-3);padding:14px 18px;margin-top:40px}
+/* rides with the stelae: the toggle has to stay in reach of the vignettes it acts on */
+.lapidarium{position:relative}
+.notice{position:sticky;top:0;z-index:20;
+  display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;
+  border:1px solid rgba(42,34,24,.32);background:var(--trav-3);padding:14px 18px;margin-top:40px;
+  box-shadow:0 6px 14px -10px rgba(42,34,24,.55)}
 .notice .txt{font-size:15.5px;font-style:italic;color:var(--ink-soft);max-width:58ch}
+.notice-ctl{display:flex;align-items:center;gap:12px}
+.notice-state{font-family:var(--mono);font-size:10px;letter-spacing:.26em;color:var(--ink-soft)}
 .btn{font-family:var(--mono);font-size:11px;letter-spacing:.22em;background:transparent;color:var(--ink);
   border:1px solid var(--patina);padding:9px 16px;cursor:pointer;transition:background .2s}
 .btn:hover{background:rgba(94,122,106,.14)}
-.btn[aria-pressed="true"]{background:var(--patina);color:#f3efe2}
+/* a shade under --patina so 11px mono clears 4.5:1 against it */
+.btn[aria-pressed="true"]{background:#54705f;color:#f3efe2}
 
 /* ---------- name-drift interlude ---------- */
 .drift{margin:46px 0 8px;border:1px solid rgba(42,34,24,.32);background:var(--trav-3);padding:22px}
@@ -425,6 +445,9 @@ select{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--i
   .core-scale{display:none}
   .stela-grid,.stela:nth-of-type(even) .stela-grid{grid-template-columns:1fr}
   .stela:nth-of-type(even) .vigcol{order:0}
+  /* single column puts a vignette at the head of every stela - no need to spend viewport on a sticky bar */
+  .notice{position:static;box-shadow:none}
+  :root{--notice-h:0px}
   .str-grid{grid-template-columns:1fr}
   .sectio-grid{grid-template-columns:1fr}
   .instruments{grid-template-columns:1fr}
@@ -541,17 +564,22 @@ select{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--i
       <h2 class="sect carved">THE LAPIDARIVM</h2>
       <p class="lede">Thirteen stones on a wall, one for each map. Read them as you would read inscriptions.</p>
 
-      <div class="notice">
-        <p class="txt">Epigraphers press damp paper into carved letters to take a <em>squeeze</em> - in Romanian, an <em>estampaj</em> or <em>calc</em>: the stone&rsquo;s negative. Toggle it to study every vignette in relief.</p>
-        <button class="btn" id="squeezeBtn" aria-pressed="false">CALC · SQUEEZE VIEW</button>
-      </div>
-
       <div class="tl" id="timeline" aria-label="Timeline of the collection. Select a stone to jump to it.">
         <div id="tlInner" style="position:relative;height:150px"></div>
         <p class="tl-cap">THE WALL IN TIME · A.D. 100 - 2026 · SQUARE-ROOT SCALE · SELECT A STONE TO VISIT IT</p>
       </div>
 
-      <div id="halls"><!-- stelae rendered here --></div>
+      <div class="lapidarium">
+        <div class="notice">
+          <p class="txt">Epigraphers press damp paper into carved letters to take a <em>squeeze</em> - in Romanian, an <em>estampaj</em> or <em>calc</em>: the stone&rsquo;s negative. Toggle it to study every vignette in relief.</p>
+          <div class="notice-ctl">
+            <span class="notice-state" id="squeezeState" aria-hidden="true">LAPIS</span>
+            <button class="btn" id="squeezeBtn" aria-pressed="false">SQUEEZE VIEW</button>
+          </div>
+        </div>
+
+        <div id="halls"><!-- stelae rendered here --></div>
+      </div>
 
       <!-- collatio desk -->
       <section class="collatio" id="collatio">
@@ -1799,12 +1827,13 @@ function stratumHTML(s,inLens){
 })();
 
 /* ---------- squeeze toggle ---------- */
+/* the button keeps one name so aria-pressed can carry the state; LAPIS/CALC reads it out alongside */
 (function(){
-  const b=$('#squeezeBtn');
+  const b=$('#squeezeBtn'), s=$('#squeezeState');
   b.addEventListener('click',()=>{
     const on=document.body.classList.toggle('squeeze');
     b.setAttribute('aria-pressed',on?'true':'false');
-    b.textContent=on?'LAPIS · STONE VIEW':'CALC · SQUEEZE VIEW';
+    s.textContent=on?'CALC':'LAPIS';
   });
 })();
 
