@@ -1,0 +1,40 @@
+---
+/**
+ * The essay's lead image: the title-bearing room plate produced by
+ * scripts/build-room-images.mjs, shown immediately before the essay's text.
+ *
+ * It stays decorative (alt="") because the words burned into the plate are the
+ * essay title, which the page states again as its own heading - the recorded
+ * decision in docs/editorial/cohesion-audit-2026-07-29.md.
+ *
+ * Native and legacy essays both use this, so the two render modes open the same
+ * way; each sizes it to its own content measure (the 44rem prose column, or the
+ * shell above a full-bleed embed).
+ *
+ * The intrinsic size below tracks build-room-images.mjs's hero geometry; both
+ * must move together or the reserved box has the wrong ratio and the page
+ * shifts as the image lands.
+ */
+interface Props {
+  /** Path under /public, from the essay's `hero` frontmatter. */
+  src: string;
+}
+const { src } = Astro.props;
+---
+
+<figure class="essay-hero">
+  <img src={src} alt="" width="1600" height="900" loading="eager" fetchpriority="high" />
+</figure>
+
+<style>
+  .essay-hero {
+    margin: 0 0 2.5rem;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .essay-hero img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+</style>

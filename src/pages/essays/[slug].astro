@@ -4,6 +4,7 @@ import { getEssays } from '../../lib/registry';
 import RoomBadge from '../../components/RoomBadge.astro';
 import RoomPath from '../../components/RoomPath.astro';
 import RelatedByRoom from '../../components/RelatedByRoom.astro';
+import EssayHero from '../../components/EssayHero.astro';
 import MetaLens from '../../components/MetaLens.astro';
 import { getRoomPath, getRelatedByRoom } from '../../lib/room-content';
 
@@ -71,28 +72,29 @@ const hashForwardScript = `(function () {
 
   {
     isLegacy ? (
-      <iframe
-        id="essay-frame"
-        class="essay-frame"
-        src={data.embedPath}
-        data-base={data.embedPath}
-        title={`${data.title} - ${data.subtitle}`}
-        loading="lazy"
-      />
+      <>
+        {/*
+         * A legacy essay's text lives inside the isolation iframe, so its hero
+         * has to sit in the portal chrome above the frame. It spans the shell
+         * rather than the prose measure, matching the full-bleed embed below it.
+         */}
+        {data.hero && (
+          <div class="shell legacy-hero">
+            <EssayHero src={data.hero} />
+          </div>
+        )}
+        <iframe
+          id="essay-frame"
+          class="essay-frame"
+          src={data.embedPath}
+          data-base={data.embedPath}
+          title={`${data.title} - ${data.subtitle}`}
+          loading="lazy"
+        />
+      </>
     ) : (
       <article class="shell native-essay">
-        {data.hero && (
-          <figure class="essay-hero">
-            <img
-              src={data.hero}
-              alt=""
-              width="1200"
-              height="630"
-              loading="eager"
-              fetchpriority="high"
-            />
-          </figure>
-        )}
+        {data.hero && <EssayHero src={data.hero} />}
         <Content />
         <MetaLens
           slug={essay.slug}
@@ -178,15 +180,8 @@ const hashForwardScript = `(function () {
      */
     max-width: min(var(--prose-max, 44rem), 44rem);
   }
-  .essay-hero {
-    margin: 0 0 2.5rem;
-    overflow: hidden;
-    border: 1px solid var(--line);
-  }
-  .essay-hero img {
-    display: block;
-    width: 100%;
-    height: auto;
+  .legacy-hero {
+    padding-block: 2.5rem 0;
   }
   .essay-room-links {
     padding-block: 1rem 4rem;
