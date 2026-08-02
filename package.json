@@ -30,6 +30,7 @@
     "embed:prune": "node scripts/prune-held-embeds.mjs",
     "build-geo-layer": "node scripts/build-geo-layer.mjs",
     "build-og-images": "node scripts/build-og-images.mjs",
+    "build-room-images": "node scripts/build-room-images.mjs",
     "cartometry:export": "node scripts/export-cartometry.mjs",
     "build-map-tiles": "node scripts/build-map-tiles.mjs",
     "astro": "astro"

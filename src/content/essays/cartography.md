@@ -5,7 +5,8 @@ summary: >-
   Eight thousand years of world-mapping read against the grain: every leap in
   accuracy, usability, or control exacts a quiet sacrifice in some other way of
   understanding space.
-cover: /covers/cartography.svg
+cover: /images/rooms/map-cover.webp
+hero: /images/rooms/map-hero.webp
 status: legacy
 embedPath: /embed/cartography/index.html
 eras: [Ancient, Classical, Medieval, Renaissance, Enlightenment, Modern, Digital]

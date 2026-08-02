@@ -2,6 +2,11 @@
 dist/
 .astro/
 
+# large source art - full-resolution masters that scripts/ optimise into
+# committed derivatives under public/. Kept out of git (and out of the deploy)
+# per CONTRIBUTING.md: no oversized assets committed.
+media-src/
+
 # test / CI artifacts
 playwright-report/
 test-results/

@@ -4,7 +4,8 @@ subtitle: The Trench & the Museum of Dacian Cartography
 summary: >-
   Nineteen centuries of mapping Dacia and Romania staged as an excavation:
   maps as artefacts above the ground line, and as stratified silences below it.
-cover: /covers/dacia.svg
+cover: /images/rooms/border-cover.webp
+hero: /images/rooms/border-hero.webp
 status: legacy
 embedPath: /embed/dacia/index.html
 eras: [Classical, Medieval, Early Modern, Modern]
