@@ -36,13 +36,27 @@ const { Content } = await essay.render();
 const roomPath = await getRoomPath(data.room, essay.slug);
 const relatedByRoom = await getRelatedByRoom(data.room, { excludeEssaySlug: essay.slug });
 
-// Section deep-links (KAN-95): a room page links to /essays/<slug>/#<id>. Legacy
-// essays live in a same-origin iframe, so forward the parent hash into the
-// frame's src to scroll the embed to that chapter. Injected verbatim via set:html
-// so it ships as inline JS rather than a bundled module.
-const hashForwardScript = `(function () {
+// Every essay page keeps two bars pinned at the top: the site header and the
+// essay bar below it. Their combined height is measured here and published as
+// --essay-chrome-h, which offsets in-essay anchors (Section.astro) and sizes the
+// legacy embed frame. Injected verbatim via set:html so it ships as inline JS
+// rather than a bundled module.
+//
+// On a legacy essay the script does two more things. Section deep-links (KAN-95):
+// a room page links to /essays/<slug>/#<id>, and the essay lives in a same-origin
+// iframe, so the parent hash is forwarded into the frame's src to scroll the embed
+// to that chapter. And an embed's own anchors (dacia's IN SITV / IN MVSAEO
+// cross-links) scroll the frame's document, after which the browser aligns the
+// frame's top with the viewport top - straight under our pinned bars. The embed
+// cannot measure them, so the same height goes in as --portal-chrome for the embed
+// to add to its scroll-margin-top. Embeds that do not read it are unaffected, and
+// an embed opened outside the portal falls back to its standalone offset.
+const essayChromeScript = `(function () {
+  function frameEl() {
+    return document.getElementById('essay-frame');
+  }
   function syncHash() {
-    var frame = document.getElementById('essay-frame');
+    var frame = frameEl();
     if (!frame) return;
     var base = frame.getAttribute('data-base');
     var hash = window.location.hash;
@@ -50,9 +64,64 @@ const hashForwardScript = `(function () {
     var want = base + hash;
     if (frame.getAttribute('src') !== want) frame.setAttribute('src', want);
   }
-  syncHash();
+  function chromeHeight() {
+    // Everything pinned above the frame: the site header, then the essay bar
+    // sitting below it. Measured rather than assumed, because the header grows a
+    // row when the nav wraps (KAN-65).
+    var stack = ['.site-header', '.essay-bar'];
+    var total = 0;
+    for (var i = 0; i < stack.length; i++) {
+      var el = document.querySelector(stack[i]);
+      if (el) total += el.offsetHeight;
+    }
+    return total;
+  }
+  function syncChrome() {
+    var px = chromeHeight() + 'px';
+    // Sizes the frame to the space it can actually occupy...
+    document.documentElement.style.setProperty('--essay-chrome-h', px);
+    var frame = frameEl();
+    if (!frame) return;
+    var doc;
+    try {
+      doc = frame.contentDocument;
+    } catch (e) {
+      return;
+    }
+    if (!doc || !doc.documentElement) return;
+    // ...and tells the embed how much of its own top is covered.
+    doc.documentElement.style.setProperty('--portal-chrome', px);
+  }
+  function bindFrame() {
+    var frame = frameEl();
+    if (!frame || frame.dataset.chromeBound) return;
+    frame.dataset.chromeBound = '1';
+    // The frame is loading="lazy", so on the first pass its document may not
+    // exist yet and there is nothing to push --portal-chrome into. The load event
+    // covers that, and fires again after syncHash rewrites src.
+    frame.addEventListener('load', syncChrome);
+  }
+  var chromeObserver;
+  function observeChrome() {
+    if (typeof ResizeObserver === 'undefined') return;
+    // Catches the nav wrapping, a font swap reflowing the header, and plain
+    // viewport resizes, since both bars are full-width.
+    if (chromeObserver) chromeObserver.disconnect();
+    chromeObserver = new ResizeObserver(syncChrome);
+    var header = document.querySelector('.site-header');
+    var bar = document.querySelector('.essay-bar');
+    if (header) chromeObserver.observe(header);
+    if (bar) chromeObserver.observe(bar);
+  }
+  function sync() {
+    bindFrame();
+    observeChrome();
+    syncHash();
+    syncChrome();
+  }
+  sync();
   window.addEventListener('hashchange', syncHash);
-  document.addEventListener('astro:page-load', syncHash);
+  document.addEventListener('astro:page-load', sync);
 })();`;
 ---
 
@@ -115,13 +184,20 @@ const hashForwardScript = `(function () {
     )
   }
 
-  {isLegacy ? <script is:inline set:html={hashForwardScript} /> : null}
+  <script is:inline set:html={essayChromeScript} />
 </PortalLayout>
 
 <style>
   .essay-bar {
     position: sticky;
-    top: 0;
+    /*
+     * Pin below the site header, not on top of it. Both are sticky, so at top:0
+     * the header (z-index 50) painted straight over this bar and its back link,
+     * crumb, room badge and pager were unreachable on every scrolled essay page.
+     * --header-h is measured at runtime by PortalLayout because the primary nav
+     * wraps into a second row on narrow viewports (KAN-65).
+     */
+    top: var(--header-h, 4.5rem);
     z-index: 40;
     background: color-mix(in srgb, var(--canvas) 92%, transparent);
     backdrop-filter: blur(10px);
@@ -166,8 +242,12 @@ const hashForwardScript = `(function () {
   .essay-frame {
     display: block;
     width: 100%;
-    /* Fill the viewport below the sticky essay bar; the essay scrolls inside. */
-    height: calc(100dvh - 3rem);
+    /*
+     * Fill the viewport below everything pinned above it; the essay scrolls
+     * inside. --essay-chrome-h is the measured height of the site header plus
+     * the essay bar, published by the inline script above.
+     */
+    height: calc(100dvh - var(--essay-chrome-h));
     border: 0;
     background: var(--canvas);
   }

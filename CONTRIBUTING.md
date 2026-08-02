@@ -32,6 +32,20 @@ npm run dev        # local dev server at http://localhost:4321
 | `public/embed/<slug>/`    | Preserved HTML for legacy essays (iframed).           |
 | `docs/`                   | Contributor docs, design reference, launch runbook.   |
 | `e2e/`                    | Playwright end-to-end + accessibility specs.          |
+| `media-src/`              | Gitignored full-resolution masters (see below).       |
+
+### Image masters
+
+Photographic masters are too heavy to commit - the seven room plates alone are
+39 MB - so `media-src/` is gitignored and only the optimised derivatives under
+`public/` are tracked. `scripts/build-room-images.mjs` and
+`scripts/build-og-images.mjs` generate those derivatives once and they are
+committed, exactly because a fresh clone has no masters to build from.
+
+The masters are therefore **not** recoverable from git. The room plates are
+backed up in iCloud Drive at
+`Documents/Terra Chartarum/media-masters/rooms/`; restore them to
+`media-src/rooms/` before running `npm run build-room-images`.
 
 ## Adding a native essay
 
@@ -79,9 +93,20 @@ npm run check          # astro check (types + content schema)
 npm run test           # Vitest unit tests
 npm run build          # production build must succeed
 npm run test:e2e       # Playwright e2e + axe accessibility
+npm run lighthouse     # Lighthouse CI against ./dist (run npm run build first)
 ```
 
 `npm run format` auto-fixes formatting.
+
+**Browser coverage is narrower locally than in CI.** Playwright ships no WebKit
+build for macOS 12, so the `webkit` and `mobile-safari` projects cannot run on
+that host - CI installs chromium, firefox and webkit and is the only place all
+three are exercised. If you are fixing a Safari-reported bug on macOS 12, expect
+to confirm the fix in CI rather than locally.
+
+`npm run lighthouse` needs a Chrome binary. It falls back to Playwright's
+chromium when no system Chrome is installed, so run `npx playwright install
+chromium` if it cannot find one.
 
 ## Self-review checklist
 

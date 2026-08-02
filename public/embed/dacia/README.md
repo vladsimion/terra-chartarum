@@ -61,7 +61,7 @@ The codebase leverages a specialized typographic hierarchy and layout system eng
 
 * **Color Archetypes:** Divided into a dual-mode palette context. The Light wing mimics travertine slabs and ancient plasters (`#cdc2ab`, `#ddd5c4`, `#e3ddd0`) with minium ink accents (`#9e3b2b`). The Dark wing shifts to deep carbon earth tones (`#171109`, `#241a10`), highlighted with color anchors (`#c9962e` for Mensvra, `#6f9e8a` for Nomina).
 * **Typography Core:** Embedded via Google Fonts linking **Cinzel** (carved capitals display), **EB Garamond** (literary, academic body prose), and **IBM Plex Mono** (technical indicators, coordinates, data parameters).
-* **Squeeze View Functionality:** Integrated JavaScript method executing inverted contrast treatments (`filter: invert(.92) hue-rotate(180deg)`) on modern SVG layouts to mimic paper-rubbed epigraphic squeezes (*estampaj/calc*).
+* **Squeeze View Functionality:** A sticky toggle above the stelae flattens every vignette to paper tone and re-lights it with a two-shadow emboss (`grayscale(1) invert(1)` plus paired `drop-shadow`s), so the linework reads as relief rather than ink - a paper-rubbed epigraphic squeeze (*estampaj/calc*). The button holds one accessible name and carries its state in `aria-pressed`; the LAPIS/CALC readout beside it echoes the state for sighted readers.
 * **Performance Design:** Zero external dependencies or JS framework overhead. Employs Vanilla ECMA native code structures using a performance-tuned `IntersectionObserver` pattern to fire asynchronous UI gauge animations and fluid native scroll-spies.
 
 ---
