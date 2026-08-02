@@ -113,7 +113,13 @@ const { align = 'right', label = 'Scrollytelling' } = Astro.props;
     background: color-mix(in srgb, var(--panel) 80%, transparent);
     border: 1px solid var(--line);
     border-radius: var(--radius);
-    opacity: 0.45;
+    /*
+     * Dimming the inactive steps still has to clear WCAG AA on the body text.
+     * At 0.45 the blended ink came out #6e685c on the panel - 3.59:1, a serious
+     * axe violation. 0.6 lands at ~5.7:1 and the active step is still obvious,
+     * since it goes to full opacity and takes the gold border below.
+     */
+    opacity: 0.6;
     transition:
       opacity var(--dur) var(--ease-out),
       border-color var(--dur) var(--ease-out);

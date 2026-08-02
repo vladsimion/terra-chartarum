@@ -124,4 +124,20 @@ describe('essay frontmatter (AC)', () => {
       `<Section id="${border!.id}"`,
     );
   });
+
+  it('Terra Sigillata declares sections that all resolve to real anchors', () => {
+    const { data } = readSections('dacia.mdx');
+    const sections = (data.sections ?? []) as Array<{ id: string; room: string }>;
+    expect(sections.length, 'dacia declares sections').toBeGreaterThan(0);
+    // Migrated off the legacy embed (was status: legacy + embedPath), so the
+    // room-page deep links now have to land on native <Section> anchors rather
+    // than on JS-templated ids inside an iframe.
+    const raw = readFileSync(`${essaysDir}/dacia.mdx`, 'utf8');
+    for (const section of sections) {
+      expect(raw, `essay body contains <Section id="${section.id}">`).toContain(
+        `<Section id="${section.id}"`,
+      );
+    }
+    expect(sections.some((s) => s.room === 'archive')).toBe(true);
+  });
 });

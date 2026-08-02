@@ -45,12 +45,18 @@ const relatedByRoom = await getRelatedByRoom(data.room, { excludeEssaySlug: essa
 // On a legacy essay the script does two more things. Section deep-links (KAN-95):
 // a room page links to /essays/<slug>/#<id>, and the essay lives in a same-origin
 // iframe, so the parent hash is forwarded into the frame's src to scroll the embed
-// to that chapter. And an embed's own anchors (dacia's IN SITV / IN MVSAEO
-// cross-links) scroll the frame's document, after which the browser aligns the
-// frame's top with the viewport top - straight under our pinned bars. The embed
-// cannot measure them, so the same height goes in as --portal-chrome for the embed
-// to add to its scroll-margin-top. Embeds that do not read it are unaffected, and
-// an embed opened outside the portal falls back to its standalone offset.
+// to that chapter. And an embed's own internal anchors scroll the frame's
+// document, after which the browser aligns the frame's top with the viewport top
+// - straight under our pinned bars. The embed cannot measure them, so the same
+// height goes in as --portal-chrome for the embed to add to its
+// scroll-margin-top. Embeds that do not read it are unaffected, and an embed
+// opened outside the portal falls back to its standalone offset.
+//
+// No embed currently reads --portal-chrome: dacia was the only one, and it is a
+// native essay as of the Terra Sigillata migration. The plumbing is kept because
+// it is generic and the next legacy embed with internal cross-links needs it; the
+// e2e case that covered it went with dacia's iframe, since no other embed has the
+// cross-links to exercise it.
 const essayChromeScript = `(function () {
   function frameEl() {
     return document.getElementById('essay-frame');
