@@ -67,7 +67,7 @@
       "evidence": [
         "src/pages/essays/[slug].astro",
         "src/content/essays/cartography.md",
-        "src/content/essays/dacia.md",
+        "src/content/essays/dacia.mdx",
         "src/content/essays/speculum.md",
         "src/content/essays/venice-sicily.mdx",
         "public/embed/cartography/index.html",
