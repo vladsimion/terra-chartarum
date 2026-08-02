@@ -168,7 +168,12 @@ h2.sect{font-family:var(--disp);font-weight:600;font-size:clamp(24px,3.4vw,36px)
 .hall-intro{max-width:64ch;margin:22px 0 8px;font-size:17.5px;color:var(--ink-soft);font-style:italic}
 
 /* ---------- stela slabs ---------- */
-.stela{position:relative;margin:54px 0;padding:40px 38px 34px;
+/* IN MVSAEO jumps land here. The 20px is this document's own breathing room (the
+   museum wing has nothing sticky); --portal-chrome is the height of whatever the
+   host page keeps pinned above the frame, pushed in by the portal. Unset when
+   this file is opened on its own, so the standalone offset stays 20px. */
+.stela{scroll-margin-top:calc(var(--portal-chrome, 0px) + 20px);
+  position:relative;margin:54px 0;padding:40px 38px 34px;
   background:
     url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2"/><feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .05 0"/></filter><rect width="220" height="220" filter="url(%23n)"/></svg>'),
     var(--trav);
@@ -303,7 +308,11 @@ select{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--i
 .hud .d{color:var(--ochre)}
 
 /* stratum sections */
-.stratum{padding:74px 0 30px;border-top:1px solid rgba(230,220,200,.12);position:relative}
+/* IN SITV jumps land here. The 90px clears this document's own .core bar, which
+   goes sticky at the top of the trench below 980px; --portal-chrome adds the
+   host page's pinned chrome on top of it. See the note on .stela above. */
+.stratum{scroll-margin-top:calc(var(--portal-chrome, 0px) + 90px);
+  padding:74px 0 30px;border-top:1px solid rgba(230,220,200,.12);position:relative}
 .stratum:first-of-type{border-top:none;padding-top:30px}
 .str-head{display:flex;justify-content:space-between;align-items:baseline;gap:14px;flex-wrap:wrap}
 .str-tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.3em;color:var(--ochre)}
@@ -1815,8 +1824,6 @@ function stratumHTML(s,inLens){
     document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
     document.querySelectorAll('.fill').forEach(f=>{f.style.width=f.dataset.w;});
   }
-  document.querySelectorAll('.stratum').forEach(el=>el.style.scrollMarginTop='90px');
-  document.querySelectorAll('.stela').forEach(el=>el.style.scrollMarginTop='20px');
 })();
 
 /* ---------- depth HUD & core scroll-spy ---------- */
