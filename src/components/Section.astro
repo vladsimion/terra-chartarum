@@ -61,7 +61,12 @@ const tagged = rooms.map((slug) => getRoom(slug)).filter((room) => room !== unde
 
 <style>
   .essay-section {
-    scroll-margin-top: calc(var(--header-h) + 1rem);
+    /*
+     * Clear the whole pinned stack, not just the site header: essay pages also
+     * keep the essay bar pinned below it, and a section landing under that bar
+     * hides its own heading.
+     */
+    scroll-margin-top: calc(var(--essay-chrome-h) + 1rem);
   }
   .section-head {
     display: flex;

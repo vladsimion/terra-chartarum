@@ -85,6 +85,107 @@ test.describe('flow: gallery → essay', () => {
   });
 });
 
+test.describe('flow: essay sticky chrome', () => {
+  // Every essay page pins the site header and, below it, the essay bar. Both are
+  // sticky, and the bar used to sit at top:0 too, so the header (z-index 50)
+  // painted straight over it and its back link, crumb, badge and pager were
+  // unreachable on every scrolled essay page.
+  test('the essay bar stays visible and clickable below the header', async ({ page }) => {
+    await page.goto('/essays/venice-sicily/');
+    await page.mouse.wheel(0, 1200);
+
+    const boxes = async () =>
+      page.evaluate(() => {
+        const header = document.querySelector('.site-header')!.getBoundingClientRect();
+        const bar = document.querySelector('.essay-bar')!.getBoundingClientRect();
+        const mid = document.elementFromPoint(bar.left + 60, (bar.top + bar.bottom) / 2);
+        return {
+          headerBottom: header.bottom,
+          barTop: bar.top,
+          barHitsBar: !!mid?.closest('.essay-bar'),
+        };
+      });
+
+    await expect(async () => {
+      const { headerBottom, barTop, barHitsBar } = await boxes();
+      // Sub-pixel layout rounding, hence the 1px tolerance.
+      expect(barTop).toBeGreaterThanOrEqual(headerBottom - 1);
+      // Nothing is painted over the bar, so its own controls take the click.
+      expect(barHitsBar).toBe(true);
+    }).toPass();
+
+    await expect(page.locator('.essay-bar .back')).toBeVisible();
+  });
+});
+
+test.describe('flow: legacy embed cross-links', () => {
+  // A legacy embed scrolls its own document, and the browser then aligns the
+  // frame's top with the viewport top - straight under the pinned bars above it.
+  // The embed cannot measure them, so [slug].astro pushes their combined height
+  // in as --portal-chrome for the embed to add to its scroll-margin-top. Without
+  // it both of dacia's cross-links land their heading behind the chrome, worst on
+  // the narrow viewports this suite also runs.
+
+  test("dacia's IN SITV and IN MVSAEO links land clear of the sticky chrome", async ({ page }) => {
+    // The embed sets html{scroll-behavior:smooth}, so a jump would still be
+    // animating when the assertion reads the position. Its own
+    // prefers-reduced-motion branch turns that off - a real user setting, and it
+    // does not touch the offsets under test.
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/essays/dacia/');
+
+    const frame = page.frameLocator('iframe.essay-frame');
+    // The embed builds both wings with innerHTML after load, so wait for the full
+    // set of 13 stones: until then every link above the fold keeps being pushed
+    // down and never settles enough for Playwright to click it.
+    await expect(frame.locator('.stratum')).toHaveCount(13);
+    await expect(frame.locator('.stela')).toHaveCount(13);
+
+    // Follow the anchor from inside the frame rather than with a real mouse
+    // click. What is under test is where the jump lands, and a synthetic click
+    // exercises the same href and the same scroll-margin-top. Driving the pointer
+    // instead means fighting Playwright's auto-scroll, which parks the link under
+    // the very sticky header this suite is checking and then fails on the header
+    // intercepting the click. Pointer reachability of the chrome itself is covered
+    // by the essay-bar test above.
+    //
+    // Returns the heading's top in page coordinates minus the bottom of the
+    // pinned stack, which ends at the essay bar. Assert on the heading rather
+    // than the section, whose own top may sit under the chrome by design.
+    const followAndMeasure = (linkSel: string, headingSel: string) =>
+      page.evaluate(
+        ([link, heading]) => {
+          const f = document.querySelector<HTMLIFrameElement>('iframe.essay-frame')!;
+          const doc = f.contentDocument!;
+          doc.querySelector<HTMLAnchorElement>(link)!.click();
+          const bar = document.querySelector('.essay-bar')!;
+          return (
+            f.getBoundingClientRect().top +
+            doc.querySelector(heading)!.getBoundingClientRect().top -
+            bar.getBoundingClientRect().bottom
+          );
+        },
+        [linkSel, headingSel],
+      );
+
+    await expect(async () => {
+      const gap = await followAndMeasure(
+        'a.insitu[href="#stratum-ptolemy"]',
+        '#stratum-ptolemy .str-tag',
+      );
+      expect(gap).toBeGreaterThanOrEqual(0);
+    }).toPass();
+
+    await expect(async () => {
+      const gap = await followAndMeasure(
+        'a.inmus[href="#stela-ptolemy"]',
+        '#stela-ptolemy .stela-num',
+      );
+      expect(gap).toBeGreaterThanOrEqual(0);
+    }).toPass();
+  });
+});
+
 test.describe('flow: room-grouped gallery', () => {
   test('groups essay cards under their canonical room headings', async ({ page }) => {
     await page.goto('/essays/');
