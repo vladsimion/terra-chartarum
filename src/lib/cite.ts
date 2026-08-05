@@ -1,18 +1,24 @@
 /**
  * Citation export (ATLAS-1104 / KAN-79). Pure, dependency-free formatters that
- * turn a map into BibTeX / RIS / Chicago strings. Kept deliberately free of any
+ * turn a map, essay or dataset into BibTeX / RIS / Chicago strings. Kept deliberately free of any
  * `astro:content` / corpus import so the CiteExport island can import it into a
  * tiny client bundle and build the strings in the browser on demand.
  */
 
-/** The citation-relevant projection of a map (resolved author, canonical URL). */
+export type CiteKind = 'map' | 'essay' | 'dataset';
+
+/** The citation-relevant projection of a published resource. */
 export interface CiteInput {
   id: string;
   title: string;
-  year: number; // negative = BC
-  author?: string; // resolved cartographer name
+  kind?: CiteKind; // omitted for backwards-compatible map citations
+  year?: number; // negative = BC
+  author?: string;
   publisher?: string;
   place?: string; // region / place of making
+  containerTitle?: string;
+  version?: string;
+  license?: string;
   url?: string; // canonical detail URL
 }
 
@@ -21,6 +27,19 @@ export type CiteFormat = 'bibtex' | 'ris' | 'chicago';
 /** Human year label; negative years render as "600 BC", positive as "1569". */
 function yearLabel(year: number): string {
   return year < 0 ? `${Math.abs(year)} BC` : `${year}`;
+}
+
+function kindOf(input: CiteInput): CiteKind {
+  return input.kind ?? 'map';
+}
+
+function resourceLabel(input: CiteInput): string {
+  const labels: Record<CiteKind, string> = {
+    map: 'Historical map',
+    essay: 'Visual essay',
+    dataset: 'Dataset',
+  };
+  return labels[kindOf(input)];
 }
 
 /** BibTeX brace-escaping for field values. */
@@ -35,25 +54,35 @@ export function toBibTeX(m: CiteInput): string {
   };
   field('title', m.title);
   field('author', m.author);
-  field('year', yearLabel(m.year));
+  field('year', m.year === undefined ? undefined : yearLabel(m.year));
   field('address', m.place);
   field('publisher', m.publisher);
+  field('journal', m.containerTitle);
+  field('version', m.version);
   if (m.url) lines.push(`  ${'howpublished'.padEnd(12)}= {\\url{${m.url}}},`);
-  lines.push(`  ${'note'.padEnd(12)}= {Historical map. Terra Chartarum.}`);
+  const note = [resourceLabel(m), m.license ? `Licence: ${m.license}` : '', 'Terra Chartarum.']
+    .filter(Boolean)
+    .join('. ')
+    .replace('..', '.');
+  lines.push(`  ${'note'.padEnd(12)}= {${note}}`);
   lines.push('}');
   return lines.join('\n');
 }
 
 export function toRIS(m: CiteInput): string {
-  const lines: string[] = ['TY  - MAP'];
+  const risType: Record<CiteKind, string> = { map: 'MAP', essay: 'ELEC', dataset: 'DATA' };
+  const lines: string[] = [`TY  - ${risType[kindOf(m)]}`];
   const tag = (key: string, value?: string) => {
     if (value) lines.push(`${key}  - ${value}`);
   };
   tag('TI', m.title);
   tag('AU', m.author);
-  tag('PY', yearLabel(m.year));
+  tag('PY', m.year === undefined ? undefined : yearLabel(m.year));
   tag('CY', m.place);
   tag('PB', m.publisher);
+  tag('T2', m.containerTitle);
+  tag('ET', m.version);
+  tag('N1', m.license ? `Licence: ${m.license}` : undefined);
   tag('UR', m.url);
   lines.push('ER  - ');
   return lines.join('\n');
@@ -64,8 +93,12 @@ export function toChicago(m: CiteInput): string {
   if (m.author) parts.push(`${m.author}.`);
   parts.push(`${m.title}.`);
   const imprint = [m.place, m.publisher].filter(Boolean).join(': ');
-  const tail = [imprint, yearLabel(m.year)].filter(Boolean).join(', ');
+  const tail = [imprint, m.year === undefined ? '' : yearLabel(m.year)].filter(Boolean).join(', ');
   if (tail) parts.push(`${tail}.`);
+  if (m.containerTitle) parts.push(`${m.containerTitle}.`);
+  if (m.version) parts.push(`Version ${m.version}.`);
+  if (m.kind === 'dataset') parts.push('Dataset.');
+  if (m.license) parts.push(`${m.license}.`);
   if (m.url) parts.push(`${m.url}.`);
   return parts.join(' ');
 }

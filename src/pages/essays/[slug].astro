@@ -6,7 +6,9 @@ import RoomPath from '../../components/RoomPath.astro';
 import RelatedByRoom from '../../components/RelatedByRoom.astro';
 import EssayHero from '../../components/EssayHero.astro';
 import MetaLens from '../../components/MetaLens.astro';
+import CiteExport from '../../components/islands/CiteExport.astro';
 import { getRoomPath, getRelatedByRoom } from '../../lib/room-content';
+import type { CiteInput } from '../../lib/cite';
 import { articleSchema, breadcrumbSchema } from '../../lib/structured-data';
 
 export async function getStaticPaths() {
@@ -27,7 +29,7 @@ const accent = data.accent ?? 'var(--gold)';
 
 // ATLAS-301 decision: legacy essays are full self-contained HTML documents
 // (own <head>, fonts, global body styles), so the isolation boundary is an
-// <iframe> sourced from public/essays/<slug>/. This guarantees zero style/JS
+// <iframe> sourced from public/embed/<slug>/. This guarantees zero style/JS
 // leakage against the portal chrome. Native (MDX) essays render inline instead.
 const isLegacy = data.status === 'legacy' && data.embedPath;
 const { Content } = await essay.render();
@@ -36,6 +38,16 @@ const { Content } = await essay.render();
 // and surface a mixed grid of other room content at the essay's end.
 const roomPath = await getRoomPath(data.room, essay.slug);
 const relatedByRoom = await getRelatedByRoom(data.room, { excludeEssaySlug: essay.slug });
+const citeInput: CiteInput = {
+  id: essay.slug,
+  kind: 'essay',
+  title: data.title,
+  author: 'Terra Chartarum',
+  year: Number(data.publishedAt.slice(0, 4)),
+  publisher: 'Terra Chartarum',
+  containerTitle: 'Terra Chartarum',
+  url: new URL(`/essays/${essay.slug}/`, Astro.site).toString(),
+};
 
 // Every essay page keeps two bars pinned at the top: the site header and the
 // essay bar below it. Their combined height is measured here and published as
@@ -200,6 +212,11 @@ const essayChromeScript = `(function () {
     )
   }
 
+  <section class="shell essay-citation" aria-labelledby="essay-citation-title">
+    <h2 id="essay-citation-title">Cite this essay</h2>
+    <CiteExport input={citeInput} />
+  </section>
+
   {
     (roomPath || relatedByRoom.length > 0) && (
       <div class="shell essay-room-links">
@@ -306,5 +323,13 @@ const essayChromeScript = `(function () {
   .essay-room-links {
     padding-block: 1rem 4rem;
     max-width: min(var(--prose-max, 44rem), 44rem);
+  }
+  .essay-citation {
+    max-width: min(var(--prose-max, 44rem), 44rem);
+    padding-block: 2rem 1rem;
+  }
+  .essay-citation h2 {
+    margin: 0 0 0.8rem;
+    font-size: var(--step-2);
   }
 </style>

@@ -23,17 +23,9 @@ this page current when waves are re-groomed.
 
 ## Current corpus
 
-Nine essays are live across six of the seven rooms:
-
-| Room        | Live essays                                            | Status        |
-| ----------- | ------------------------------------------------------ | ------------- |
-| The Earth   | -                                                      | Wave 2 anchor |
-| The Map     | The Cartographic Sacrifice · Anatomy of a Native Essay | live          |
-| The City    | Cities Remember                                        | live anchor   |
-| The Border  | Terra Sigillata · Lapidarium Dacicum                   | live          |
-| The Road    | La Rotta e il Catasto · Invisible Maps of Trade        | live          |
-| The Archive | Maps That Age                                          | live anchor   |
-| The Theatre | Speculum Chartarum · Invisible Maps of Religion        | live          |
+The release-aware inventory is generated from the same content gate as the site.
+See the [current corpus status](generated/corpus-status.md) for live and held
+essays, per-room depth, registry totals, and the current geo release.
 
 ## Wave 1 - anchor each under-served room (complete)
 
@@ -128,6 +120,7 @@ captures items 1–2 at proposal time so an epic can be generated from a filed i
 ## Keeping this roadmap honest
 
 - Re-groom at each wave retro; move completed epics out of the wave tables.
-- Update the **Current corpus** table whenever an essay ships.
+- Run `npm run reports:write` whenever an essay or registry changes; the production
+  build rejects stale generated reports.
 - If a topic changes room or priority, change it here **and** on the Jira epic - the
   two must not drift.

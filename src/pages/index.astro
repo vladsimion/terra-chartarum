@@ -43,6 +43,37 @@ const mapTotal = all.reduce((n, e) => n + (e.data.mapCount ?? 0), 0);
     </div>
   </section>
 
+  <section class="shell start-here" aria-labelledby="start-here-title">
+    <header class="start-head">
+      <p class="eyebrow">Start here</p>
+      <h2 id="start-here-title">Choose how you want to enter</h2>
+      <p>
+        Terra Chartarum can be read as a set of stories, a cosmography of questions, or a map of
+        objects and places. Pick the route that matches what brought you here.
+      </p>
+    </header>
+    <div class="start-grid">
+      <a class="start-card" href="/essays/">
+        <span class="start-number" aria-hidden="true">01</span>
+        <h3>I want a story</h3>
+        <p>Begin with a visual essay and follow one argument through its maps.</p>
+        <span class="start-link">Browse essays →</span>
+      </a>
+      <a class="start-card" href="/rooms/">
+        <span class="start-number" aria-hidden="true">02</span>
+        <h3>I want a subject</h3>
+        <p>Enter one of seven rooms organised around earth, cities, borders, roads, and ideas.</p>
+        <span class="start-link">Explore the rooms →</span>
+      </a>
+      <a class="start-card" href="/atlas/">
+        <span class="start-number" aria-hidden="true">03</span>
+        <h3>I want a map or place</h3>
+        <p>Search the corpus in space and time, then open the record or essay behind it.</p>
+        <span class="start-link">Use the atlas →</span>
+      </a>
+    </div>
+  </section>
+
   <section class="shell featured">
     <div class="section-head">
       <h2>Featured essays</h2>
@@ -126,6 +157,66 @@ const mapTotal = all.reduce((n, e) => n + (e.data.mapCount ?? 0), 0);
     font-size: var(--step-3);
   }
 
+  .start-here {
+    padding-block: clamp(3rem, 7vw, 5rem) 0;
+  }
+  .start-head {
+    max-width: var(--prose-max);
+    margin-bottom: 1.5rem;
+  }
+  .start-head h2 {
+    margin: 0.3rem 0 0.6rem;
+    font-size: var(--step-3);
+  }
+  .start-head > p:last-child {
+    margin: 0;
+    color: var(--ink-muted);
+  }
+  .start-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  .start-card {
+    display: flex;
+    min-height: 15rem;
+    flex-direction: column;
+    padding: 1.35rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    color: var(--ink);
+    transition:
+      transform var(--dur) var(--ease-out),
+      border-color var(--dur) var(--ease-out);
+  }
+  .start-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--gold);
+  }
+  .start-number {
+    font-family: var(--font-mono);
+    color: var(--gold);
+    font-size: var(--step--1);
+    letter-spacing: 0.12em;
+  }
+  .start-card h3 {
+    margin: 1rem 0 0.45rem;
+    font-size: var(--step-2);
+  }
+  .start-card p {
+    margin: 0;
+    color: var(--ink-muted);
+  }
+  .start-link {
+    margin-top: auto;
+    padding-top: 1.5rem;
+    color: var(--gold);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.06em;
+  }
+
   .featured {
     padding-block: clamp(3rem, 7vw, 5rem);
   }
@@ -148,5 +239,13 @@ const mapTotal = all.reduce((n, e) => n + (e.data.mapCount ?? 0), 0);
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1.5rem;
+  }
+  @media (max-width: 760px) {
+    .start-grid {
+      grid-template-columns: 1fr;
+    }
+    .start-card {
+      min-height: 0;
+    }
   }
 </style>

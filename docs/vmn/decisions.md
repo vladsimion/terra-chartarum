@@ -122,5 +122,6 @@ later, wider phase from silently supplying geometry to an earlier, narrower one.
   period also cannot be projected indiscriminately onto later phases.
 
 All dates remain derived scholarly assertions under `LANE1973` and
-`OCONNELL2009`. KAN-154 still owns page-level edition verification, so this decision
-does not manufacture page citations.
+`OCONNELL2009`. KAN-154 subsequently completed page-level edition verification;
+the discrepancy ledger records the cited value, resolution, and explicit
+`not_in_source` cases without manufacturing page citations.

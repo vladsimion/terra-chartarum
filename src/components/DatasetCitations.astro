@@ -1,0 +1,100 @@
+---
+import CiteExport from './islands/CiteExport.astro';
+import { GEO_LAYERS } from '../lib/geo';
+import { GEO_RELEASE, geoReleaseAsset } from '../lib/geo-release';
+import type { CiteInput } from '../lib/cite';
+
+const datasets = GEO_LAYERS.map((layer) => {
+  const asset = geoReleaseAsset(layer.id);
+  const input: CiteInput = {
+    id: `${layer.id}-${asset.version}`,
+    kind: 'dataset',
+    title: layer.title,
+    author: layer.attribution,
+    publisher: 'Terra Chartarum',
+    version: asset.version,
+    license: layer.license,
+    url: new URL(asset.url, Astro.site).toString(),
+  };
+  return { layer, asset, input };
+});
+---
+
+<section class="dataset-citations" aria-labelledby="dataset-citations-title">
+  <header>
+    <p class="eyebrow">Research reuse</p>
+    <h2 id="dataset-citations-title">Cite the Atlas data</h2>
+    <p>
+      Each citation identifies the exact content-addressed asset. The complete bundle is release
+      <code>{GEO_RELEASE}</code>.
+    </p>
+  </header>
+  <div class="dataset-list">
+    {
+      datasets.map(({ layer, asset, input }) => (
+        <details>
+          <summary>
+            <span>{layer.title}</span>
+            <small>
+              {asset.format} · {asset.featureCount} features · {layer.license}
+            </small>
+          </summary>
+          <p class="dataset-source">Source: {layer.source}</p>
+          <CiteExport input={input} />
+        </details>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .dataset-citations {
+    margin-top: 3.5rem;
+  }
+  .dataset-citations header {
+    max-width: var(--prose-max);
+    margin-bottom: 1.25rem;
+  }
+  .dataset-citations h2 {
+    margin: 0.25rem 0 0.5rem;
+    font-size: var(--step-2);
+  }
+  .dataset-citations header p:last-child {
+    margin: 0;
+    color: var(--ink-muted);
+  }
+  code {
+    color: var(--gold);
+    font-family: var(--font-mono);
+  }
+  .dataset-list {
+    display: grid;
+    gap: 0.7rem;
+  }
+  details {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    padding: 0.85rem 1rem;
+  }
+  summary {
+    cursor: pointer;
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+  }
+  summary span,
+  summary small {
+    display: block;
+  }
+  summary small {
+    margin-top: 0.15rem;
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+  }
+  .dataset-source {
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+  }
+</style>
