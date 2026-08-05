@@ -16,23 +16,32 @@ import PortalLayout from '../layouts/PortalLayout.astro';
 
     <h2>Analytics</h2>
     <p>
-      Analytics is disabled unless the production build is explicitly configured with a
-      site-specific Plausible Analytics script. When enabled, the integration sends aggregate
-      pageviews only. Optional outbound-link, file-download, form, custom-property, hash-route and
-      localhost measurements are disabled in the site code.
+      This site measures aggregate traffic with Cloudflare Web Analytics: how many pages were
+      viewed, which ones, which site a visitor arrived from, and a country-level location. It is
+      enabled on the hosting platform rather than in the page source, so the measurement script is
+      added when the site is served.
     </p>
     <p>
-      Plausible states that its service does not use cookies or persistent identifiers, does not
-      collect personal data, and processes visitor data in the European Union. See Plausible's
-      <a href="https://plausible.io/privacy-focused-web-analytics">privacy overview</a>,
-      <a href="https://plausible.io/privacy">privacy policy</a>, and
-      <a href="https://plausible.io/compliance">compliance documentation</a>.
+      Cloudflare states that Web Analytics uses no cookies and no other client-side storage for
+      analytics, does not fingerprint visitors, and does not track people over time by IP address or
+      user-agent string. Referral counts are derived from page views rather than from stored visitor
+      identities. See Cloudflare's
+      <a href="https://blog.cloudflare.com/privacy-first-web-analytics/"
+        >account of how the measurement works</a
+      >
+      and its <a href="https://www.cloudflare.com/privacypolicy/">privacy policy</a>.
     </p>
     <p>
-      On that selected configuration, this site does not display an analytics cookie-consent banner
-      because it does not set analytics cookies. If the provider, measurements, storage, or legal
-      context changes, analytics must be held until this notice and the consent decision are
-      reviewed again.
+      Because that configuration sets no analytics cookies and stores nothing on your device, this
+      site publishes this notice instead of a cookie-consent banner asking permission for storage it
+      does not use. If the provider, measurements, storage, or legal context changes, analytics must
+      be held until this notice and the consent decision are reviewed again.
+    </p>
+    <p>
+      A second, unused integration for
+      <a href="https://plausible.io/privacy-focused-web-analytics">Plausible Analytics</a> remains in
+      the site code. It is disabled: no Plausible script is emitted on any page, and enabling it would
+      require a new build explicitly configured with a site-specific script.
     </p>
 
     <h2>External links and media</h2>
@@ -43,18 +52,25 @@ import PortalLayout from '../layouts/PortalLayout.astro';
       may preserve an external source URL for attribution without loading it automatically.
     </p>
 
+    <h2>Search engines</h2>
+    <p>
+      The site is registered with Google Search Console, which reports how often its pages appeared
+      in search results and which queries led to them. Those reports are aggregate counts produced
+      by the search engine from its own logs; the site neither receives nor stores anything about an
+      individual searcher.
+    </p>
+
     <h2>Operational logs</h2>
     <p>
       The hosting provider may process ordinary request and security logs needed to deliver and
-      protect the site. Those platform logs are separate from the optional Plausible integration
-      described above.
+      protect the site. Those platform logs are separate from the analytics described above.
     </p>
 
     <h2>Changes</h2>
     <p>
-      Analytics remains a reversible feature. Removing the three public build variables removes the
-      script from every generated page. Material changes to collection or tracking require an
-      updated privacy review before release.
+      Analytics remains a reversible feature: it can be switched off at the hosting platform, which
+      stops the script being served on every page. Material changes to collection or tracking
+      require an updated privacy review before release.
     </p>
   </section>
 </PortalLayout>
