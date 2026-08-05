@@ -1,3 +1,12 @@
+/**
+ * Asserts the state of the *Plausible* integration in the built HTML.
+ *
+ * Scope warning: the site's active provider is Cloudflare Web Analytics, which
+ * Cloudflare Pages injects at the edge on deploy. That script never appears in
+ * dist/, so `--expect=disabled` passing here means "no Plausible snippet was
+ * built in" - it is NOT evidence that the site is unmeasured. See
+ * docs/analytics-privacy.md.
+ */
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 

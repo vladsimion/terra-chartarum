@@ -7,6 +7,7 @@ import RelatedByRoom from '../../components/RelatedByRoom.astro';
 import EssayHero from '../../components/EssayHero.astro';
 import MetaLens from '../../components/MetaLens.astro';
 import { getRoomPath, getRelatedByRoom } from '../../lib/room-content';
+import { articleSchema, breadcrumbSchema } from '../../lib/structured-data';
 
 export async function getStaticPaths() {
   const essays = await getEssays();
@@ -131,7 +132,25 @@ const essayChromeScript = `(function () {
 })();`;
 ---
 
-<PortalLayout title={data.title} description={data.summary} ogImage={`/og/${essay.slug}.png`}>
+<PortalLayout
+  title={data.title}
+  description={data.summary}
+  ogImage={`/og/${essay.slug}.png`}
+  ogImageAlt={`${data.title} - ${data.subtitle}`}
+  ogType="article"
+  publishedAt={data.publishedAt}
+  updatedAt={data.updatedAt}
+  schema={[
+    articleSchema(essay, Astro.site!),
+    breadcrumbSchema(
+      [
+        { name: 'Essays', path: '/essays/' },
+        { name: data.title, path: `/essays/${essay.slug}/` },
+      ],
+      Astro.site!,
+    ),
+  ]}
+>
   <div class="essay-bar" style={`--accent:${accent}`}>
     <div class="shell bar-inner">
       <a class="back" href="/essays/">← Atlas of essays</a>

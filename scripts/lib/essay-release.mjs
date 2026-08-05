@@ -26,9 +26,12 @@ export function showUnreleased() {
 }
 
 /**
- * Every essay's slug, release date and legacy embed path, read straight from
- * frontmatter. Throws on a missing or malformed `releaseAt` - the schema
- * requires it, and a silent default here could publish an embargoed essay.
+ * Every essay's slug, release date, last-modified date and legacy embed path,
+ * read straight from frontmatter. Throws on a missing or malformed `releaseAt`
+ * - the schema requires it, and a silent default here could publish an
+ * embargoed essay. `updatedAt` is also schema-required, but it feeds the
+ * sitemap's <lastmod> rather than the embargo, so a missing value degrades to
+ * null (no lastmod) instead of failing the build.
  */
 export function readEssayReleases() {
   return readdirSync(ESSAYS)
@@ -40,8 +43,9 @@ export function readEssayReleases() {
       const frontmatter = source.split(/^---$/m)[1] ?? '';
       const releaseAt = frontmatter.match(/^releaseAt: '?(\d{4}-\d{2}-\d{2})'?\s*$/m)?.[1];
       if (!releaseAt) throw new Error(`${file}: missing or malformed releaseAt`);
+      const updatedAt = frontmatter.match(/^updatedAt: '?(\d{4}-\d{2}-\d{2})'?\s*$/m)?.[1] ?? null;
       const embedPath = frontmatter.match(/^embedPath: '?(\S+?)'?\s*$/m)?.[1] ?? null;
-      return { slug, releaseAt, embedPath };
+      return { slug, releaseAt, updatedAt, embedPath };
     });
 }
 
