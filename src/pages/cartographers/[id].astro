@@ -3,6 +3,7 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
 import { getCartographers, mapsByCartographer } from '../../lib/cartographers';
 import type { Cartographer } from '../../lib/cartographers';
 import { getEssays, formatYear } from '../../lib/registry';
+import { personSchema, breadcrumbSchema } from '../../lib/structured-data';
 
 export async function getStaticPaths() {
   return getCartographers().map((person) => ({
@@ -30,7 +31,20 @@ const lifespan =
     : '';
 ---
 
-<PortalLayout title={person.name} description={person.bio}>
+<PortalLayout
+  title={person.name}
+  description={person.bio}
+  schema={[
+    personSchema(person, Astro.site!),
+    breadcrumbSchema(
+      [
+        { name: 'Cartographers', path: '/cartographers/' },
+        { name: person.name, path: `/cartographers/${person.id}/` },
+      ],
+      Astro.site!,
+    ),
+  ]}
+>
   <article class="shell person">
     <nav class="crumbs" aria-label="Breadcrumb">
       <a href="/cartographers/">Cartographers</a>

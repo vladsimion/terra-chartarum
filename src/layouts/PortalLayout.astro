@@ -26,6 +26,23 @@ interface Props {
   /** Hide the shared chrome (used by the full-bleed essay host route). */
   bare?: boolean;
   ogImage?: string;
+  /** Alt text for the social card; falls back to the page title. */
+  ogImageAlt?: string;
+  /**
+   * Used verbatim as <title> and og:title, bypassing the `· Terra Chartarum`
+   * suffix rule below. The home page needs this: its `title` *is* the site name,
+   * so the suffix rule would leave it with a bare brand word and no subject.
+   */
+  seoTitle?: string;
+  /** Essay routes are articles; everything else is a website page. */
+  ogType?: 'website' | 'article';
+  /** ISO dates - emitted as article:published_time / :modified_time. */
+  publishedAt?: string;
+  updatedAt?: string;
+  /** Keep the page out of search results while still following its links. */
+  noindex?: boolean;
+  /** JSON-LD block(s) describing this page - see ../lib/structured-data.ts. */
+  schema?: object | object[];
 }
 
 const {
@@ -33,11 +50,30 @@ const {
   description = 'An interactive historical atlas - a gallery of cartographic visual essays.',
   bare = false,
   ogImage = '/og/default.png',
+  ogImageAlt,
+  seoTitle,
+  ogType = 'website',
+  publishedAt,
+  updatedAt,
+  noindex = false,
+  schema,
 } = Astro.props;
 
 const siteName = 'Terra Chartarum';
-const fullTitle = title === siteName ? title : `${title} · ${siteName}`;
+const fullTitle = seoTitle ?? (title === siteName ? title : `${title} · ${siteName}`);
 const canonical = new URL(Astro.url.pathname, Astro.site);
+
+// One <script type="application/ld+json"> per page: a lone object stays an
+// object, several become the array form crawlers already expect. Escaping `<`
+// is what stops a title containing "</script>" from closing the block early -
+// JSON.stringify alone does not escape it.
+const schemaBlocks = schema ? (Array.isArray(schema) ? schema : [schema]) : [];
+const schemaJson = schemaBlocks.length
+  ? JSON.stringify(schemaBlocks.length === 1 ? schemaBlocks[0] : schemaBlocks).replace(
+      /</g,
+      '\\u003c',
+    )
+  : null;
 ---
 
 <!doctype html>
@@ -51,6 +87,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex,follow" />}
     <link
       rel="alternate"
       type="application/rss+xml"
@@ -59,15 +96,37 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     />
 
     <!-- Open Graph / social -->
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content={siteName} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="en_GB" />
     <meta property="og:image" content={new URL(ogImage, Astro.site)} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt ?? title} />
+    {
+      ogType === 'article' && publishedAt && (
+        <meta property="article:published_time" content={publishedAt} />
+      )
+    }
+    {
+      ogType === 'article' && updatedAt && (
+        <meta property="article:modified_time" content={updatedAt} />
+      )
+    }
+    <!-- X/Twitter and several link scrapers do not reliably fall back to the
+         og: equivalents, so the title/description are repeated rather than
+         inherited. -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={new URL(ogImage, Astro.site)} />
+    <meta name="twitter:image:alt" content={ogImageAlt ?? title} />
+    <!-- is:inline: JSON-LD is data, not a module - Astro must ship it verbatim
+         rather than treat it as a script to bundle. -->
+    {schemaJson && <script type="application/ld+json" is:inline set:html={schemaJson} />}
 
     <!-- Preload the three faces visible above the fold. Besides removing a
          request round-trip, this keeps the shell and essay measure stable at
