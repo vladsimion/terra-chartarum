@@ -73,6 +73,10 @@ See [`SPECS.md`](SPECS.md) for the specification and
 project `KAN`; `jira-import.csv` is the original `ATLAS`-keyed import seed, kept for
 provenance.
 
+For an audience-by-audience guide to using, researching, operating, extending,
+and prioritising the site, see the comprehensive
+[`site handbook`](docs/site-handbook.md).
+
 ## Develop
 
 ```bash
