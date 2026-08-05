@@ -82,8 +82,77 @@ test.describe('native essay: Terra Sigillata', () => {
     expect(px).toBeGreaterThanOrEqual(12);
   });
 
+  test('the squeeze toggle puts the plates in relief and back', async ({ page }) => {
+    await page.goto('/essays/dacia/');
+
+    const wall = page.locator('[data-squeeze-toggle]');
+    const button = page.getByRole('button', { name: 'Squeeze view' });
+    const plate = page.locator('.stela-plate').first();
+
+    // Off by default: the legible reading is the one served.
+    await expect(button).toHaveAttribute('aria-pressed', 'false');
+    await expect(wall).not.toHaveAttribute('data-squeeze', /.*/);
+    const stone = await plate.evaluate((el) => getComputedStyle(el.querySelector('svg')!).filter);
+    expect(stone).toBe('none');
+
+    await button.click();
+
+    // One permanent accessible name, with aria-pressed carrying the state - the
+    // embed renamed the button as well and announced the opposite of the truth.
+    await expect(button).toHaveAttribute('aria-pressed', 'true');
+    await expect(wall).toHaveAttribute('data-squeeze', '');
+    const calc = await plate.evaluate((el) => getComputedStyle(el.querySelector('svg')!).filter);
+    expect(calc, 'ink inverted and lit from a fixed angle').toContain('invert');
+    expect(calc).toContain('drop-shadow');
+
+    // The panel lifts to filter paper under the impression. Asserted through
+    // toHaveCSS so it settles past the transition rather than reading a frame
+    // of it.
+    await expect(plate).toHaveCSS('background-color', 'rgb(246, 243, 234)');
+
+    await button.click();
+    await expect(button).toHaveAttribute('aria-pressed', 'false');
+    await expect(wall).not.toHaveAttribute('data-squeeze', /.*/);
+  });
+
+  test('the squeeze bar stays in reach without burying the stone it jumps to', async ({ page }) => {
+    await page.goto('/essays/dacia/');
+
+    // Deep into the wall, where the bar is pinned rather than in flow. The
+    // timeline node is a zero-width anchor positioned on the axis, so the click
+    // target is the dot it paints.
+    await page.locator('a[href="#stela-russia"] .atl-dot').click();
+
+    // html scroll-behavior is smooth, so poll the landing rather than the frame
+    // the click returned on.
+    await expect
+      .poll(
+        () =>
+          page.evaluate(() => {
+            const heading = document.querySelector('h4#stela-russia')!;
+            const bar = document.querySelector('.lapidarium-bar')!;
+            return heading.getBoundingClientRect().top - bar.getBoundingClientRect().bottom;
+          }),
+        { message: 'the stone lands below the bar, not behind it' },
+      )
+      .toBeGreaterThanOrEqual(0);
+
+    // Still on screen at that scroll position, so the control acts where it is read.
+    await expect(page.getByRole('button', { name: 'Squeeze view' })).toBeInViewport();
+  });
+
   test('passes axe WCAG A/AA', async ({ page }) => {
     await page.goto('/essays/dacia/');
+    const results = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+      .analyze();
+    expect(results.violations, JSON.stringify(results.violations, null, 2)).toEqual([]);
+  });
+
+  test('passes axe WCAG A/AA with the squeeze on', async ({ page }) => {
+    await page.goto('/essays/dacia/');
+    await page.getByRole('button', { name: 'Squeeze view' }).click();
+
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
       .analyze();

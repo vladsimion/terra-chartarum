@@ -62,14 +62,7 @@ import CompareSlider from '../../components/islands/CompareSlider.astro';
 import RadarChart from '../../components/islands/RadarChart.astro';
 import Scrollytelling from '../../components/islands/Scrollytelling.astro';
 import Section from '../../components/Section.astro';
-
-export const plate = {
-  background: '#efe9da',
-  border: '1px solid rgba(42, 34, 24, 0.35)',
-  borderRadius: '2px',
-  padding: '0.75rem',
-  margin: '0',
-};
+import SqueezeToggle from '../../components/islands/SqueezeToggle.astro';
 
 <p class="essay-kicker">
   Campaign MMXXVI · Site: Dacia · <strong>two wings, one building</strong>
@@ -157,6 +150,8 @@ Thirteen stones on a wall, one for each map. Read them as you would read inscrip
   ]}
 />
 
+<SqueezeToggle>
+
 ### AVLA I · ANTIQVITAS · c. 150 - c. 350
 
 Two Roman instruments, neither a picture in the modern sense: a table of coordinates
@@ -170,7 +165,7 @@ recovered c. 1295, first printed with maps 1477. Klaudios Ptolemaios, Alexandria
 coordinate catalogue, every drawing of it a later restoration.
 
 {/* prettier-ignore */}
-<figure style={plate}>
+<figure class="stela-plate">
   {/* prettier-ignore */}
   <svg
     viewBox="0 0 320 240"
@@ -276,7 +271,7 @@ roll of eleven segments, c. 6.75 m × 34 cm, now ÖNB Vienna, Cod. 324, inscribe
 UNESCO Memory of the World register in 2007.
 
 {/* prettier-ignore */}
-<figure style={plate}>
+<figure class="stela-plate">
   {/* prettier-ignore */}
   <svg
     viewBox="0 0 320 240"
@@ -375,7 +370,7 @@ of Richard of Haldingham. A single calf-skin, c. 1.58 × 1.33 m, east at top, st
 Hereford Cathedral - intact, on its original wall more or less ever since.
 
 {/* prettier-ignore */}
-<figure style={plate}>
+<figure class="stela-plate">
   {/* prettier-ignore */}
   <svg
     viewBox="0 0 320 240"
@@ -473,7 +468,7 @@ running back to the Carte Pisane, c. 1290. Pietro Vesconte, Genoese, working in 
 ink on vellum, its rhumb network struck from hidden circles, with no graticule at all.
 
 {/* prettier-ignore */}
-<figure style={plate}>
+<figure class="stela-plate">
   {/* prettier-ignore */}
   <svg
     viewBox="0 0 320 240"
@@ -576,7 +571,7 @@ Kronstadt: a printed woodcut, pictorial chorography, no graticule. A single know
 survives, likely in Budapest.
 
 {/* prettier-ignore */}
-<figure style={plate}>
+<figure class="stela-plate">
   {/* prettier-ignore */}
   <svg
     viewBox="0 0 320 240"
@@ -685,7 +680,7 @@ Abraham Ortelius's own compilation: a copper engraving in his atlas of antiquity
 current coastline geometry carrying 2nd-century content.
 
 {/* prettier-ignore */}
-<figure style={plate}>
+<figure class="stela-plate">
   {/* prettier-ignore */}
   <svg
     viewBox="0 0 320 240"
@@ -798,7 +793,7 @@ copper engraving on four sheets, in Greek, carrying 500+ toponyms drawn from
 administration. Nearly lost; a handful of copies survive, one at the BnF.
 
 {/* prettier-ignore */}
-<figure style={plate}>
+<figure class="stela-plate">
   {/* prettier-ignore */}
   <svg
     viewBox="0 0 320 240"
@@ -894,7 +889,7 @@ member of the Berlin Academy: an ordered frame with an interior drawn from memor
 800 names deep. The manuscript wandered to Russia; the print carried the content.
 
 {/* prettier-ignore */}
-<figure style={plate}>
+<figure class="stela-plate">
   {/* prettier-ignore */}
   <svg
     viewBox="0 0 320 240"
@@ -992,7 +987,7 @@ sheets at 1:28,800, held in the Kriegsarchiv, Vienna - classified from birth, an
 complete because locked away.
 
 {/* prettier-ignore */}
-<figure style={plate}>
+<figure class="stela-plate">
   {/* prettier-ignore */}
   <svg
     viewBox="0 0 320 240"
@@ -1105,7 +1100,7 @@ first triangulation of Wallachia and Moldavia. The triangles outlived the occupa
 half a century.
 
 {/* prettier-ignore */}
-<figure style={plate}>
+<figure class="stela-plate">
   {/* prettier-ignore */}
   <svg
     viewBox="0 0 320 240"
@@ -1198,7 +1193,7 @@ lithograph of c. 112 sheets at 1:57,600, built on the Austrian survey of the 185
 field-updated. Plentiful - the first deliberately public state map.
 
 {/* prettier-ignore */}
-<figure style={plate}>
+<figure class="stela-plate">
   {/* prettier-ignore */}
   <svg
     viewBox="0 0 320 240"
@@ -1282,7 +1277,7 @@ printed topographic sheets at 1:20,000, classified. Complete and long unseeable,
 public derivatives deliberately false.
 
 {/* prettier-ignore */}
-<figure style={plate}>
+<figure class="stela-plate">
   {/* prettier-ignore */}
   <svg
     viewBox="0 0 320 240"
@@ -1364,7 +1359,7 @@ and vectors, a datum in every pocket. WGS84, Sentinel-2 at 10 m, OSM by the minu
 everywhere and nowhere, in caches, mirrors and tiles, where revision outruns preservation.
 
 {/* prettier-ignore */}
-<figure style={plate}>
+<figure class="stela-plate">
   {/* prettier-ignore */}
   <svg
     viewBox="0 0 320 240"
@@ -1447,6 +1442,8 @@ whatever instrument comes next.
 | CORRECTIO  | 5     | revision outruns the censor - edits by the minute  |
 | RASVRA     | 2.5   | new erasures: blurred pixels, proprietary tiles    |
 | VACAT      | 0.5   | the void is nearly extinct; one almost misses it   |
+
+</SqueezeToggle>
 
 </Section>
 
