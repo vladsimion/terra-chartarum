@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import sharp from 'sharp';
 
 const ROOT = resolve(import.meta.dirname, '..');
 const read = (path) => readFileSync(resolve(ROOT, path), 'utf8');
@@ -31,6 +32,51 @@ requireValue(
   ),
   'Every Nolli control point must pair pixel and geographic coordinates',
 );
+// A georeference is only meaningful in the pixel space of the file it targets,
+// and this annotation restates that file's size in three places: target.source,
+// the SvgSelector, and the control points themselves. Nothing tied any of them
+// to the image on disk, so rescaling or cropping nolli-sheet-01.jpg - which is
+// also consumed by CityMemoryOverlay - would have silently desynced the
+// georeference. These checks make that a build failure instead.
+const NOLLI_IMAGE = 'public/images/cities-remember/nolli-sheet-01.jpg';
+const nolli = await sharp(resolve(ROOT, NOLLI_IMAGE)).metadata();
+const declaredSource = annotationItem?.target?.source ?? {};
+requireValue(
+  declaredSource.width === nolli.width && declaredSource.height === nolli.height,
+  `Nolli georeference declares ${declaredSource.width}x${declaredSource.height} but ${NOLLI_IMAGE} is ${nolli.width}x${nolli.height}`,
+);
+const selector = annotationItem?.target?.selector?.value ?? '';
+requireValue(
+  selector.includes(`width="${nolli.width}"`) && selector.includes(`height="${nolli.height}"`),
+  `Nolli SvgSelector must be stated in the image pixel space (${nolli.width}x${nolli.height})`,
+);
+// The selector polygon traces the annotated region; a crop that updated the
+// width/height attributes but not the polygon would still be wrong.
+const polygonPoints = [...selector.matchAll(/(\d+),(\d+)/g)].map(([, x, y]) => [
+  Number(x),
+  Number(y),
+]);
+requireValue(
+  polygonPoints.length > 0 &&
+    Math.max(...polygonPoints.map(([x]) => x)) === nolli.width &&
+    Math.max(...polygonPoints.map(([, y]) => y)) === nolli.height,
+  'Nolli SvgSelector polygon must span the full image extent',
+);
+requireValue(
+  controlPoints.every((feature) => {
+    const [x, y] = feature?.properties?.pixel ?? [];
+    return (
+      Number.isFinite(x) &&
+      Number.isFinite(y) &&
+      x >= 0 &&
+      x <= nolli.width &&
+      y >= 0 &&
+      y <= nolli.height
+    );
+  }),
+  `Every Nolli control point must fall inside the ${nolli.width}x${nolli.height} image bounds`,
+);
+
 requireValue(
   annotationItem?._terraChartarum?.status === 'exploratory' &&
     Boolean(annotationItem?._terraChartarum?.residualDisclosure) &&
@@ -103,5 +149,5 @@ if (failures.length > 0) {
 }
 
 console.log(
-  `Geo interoperability QA passed: ${linkedPlaces.features.length} LPF places, ${controlPoints.length} overlay control points.`,
+  `Geo interoperability QA passed: ${linkedPlaces.features.length} LPF places, ${controlPoints.length} overlay control points against a ${nolli.width}x${nolli.height} sheet.`,
 );

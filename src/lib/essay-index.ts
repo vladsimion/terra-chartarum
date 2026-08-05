@@ -34,6 +34,17 @@ export function toEssayIndexRecord(essay: RoomOwnedEssay): EssayIndexRecord {
   });
 }
 
+/**
+ * The same essays, flattened back into one list in canonical room order.
+ *
+ * For surfaces that show a single ungrouped run of cards (the portal's featured
+ * strip) but should still read in the cosmography sequence the gallery and the
+ * rooms overview use. Editorial order is preserved within each room.
+ */
+export function sortEssaysByRoom<T extends RoomOwnedEssay>(essays: T[]): T[] {
+  return groupEssaysByRoom(essays).flatMap((group) => group.essays);
+}
+
 export function groupEssaysByRoom<T extends RoomOwnedEssay>(essays: T[]): EssayRoomGroup<T>[] {
   const entries = essays.map((essay) => ({ essay, record: toEssayIndexRecord(essay) }));
   return ROOMS.map((room) => {

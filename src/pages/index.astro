@@ -2,14 +2,26 @@
 import PortalLayout from '../layouts/PortalLayout.astro';
 import EssayCard from '../components/EssayCard.astro';
 import { getEssays, getFeaturedEssays } from '../lib/registry';
+import { sortEssaysByRoom } from '../lib/essay-index';
+import { websiteSchema } from '../lib/structured-data';
 
-const featured = await getFeaturedEssays();
+// The featured strip walks the seven rooms in cosmography order, so the portal
+// reads in the same sequence as the gallery and the rooms overview.
+const featured = sortEssaysByRoom(await getFeaturedEssays());
 const all = await getEssays();
 const essayCount = all.length;
 const mapTotal = all.reduce((n, e) => n + (e.data.mapCount ?? 0), 0);
 ---
 
-<PortalLayout title="Terra Chartarum">
+<!-- seoTitle rather than title: the home page's title *is* the site name, and
+     the layout's suffix rule would otherwise leave it as a bare brand word
+     carrying no subject into a search result. -->
+<PortalLayout
+  title="Terra Chartarum"
+  seoTitle="Terra Chartarum · An Interactive Atlas of the History of Cartography"
+  description="Long-form visual essays on the history and politics of mapmaking, from Babylonian clay to Renaissance copperplate - with a catalogue of historical maps and the cartographers who made them."
+  schema={websiteSchema(Astro.site!)}
+>
   <section class="hero">
     <div class="shell hero-inner">
       <p class="eyebrow">An interactive historical atlas</p>

@@ -14,6 +14,7 @@ import { CORPUS } from '../../lib/corpus';
 import { GEO_LAYERS } from '../../lib/geo';
 import { inRoom } from '../../lib/room-content';
 import { getSectionsByRoom } from '../../lib/room-sections';
+import { breadcrumbSchema } from '../../lib/structured-data';
 
 export async function getStaticPaths() {
   const n = ROOMS.length;
@@ -45,7 +46,17 @@ const sheets = CORPUS.filter((m) => inRoom(m, room.slug));
 const mapThumb = (m: (typeof sheets)[number]) => m.images?.[0]?.src;
 ---
 
-<PortalLayout title={`${room.title} - The Seven Rooms`} description={room.blurb}>
+<PortalLayout
+  title={`${room.title} - The Seven Rooms`}
+  description={room.blurb}
+  schema={breadcrumbSchema(
+    [
+      { name: 'Rooms', path: '/rooms/' },
+      { name: room.title, path: `/rooms/${room.slug}/` },
+    ],
+    Astro.site!,
+  )}
+>
   <article class="shell room" style="--accent: var(--gold)">
     <nav class="room-crumbs" aria-label="Breadcrumb">
       <a href="/rooms/">← The Seven Rooms</a>

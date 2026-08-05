@@ -23,6 +23,7 @@
     "reports:check": "node scripts/generate-publication-reports.mjs --check",
     "indexing:validate": "node scripts/validate-indexing.mjs",
     "geo:interop:validate": "node scripts/validate-geo-interop.mjs",
+    "lighthouse": "node scripts/lighthouse.mjs",
     "geo:validate": "node scripts/geo-release.mjs --check",
     "geo:manifest": "node scripts/geo-release.mjs --write",
     "format": "prettier --write .",
@@ -65,6 +66,7 @@
     "eslint-plugin-astro": "^1.7.0",
     "prettier": "^3.9.5",
     "prettier-plugin-astro": "^0.14.1",
+    "sharp": "^0.33.5",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.64.0",
     "vitest": "^2.1.9"

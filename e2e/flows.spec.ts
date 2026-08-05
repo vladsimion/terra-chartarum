@@ -85,6 +85,41 @@ test.describe('flow: gallery → essay', () => {
   });
 });
 
+test.describe('flow: essay sticky chrome', () => {
+  // Every essay page pins the site header and, below it, the essay bar. Both are
+  // sticky, and the bar used to sit at top:0 too, so the header (z-index 50)
+  // painted straight over it and its back link, crumb, badge and pager were
+  // unreachable on every scrolled essay page.
+  test('the essay bar stays visible and clickable below the header', async ({ page }) => {
+    await page.goto('/essays/venice-sicily/');
+    // Scroll far enough that both bars are pinned. Not page.mouse.wheel: mobile
+    // WebKit has no wheel. Instant, because global.css scrolls smoothly.
+    await page.evaluate(() => window.scrollTo({ top: 1200, behavior: 'instant' }));
+
+    const boxes = async () =>
+      page.evaluate(() => {
+        const header = document.querySelector('.site-header')!.getBoundingClientRect();
+        const bar = document.querySelector('.essay-bar')!.getBoundingClientRect();
+        const mid = document.elementFromPoint(bar.left + 60, (bar.top + bar.bottom) / 2);
+        return {
+          headerBottom: header.bottom,
+          barTop: bar.top,
+          barHitsBar: !!mid?.closest('.essay-bar'),
+        };
+      });
+
+    await expect(async () => {
+      const { headerBottom, barTop, barHitsBar } = await boxes();
+      // Sub-pixel layout rounding, hence the 1px tolerance.
+      expect(barTop).toBeGreaterThanOrEqual(headerBottom - 1);
+      // Nothing is painted over the bar, so its own controls take the click.
+      expect(barHitsBar).toBe(true);
+    }).toPass();
+
+    await expect(page.locator('.essay-bar .back')).toBeVisible();
+  });
+});
+
 test.describe('flow: first-visit guidance', () => {
   test('offers story, subject, and map-or-place entry paths', async ({ page }) => {
     await page.goto('/');

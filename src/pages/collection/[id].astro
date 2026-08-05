@@ -8,6 +8,7 @@ import { getEssays, formatYear } from '../../lib/registry';
 import CiteExport from '../../components/islands/CiteExport.astro';
 import DeepZoomViewer from '../../components/islands/DeepZoomViewer.astro';
 import type { CiteInput } from '../../lib/cite';
+import { mapSchema, breadcrumbSchema } from '../../lib/structured-data';
 
 export async function getStaticPaths() {
   return getCorpus().map((map) => ({ params: { id: map.id }, props: { map } }));
@@ -78,6 +79,16 @@ const tileSource = cover?.dziTileSource ?? cover?.iiif;
 <PortalLayout
   title={map.title}
   description={map.blurb ?? `${map.title} - ${formatYear(map.year)}, ${map.region}.`}
+  schema={[
+    mapSchema(map, Astro.site!, cartographer),
+    breadcrumbSchema(
+      [
+        { name: 'Collection', path: '/collection/' },
+        { name: map.title, path: `/collection/${map.id}/` },
+      ],
+      Astro.site!,
+    ),
+  ]}
 >
   <article class="shell detail" style={`--accent:${accent}`}>
     <nav class="crumbs" aria-label="Breadcrumb">

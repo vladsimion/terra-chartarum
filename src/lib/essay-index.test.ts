@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { groupEssaysByRoom, toEssayIndexRecord, type RoomOwnedEssay } from './essay-index';
+import {
+  groupEssaysByRoom,
+  sortEssaysByRoom,
+  toEssayIndexRecord,
+  type RoomOwnedEssay,
+} from './essay-index';
 
 function essay(
   slug: string,
@@ -42,5 +47,23 @@ describe('essay index grouping', () => {
     const groups = groupEssaysByRoom([essay('city-one', 'City one', 'city')]);
     expect(groups).toHaveLength(1);
     expect(groups[0].room.slug).toBe('city');
+  });
+});
+
+describe('flat room-ordered essay list', () => {
+  it('reorders an ungrouped run into canonical room order', () => {
+    const sorted = sortEssaysByRoom([
+      essay('theatre-one', 'Theatre one', 'theatre'),
+      essay('map-one', 'Map one', 'map'),
+      essay('earth-one', 'Earth one', 'earth'),
+      essay('map-two', 'Map two', 'map'),
+    ]);
+
+    expect(sorted.map(({ slug }) => slug)).toEqual([
+      'earth-one',
+      'map-one',
+      'map-two',
+      'theatre-one',
+    ]);
   });
 });

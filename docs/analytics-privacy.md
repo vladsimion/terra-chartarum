@@ -1,12 +1,46 @@
 # Analytics and privacy
 
-Date: 2026-07-29
+Date: 2026-07-29 (superseded in part 2026-08-05, see "Active provider" below)
 
 Parent: KAN-55
 
 Implementation: KAN-265–269
 
-## Decision
+## Active provider (2026-08-05)
+
+**Cloudflare Web Analytics is the active provider.** The original decision below
+scoped this document to Plausible; that scope has widened, and the Plausible
+sections are retained because the integration is still in the codebase.
+
+The site is hosted on Cloudflare Pages, where enabling Web Analytics on the
+project injects the measurement script at the edge on the next deployment. There
+is therefore **no analytics markup in `dist/`**, and no build-time configuration:
+
+- enable/disable is a toggle on the Pages project, not an env var;
+- `npm run analytics:validate -- --expect=disabled` still passes and is still
+  correct - it governs the _Plausible_ code path only, and a passing run is not
+  evidence that the site is unmeasured;
+- disabling does not require a redeploy, unlike the Plausible path.
+
+Cloudflare states that Web Analytics uses no cookies or other client-side
+storage for analytics, does not fingerprint visitors, and does not track people
+over time by IP address or user-agent string; referral counts derive from page
+views rather than stored visitor identities. Sources:
+
+- https://blog.cloudflare.com/privacy-first-web-analytics/
+- https://developers.cloudflare.com/web-analytics/
+- https://www.cloudflare.com/privacypolicy/
+
+The consent decision below is unchanged and applies for the same reason: the
+configuration sets no cookies and stores nothing on the visitor's device, so the
+site publishes a durable `/privacy/` disclosure rather than a consent banner.
+
+Search-side measurement is Google Search Console, verified by an HTML file in
+`public/`. It reports impressions, queries, click-through rate and index
+coverage from Google's own logs; the site receives nothing about an individual
+searcher and ships no additional script for it.
+
+## Decision (original - Plausible)
 
 Analytics is optional, build-time configured and disabled by default. The only
 supported provider is Plausible Analytics using the current site-specific

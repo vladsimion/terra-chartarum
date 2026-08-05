@@ -1,0 +1,2210 @@
+---
+title: Terra Sigillata · Lapidarium Dacicum
+subtitle: The Trench & the Museum of Dacian Cartography
+summary: >-
+  Nineteen centuries of mapping Dacia and Romania staged as an excavation:
+  maps as artefacts above the ground line, and as stratified silences below it.
+cover: /images/rooms/border-cover.webp
+hero: /images/rooms/border-hero.webp
+status: native
+eras: [Classical, Medieval, Early Modern, Modern]
+regions: [Dacia, Romania, Balkans]
+lenses: [mensvra, auctoritas, nomina, limes, silentium]
+yearFrom: 150
+yearTo: 2024
+mapCount: 13
+readingMinutes: 20
+accent: '#cdc2ab'
+order: 2
+featured: true
+room: border
+roomAnchor: true
+secondaryRooms: [archive]
+sections:
+  - id: brief
+    title: The church that is both
+    room: border
+    secondaryRooms: [theatre]
+  - id: museum
+    title: The lapidarium, stone by stone
+    room: map
+    secondaryRooms: [archive]
+  - id: collatio
+    title: The comparison desk
+    room: theatre
+    secondaryRooms: [map]
+  - id: trench
+    title: Below the wall, the trench
+    room: archive
+    secondaryRooms: [border]
+  - id: sectio
+    title: Section comparison
+    room: archive
+    secondaryRooms: [theatre]
+  - id: sondaje
+    title: The test pits
+    room: border
+    secondaryRooms: [city]
+publishedAt: '2025-01-01'
+updatedAt: '2026-08-02'
+releaseAt: '2025-01-01'
+metaScores:
+  measure: 0.7
+  witness: 0.55
+  use: 0.5
+  cosmos: 0.65
+  power: 0.85
+  silence: 0.9
+---
+
+import AdaptiveTimeline from '../../components/islands/AdaptiveTimeline.astro';
+import CompareSlider from '../../components/islands/CompareSlider.astro';
+import RadarChart from '../../components/islands/RadarChart.astro';
+import Scrollytelling from '../../components/islands/Scrollytelling.astro';
+import Section from '../../components/Section.astro';
+import SqueezeToggle from '../../components/islands/SqueezeToggle.astro';
+
+<p class="essay-kicker">
+  Campaign MMXXVI · Site: Dacia · <strong>two wings, one building</strong>
+</p>
+
+## Above the ground line they are read as inscriptions. Below it, they are dug as layers.
+
+Nineteen centuries of maps of Dacia and Romania, staged twice. In the **Lapidarium**
+each map stands as a carved stela and is read the way an epigrapher reads stone, with
+the Six Readings. In the **Trench** the same maps lie at their proper depths and are
+assessed in the field with the Five Seals. One year of history equals one millimetre
+of earth; Ptolemy waits 1.87 metres down.
+
+<Section id="brief" title="The church that is both" rooms={['border', 'theatre']}>
+
+At Densuș, in Hațeg country, stands a small church built almost entirely of older
+stones. Roman altars hold up its tower; a funerary inscription - a wife's farewell to
+her husband, cut seventeen centuries ago - serves as a wall block. Walk around it and
+you are in a museum; dig beneath it and you are in a trench. The lapidarium and the
+excavation are the same building.
+
+Maps of this land work the same way. Ptolemy's coordinates are reused by Renaissance
+engravers; Austrian military sheets become the skeleton of the Romanian state map; a
+name carved by a Greek geographer resurfaces, after eighteen centuries, on a city-limit
+sign outside Cluj. Every map of Dacia is built from the _spolia_ of earlier maps - and
+every map buries the one before it.
+
+So this site has two wings. In the **Lapidarium**, each map is displayed as a carved
+stela and read the way an epigrapher reads stone, with the Six Readings, adapted from
+the Leiden conventions. In the **Trench**, the same maps are excavated as strata, each
+at its proper depth, and assessed in the field with the Five Seals. Visit the museum
+first. Then take the ladder down.
+
+### Two instruments, one collection
+
+**SEX·LECTIONES** - the Six Readings. Laboratory protocol, used in the museum.
+
+| Sign | Reading        | What it asks                                                    |
+| ---- | -------------- | --------------------------------------------------------------- |
+| ‖    | **ORDINATIO**  | the geometric armature - projection, graticule, scale           |
+| A·B  | **LITTERAE**   | letterforms and toponymy - who names the land, in what tongue   |
+| [ ]  | **RESTITVTIO** | restored or inherited content - the copying chain               |
+| ⟨ ⟩  | **CORRECTIO**  | instrumental correction - what was measured, verified, improved |
+| ⟦ ⟧  | **RASVRA**     | erasure - what was struck out, censored, classified             |
+| vac. | **VACAT**      | deliberate blank - terra incognita, voids, omission             |
+
+**QVINQVE·SIGILLA** - the Five Seals. Field protocol, used in the trench.
+
+| Sign | Seal           | What it asks                                                  |
+| ---- | -------------- | ------------------------------------------------------------- |
+| M    | **MENSVRA**    | measurement - from symbolic space to geodetic survey          |
+| A    | **AVCTORITAS** | authority - how much central power stands behind the map      |
+| N    | **NOMINA**     | names - toponymic density and linguistic layering             |
+| L    | **LIMES**      | boundaries - frontier zones, river lines, treaty demarcations |
+| S    | **SILENTIVM**  | silence - what is withheld, by choice or by limit             |
+
+Both score 0–5, in half-points. The marks record depths of a quality, not grades of
+merit - an epigrapher's provisional verdicts: systematic, subjective, revisable.
+
+</Section>
+
+<Section id="museum" title="The lapidarium, stone by stone" rooms={['map', 'archive']}>
+
+Thirteen stones on a wall, one for each map. Read them as you would read inscriptions.
+
+<AdaptiveTimeline
+  from={100}
+  to={2026}
+  ticks={[150, 1300, 1595, 1835, 2026]}
+  caption="The wall in time · A.D. 100 - 2026 · square-root scale · select a stone to visit it"
+  events={[
+    { year: 150, label: 'I · Ptolemaevs', href: '#stela-ptolemy' },
+    { year: 350, label: 'II · Pevtingeriana', href: '#stela-peutinger' },
+    { year: 1300, label: 'III · Herefordia', href: '#stela-hereford' },
+    { year: 1311, label: 'IV · Vesconte', href: '#stela-vesconte' },
+    { year: 1532, label: 'V · Hontervs', href: '#stela-honterus' },
+    { year: 1595, label: 'VI · Ortelivs', href: '#stela-ortelius' },
+    { year: 1700, label: 'VII · Cantacvzino', href: '#stela-cantacuzino' },
+    { year: 1716, label: 'VIII · Cantemir', href: '#stela-cantemir' },
+    { year: 1771, label: 'IX · Iosephina', href: '#stela-josephine' },
+    { year: 1835, label: 'X · Rvssia', href: '#stela-russia' },
+    { year: 1864, label: 'XI · Szathmári', href: '#stela-szathmari' },
+    { year: 1916, label: 'XII · Saec. Secretvm', href: '#stela-secret' },
+    { year: 2026, label: 'XIII · Satelles', href: '#stela-satellite' },
+  ]}
+/>
+
+<SqueezeToggle>
+
+### AVLA I · ANTIQVITAS · c. 150 - c. 350
+
+Two Roman instruments, neither a picture in the modern sense: a table of coordinates
+and a strip-diagram of roads. Between them they fix Dacia in number and in itinerary -
+and both will be copied for a thousand years by hands that never saw the place.
+
+<h4 id="stela-ptolemy">I · PTOLEMY · GEOGRAPHIA III.8 · DACIA</h4>
+
+_Dacia enters geometry: forty-four towns hung on coordinates._ Content c. A.D. 150,
+recovered c. 1295, first printed with maps 1477. Klaudios Ptolemaios, Alexandria: a
+coordinate catalogue, every drawing of it a later restoration.
+
+{/* prettier-ignore */}
+<figure class="stela-plate">
+  {/* prettier-ignore */}
+  <svg
+    viewBox="0 0 320 240"
+    role="img"
+    aria-label="Reconstruction of Ptolemy's Dacia: trapezoid graticule, rivers, towns with coordinates"
+  >
+    <rect x="8" y="8" width="304" height="224" fill="none" stroke="#2a2218" stroke-width="1.4" />
+    <g stroke="#2a2218" stroke-width=".6" opacity=".55">
+      <path d="M60 16 L48 232" fill="none" />
+      <path d="M120 14 L114 232" fill="none" />
+      <path d="M180 13 L180 232" fill="none" />
+      <path d="M240 14 L246 232" fill="none" />
+      <path d="M300 16 L310 230" fill="none" />
+      <path d="M14 60 Q160 50 306 60" fill="none" />
+      <path d="M12 110 Q160 102 308 110" fill="none" />
+      <path d="M12 160 Q160 154 308 160" fill="none" />
+      <path d="M12 205 Q160 200 308 205" fill="none" />
+    </g>
+    <g font-family="IBM Plex Mono,monospace" font-size="7" fill="#4d4233">
+      <text x="44" y="24">45°</text>
+      <text x="110" y="24">47°30'</text>
+      <text x="176" y="24">50°</text>
+      <text x="238" y="24">52°30'</text>
+      <text x="14" y="57">48°</text>
+      <text x="14" y="107">47°</text>
+      <text x="14" y="157">46°</text>
+      <text x="14" y="202">45°</text>
+    </g>
+    <path
+      d="M20 214 Q90 222 160 216 Q240 210 308 220"
+      fill="none"
+      stroke="#5e7a6a"
+      stroke-width="2.4"
+    />
+    <text x="226" y="232" font-family="EB Garamond,serif" font-size="9" font-style="italic" fill="#5e7a6a">Danubius / Istros</text>
+    <path d="M52 20 Q66 90 58 212" fill="none" stroke="#5e7a6a" stroke-width="1.6" />
+    <text x="36" y="86" font-family="EB Garamond,serif" font-size="8" font-style="italic" fill="#5e7a6a" transform="rotate(-80 36 86)">Tisia</text>
+    <path d="M268 22 Q284 120 296 214" fill="none" stroke="#5e7a6a" stroke-width="1.6" />
+    <text x="298" y="120" font-family="EB Garamond,serif" font-size="8" font-style="italic" fill="#5e7a6a" transform="rotate(82 298 120)">Hierasus</text>
+    <g stroke="#2a2218" stroke-width="1" opacity=".8">
+      <path d="M96 120 l16 -10 16 10 16 -9 16 9 16 -8 16 8 16 -8 16 8" fill="none" />
+    </g>
+    <text x="152" y="44" font-family="Cinzel,serif" font-size="17" letter-spacing="6" fill="#2a2218" text-anchor="middle">ΔΑΚΙΑ</text>
+    <g fill="#9e3b2b">
+      <circle cx="128" cy="142" r="3.2" />
+      <circle cx="96" cy="168" r="2.2" />
+      <circle cx="170" cy="160" r="2.2" />
+      <circle cx="206" cy="138" r="2.2" />
+      <circle cx="148" cy="186" r="2.2" />
+      <circle cx="232" cy="178" r="2.2" />
+      <circle cx="84" cy="132" r="2.2" />
+    </g>
+    <g font-family="EB Garamond,serif" font-size="8.5" font-style="italic" fill="#2a2218">
+      <text x="134" y="139">Zarmizegethousa</text>
+      <text x="134" y="148" font-size="7" fill="#9e3b2b">βασίλειον</text>
+      <text x="74" y="178">Drubetai?</text>
+      <text x="176" y="170">Apoulon</text>
+      <text x="212" y="132">Napouka</text>
+      <text x="154" y="196">Sucidava</text>
+      <text x="238" y="188">Ziridava</text>
+    </g>
+    <g font-family="IBM Plex Mono,monospace" font-size="6.5" fill="#4d4233" opacity=".85">
+      <text x="134" y="158">47°50' · 45°15'</text>
+      <text x="212" y="124">49° · 46°50'</text>
+    </g>
+    <text x="64" y="70" font-family="EB Garamond,serif" font-size="9" font-style="italic" fill="#4d4233">Anarti</text>
+    <text x="240" y="64" font-family="EB Garamond,serif" font-size="9" font-style="italic" fill="#4d4233">Costoboci</text>
+  </svg>
+</figure>
+
+Book III, chapter 8 of the _Geographia_ fixes Dacia between the Tisia, the Danube and
+the Hierasus and then lists its contents: some forty-four towns with latitude and
+longitude, fifteen tribes, and a royal seat - _Zarmizegethousa basileion_. Many of the
+names carry the native _-dava_ ending, "settlement," in Greek dress: Piroboridava,
+Ziridava, Sucidava. The land has been converted into a coordinate system.
+
+The work survived as text. Recovered for the West around 1295 - Planudes may have
+re-drawn the maps from the numbers alone - and printed with maps at Bologna in 1477, it
+handed the Renaissance a Dacia that was pure data, waiting to be plotted. The first
+stone in the wall is not a picture at all.
+
+> **Find.** Dacia first becomes a set of numbers: every town a latitude, every error a
+> coordinate.
+
+_Nota._ Ptolemy's "map" of Dacia is a table. Every drawing of it - Byzantine,
+Renaissance, modern - is a reconstruction from the numbers, which is why the numbers
+outlived every sheet.
+
+| Reading    | Score | Verdict                                                          |
+| ---------- | ----- | ---------------------------------------------------------------- |
+| ORDINATIO  | 4     | the graticule precedes the ground; places hang from coordinates  |
+| LITTERAE   | 3.5   | Dacian -dava endings survive inside Greek transliteration        |
+| RESTITVTIO | 3.5   | itineraries and Marinus, edited; the maps are later restorations |
+| CORRECTIO  | 3     | he audits Marinus, then goes unaudited for a millennium          |
+| RASVRA     | 0.5   | nothing struck out - there was nothing yet to strike             |
+| VACAT      | 3.5   | north of the Carpathians the catalogue thins to hearsay          |
+
+<h4 id="stela-peutinger">II · TABVLA PEVTINGERIANA · SEGM. VII–VIII</h4>
+
+_A province four fingers tall: the roads survive the map._ Content c. 4th century,
+surviving copy c. 1200. Unknown imperial compilers and a medieval copyist; a parchment
+roll of eleven segments, c. 6.75 m × 34 cm, now ÖNB Vienna, Cod. 324, inscribed in the
+UNESCO Memory of the World register in 2007.
+
+{/* prettier-ignore */}
+<figure class="stela-plate">
+  {/* prettier-ignore */}
+  <svg
+    viewBox="0 0 320 240"
+    role="img"
+    aria-label="Peutinger Table style ribbon: parallel roads with stations across a narrow strip"
+  >
+    <rect x="6" y="60" width="308" height="120" fill="none" stroke="#2a2218" stroke-width="1.4" />
+    <g stroke="#2a2218" stroke-width=".5" opacity=".4">
+      <line x1="6" y1="60" x2="314" y2="60" />
+      <line x1="6" y1="180" x2="314" y2="180" />
+    </g>
+    <path
+      d="M6 170 q40 6 80 2 q60 -6 120 0 q60 5 108 -2"
+      fill="none"
+      stroke="#5e7a6a"
+      stroke-width="5"
+      opacity=".8"
+    />
+    <text x="16" y="164" font-family="EB Garamond,serif" font-size="9" font-style="italic" fill="#5e7a6a">FL. DANVVIVS</text>
+    <g stroke="#9e3b2b" stroke-width="1.7" fill="none">
+      <path d="M22 150 l26 0 l8 -12 l30 0 l8 -12 l34 0 l10 -12 l40 0 l10 -10 l46 0 l10 -10 l50 0" />
+      <path d="M60 150 l14 -26 l30 0 l12 -16" />
+      <path d="M150 114 l24 14 l40 0" />
+    </g>
+    <g stroke="#2a2218" stroke-width="1">
+      <line x1="48" y1="146" x2="48" y2="154" />
+      <line x1="86" y1="134" x2="86" y2="142" />
+      <line x1="128" y1="122" x2="128" y2="130" />
+      <line x1="182" y1="110" x2="182" y2="118" />
+      <line x1="238" y1="100" x2="238" y2="108" />
+    </g>
+    <g font-family="EB Garamond,serif" font-size="8.5" fill="#2a2218">
+      <text x="14" y="142">Lederata</text>
+      <text x="52" y="130">Tivisco</text>
+      <text x="92" y="118">Sarmategte</text>
+      <text x="146" y="106">Apula</text>
+      <text x="196" y="96">Napoca</text>
+      <text x="252" y="86">Porolisso</text>
+      <text x="100" y="160" fill="#9e3b2b" font-size="7.5">XII</text>
+      <text x="158" y="148" fill="#9e3b2b" font-size="7.5">XXIIII</text>
+      <text x="214" y="132" fill="#9e3b2b" font-size="7.5">XVI</text>
+    </g>
+    <g transform="translate(122,84)">
+      <rect x="0" y="2" width="7" height="9" fill="#9e3b2b" />
+      <rect x="9" y="2" width="7" height="9" fill="#9e3b2b" />
+      <path
+        d="M0 2 l3.5 -4 l3.5 4 M9 2 l3.5 -4 l3.5 4"
+        fill="none"
+        stroke="#9e3b2b"
+        stroke-width="1"
+      />
+    </g>
+    <text x="160" y="50" font-family="Cinzel,serif" font-size="12" letter-spacing="4" fill="#2a2218" text-anchor="middle">SEGMENTVM VII·VIII</text>
+    <text x="160" y="200" font-family="IBM Plex Mono,monospace" font-size="7.5" letter-spacing="2" fill="#4d4233" text-anchor="middle">6.75 M × 34 CM · THE WORLD AS A RIBBON</text>
+    <g stroke="#2a2218" stroke-width=".7" opacity=".5">
+      <path d="M6 60 q-4 60 0 120 M314 60 q4 60 0 120" fill="none" />
+    </g>
+  </svg>
+</figure>
+
+Nearly seven metres long and only thirty-four centimetres tall, the Peutinger roll
+squeezes the known world into a ribbon. Geometry is sacrificed wholesale to connection:
+it is a transit diagram, not a portrait. Across segments VII–VIII the Dacian roads climb
+north of the Danube - Lederata to Tibiscum, on to Sarmategte, Apula, Napoca, Porolisso -
+each station with its mileage, in the brisk Latin of a road-book.
+
+Aurelian abandoned the province around 271–275; the roll's 4th-century content keeps the
+roads anyway, and a scribe around 1200 copied them again, checking distances but never
+shapes. The archive outlived the territory it described.
+
+> **Find.** The map remembers what the empire forgot: Dacia's roads outlive Dacia by a
+> century of parchment.
+
+_Nota._ Pompeii (destroyed A.D. 79) and Constantinople (founded 330) share the same roll
+
+- a palimpsest of centuries that copying flattened into one sheet.
+
+| Reading    | Score | Verdict                                                          |
+| ---------- | ----- | ---------------------------------------------------------------- |
+| ORDINATIO  | 1     | geometry surrenders to parchment - a province four fingers tall  |
+| LITTERAE   | 3     | road-Latin with vulgar spellings; the grammar of travel survives |
+| RESTITVTIO | 5     | a copy of a copy of imperial files                               |
+| CORRECTIO  | 1     | miles checked, shapes never                                      |
+| RASVRA     | 1     | little erased; much simply off the road                          |
+| VACAT      | 4.5   | away from the cursus publicus, nothing earns drawing             |
+
+### AVLA II · NOMEN ERRANS · THE WANDERING NAME · c. 1300
+
+In which the name leaves the land. Chancery Latin and a Dominican province carry DACIA
+to Denmark; the Carpathian country, meanwhile, is filed under other people's ghosts.
+
+<h4 id="stela-hereford">III · HEREFORD MAPPA MVNDI · DACIA IN EXILE</h4>
+
+_The name leaves for Denmark; the land is filed under ghosts._ c. 1300, from the circle
+of Richard of Haldingham. A single calf-skin, c. 1.58 × 1.33 m, east at top, still at
+Hereford Cathedral - intact, on its original wall more or less ever since.
+
+{/* prettier-ignore */}
+<figure class="stela-plate">
+  {/* prettier-ignore */}
+  <svg
+    viewBox="0 0 320 240"
+    role="img"
+    aria-label="T-O world map, east at top, with DACIA written in Scandinavia"
+  >
+    <circle cx="160" cy="120" r="106" fill="none" stroke="#2a2218" stroke-width="2" />
+    <circle cx="160" cy="120" r="98" fill="none" stroke="#2a2218" stroke-width=".8" />
+    <path d="M62 120 L258 120" stroke="#5e7a6a" stroke-width="4" opacity=".75" />
+    <path d="M160 120 L160 218" stroke="#5e7a6a" stroke-width="4" opacity=".75" />
+    <g font-family="Cinzel,serif" fill="#2a2218">
+      <text x="160" y="80" font-size="13" letter-spacing="3" text-anchor="middle">ASIA</text>
+      <text x="106" y="170" font-size="11" letter-spacing="2" text-anchor="middle">EVROPA</text>
+      <text x="216" y="170" font-size="11" letter-spacing="2" text-anchor="middle">AFRICA</text>
+    </g>
+    <g transform="translate(160,120)">
+      <circle r="7" fill="none" stroke="#9e3b2b" stroke-width="1.4" />
+      <circle r="2.4" fill="#9e3b2b" />
+      <g stroke="#9e3b2b" stroke-width="1">
+        <line x1="0" y1="-11" x2="0" y2="-7" />
+        <line x1="0" y1="7" x2="0" y2="11" />
+        <line x1="-11" y1="0" x2="-7" y2="0" />
+        <line x1="7" y1="0" x2="11" y2="0" />
+      </g>
+    </g>
+    <text x="160" y="108" font-family="EB Garamond,serif" font-size="7.5" font-style="italic" fill="#9e3b2b" text-anchor="middle">Ierusalem</text>
+    <text x="160" y="26" font-family="IBM Plex Mono,monospace" font-size="7" letter-spacing="2" fill="#4d4233" text-anchor="middle">ORIENS</text>
+    <text x="160" y="230" font-family="IBM Plex Mono,monospace" font-size="7" letter-spacing="2" fill="#4d4233" text-anchor="middle">OCCIDENS</text>
+    <g transform="rotate(-18 110 188)">
+      <text x="86" y="192" font-family="Cinzel,serif" font-size="11" letter-spacing="2" fill="#9e3b2b">DACIA</text>
+    </g>
+    <text x="84" y="204" font-family="EB Garamond,serif" font-size="7" font-style="italic" fill="#4d4233">(Dania)</text>
+    <g font-family="EB Garamond,serif" font-size="8" font-style="italic" fill="#4d4233">
+      <text x="118" y="138">Gothia</text>
+      <text x="138" y="152">Scithia</text>
+      <text x="112" y="124">Cumania</text>
+    </g>
+    <path d="M96 144 q22 8 44 2" fill="none" stroke="#5e7a6a" stroke-width="1.6" opacity=".7" />
+    <g stroke="#2a2218" stroke-width=".6" opacity=".5">
+      <path d="M84 92 q10 -8 20 0 q10 8 20 0" fill="none" />
+      <path d="M214 92 q10 -8 20 0" fill="none" />
+    </g>
+    <g font-family="EB Garamond,serif" font-size="6.5" fill="#4d4233" opacity=".8">
+      <text x="206" y="60">paradisus</text>
+      <text x="74" y="64">gens mirab.</text>
+    </g>
+    <path
+      d="M54 120 a106 106 0 0 1 212 0"
+      fill="none"
+      stroke="#2a2218"
+      stroke-width=".5"
+      opacity=".35"
+      stroke-dasharray="2 3"
+    />
+  </svg>
+</figure>
+
+On the great skin at Hereford the label DACIA sits in Scandinavia. This is not a blunder
+but usage: by the thirteenth century chancery Latin used _Dacia_ for Denmark, and the
+Dominican province of that name (1228) fixed the habit. The Carpathian–Danubian country,
+meanwhile, is dressed in inherited ghosts - Moesia, Gothia, Scythia - with crusade-era
+names crowding in from the documents: Cumania, _terra Blacorum_.
+
+The map is ordered by theology, east at the top, Jerusalem at the centre. Authority and
+inherited text supply everything; observation supplies nothing. The people of the land
+persist in the charters even as the cartographers misplace its name by two thousand
+kilometres.
+
+> **Find.** The word DACIA migrates to Denmark; the land it named drops out of
+> cartography's vocabulary.
+
+_Nota._ The Dominicans' _Provincia Daciae_ (1228) covered Scandinavia - so in chancery
+Latin "Dacia" meant Denmark for centuries, while papal files called the real country the
+Diocese of Cumania (1227/28) and _terra Blacorum_.
+
+| Reading    | Score | Verdict                                                                |
+| ---------- | ----- | ---------------------------------------------------------------------- |
+| ORDINATIO  | 0.5   | ordered by theology: east up, Jerusalem centred                        |
+| LITTERAE   | 2     | names as pure signifiers, loosed from the ground                       |
+| RESTITVTIO | 5     | wholly inherited; correction unthinkable where the source is scripture |
+| CORRECTIO  | 0     | nothing verified - verification is not the genre                       |
+| RASVRA     | 1     | no erasure; accumulation is the method                                 |
+| VACAT      | 5     | the lower Danube dissolves into rumour at the rim                      |
+
+### AVLA III · LITORA · THE COASTS · 1311
+
+The sea is surveyed before the land. Genoese and Venetian pilots, working the Black Sea
+after the Treaty of Nymphaeum (1261), draw the coast to a precision the interior will
+not see for five centuries.
+
+<h4 id="stela-vesconte">IV · PIETRO VESCONTE · PORTOLAN OF THE BLACK SEA</h4>
+
+_A centimetre-true coastline around a perfect void._ Signed chart 1311, in a tradition
+running back to the Carte Pisane, c. 1290. Pietro Vesconte, Genoese, working in Venice:
+ink on vellum, its rhumb network struck from hidden circles, with no graticule at all.
+
+{/* prettier-ignore */}
+<figure class="stela-plate">
+  {/* prettier-ignore */}
+  <svg
+    viewBox="0 0 320 240"
+    role="img"
+    aria-label="Portolan chart: compass rose, rhumb lines, Black Sea coast with perpendicular port names"
+  >
+    <g stroke="#9e3b2b" stroke-width=".45" opacity=".5">
+      <line x1="84" y1="120" x2="320" y2="120" />
+      <line x1="84" y1="120" x2="300" y2="0" />
+      <line x1="84" y1="120" x2="300" y2="240" />
+      <line x1="84" y1="120" x2="200" y2="0" />
+      <line x1="84" y1="120" x2="200" y2="240" />
+      <line x1="84" y1="120" x2="84" y2="0" />
+      <line x1="84" y1="120" x2="84" y2="240" />
+      <line x1="84" y1="120" x2="0" y2="60" />
+      <line x1="84" y1="120" x2="0" y2="180" />
+    </g>
+    <g stroke="#5e7a6a" stroke-width=".45" opacity=".45">
+      <line x1="252" y1="40" x2="60" y2="240" />
+      <line x1="252" y1="40" x2="0" y2="130" />
+      <line x1="252" y1="40" x2="120" y2="0" />
+      <line x1="252" y1="40" x2="320" y2="160" />
+    </g>
+    <g transform="translate(84,120)">
+      <circle r="17" fill="#efe9da" stroke="#2a2218" stroke-width="1.2" />
+      <g stroke="#2a2218" stroke-width="1">
+        <line y1="-14" y2="14" />
+        <line x1="-14" x2="14" />
+        <line x1="-10" y1="-10" x2="10" y2="10" />
+        <line x1="-10" y1="10" x2="10" y2="-10" />
+      </g>
+      <path d="M0 -17 l4 10 l-4 -3 l-4 3 z" fill="#9e3b2b" />
+    </g>
+    <path
+      d="M236 0 q-8 36 -24 56 q-22 26 -18 44 q4 16 -8 30 q-16 18 -12 44 q3 22 -6 66"
+      fill="none"
+      stroke="#2a2218"
+      stroke-width="2"
+    />
+    <g stroke="#5e7a6a" stroke-width="1.4" fill="none">
+      <path d="M212 56 q14 4 26 -2" />
+      <path d="M210 66 q15 6 28 0" />
+      <path d="M208 76 q16 8 30 2" />
+    </g>
+    <text x="246" y="64" font-family="EB Garamond,serif" font-size="7" font-style="italic" fill="#5e7a6a">ostia Danubii</text>
+    <g font-family="EB Garamond,serif" font-size="8.5">
+      <text x="226" y="36" fill="#9e3b2b" transform="rotate(76 226 36)">licostomo</text>
+      <text x="196" y="104" fill="#2a2218" transform="rotate(82 196 104)">vicina?</text>
+      <text x="186" y="142" fill="#9e3b2b" transform="rotate(84 186 142)">costanza</text>
+      <text x="176" y="186" fill="#2a2218" transform="rotate(86 176 186)">moncastro</text>
+    </g>
+    <g fill="#2a2218">
+      <circle cx="222" cy="42" r="1.8" />
+      <circle cx="200" cy="98" r="1.8" />
+      <circle cx="190" cy="138" r="1.8" />
+      <circle cx="180" cy="182" r="1.8" />
+    </g>
+    <text x="276" y="150" font-family="Cinzel,serif" font-size="11" letter-spacing="2" fill="#2a2218" transform="rotate(-90 276 150)">MARE MAIVS</text>
+    <text x="36" y="34" font-family="IBM Plex Mono,monospace" font-size="7" letter-spacing="1.5" fill="#4d4233">SINE GRADIBVS</text>
+    <text x="30" y="216" font-family="EB Garamond,serif" font-size="8.5" font-style="italic" fill="#4d4233" opacity=".75">terra - vacat</text>
+  </svg>
+</figure>
+
+After the Treaty of Nymphaeum (1261) opened the straits, Genoese and Venetian pilots
+worked the Black Sea hard - and their charts show it. Vesconte's coastline runs with
+startling precision: the Danube's arms, then the ports written perpendicular to the
+shore in red and black - _Licostomo_ (Chilia), _Moncastro_ (Cetatea Albă), _Vicina_
+somewhere on the lower river, _Costanza_.
+
+There is no graticule; the web of compass bearings is the geometry. Each crossing
+corrected the last - iterative proofreading by keel. One league inland, the parchment
+goes silent: the chart answers only the questions a pilot asks.
+
+> **Find.** The sea taught Europe to measure before the land did.
+
+_Nota._ Moncastro and Cetatea Albă are one fortress in two ledgers - Genoese and
+Moldavian names for the same white castle on the Dniester liman. Vicina, richest port of
+the lower Danube, is still missing: its exact site remains debated.
+
+| Reading    | Score | Verdict                                                   |
+| ---------- | ----- | --------------------------------------------------------- |
+| ORDINATIO  | 2.5   | no graticule - the web of bearings is its own geometry    |
+| LITTERAE   | 3     | Genoese exonyms pinned perpendicular to a foreign shore   |
+| RESTITVTIO | 1     | pilots' charts, not scholars' copies                      |
+| CORRECTIO  | 5     | every voyage a proofreading; the coast converges on truth |
+| RASVRA     | 0.5   | nothing struck; inland was never written                  |
+| VACAT      | 5     | precision at the rim, blank parchment behind it           |
+
+### AVLA IV · RENASCENTIA · RECOVERY BY PRINT · 1532 - 1595
+
+Print arrives. Lazarus's Tabula Hungariae (1528) shows the region first; Honterus gives
+Transylvania its own sheet; Ortelius restores a Dacia that no longer exists. Recovery
+and invention, on the same presses.
+
+<h4 id="stela-honterus">V · HONTERVS · CHOROGRAPHIA TRANSYLVANIAE</h4>
+
+_A native woodcut: the country as a walled garden seen from above._ Basel, 1532, reworked
+into the Rudimenta Cosmographica at Brașov in 1542. Johannes Honterus, Saxon humanist of
+Kronstadt: a printed woodcut, pictorial chorography, no graticule. A single known print
+survives, likely in Budapest.
+
+{/* prettier-ignore */}
+<figure class="stela-plate">
+  {/* prettier-ignore */}
+  <svg
+    viewBox="0 0 320 240"
+    role="img"
+    aria-label="Woodcut style map of Transylvania: molehill mountains in a ring, towers and trees, banner title"
+  >
+    <rect x="6" y="6" width="308" height="228" fill="none" stroke="#2a2218" stroke-width="2" />
+    <rect
+      x="60"
+      y="12"
+      width="200"
+      height="22"
+      fill="#efe9da"
+      stroke="#2a2218"
+      stroke-width="1.2"
+    />
+    <text x="160" y="27" font-family="Cinzel,serif" font-size="10" letter-spacing="2" fill="#2a2218" text-anchor="middle">CHOROGRAPHIA TRANSYLVANIAE</text>
+    <g fill="none" stroke="#2a2218" stroke-width="1.1">
+      <path d="M26 70 q9 -16 18 0 M44 64 q9 -16 18 0 M62 70 q9 -16 18 0 M84 60 q9 -16 18 0 M106 66 q9 -16 18 0 M132 58 q9 -16 18 0 M158 64 q9 -16 18 0 M184 58 q9 -16 18 0 M210 64 q9 -16 18 0 M236 60 q9 -16 18 0 M260 68 q9 -16 18 0 M282 76 q9 -16 18 0" />
+      <path d="M26 96 q9 -16 18 0 M288 104 q9 -16 18 0 M24 130 q9 -16 18 0 M290 136 q9 -16 18 0 M26 164 q9 -16 18 0 M288 168 q9 -16 18 0 M40 196 q9 -16 18 0 M70 206 q9 -16 18 0 M104 212 q9 -16 18 0 M140 214 q9 -16 18 0 M178 214 q9 -16 18 0 M214 210 q9 -16 18 0 M248 202 q9 -16 18 0" />
+    </g>
+    <g stroke="#2a2218" stroke-width=".8" fill="#efe9da">
+      <g transform="translate(96,104)">
+        <rect x="-4" y="-8" width="8" height="12" />
+        <path d="M-5 -8 l5 -6 l5 6 z" />
+      </g>
+      <g transform="translate(168,92)">
+        <rect x="-4" y="-8" width="8" height="12" />
+        <path d="M-5 -8 l5 -6 l5 6 z" />
+      </g>
+      <g transform="translate(226,118)">
+        <rect x="-4" y="-8" width="8" height="12" />
+        <path d="M-5 -8 l5 -6 l5 6 z" />
+      </g>
+      <g transform="translate(132,154)">
+        <rect x="-4" y="-8" width="8" height="12" />
+        <path d="M-5 -8 l5 -6 l5 6 z" />
+      </g>
+      <g transform="translate(206,170)">
+        <rect x="-4" y="-8" width="8" height="12" />
+        <path d="M-5 -8 l5 -6 l5 6 z" />
+      </g>
+    </g>
+    <g font-family="EB Garamond,serif" font-size="8" fill="#2a2218">
+      <text x="104" y="100">Clausenburg</text>
+      <text x="176" y="88">Weissenburg</text>
+      <text x="234" y="114">Schesburg</text>
+      <text x="140" y="150">Hermanstat</text>
+      <text x="214" y="166">Cronstadt</text>
+    </g>
+    <g stroke="#5e7a6a" stroke-width="1" fill="none">
+      <path d="M70 120 q40 18 90 12 q60 -8 110 14" />
+      <path d="M120 70 q10 40 4 70" />
+    </g>
+    <g fill="none" stroke="#2a2218" stroke-width=".9">
+      <g transform="translate(64,142)">
+        <line y2="-9" />
+        <path d="M0 -9 q-5 7 0 9 q5 -2 0 -9" fill="#efe9da" />
+      </g>
+      <g transform="translate(252,86)">
+        <line y2="-9" />
+        <path d="M0 -9 q-5 7 0 9 q5 -2 0 -9" fill="#efe9da" />
+      </g>
+      <g transform="translate(168,196)">
+        <line y2="-9" />
+        <path d="M0 -9 q-5 7 0 9 q5 -2 0 -9" fill="#efe9da" />
+      </g>
+    </g>
+    <g stroke="#2a2218" stroke-width=".45" opacity=".5">
+      <line x1="10" y1="226" x2="64" y2="190" />
+      <line x1="18" y1="230" x2="74" y2="194" />
+      <line x1="252" y1="228" x2="306" y2="196" />
+    </g>
+  </svg>
+</figure>
+
+In Basel in 1532 a Saxon humanist of Kronstadt cut his homeland in wood: the first
+separate printed map of Transylvania, made from inside it. The Carpathians stand as
+molehill ranges around the rim; within the ring, towers and trees crowd a country he had
+walked - hundreds of names, German foremost, with Hungarian and Romanian beneath.
+
+This is chorography rather than geodesy - the land as a portrait, dense to the edges,
+with hardly a blank to decorate. A decade later he folded the matter into his _Rudimenta
+Cosmographica_ (Brașov, 1542), and the schoolbooks of half of Europe carried his
+Transylvania for a century.
+
+> **Find.** The first map of Transylvania drawn by someone who had slept in its towns.
+
+_Nota._ Lazarus's _Tabula Hungariae_ (1528) showed the region first; Honterus gave
+Transylvania its own sheet. A single print of 1532 is known to survive - and the claim
+that he set south at the top is repeated more often than it is proven.
+
+| Reading    | Score | Verdict                                               |
+| ---------- | ----- | ----------------------------------------------------- |
+| ORDINATIO  | 2     | chorography, not geodesy - a walled garden from above |
+| LITTERAE   | 4.5   | three peoples' names on one woodcut; Saxon first      |
+| RESTITVTIO | 2     | some Lazarus in the bones; mostly his own valleys     |
+| CORRECTIO  | 3     | corrected by eyewitness, not by instrument            |
+| RASVRA     | 1     | nothing suppressed inside the ring                    |
+| VACAT      | 0.5   | inside the mountains, hardly room for emptiness       |
+
+<h4 id="stela-ortelius">VI · ORTELIVS · DACIARVM MOESIARVMQVE VETVS DESCRIPTIO</h4>
+
+_A modern graticule lent to a vanished province._ Parergon, Antwerp, 1595, first state.
+Abraham Ortelius's own compilation: a copper engraving in his atlas of antiquity, with
+current coastline geometry carrying 2nd-century content.
+
+{/* prettier-ignore */}
+<figure class="stela-plate">
+  {/* prettier-ignore */}
+  <svg
+    viewBox="0 0 320 240"
+    role="img"
+    aria-label="Ortelius-style antiquarian map: graticule, legion pennants, Trajan's bridge, cartouche"
+  >
+    <rect x="8" y="8" width="304" height="224" fill="none" stroke="#2a2218" stroke-width="1.6" />
+    <g stroke="#2a2218" stroke-width=".5" opacity=".5">
+      <path d="M64 10 L56 230 M124 9 L120 231 M184 9 L186 231 M244 10 L252 230" fill="none" />
+      <path
+        d="M10 66 Q160 58 310 66 M10 124 Q160 118 310 124 M10 182 Q160 178 310 182"
+        fill="none"
+      />
+    </g>
+    <text x="150" y="52" font-family="Cinzel,serif" font-size="20" letter-spacing="8" fill="#2a2218" text-anchor="middle">DACIA</text>
+    <path
+      d="M14 196 Q90 206 160 200 Q240 194 308 204"
+      fill="none"
+      stroke="#5e7a6a"
+      stroke-width="2.6"
+    />
+    <text x="40" y="192" font-family="EB Garamond,serif" font-size="9" font-style="italic" fill="#5e7a6a">Danubius fl.</text>
+    <g transform="translate(150,200)">
+      <g stroke="#2a2218" stroke-width="1.3" fill="none">
+        <path d="M-30 0 A10 8 0 0 1 -10 0 A10 8 0 0 1 10 0 A10 8 0 0 1 30 0" />
+        <line x1="-30" y1="0" x2="-30" y2="8" />
+        <line x1="-10" y1="0" x2="-10" y2="8" />
+        <line x1="10" y1="0" x2="10" y2="8" />
+        <line x1="30" y1="0" x2="30" y2="8" />
+        <line x1="-34" y1="-2" x2="34" y2="-2" />
+      </g>
+    </g>
+    <text x="150" y="222" font-family="EB Garamond,serif" font-size="8" font-style="italic" fill="#2a2218" text-anchor="middle">Pons Traiani</text>
+    <g stroke="#9e3b2b" stroke-width="1.1" fill="#9e3b2b">
+      <g transform="translate(96,120)">
+        <line y2="-16" stroke-width="1.2" />
+        <path d="M0 -16 l14 4 l-14 4 z" />
+      </g>
+      <g transform="translate(208,104)">
+        <line y2="-16" stroke-width="1.2" />
+        <path d="M0 -16 l14 4 l-14 4 z" />
+      </g>
+    </g>
+    <g font-family="EB Garamond,serif" font-size="7.5" fill="#2a2218">
+      <text x="84" y="134">Zarmizegethusa</text>
+      <text x="84" y="143" fill="#9e3b2b">LEG·XIII·GEM</text>
+      <text x="200" y="118">Apulum</text>
+      <text x="236" y="142">Napoca</text>
+      <text x="120" y="170">Drubetis</text>
+    </g>
+    <g font-family="EB Garamond,serif" font-size="8" font-style="italic" fill="#4d4233">
+      <text x="56" y="92">Anarti</text>
+      <text x="232" y="84">Buri</text>
+    </g>
+    <g transform="translate(236,196)">
+      <rect x="0" y="0" width="68" height="30" fill="#efe9da" stroke="#2a2218" stroke-width="1" />
+      <path
+        d="M0 0 q-5 8 0 15 q-5 8 0 15 M68 0 q5 8 0 15 q5 8 0 15"
+        fill="none"
+        stroke="#2a2218"
+        stroke-width=".8"
+      />
+      <text x="34" y="12" font-family="Cinzel,serif" font-size="6" letter-spacing="1" fill="#2a2218" text-anchor="middle">DACIARVM·MOES.</text>
+      <text x="34" y="22" font-family="EB Garamond,serif" font-size="6.5" font-style="italic" fill="#9e3b2b" text-anchor="middle">vetus descriptio</text>
+    </g>
+    <g font-family="IBM Plex Mono,monospace" font-size="6.5" fill="#4d4233">
+      <text x="58" y="20">44</text>
+      <text x="118" y="20">46</text>
+      <text x="180" y="20">48</text>
+      <text x="240" y="20">50</text>
+    </g>
+  </svg>
+</figure>
+
+For the humanists, Dacia lived more vividly in Tacitus than in the Ottoman-vassal
+principalities of their own day. In the _Parergon_ - his atlas of antiquity - Ortelius
+drew it back: Ptolemy's towns, the legions' stations, _Pons Traiani_ across the Danube,
+all laid on a respectably modern coastline and graticule. Every name is a citation; the
+map carries its own apparatus.
+
+The title declares the method: _vetus descriptio_, the old description. The sixteenth
+century - Wallachia, Moldavia, the Porte - is deliberately absent. A province dead for
+thirteen centuries returns to print before the living country does.
+
+> **Find.** Dacia comes home through philology - by way of Denmark.
+
+_Nota._ Ortelius died in 1598 with the expanded Peutinger plates literally in press; they
+appeared that December. The Parergon's title says it plainly: _vetus descriptio_ - the
+old description, the present declined.
+
+| Reading    | Score | Verdict                                                       |
+| ---------- | ----- | ------------------------------------------------------------- |
+| ORDINATIO  | 3.5   | a modern trapezoid graticule lent to a vanished province      |
+| LITTERAE   | 4     | toponymy frozen fourteen centuries before the coastline       |
+| RESTITVTIO | 5     | maximal - every town a citation; the map is its own apparatus |
+| CORRECTIO  | 2     | geometry current, content deliberately stale                  |
+| RASVRA     | 4     | the Ottoman present struck from the frame                     |
+| VACAT      | 1.5   | little blank; antiquity fills what the present vacated        |
+
+### AVLA V · PRINCIPES · THE PRINCES' MAPS · 1700 - 1737
+
+Two native cartographies a generation apart - Wallachia engraved in Greek, Moldavia
+remembered in Latin - each a country drafting its own portrait.
+
+<h4 id="stela-cantacuzino">VII · CANTACVZINO · WALLACHIA IN GREEK</h4>
+
+_A country drafting itself in someone else's alphabet._ Padua, 1700, with a reduced copy
+in Del Chiaro, 1718. Constantin Cantacuzino, stolnic, printed by Chrysanthos Notaras: a
+copper engraving on four sheets, in Greek, carrying 500+ toponyms drawn from
+administration. Nearly lost; a handful of copies survive, one at the BnF.
+
+{/* prettier-ignore */}
+<figure class="stela-plate">
+  {/* prettier-ignore */}
+  <svg
+    viewBox="0 0 320 240"
+    role="img"
+    aria-label="Greek-lettered map of Wallachia: Carpathian ridge, Danube, monastery crosses, dotted county bounds"
+  >
+    <rect x="8" y="8" width="304" height="224" fill="none" stroke="#2a2218" stroke-width="1.6" />
+    <text x="160" y="32" font-family="Cinzel,serif" font-size="11" letter-spacing="3" fill="#2a2218" text-anchor="middle">ΠΙΝΑΞ ΤΗΣ ΟΥΓΓΡΟΒΛΑΧΙΑΣ</text>
+    <g fill="none" stroke="#2a2218" stroke-width="1.1">
+      <path d="M16 70 q9 -15 18 0 M38 62 q9 -15 18 0 M62 56 q9 -15 18 0 M88 52 q9 -15 18 0 M116 50 q9 -15 18 0 M144 50 q9 -15 18 0 M172 52 q9 -15 18 0 M200 56 q9 -15 18 0 M228 62 q9 -15 18 0 M256 70 q9 -15 18 0 M280 82 q9 -15 18 0" />
+    </g>
+    <path
+      d="M14 206 Q90 214 170 208 Q250 202 308 212"
+      fill="none"
+      stroke="#5e7a6a"
+      stroke-width="2.6"
+    />
+    <text x="34" y="202" font-family="EB Garamond,serif" font-size="9" font-style="italic" fill="#5e7a6a">Δούναβις</text>
+    <g stroke="#5e7a6a" stroke-width="1.1" fill="none">
+      <path d="M84 64 q6 60 -2 132" />
+      <path d="M170 60 q8 64 2 142" />
+      <path d="M244 70 q10 60 8 132" />
+    </g>
+    <g stroke="#2a2218" stroke-width=".9" stroke-dasharray="3 3" fill="none">
+      <path d="M120 62 q-4 70 4 140" />
+      <path d="M210 64 q6 70 0 140" />
+    </g>
+    <g stroke="#9e3b2b" stroke-width="1.2">
+      <g transform="translate(104,118)">
+        <line y1="-6" y2="6" />
+        <line x1="-4" y1="-2" x2="4" y2="-2" />
+      </g>
+      <g transform="translate(192,102)">
+        <line y1="-6" y2="6" />
+        <line x1="-4" y1="-2" x2="4" y2="-2" />
+      </g>
+      <g transform="translate(252,142)">
+        <line y1="-6" y2="6" />
+        <line x1="-4" y1="-2" x2="4" y2="-2" />
+      </g>
+    </g>
+    <g fill="#2a2218">
+      <circle cx="150" cy="150" r="3" />
+      <circle cx="64" cy="150" r="2" />
+      <circle cx="220" cy="170" r="2" />
+      <circle cx="118" cy="176" r="2" />
+      <circle cx="266" cy="118" r="2" />
+    </g>
+    <g font-family="EB Garamond,serif" font-size="8" fill="#2a2218">
+      <text x="156" y="148">Μπουκουρέστι</text>
+      <text x="42" y="146">Κραϊόβα</text>
+      <text x="224" y="166">Μπράιλα</text>
+      <text x="100" y="188">Πιτέστι</text>
+      <text x="108" y="114" font-size="7" fill="#9e3b2b">μοναστήρι</text>
+    </g>
+    <text x="262" y="226" font-family="IBM Plex Mono,monospace" font-size="6.5" fill="#4d4233">PATAVII · 1700</text>
+    <g font-family="EB Garamond,serif" font-size="7" font-style="italic" fill="#4d4233">
+      <text x="130" y="84">Καρπάθη όρη</text>
+    </g>
+  </svg>
+</figure>
+
+In 1700 a Padua-trained stolnic had his country engraved - in Greek, on four sheets, at
+Padua, the first map of Wallachia by a native. Counties, monasteries, salt-works: over
+five hundred places, written by the administration that knew them, each Romanian name
+wearing a Greek transliteration like a borrowed coat.
+
+The frame and conventions are Venetian; the knowledge is local. The graticule sits
+lightly, more proposed than enforced. It survives in a handful of copies and in Del
+Chiaro's 1718 reduction - a sovereignty rehearsed on paper a century and a half before it
+could be declared.
+
+> **Find.** A country drafting itself into existence in someone else's alphabet.
+
+_Nota._ Seen through the press by Chrysanthos Notaras - Cantacuzino's disciple, later
+Patriarch of Jerusalem - and likely dedicated to Constantin Brâncoveanu. The villages
+were set down by the men who collected their tithes.
+
+| Reading    | Score | Verdict                                                           |
+| ---------- | ----- | ----------------------------------------------------------------- |
+| ORDINATIO  | 2.5   | the graticule is posited more than imposed                        |
+| LITTERAE   | 4.5   | Romanian places wrapped in Greek letters - a transliteration veil |
+| RESTITVTIO | 2     | the frame from Venice; the content from tithe-rolls               |
+| CORRECTIO  | 2.5   | checked against administration, not instruments                   |
+| RASVRA     | 0.5   | nothing struck out                                                |
+| VACAT      | 1     | dense to the mountain line                                        |
+
+<h4 id="stela-cantemir">VIII · CANTEMIR · PRINCIPATVS MOLDAVIAE</h4>
+
+_A prince's memory of his country, printed in exile._ Drawn c. 1716 for the Descriptio
+Moldaviae, engraved at Amsterdam in 1737. Dimitrie Cantemir, Prince of Moldavia and
+member of the Berlin Academy: an ordered frame with an interior drawn from memory, some
+800 names deep. The manuscript wandered to Russia; the print carried the content.
+
+{/* prettier-ignore */}
+<figure class="stela-plate">
+  {/* prettier-ignore */}
+  <svg
+    viewBox="0 0 320 240"
+    role="img"
+    aria-label="Cantemir-style Moldavia: banner title, dense towns between mountain ridge and Dniester"
+  >
+    <rect x="8" y="8" width="304" height="224" fill="none" stroke="#2a2218" stroke-width="1.6" />
+    <rect x="64" y="14" width="192" height="20" fill="#efe9da" stroke="#2a2218" stroke-width="1" />
+    <text x="160" y="28" font-family="Cinzel,serif" font-size="8.5" letter-spacing="1.5" fill="#2a2218" text-anchor="middle">PRINCIPATVS MOLDAVIAE</text>
+    <g fill="none" stroke="#2a2218" stroke-width="1.1">
+      <path d="M20 64 q9 -15 18 0 M30 92 q9 -15 18 0 M22 122 q9 -15 18 0 M32 152 q9 -15 18 0 M24 182 q9 -15 18 0 M36 206 q9 -15 18 0" />
+    </g>
+    <path d="M286 40 q10 80 -2 184" fill="none" stroke="#5e7a6a" stroke-width="2.4" />
+    <text x="296" y="120" font-family="EB Garamond,serif" font-size="8" font-style="italic" fill="#5e7a6a" transform="rotate(86 296 120)">Tyras / Nistru</text>
+    <g stroke="#5e7a6a" stroke-width="1.3" fill="none">
+      <path d="M84 44 q14 80 4 188" />
+      <path d="M150 42 q12 84 6 190" />
+      <path d="M210 44 q10 84 4 188" />
+    </g>
+    <g font-family="EB Garamond,serif" font-size="7" font-style="italic" fill="#5e7a6a">
+      <text x="74" y="70" transform="rotate(82 74 70)">Siret</text>
+      <text x="142" y="70" transform="rotate(84 142 70)">Prut</text>
+    </g>
+    <g stroke="#2a2218" stroke-width=".8" stroke-dasharray="2.5 3" fill="none">
+      <path d="M40 96 L290 86" />
+      <path d="M44 142 L292 134" />
+      <path d="M40 186 L290 180" />
+    </g>
+    <g fill="#2a2218">
+      <circle cx="178" cy="76" r="2.8" />
+      <circle cx="120" cy="68" r="1.8" />
+      <circle cx="236" cy="70" r="1.8" />
+      <circle cx="98" cy="118" r="1.8" />
+      <circle cx="160" cy="116" r="1.8" />
+      <circle cx="226" cy="112" r="1.8" />
+      <circle cx="262" cy="124" r="1.8" />
+      <circle cx="118" cy="162" r="1.8" />
+      <circle cx="186" cy="160" r="1.8" />
+      <circle cx="244" cy="166" r="1.8" />
+      <circle cx="146" cy="206" r="1.8" />
+      <circle cx="216" cy="204" r="1.8" />
+      <circle cx="70" cy="206" r="1.8" />
+    </g>
+    <g font-family="EB Garamond,serif" font-size="7.5" fill="#2a2218">
+      <text x="184" y="74">Iassi</text>
+      <text x="100" y="64">Suczawa</text>
+      <text x="240" y="66">Soroca</text>
+      <text x="164" y="112">Roman</text>
+      <text x="190" y="156">Berlad</text>
+      <text x="150" y="202">Galacz</text>
+    </g>
+    <g font-family="EB Garamond,serif" font-size="7" font-style="italic" fill="#4d4233">
+      <text x="56" y="98" transform="rotate(-4 56 98)">Tzinut. Sucz.</text>
+      <text x="208" y="92" transform="rotate(-2 208 92)">Tzinut. Iass.</text>
+    </g>
+  </svg>
+</figure>
+
+Deposed in 1711, Dimitrie Cantemir mapped Moldavia from exile: roughly eight hundred
+names, the _ținuturi_ drawn out like a ledger, rivers from the Carpathians to the
+Dniester - the first detailed map of the principality from native knowledge, made to
+accompany the _Descriptio Moldaviae_ he wrote for the Berlin Academy.
+
+No instrument confirms it; the interior bends to memory, and is denser than anything an
+instrument had yet produced. He died in 1723. The map appeared at Amsterdam in 1737 -
+_Principatus Moldaviae nova & accurata descriptio_ - a country remembered more thoroughly
+than it had ever been measured.
+
+> **Find.** A prince's memory of his country, printed in exile, fourteen years after his
+> death.
+
+_Nota._ Drawn c. 1716 to accompany the _Descriptio Moldaviae_ written for the Berlin
+Academy; engraved at Amsterdam in 1737, his son Antioh - Russia's ambassador - seeing it
+through the press.
+
+| Reading    | Score | Verdict                                                   |
+| ---------- | ----- | --------------------------------------------------------- |
+| ORDINATIO  | 2.5   | scale and frame ordered; the interior bends to memory     |
+| LITTERAE   | 4.5   | eight hundred Moldavian names dressed in Latin for Berlin |
+| RESTITVTIO | 1     | borrowed little; the prince was his own archive           |
+| CORRECTIO  | 1.5   | richer than any predecessor, confirmed by no instrument   |
+| RASVRA     | 0.5   | nothing suppressed                                        |
+| VACAT      | 1     | scarcely a blank ținut                                    |
+
+### AVLA VI · IMPERIA · THE EMPIRES MEASVRE · 1769 - 1835
+
+Habsburg plane-tables and Russian triangles produce the most accurate maps the land has
+known - and lock them away. Accuracy and secrecy, born twins.
+
+<h4 id="stela-josephine">IX · IOSEPHINA · FIRST MILITARY SVRVEY OF TRANSYLVANIA</h4>
+
+_Accuracy and secrecy, born twins._ Transylvania 1769–73, Banat 1769–72, Bukovina
+1773–75. Habsburg General Staff plane-table parties: hand-coloured manuscript, c. 280
+sheets at 1:28,800, held in the Kriegsarchiv, Vienna - classified from birth, and
+complete because locked away.
+
+{/* prettier-ignore */}
+<figure class="stela-plate">
+  {/* prettier-ignore */}
+  <svg
+    viewBox="0 0 320 240"
+    role="img"
+    aria-label="Josephine survey sheet: plane-table grid, hachured hills, red roads, SECRETVM stamp"
+  >
+    <rect x="8" y="8" width="304" height="224" fill="none" stroke="#2a2218" stroke-width="1.6" />
+    <g stroke="#2a2218" stroke-width=".4" opacity=".35">
+      <line x1="84" y1="8" x2="84" y2="232" />
+      <line x1="160" y1="8" x2="160" y2="232" />
+      <line x1="236" y1="8" x2="236" y2="232" />
+      <line x1="8" y1="64" x2="312" y2="64" />
+      <line x1="8" y1="120" x2="312" y2="120" />
+      <line x1="8" y1="176" x2="312" y2="176" />
+    </g>
+    <g stroke="#4d4233" stroke-width=".7">
+      <g transform="translate(70,60) rotate(-18)">
+        <line x1="0" y1="0" x2="0" y2="10" />
+        <line x1="5" y1="0" x2="5" y2="12" />
+        <line x1="10" y1="0" x2="10" y2="13" />
+        <line x1="15" y1="0" x2="15" y2="12" />
+        <line x1="20" y1="0" x2="20" y2="10" />
+        <line x1="25" y1="0" x2="25" y2="8" />
+      </g>
+      <g transform="translate(190,84) rotate(12)">
+        <line x1="0" y1="0" x2="0" y2="9" />
+        <line x1="5" y1="0" x2="5" y2="12" />
+        <line x1="10" y1="0" x2="10" y2="14" />
+        <line x1="15" y1="0" x2="15" y2="12" />
+        <line x1="20" y1="0" x2="20" y2="9" />
+      </g>
+      <g transform="translate(120,150) rotate(-8)">
+        <line x1="0" y1="0" x2="0" y2="8" />
+        <line x1="5" y1="0" x2="5" y2="11" />
+        <line x1="10" y1="0" x2="10" y2="13" />
+        <line x1="15" y1="0" x2="15" y2="11" />
+        <line x1="20" y1="0" x2="20" y2="8" />
+      </g>
+      <g transform="translate(238,170) rotate(20)">
+        <line x1="0" y1="0" x2="0" y2="9" />
+        <line x1="5" y1="0" x2="5" y2="12" />
+        <line x1="10" y1="0" x2="10" y2="12" />
+        <line x1="15" y1="0" x2="15" y2="9" />
+      </g>
+    </g>
+    <g stroke="#9e3b2b" stroke-width="1.5" fill="none">
+      <path d="M14 196 q60 -24 120 -56 q70 -36 178 -52" />
+      <path d="M70 230 q24 -48 64 -90" />
+    </g>
+    <path d="M30 40 q60 22 130 18 q80 -5 150 14" fill="none" stroke="#5e7a6a" stroke-width="1.8" />
+    <g fill="#2a2218">
+      <rect x="128" y="128" width="5" height="4" />
+      <rect x="136" y="126" width="5" height="4" />
+      <rect x="132" y="120" width="5" height="4" />
+      <rect x="222" y="96" width="5" height="4" />
+      <rect x="230" y="98" width="5" height="4" />
+      <rect x="60" y="178" width="5" height="4" />
+    </g>
+    <g font-family="EB Garamond,serif" font-size="7" fill="#2a2218">
+      <text x="124" y="144">Mühlbach</text>
+      <text x="218" y="112">Broos</text>
+      <text x="48" y="192">Dorf</text>
+    </g>
+    <g transform="translate(160,120) rotate(-16)">
+      <rect
+        x="-96"
+        y="-15"
+        width="192"
+        height="30"
+        fill="none"
+        stroke="#9e3b2b"
+        stroke-width="1.6"
+      />
+      <text x="0" y="7" font-family="Cinzel,serif" font-size="18" letter-spacing="9" fill="#9e3b2b" text-anchor="middle" opacity=".9">SECRETVM</text>
+    </g>
+    <text x="300" y="226" font-family="IBM Plex Mono,monospace" font-size="6.5" fill="#4d4233" text-anchor="end">SECT. 138 · 1:28.800</text>
+  </svg>
+</figure>
+
+After the Seven Years' War the Habsburg staff resolved to know exactly what they ruled.
+Transylvania was taken at 1:28,800 in 1769–73, plane-table parties walking every valley:
+each mill, ford and tavern drawn, each road annotated for the march - which bridges bear
+cannon, where a column can water.
+
+The sheets were never meant for eyes outside the staff. Hand-coloured, hundreds strong,
+they went into Vienna and stayed there: the most accurate portrait the land had ever
+received, and the one it was not allowed to see. From here on, accuracy and secrecy
+travel together.
+
+> **Find.** Accuracy becomes armament: the sheet records which bridges bear cannon.
+
+_Nota._ Roughly 280 manuscript sheets for Transylvania alone, with written military
+commentary on every road and ford. The Second Survey (1806–69) added triangulation -
+measured everything twice, and classified it both times.
+
+| Reading    | Score | Verdict                                                              |
+| ---------- | ----- | -------------------------------------------------------------------- |
+| ORDINATIO  | 4     | one scale, one key, hundreds of sheets - the state acquires a format |
+| LITTERAE   | 4     | toponyms standardised in German; locals consulted, then overruled    |
+| RESTITVTIO | 0.5   | inherited almost nothing; walked every valley                        |
+| CORRECTIO  | 4.5   | plane-table verified; triangulation waits for the Second Survey      |
+| RASVRA     | 4.5   | classified at birth                                                  |
+| VACAT      | 1     | blank only where the surveyor's horse could not go                   |
+
+<h4 id="stela-russia">X · RVSSIAN GENERAL STAFF · THE PRINCIPALITIES</h4>
+
+_Triangulation gives error a number and a sign._ Surveyed after 1829, published 1835.
+The Russian General Staff under Kiselyov's administration: engraved at 1:420,000, the
+first triangulation of Wallachia and Moldavia. The triangles outlived the occupation by
+half a century.
+
+{/* prettier-ignore */}
+<figure class="stela-plate">
+  {/* prettier-ignore */}
+  <svg
+    viewBox="0 0 320 240"
+    role="img"
+    aria-label="Triangulation network with Cyrillic labels and scale bar"
+  >
+    <rect x="8" y="8" width="304" height="224" fill="none" stroke="#2a2218" stroke-width="1.6" />
+    <g stroke="#9e3b2b" stroke-width=".9" fill="none">
+      <path d="M48 190 L110 84 L186 150 Z" />
+      <path d="M110 84 L208 56 L186 150 Z" />
+      <path d="M186 150 L268 104 L208 56 Z" />
+      <path d="M48 190 L150 206 L186 150 Z" />
+      <path d="M150 206 L252 196 L186 150 Z" />
+      <path d="M252 196 L268 104" />
+    </g>
+    <g fill="#efe9da" stroke="#2a2218" stroke-width="1.2">
+      <circle cx="48" cy="190" r="5" />
+      <circle cx="110" cy="84" r="5" />
+      <circle cx="186" cy="150" r="5" />
+      <circle cx="208" cy="56" r="5" />
+      <circle cx="268" cy="104" r="5" />
+      <circle cx="150" cy="206" r="5" />
+      <circle cx="252" cy="196" r="5" />
+    </g>
+    <g fill="#2a2218">
+      <circle cx="48" cy="190" r="1.5" />
+      <circle cx="110" cy="84" r="1.5" />
+      <circle cx="186" cy="150" r="1.5" />
+      <circle cx="208" cy="56" r="1.5" />
+      <circle cx="268" cy="104" r="1.5" />
+      <circle cx="150" cy="206" r="1.5" />
+      <circle cx="252" cy="196" r="1.5" />
+    </g>
+    <g font-family="EB Garamond,serif" font-size="8.5" fill="#2a2218">
+      <text x="156" y="222">Бухарестъ</text>
+      <text x="96" y="74">Питешти</text>
+      <text x="214" y="46">Бузеу</text>
+      <text x="274" y="96">Браиловъ</text>
+      <text x="30" y="206">Крайова</text>
+      <text x="192" y="166">Плоешти</text>
+    </g>
+    <path d="M14 224 Q120 232 312 226" fill="none" stroke="#5e7a6a" stroke-width="2" opacity=".7" />
+    <g transform="translate(36,28)">
+      <line x1="0" y1="0" x2="80" y2="0" stroke="#2a2218" stroke-width="3" />
+      <line x1="0" y1="0" x2="40" y2="0" stroke="#efe9da" stroke-width="1.4" />
+      <text x="0" y="12" font-family="IBM Plex Mono,monospace" font-size="6.5" fill="#4d4233">МАСШТАБЪ 1:420.000</text>
+    </g>
+    <text x="246" y="26" font-family="Cinzel,serif" font-size="8" letter-spacing="2" fill="#2a2218">1835</text>
+    <g stroke="#2a2218" stroke-width=".5" opacity=".4" stroke-dasharray="1.5 3">
+      <line x1="110" y1="84" x2="48" y2="190" />
+    </g>
+  </svg>
+</figure>
+
+The Treaty of Adrianople left Russia administering the Principalities, and Kiselyov's
+officers did what occupying staffs do: they measured. For the first time Wallachia and
+Moldavia received a triangulation - a network of computed points against which every
+later survey could take residuals. Error finally had a number and a sign.
+
+Published in 1835 at 1:420,000, with Romanian names re-spelled in Russian Cyrillic, the
+map was a general staff's instrument, shared sparingly. Its triangles, though, proved
+durable: the Romanian state that emerged a generation later built its own cartography on
+an occupier's skeleton.
+
+> **Find.** The new state will inherit its geometry from its occupier.
+
+_Nota._ After Adrianople (1829), Russian officers under Kiselyov ran the first
+triangulation of Wallachia and Moldavia; the 1:420,000 sheet of 1835 underlay Romanian
+mapping for half a century.
+
+| Reading    | Score | Verdict                                                |
+| ---------- | ----- | ------------------------------------------------------ |
+| ORDINATIO  | 4.5   | triangulation gives error a number and a sign          |
+| LITTERAE   | 3     | Romanian re-spelled in Russian Cyrillic                |
+| RESTITVTIO | 2     | old roads verified against new triangles               |
+| CORRECTIO  | 4.5   | the first sheet against which residuals could be taken |
+| RASVRA     | 4     | a general staff's product, shared sparingly            |
+| VACAT      | 1.5   | little blank; much restricted                          |
+
+### AVLA VII · NATIO · THE NATION PRINTS · 1864
+
+A new state prints its name. On the occupiers' geometry, with a freshly decreed
+alphabet, ROMÂNIA appears in Latin type across its own territory.
+
+<h4 id="stela-szathmari">XI · CHARTA ROMÂNIEI MERIDIONALE</h4>
+
+_The country prints its own name across itself._ Printed in Vienna, 1864, under Cuza,
+commonly attributed to Carol Popp de Szathmári as editor under military oversight: a
+lithograph of c. 112 sheets at 1:57,600, built on the Austrian survey of the 1850s and
+field-updated. Plentiful - the first deliberately public state map.
+
+{/* prettier-ignore */}
+<figure class="stela-plate">
+  {/* prettier-ignore */}
+  <svg
+    viewBox="0 0 320 240"
+    role="img"
+    aria-label="ROMANIA in Latin letters over a faded Cyrillic ghost, on a sheet-line grid"
+  >
+    <rect x="8" y="8" width="304" height="224" fill="none" stroke="#2a2218" stroke-width="1.6" />
+    <g stroke="#2a2218" stroke-width=".4" opacity=".3">
+      <line x1="68" y1="8" x2="68" y2="232" />
+      <line x1="128" y1="8" x2="128" y2="232" />
+      <line x1="188" y1="8" x2="188" y2="232" />
+      <line x1="248" y1="8" x2="248" y2="232" />
+      <line x1="8" y1="60" x2="312" y2="60" />
+      <line x1="8" y1="118" x2="312" y2="118" />
+      <line x1="8" y1="176" x2="312" y2="176" />
+    </g>
+    <g fill="none" stroke="#2a2218" stroke-width="1">
+      <path d="M20 52 q9 -14 18 0 M44 44 q9 -14 18 0 M70 40 q9 -14 18 0 M98 38 q9 -14 18 0 M128 38 q9 -14 18 0 M158 40 q9 -14 18 0 M188 44 q9 -14 18 0 M218 50 q9 -14 18 0 M248 58 q9 -14 18 0 M274 68 q9 -14 18 0" />
+    </g>
+    <path
+      d="M14 206 Q100 216 180 208 Q260 202 310 212"
+      fill="none"
+      stroke="#5e7a6a"
+      stroke-width="2.6"
+    />
+    <text x="34" y="200" font-family="EB Garamond,serif" font-size="9" font-style="italic" fill="#5e7a6a">Dunărea</text>
+    <text x="162" y="138" font-family="Cinzel,serif" font-size="15" letter-spacing="7" fill="#9e3b2b" opacity=".28" text-anchor="middle">РОМЫНІЯ</text>
+    <text x="160" y="128" font-family="Cinzel,serif" font-size="26" letter-spacing="10" fill="#2a2218" text-anchor="middle">ROMÂNIA</text>
+    <g fill="#2a2218">
+      <circle cx="172" cy="166" r="3" />
+      <circle cx="84" cy="160" r="2" />
+      <circle cx="248" cy="158" r="2" />
+      <circle cx="120" cy="186" r="2" />
+    </g>
+    <g font-family="EB Garamond,serif" font-size="8" fill="#2a2218">
+      <text x="178" y="164">Bucuresci</text>
+      <text x="64" y="156">Craiova</text>
+      <text x="252" y="154">Brăila</text>
+      <text x="124" y="196">Giurgiu</text>
+    </g>
+    <text x="160" y="226" font-family="IBM Plex Mono,monospace" font-size="6.5" letter-spacing="2" fill="#4d4233" text-anchor="middle">CHARTA ROMÂNIEI MERIDIONALE · 1:57.600 · MDCCCLXIV</text>
+  </svg>
+</figure>
+
+Union in 1859; the name _România_ adopted in 1862; the Latin alphabet decreed the same
+year after decades of drift. Two years later the young state issued its first great map:
+southern Romania at 1:57,600 across some 112 sheets, printed in Vienna, commonly
+attributed to Cuza's court artist Szathmári as editor under military oversight.
+
+The geometry is openly inherited - the Austrian survey of the 1850s beneath, the Russian
+triangles before that - verified and updated in the field. What is new is the writing:
+ROMÂNIA in Latin type across its own territory, the alphabet changing hands on the sheet
+itself.
+
+> **Find.** The country prints its own name across itself: ROMÂNIA, in Latin letters, 1864.
+
+_Nota._ Szathmári photographed the Danubian front in 1854 - among the first war
+photographers anywhere - and a decade later lithographed his country. The state was named
+România in 1862; the Latin alphabet was decreed the same year.
+
+| Reading    | Score | Verdict                                                           |
+| ---------- | ----- | ----------------------------------------------------------------- |
+| ORDINATIO  | 4     | Austrian triangles become Romanian sheet-lines                    |
+| LITTERAE   | 4.5   | ROMÂNIA set in Latin type, first time on an official sheet        |
+| RESTITVTIO | 3.5   | built openly on the occupiers' surveys - inheritance acknowledged |
+| CORRECTIO  | 3.5   | the borrowed base verified and updated in the field               |
+| RASVRA     | 1     | little struck; this map wants to be seen                          |
+| VACAT      | 1     | dense, public, taught in schools                                  |
+
+### AVLA VIII · SAECVLVM SECRETVM · THE SECRET CENTVRY · 1916 - 1989
+
+Artillery grids, Soviet projections, decreed toponyms, falsified public sheets: the
+truest maps ever made of this land, and the least seen.
+
+<h4 id="stela-secret">XII · THE SECRET CENTVRY · PLANVRI & STEREO 70</h4>
+
+_One true map in the safe, one false map at the kiosk._ Lambert–Cholesky adopted
+1916–17; some 2,118 sheets to the 1950s; Gauss–Krüger after 1951; Stereo 70 decreed 1973.
+The Army Geographic Service, the French mission under Berthelot, then Soviet standards:
+printed topographic sheets at 1:20,000, classified. Complete and long unseeable, its
+public derivatives deliberately false.
+
+{/* prettier-ignore */}
+<figure class="stela-plate">
+  {/* prettier-ignore */}
+  <svg
+    viewBox="0 0 320 240"
+    role="img"
+    aria-label="Topographic sheet half-obscured by censor bars with a SECRET stamp"
+  >
+    <rect x="8" y="8" width="304" height="224" fill="none" stroke="#2a2218" stroke-width="1.6" />
+    <g stroke="#5e7a6a" stroke-width=".9" fill="none" opacity=".9">
+      <path d="M20 200 q30 -26 60 -22 q34 4 56 -18 q26 -26 60 -22 q34 4 60 -20 q22 -20 50 -18" />
+      <path d="M20 176 q30 -22 58 -20 q34 2 58 -18 q26 -22 60 -18 q36 4 58 -16 q20 -16 52 -16" />
+      <path d="M22 152 q28 -18 56 -16 q34 2 56 -16 q28 -20 60 -16 q36 4 56 -14" />
+      <path d="M40 128 q24 -14 52 -12 q32 2 52 -14 q28 -16 58 -12" />
+    </g>
+    <g stroke="#2a2218" stroke-width=".4" opacity=".4">
+      <line x1="84" y1="8" x2="84" y2="232" />
+      <line x1="160" y1="8" x2="160" y2="232" />
+      <line x1="236" y1="8" x2="236" y2="232" />
+      <line x1="8" y1="84" x2="312" y2="84" />
+      <line x1="8" y1="160" x2="312" y2="160" />
+    </g>
+    <g font-family="IBM Plex Mono,monospace" font-size="6" fill="#4d4233">
+      <text x="86" y="18">4-44-XX</text>
+      <text x="238" y="18">4-45-XX</text>
+      <text x="12" y="82">52</text>
+      <text x="12" y="158">51</text>
+    </g>
+    <g fill="#171109">
+      <rect x="22" y="36" width="150" height="13" transform="rotate(-1 22 36)" />
+      <rect x="120" y="64" width="178" height="13" transform="rotate(.6 120 64)" />
+      <rect x="30" y="96" width="120" height="13" transform="rotate(-.8 30 96)" />
+      <rect x="176" y="120" width="124" height="13" />
+      <rect x="56" y="186" width="170" height="13" transform="rotate(.5 56 186)" />
+    </g>
+    <g transform="translate(236,196) rotate(-9)">
+      <rect x="-58" y="-15" width="116" height="30" fill="none" stroke="#9e3b2b" stroke-width="2" />
+      <text x="0" y="7" font-family="Cinzel,serif" font-size="15" letter-spacing="5" fill="#9e3b2b" text-anchor="middle">SECRET</text>
+    </g>
+    <text x="22" y="226" font-family="IBM Plex Mono,monospace" font-size="6.5" fill="#4d4233">PLAN DIRECTOR DE TRAGERE · 1:20.000 · LAMBERT–CHOLESKY</text>
+  </svg>
+</figure>
+
+War brought the grid. With Berthelot's French mission came the Lambert–Cholesky
+projection and the _planurile directoare de tragere_: 1:20,000 sheets, some 2,118 of them
+by the 1950s, drawn so that artillery arithmetic would land where it was aimed. After
+1951 the Soviet standards took over - Krasovsky ellipsoid, Gauss–Krüger - and the true
+map went into the safe.
+
+Stereo 70, decreed in 1973, gave Romania its own secant plane near Făgăraș and kept the
+locks. Public maps were schematic by design; a 1964 decree renamed hundreds of villages
+at a stroke. The most accurate cartography the land had ever had, and the least seen: two
+maps of one country, one true and hidden, one false and for sale.
+
+> **Find.** The state keeps the true map in a safe and sells the false one at the kiosk.
+
+_Nota._ The Lambert–Cholesky grid arrived with Berthelot's French mission in 1916–17;
+André-Louis Cholesky, whose decomposition every engineer still uses, computed for it and
+died on the Western Front in 1918. Stereo 70, decreed 1973, still rides the Krasovsky
+ellipsoid.
+
+| Reading    | Score | Verdict                                                                    |
+| ---------- | ----- | -------------------------------------------------------------------------- |
+| ORDINATIO  | 5     | Lambert–Cholesky, then Gauss–Krüger, then Stereo 70 - projection as regime |
+| LITTERAE   | 4     | a 1964 decree renames hundreds of villages at a stroke                     |
+| RESTITVTIO | 3     | every prior survey compiled - and impounded                                |
+| CORRECTIO  | 5     | error hunted to the decimetre, in classified ink                           |
+| RASVRA     | 5     | two cartographies: one true and locked, one public and false               |
+| VACAT      | 2     | even the blanks now carry official stamps                                  |
+
+### AVLA IX · PRAESENS · THE PRESENT SVRVEY · 2026
+
+One datum for everyone, imagery every few days, edits by the minute - and the thirteenth
+stone left rough, because the wall is not finished.
+
+<h4 id="stela-satellite">XIII · THE PRESENT SVRVEY · WGS84 / SENTINEL / OSM</h4>
+
+_The thirteenth stone, left rough on purpose._ Continuous: re-imaged every few days,
+edited every minute. States, firms and volunteers, authority dissolved among them: pixels
+and vectors, a datum in every pocket. WGS84, Sentinel-2 at 10 m, OSM by the minute -
+everywhere and nowhere, in caches, mirrors and tiles, where revision outruns preservation.
+
+{/* prettier-ignore */}
+<figure class="stela-plate">
+  {/* prettier-ignore */}
+  <svg
+    viewBox="0 0 320 240"
+    role="img"
+    aria-label="A nearly uncarved slab: orbital arc, faint Carpathian arc, GPS pin, coordinates"
+  >
+    <rect
+      x="8"
+      y="8"
+      width="304"
+      height="224"
+      fill="none"
+      stroke="#2a2218"
+      stroke-width="1.2"
+      opacity=".7"
+    />
+    <g stroke="#2a2218" stroke-width=".35" opacity=".25">
+      <line x1="68" y1="8" x2="68" y2="232" />
+      <line x1="128" y1="8" x2="128" y2="232" />
+      <line x1="188" y1="8" x2="188" y2="232" />
+      <line x1="248" y1="8" x2="248" y2="232" />
+      <line x1="8" y1="66" x2="312" y2="66" />
+      <line x1="8" y1="124" x2="312" y2="124" />
+      <line x1="8" y1="182" x2="312" y2="182" />
+    </g>
+    <path
+      d="M70 168 q24 -52 78 -62 q56 -10 96 26"
+      fill="none"
+      stroke="#2a2218"
+      stroke-width="1.4"
+      opacity=".4"
+      stroke-dasharray="5 4"
+    />
+    <text x="206" y="106" font-family="EB Garamond,serif" font-size="7" font-style="italic" fill="#4d4233" opacity=".7">arcus Carpaticus</text>
+    <path
+      d="M20 56 Q160 6 300 64"
+      fill="none"
+      stroke="#9e3b2b"
+      stroke-width="1.1"
+      stroke-dasharray="2 4"
+    />
+    <g transform="translate(208,28) rotate(14)">
+      <rect x="-6" y="-4" width="12" height="8" fill="#2a2218" />
+      <line x1="-13" y1="0" x2="-7" y2="0" stroke="#2a2218" stroke-width="1.4" />
+      <line x1="7" y1="0" x2="13" y2="0" stroke="#2a2218" stroke-width="1.4" />
+      <rect x="-13" y="-3" width="5" height="6" fill="none" stroke="#2a2218" stroke-width=".9" />
+      <rect x="8" y="-3" width="5" height="6" fill="none" stroke="#2a2218" stroke-width=".9" />
+    </g>
+    <g transform="translate(146,128)">
+      <path d="M0 16 C -10 4 -10 -6 0 -6 C 10 -6 10 4 0 16 Z" fill="#9e3b2b" />
+      <circle cy="0" r="3.4" fill="#efe9da" />
+    </g>
+    <text x="146" y="158" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#2a2218" text-anchor="middle">46.77°N · 23.59°E</text>
+    <text x="146" y="170" font-family="EB Garamond,serif" font-size="8" font-style="italic" fill="#4d4233" text-anchor="middle">Cluj-Napoca - the old name re-attached, 1974</text>
+    <text x="160" y="214" font-family="IBM Plex Mono,monospace" font-size="6.5" letter-spacing="2" fill="#4d4233" text-anchor="middle" opacity=".8">WGS84 · SENTINEL-2 · OSM - NONDVM INCISVM</text>
+  </svg>
+</figure>
+
+The present layer barely needs carving. One datum - WGS84 - serves everyone; Sentinel-2
+re-images the country at ten metres every few days; volunteers revise the map faster than
+any censor could redact it. The old readings persist in new forms: _restitutio_ is now
+interpolation and training data, _rasura_ a blurred compound or a proprietary tile,
+_vacat_ nearly extinct.
+
+So the stone is left rough - a few orbital scratches, a pin, the coordinates of Cluj.
+Each generation has believed it finally finished the map. The wall knows better, and
+keeps space.
+
+> **Find.** Everyone now carries a survey the old regime would have killed for.
+
+_Nota._ The thirteenth stone is left mostly uncarved on purpose: Sentinel-2 re-images the
+country every few days, OSM edits the land by the minute, and the wall reserves space for
+whatever instrument comes next.
+
+| Reading    | Score | Verdict                                            |
+| ---------- | ----- | -------------------------------------------------- |
+| ORDINATIO  | 5     | one datum for everyone: WGS84 in every pocket      |
+| LITTERAE   | 5     | every place in every tongue; endonyms by policy    |
+| RESTITVTIO | 4     | restitutio becomes interpolation and training data |
+| CORRECTIO  | 5     | revision outruns the censor - edits by the minute  |
+| RASVRA     | 2.5   | new erasures: blurred pixels, proprietary tiles    |
+| VACAT      | 0.5   | the void is nearly extinct; one almost misses it   |
+
+</SqueezeToggle>
+
+</Section>
+
+<Section id="collatio" title="The comparison desk" rooms={['theatre', 'map']}>
+
+Place two stones side by side and collate their Six Readings, as an editor collates
+manuscripts. The instructive pair is not the distant one but the near one: Hereford
+(c. 1300) and Vesconte (1311) were cut within a decade of each other, and agree on
+almost nothing. **Drag the seam.**
+
+<CompareSlider
+  start={50}
+  ratio="4 / 3"
+  beforeLabel="Stela III · Herefordia · c. 1300"
+  afterLabel="Stela IV · Vesconte · 1311"
+  caption="Two readings of the same decade: a world ordered by scripture, and a coastline ordered by the compass. Both are drawn here as squeezes - the stone's negative, in the epigrapher's manner."
+>
+  {/* prettier-ignore */}
+  <svg
+    slot="before"
+    viewBox="0 0 320 240"
+    xmlns="http://www.w3.org/2000/svg"
+    role="img"
+    aria-label="T-O world map, east at top, with DACIA written in Scandinavia"
+  >
+    <rect width="320" height="240" fill="#efe9da" />
+    <circle cx="160" cy="120" r="106" fill="none" stroke="#2a2218" stroke-width="2" />
+    <circle cx="160" cy="120" r="98" fill="none" stroke="#2a2218" stroke-width=".8" />
+    <path d="M62 120 L258 120" stroke="#5e7a6a" stroke-width="4" opacity=".75" />
+    <path d="M160 120 L160 218" stroke="#5e7a6a" stroke-width="4" opacity=".75" />
+    <g font-family="Cinzel,serif" fill="#2a2218">
+      <text x="160" y="80" font-size="13" letter-spacing="3" text-anchor="middle">ASIA</text>
+      <text x="106" y="170" font-size="11" letter-spacing="2" text-anchor="middle">EVROPA</text>
+      <text x="216" y="170" font-size="11" letter-spacing="2" text-anchor="middle">AFRICA</text>
+    </g>
+    <text x="160" y="108" font-family="EB Garamond,serif" font-size="7.5" font-style="italic" fill="#9e3b2b" text-anchor="middle">Ierusalem</text>
+    <g transform="rotate(-18 110 188)">
+      <text x="86" y="192" font-family="Cinzel,serif" font-size="11" letter-spacing="2" fill="#9e3b2b">DACIA</text>
+    </g>
+    <text x="84" y="204" font-family="EB Garamond,serif" font-size="7" font-style="italic" fill="#4d4233">(Dania)</text>
+    <g font-family="EB Garamond,serif" font-size="8" font-style="italic" fill="#4d4233">
+      <text x="118" y="138">Gothia</text>
+      <text x="138" y="152">Scithia</text>
+      <text x="112" y="124">Cumania</text>
+    </g>
+  </svg>
+  {/* prettier-ignore */}
+  <svg
+    slot="after"
+    viewBox="0 0 320 240"
+    xmlns="http://www.w3.org/2000/svg"
+    role="img"
+    aria-label="Portolan chart: rhumb lines and Black Sea coast with perpendicular port names"
+  >
+    <rect width="320" height="240" fill="#efe9da" />
+    <g stroke="#9e3b2b" stroke-width=".45" opacity=".5">
+      <line x1="84" y1="120" x2="320" y2="120" />
+      <line x1="84" y1="120" x2="300" y2="0" />
+      <line x1="84" y1="120" x2="300" y2="240" />
+      <line x1="84" y1="120" x2="200" y2="0" />
+      <line x1="84" y1="120" x2="200" y2="240" />
+      <line x1="84" y1="120" x2="84" y2="0" />
+      <line x1="84" y1="120" x2="84" y2="240" />
+    </g>
+    <g transform="translate(84,120)">
+      <circle r="17" fill="#efe9da" stroke="#2a2218" stroke-width="1.2" />
+      <g stroke="#2a2218" stroke-width="1">
+        <line y1="-14" y2="14" />
+        <line x1="-14" x2="14" />
+        <line x1="-10" y1="-10" x2="10" y2="10" />
+        <line x1="-10" y1="10" x2="10" y2="-10" />
+      </g>
+      <path d="M0 -17 l4 10 l-4 -3 l-4 3 z" fill="#9e3b2b" />
+    </g>
+    <path
+      d="M236 0 q-8 36 -24 56 q-22 26 -18 44 q4 16 -8 30 q-16 18 -12 44 q3 22 -6 66"
+      fill="none"
+      stroke="#2a2218"
+      stroke-width="2"
+    />
+    <g font-family="EB Garamond,serif" font-size="8.5">
+      <text x="226" y="36" fill="#9e3b2b" transform="rotate(76 226 36)">licostomo</text>
+      <text x="196" y="104" fill="#2a2218" transform="rotate(82 196 104)">vicina?</text>
+      <text x="186" y="142" fill="#9e3b2b" transform="rotate(84 186 142)">costanza</text>
+      <text x="176" y="186" fill="#2a2218" transform="rotate(86 176 186)">moncastro</text>
+    </g>
+    <text x="276" y="150" font-family="Cinzel,serif" font-size="11" letter-spacing="2" fill="#2a2218" transform="rotate(-90 276 150)">MARE MAIVS</text>
+    <text x="30" y="216" font-family="EB Garamond,serif" font-size="8.5" font-style="italic" fill="#4d4233" opacity=".75">terra - vacat</text>
+  </svg>
+</CompareSlider>
+
+### Collatio · Stela III ·CONTRA· Stela IV
+
+| Reading    | Herefordia | Vesconte | Δ    | What divides them                          |
+| ---------- | ---------- | -------- | ---- | ------------------------------------------ |
+| ORDINATIO  | 0.5        | 2.5      | +2   | their geometric armatures part ways        |
+| LITTERAE   | 2          | 3        | +1   | they name the land in different tongues    |
+| RESTITVTIO | 5          | 1        | −4   | one inherits; the other walks              |
+| CORRECTIO  | 0          | 5        | +5   | one is verified; the other merely asserted |
+| RASVRA     | 1          | 0.5      | −0.5 | what is suppressed divides them            |
+| VACAT      | 5          | 5        | 0    | their emptiness is alike                   |
+
+The collation returns a verdict the chronology hides. On five of six readings these two
+sheets are opposites; on the sixth they are identical. Both leave the interior of this
+country blank - one because scripture had already answered the question, the other
+because no pilot had thought to ask it. **Emptiness is the only reading they share, and
+they arrive at it by opposite roads.**
+
+</Section>
+
+<Section id="trench" title="Below the wall, the trench" rooms={['archive', 'border']}>
+
+The stones above were lifted from the layers below. Depth is time: one millimetre of
+earth for every year before the present. Ptolemy waits 1.87 metres down.
+
+The same thirteen maps, in situ. Read the section from the topsoil downward; the deeper
+you scroll, the older the layer. A sterile band of twelve centuries lies between the
+woodcuts and the road-maps of Rome.
+
+<Scrollytelling align="right" label="The core sample, topsoil to bedrock">
+{/* prettier-ignore */}
+<svg
+  slot="graphic"
+  data-scrolly-figure
+  viewBox="0 0 280 620"
+  xmlns="http://www.w3.org/2000/svg"
+  style="max-height:70vh;width:auto"
+  aria-label="Core sample, 0 to 188 centimetres: thirteen strata at their true depth, with a sterile band of twelve centuries between them. Select a stratum to read it."
+>
+  <rect width="280" height="620" fill="#0e0c08" />
+  <text x="12" y="20" font-family="IBM Plex Mono,monospace" font-size="12" letter-spacing="2" fill="#c0ad88">CORE</text>
+  <rect x="12" y="30" width="58" height="560" fill="none" stroke="#c0ad88" stroke-width="1" opacity=".5" />
+  <g stroke="#7d8b99" stroke-width=".8" opacity=".5">
+    <path d="M13 200 l56 -10" />
+    <path d="M13 225 l56 -10" />
+    <path d="M13 250 l56 -10" />
+    <path d="M13 275 l56 -10" />
+    <path d="M13 300 l56 -10" />
+    <path d="M13 325 l56 -10" />
+    <path d="M13 350 l56 -10" />
+    <path d="M13 375 l56 -10" />
+    <path d="M13 400 l56 -10" />
+    <path d="M13 425 l56 -10" />
+    <path d="M13 450 l56 -10" />
+    <path d="M13 475 l56 -10" />
+    <path d="M13 500 l56 -10" />
+    <path d="M13 525 l56 -10" />
+  </g>
+  <text x="41" y="370" font-family="IBM Plex Mono,monospace" font-size="11" letter-spacing="1" fill="#7d8b99" text-anchor="middle" transform="rotate(-90 41 370)">HIATVS · XII SAEC.</text>
+  <a href="#stratum-satellite" aria-label="Stratum 0, Satelles, 0 centimetres">
+    <rect x="92" y="37" width="180" height="22" fill="transparent" />
+    <rect x="13" y="30" width="56" height="32.8" fill="#cdc2ab" opacity=".85" />
+    <line x1="70" y1="30" x2="92" y2="48" stroke="#c0ad88" stroke-width=".8" opacity=".38" />
+    <text x="98" y="52" font-family="IBM Plex Mono,monospace" font-size="15" fill="#c0ad88">0 · SATELLES</text>
+  </a>
+  <a href="#stratum-secret" aria-label="Stratum I, Saeculum Secretum, 11 centimetres">
+    <rect x="92" y="81" width="180" height="22" fill="transparent" />
+    <rect x="13" y="62.8" width="56" height="15.5" fill="#cdc2ab" opacity=".85" />
+    <line x1="70" y1="62.8" x2="92" y2="92" stroke="#c0ad88" stroke-width=".8" opacity=".38" />
+    <text x="98" y="96" font-family="IBM Plex Mono,monospace" font-size="15" fill="#c0ad88">11 · SECRETVM</text>
+  </a>
+  <a href="#stratum-szathmari" aria-label="Stratum II, Charta Romaniei Meridionale, 16 centimetres">
+    <rect x="92" y="125" width="180" height="22" fill="transparent" />
+    <rect x="13" y="78.3" width="56" height="8.6" fill="#cdc2ab" opacity=".85" />
+    <line x1="70" y1="78.3" x2="92" y2="136" stroke="#c0ad88" stroke-width=".8" opacity=".38" />
+    <text x="98" y="140" font-family="IBM Plex Mono,monospace" font-size="15" fill="#c0ad88">16 · CHARTA</text>
+  </a>
+  <a href="#stratum-russia" aria-label="Stratum III, Russia, 19 centimetres">
+    <rect x="92" y="169" width="180" height="22" fill="transparent" />
+    <rect x="13" y="86.9" width="56" height="19.1" fill="#cdc2ab" opacity=".85" />
+    <line x1="70" y1="86.9" x2="92" y2="180" stroke="#c0ad88" stroke-width=".8" opacity=".38" />
+    <text x="98" y="184" font-family="IBM Plex Mono,monospace" font-size="15" fill="#c0ad88">19 · RVSSIA</text>
+  </a>
+  <a href="#stratum-josephine" aria-label="Stratum IV, Iosephina, 26 centimetres">
+    <rect x="92" y="213" width="180" height="22" fill="transparent" />
+    <rect x="13" y="106" width="56" height="10.1" fill="#cdc2ab" opacity=".85" />
+    <line x1="70" y1="106" x2="92" y2="224" stroke="#c0ad88" stroke-width=".8" opacity=".38" />
+    <text x="98" y="228" font-family="IBM Plex Mono,monospace" font-size="15" fill="#c0ad88">26 · IOSEPHINA</text>
+  </a>
+  <a href="#stratum-cantemir" aria-label="Stratum V, Cantemir, 29 centimetres">
+    <rect x="92" y="257" width="180" height="22" fill="transparent" />
+    <rect x="13" y="116.1" width="56" height="11" fill="#cdc2ab" opacity=".85" />
+    <line x1="70" y1="116.1" x2="92" y2="268" stroke="#c0ad88" stroke-width=".8" opacity=".38" />
+    <text x="98" y="272" font-family="IBM Plex Mono,monospace" font-size="15" fill="#c0ad88">29 · CANTEMIR</text>
+  </a>
+  <a href="#stratum-cantacuzino" aria-label="Stratum VI, Cantacuzino, 33 centimetres">
+    <rect x="92" y="301" width="180" height="22" fill="transparent" />
+    <rect x="13" y="127.1" width="56" height="31.3" fill="#cdc2ab" opacity=".85" />
+    <line x1="70" y1="127.1" x2="92" y2="312" stroke="#c0ad88" stroke-width=".8" opacity=".38" />
+    <text x="98" y="316" font-family="IBM Plex Mono,monospace" font-size="15" fill="#c0ad88">33 · CANTACVZ.</text>
+  </a>
+  <a href="#stratum-ortelius" aria-label="Stratum VII, Ortelius, 43 centimetres">
+    <rect x="92" y="345" width="180" height="22" fill="transparent" />
+    <rect x="13" y="158.4" width="56" height="18.8" fill="#cdc2ab" opacity=".85" />
+    <line x1="70" y1="158.4" x2="92" y2="356" stroke="#c0ad88" stroke-width=".8" opacity=".38" />
+    <text x="98" y="360" font-family="IBM Plex Mono,monospace" font-size="15" fill="#c0ad88">43 · ORTELIVS</text>
+  </a>
+  <a href="#stratum-honterus" aria-label="Stratum VIII, Honterus, 49 centimetres">
+    <rect x="92" y="389" width="180" height="22" fill="transparent" />
+    <rect x="13" y="177.2" width="56" height="9" fill="#cdc2ab" opacity=".85" />
+    <line x1="70" y1="177.1" x2="92" y2="400" stroke="#c0ad88" stroke-width=".8" opacity=".38" />
+    <text x="98" y="404" font-family="IBM Plex Mono,monospace" font-size="15" fill="#c0ad88">49 · HONTERVS</text>
+  </a>
+  <a href="#stratum-vesconte" aria-label="Stratum IX, Vesconte, 72 centimetres">
+    <rect x="92" y="433" width="180" height="22" fill="transparent" />
+    <rect x="13" y="241" width="56" height="4" fill="#b4502e" opacity=".85" />
+    <line x1="70" y1="243" x2="92" y2="444" stroke="#c0ad88" stroke-width=".8" opacity=".38" />
+    <text x="98" y="448" font-family="IBM Plex Mono,monospace" font-size="15" fill="#c0ad88">72 · VESCONTE</text>
+  </a>
+  <a href="#stratum-hereford" aria-label="Stratum X, Hereford, 73 centimetres">
+    <rect x="92" y="477" width="180" height="22" fill="transparent" />
+    <rect x="13" y="245.5" width="56" height="4" fill="#b4502e" opacity=".85" />
+    <line x1="70" y1="246.3" x2="92" y2="488" stroke="#c0ad88" stroke-width=".8" opacity=".38" />
+    <text x="98" y="492" font-family="IBM Plex Mono,monospace" font-size="15" fill="#c0ad88">73 · HEREFORD</text>
+  </a>
+  <a href="#stratum-peutinger" aria-label="Stratum XI, Peutingeriana, 168 centimetres">
+    <rect x="92" y="521" width="180" height="22" fill="transparent" />
+    <rect x="13" y="529.2" width="56" height="53.8" fill="#c9962e" opacity=".85" />
+    <line x1="70" y1="529.2" x2="92" y2="532" stroke="#c0ad88" stroke-width=".8" opacity=".38" />
+    <text x="98" y="536" font-family="IBM Plex Mono,monospace" font-size="15" fill="#c0ad88">168 · PEVTINGER</text>
+  </a>
+  <a href="#stratum-ptolemy" aria-label="Stratum XII, Ptolemaeus, 188 centimetres">
+    <rect x="92" y="565" width="180" height="22" fill="transparent" />
+    <rect x="13" y="584" width="56" height="6" fill="#c9962e" opacity=".85" />
+    <line x1="70" y1="588.8" x2="92" y2="576" stroke="#c0ad88" stroke-width=".8" opacity=".38" />
+    <text x="98" y="580" font-family="IBM Plex Mono,monospace" font-size="15" fill="#c0ad88">188 · PTOLEMAEVS</text>
+  </a>
+  <text x="12" y="610" font-family="IBM Plex Mono,monospace" font-size="11" fill="#c0ad88">0 → 188 cm</text>
+</svg>
+
+<div data-scrolly-step>
+
+<h4 id="stratum-satellite">Stratum 0 · 0.0 cm · Satelles</h4>
+
+Topsoil: loose, churned daily, full of living roots. Material from every layer below
+works upward through it - a Dacian name on a city-limit sign, Austrian sheet-lines under
+a cadastral grid, the secret century's contours georeferenced and free.
+
+_Field note._ Do not expect this horizon to consolidate. It is re-deposited continuously;
+by the time the section drawing is inked, the surface has changed.
+
+</div>
+
+<div data-scrolly-step>
+
+<h4 id="stratum-secret">Stratum I · 11.0 cm · Saeculum Secretum</h4>
+
+Hard, laminated layer just under the topsoil, machine-regular and chemically distinct -
+classified ink. Two facies interleave: a true facies, decimetre-accurate, sealed on
+deposition; and a public facies, deliberately deformed, scattered loose above it.
+
+_Field note._ A renaming event (1964) cuts through the layer like a burnt horizon -
+hundreds of toponyms replaced in a single stroke of state. Excavation of the true facies
+became possible only after 1989; geo-spatial.org has since georeferenced the sheets, which
+is how this trench can draw them at all.
+
+</div>
+
+<div data-scrolly-step>
+
+<h4 id="stratum-szathmari">Stratum II · 16.2 cm · Charta României Meridionale</h4>
+
+Bright, well-sorted public layer - the first deposit in centuries laid down to be seen.
+The bedding planes are borrowed (Austrian, and Russian beneath), the inheritance openly
+stamped rather than concealed.
+
+_Field note._ A script transition runs through the layer like a colour change in the soil
+
+- Cyrillic ghosts at the base, Latin throughout the upper part. The label ROMÂNIA appears
+  here for the first time in the section.
+
+</div>
+
+<div data-scrolly-step>
+
+<h4 id="stratum-russia">Stratum III · 19.1 cm · Russia</h4>
+
+Thin but structurally decisive layer: the first in the section laid on a computed
+framework. In plan the deposit resolves into a lattice of fixed points; everything
+between them is interpolation, honestly labelled as such.
+
+_Field note._ Inclusions carry double markings - Romanian content, Cyrillic casing - the
+second such transliteration veil in the sequence (compare Stratum VI). The lattice itself
+persists into every layer above.
+
+</div>
+
+<div data-scrolly-step>
+
+<h4 id="stratum-josephine">Stratum IV · 25.5 cm · Iosephina</h4>
+
+The first machine-regular layer in the section: uniform thickness, standard inclusions, a
+single depositional format imposed across hundreds of sheets. The layer's lower contact is
+abrupt - it inherits almost nothing from below, having been walked fresh.
+
+_Field note._ The deposit was sealed immediately after formation. What the trench exposes
+here was opened to scholarship only generations later; treat the SECRETVM stamping as part
+of the artifact, not damage to it.
+
+</div>
+
+<div data-scrolly-step>
+
+<h4 id="stratum-cantemir">Stratum V · 28.9 cm · Cantemir</h4>
+
+Rich occupation layer between the Carpathian scarp and the Dniester. Astonishing
+find-density - some eight hundred named inclusions - but the spatial relationships drift,
+as in material redeposited from memory rather than laid down in place.
+
+_Field note._ Primary deposition occurred abroad; the layer reached this trench only in
+1737, fourteen years after its maker's death. The richest pre-instrumental layer in the
+entire section.
+
+</div>
+
+<div data-scrolly-step>
+
+<h4 id="stratum-cantacuzino">Stratum VI · 32.6 cm · Cantacuzino</h4>
+
+Dense occupation layer south of the mountain line. The matrix is administrative -
+tithe-rolls, county bounds, monastic foundations - deposited by the very offices that
+governed the ground. Inclusions are bilingual in a peculiar way: Romanian content, Greek
+casing.
+
+_Field note._ Deposition was nearly a total loss. The layer survives as a few sealed
+pockets and one reduced re-deposit of 1718; handle as unique.
+
+</div>
+
+<div data-scrolly-step>
+
+<h4 id="stratum-ortelius">Stratum VII · 43.1 cm · Ortelius</h4>
+
+A strange, inverted layer: modern matrix, ancient inclusions. The frame and coastline date
+the deposit to the late 16th century, but every artifact within it is 2nd-century
+material, re-set with antiquarian care - spolia by design rather than by thrift.
+
+_Field note._ The layer's most informative feature is what is missing. Contemporary
+material was screened out before deposition; the excavator finds Trajan's bridge but not a
+single Ottoman sherd. Erasure of the present, executed as scholarship.
+
+</div>
+
+<div data-scrolly-step>
+
+<h4 id="stratum-honterus">Stratum VIII · 49.4 cm · Honterus</h4>
+
+First substantial layer above the sterile band: a true local deposit at last, after twelve
+barren centuries. The matrix is dense and domestic - settlement debris evenly spread to the
+mountain ring, trilingual inclusions throughout, German consistently uppermost in the
+sorting.
+
+_Field note._ The layer survives in a single fragile fragment. Its stratigraphic importance
+is out of all proportion to its size: this is where the sequence restarts, and everything
+above it is, in some measure, redeposited Honterus.
+
+</div>
+
+<div data-scrolly-step>
+
+<h4 id="stratum-vesconte">
+  Stratum IX · 71.5 cm · Vesconte <em>(lens)</em>
+</h4>
+
+Second lens within the sterile band, water-laid: a bright, sharply sorted strip of coastal
+material against the section's east face, fading to nothing within a hand's breadth of the
+shoreline. The sorting is diagnostic - deposited by repeated tides of traffic, each voyage
+reworking the last.
+
+_Field note._ Where the Hereford lens is all matrix and no measurements, this one is all
+measurement and no matrix. The two lenses together bracket the hiatus: faith without survey
+above, survey without hinterland below.
+
+</div>
+
+<div data-scrolly-step>
+
+<h4 id="stratum-hereford">
+  Stratum X · 72.6 cm · Hereford <em>(lens)</em>
+</h4>
+
+Thin lens within the sterile band - not a layer of the local sequence at all, but
+wind-blown material from another deposit entirely. In section it reads as imported fill:
+theological matrix, no measurable inclusions, the toponym DACIA found displaced far to the
+north of its source.
+
+_Field note._ Absence of local material is the find. Twelve centuries of this country
+produced no surviving map of itself; what blew in instead was other people's memory of it.
+
+</div>
+
+<div data-scrolly-step>
+
+<h4 id="stratum-peutinger">Stratum XI · 167.6 cm · Peutingeriana</h4>
+
+Thick, compressed layer directly over the Ptolemaic scatter. The deposit is linear:
+road-gravel in section, stations at measured intervals, almost no material between routes.
+Off the alignments the soil is clean - not erased, simply never deposited.
+
+_Field note._ The layer is chronologically disturbed. Material from the 1st century
+(Pompeii) lies beside material from the 4th (Constantinople); the medieval re-deposition
+c. 1200 flattened three centuries into one horizon. Treat dates within the layer with
+suspicion; trust the mileages.
+
+</div>
+
+<div data-scrolly-step>
+
+<h4 id="stratum-ptolemy">Stratum XII · 187.6 cm · Ptolemaeus</h4>
+
+Deepest cultural layer of the trench, immediately above sterile soil. The deposit is not a
+drawn artifact but a dense scatter of coordinate pairs - the residue of itineraries, army
+reports from Trajan's wars, and Marinus of Tyre's earlier compilation, audited once by an
+Alexandrian and then by no one for a thousand years.
+
+_Field note._ The find is in suspiciously good condition. Numbers do not fade the way
+parchment does; the error pattern (longitudes stretched by caravan-time) is itself
+diagnostic of the survey method.
+
+</div>
+
+</Scrollytelling>
+
+### The section, seal by seal
+
+The descent above is narrative; the readings are the apparatus. Each stratum was
+scored on the Five Seals in the field, surface to bedrock.
+
+**Stratum 0 · 0.0 cm · Satelles**
+
+| Seal       | Score | Reading                                                |
+| ---------- | ----- | ------------------------------------------------------ |
+| MENSVRA    | 5     | ten-metre pixels every few days, free of charge        |
+| AVCTORITAS | 2.5   | authority dissolved among states, firms and volunteers |
+| NOMINA     | 5     | five language layers deep on an average Tuesday        |
+| LIMES      | 5     | treaty lines to the centimetre - and disputed pixels   |
+| SILENTIVM  | 2     | openness with deliberate smudges                       |
+
+**Stratum I · 11.0 cm · Saeculum Secretum**
+
+| Seal       | Score | Reading                                                 |
+| ---------- | ----- | ------------------------------------------------------- |
+| MENSVRA    | 5     | 2,118 sheets at 1:20,000, built for artillery           |
+| AVCTORITAS | 5     | the state entire, twice over - Bucharest's and Moscow's |
+| NOMINA     | 4     | standardised Romanian, by decree                        |
+| LIMES      | 5     | every boundary surveyed, none publishable               |
+| SILENTIVM  | 4.5   | the century's defining product is the withheld sheet    |
+
+**Stratum II · 16.2 cm · Charta României Meridionale**
+
+| Seal       | Score | Reading                                       |
+| ---------- | ----- | --------------------------------------------- |
+| MENSVRA    | 4     | 1:57,600 across one hundred and twelve sheets |
+| AVCTORITAS | 4     | Cuza's young state, printing itself           |
+| NOMINA     | 4     | the alphabet changes hands mid-country        |
+| LIMES      | 4     | the union of 1859 drawn as one fabric         |
+| SILENTIVM  | 2     | openness as policy - the anti-secret map      |
+
+**Stratum III · 19.1 cm · Russia**
+
+| Seal       | Score | Reading                                                  |
+| ---------- | ----- | -------------------------------------------------------- |
+| MENSVRA    | 4     | the Principalities' first geodetic skeleton              |
+| AVCTORITAS | 5     | the occupier as geodesist                                |
+| NOMINA     | 3     | Бухарестъ for București - the alphabet of administration |
+| LIMES      | 4     | treaty lines surveyed after Adrianople                   |
+| SILENTIVM  | 4     | made for marching, not for sale                          |
+
+**Stratum IV · 25.5 cm · Iosephina**
+
+| Seal       | Score | Reading                                              |
+| ---------- | ----- | ---------------------------------------------------- |
+| MENSVRA    | 4.5   | 1:28,800 - every mill and ford in the ledger         |
+| AVCTORITAS | 5     | the Habsburg staff entire                            |
+| NOMINA     | 4     | German official, the village voices beneath          |
+| LIMES      | 4     | military edges: gradients, fords, bridge-loads       |
+| SILENTIVM  | 4.5   | the best map of the land, which the land may not see |
+
+**Stratum V · 28.9 cm · Cantemir**
+
+| Seal       | Score | Reading                                                        |
+| ---------- | ----- | -------------------------------------------------------------- |
+| MENSVRA    | 2     | drawn from a prince's memory, not a plane table                |
+| AVCTORITAS | 3.5   | the author is the sovereign - and the exile                    |
+| NOMINA     | 4.5   | the densest naming yet: counties, rivers, eight hundred places |
+| LIMES      | 3.5   | ținut bounds drawn as if administration were geometry          |
+| SILENTIVM  | 1.5   | exile hides nothing; it remembers everything                   |
+
+**Stratum VI · 32.6 cm · Cantacuzino**
+
+| Seal       | Score | Reading                                                    |
+| ---------- | ----- | ---------------------------------------------------------- |
+| MENSVRA    | 2     | local knowledge in loose geometry                          |
+| AVCTORITAS | 3     | a stolnic's scholarship under a prince's seal              |
+| NOMINA     | 4     | five hundred toponyms, Greek dress over Romanian speech    |
+| LIMES      | 3     | county bounds dotted in - the state rehearsing its outline |
+| SILENTIVM  | 1.5   | little silence; the point was to show everything           |
+
+**Stratum VII · 43.1 cm · Ortelius**
+
+| Seal       | Score | Reading                                          |
+| ---------- | ----- | ------------------------------------------------ |
+| MENSVRA    | 2.5   | Renaissance frame, Ptolemaic furniture           |
+| AVCTORITAS | 1     | a scholar's web of correspondents, not a state   |
+| NOMINA     | 3     | Latin names at Trajan's high-water mark          |
+| LIMES      | 2.5   | provincial boundaries restored from the authors  |
+| SILENTIVM  | 4     | the sixteenth century is the one thing not shown |
+
+**Stratum VIII · 49.4 cm · Honterus**
+
+| Seal       | Score | Reading                                                         |
+| ---------- | ----- | --------------------------------------------------------------- |
+| MENSVRA    | 2     | paced and remembered, never triangulated                        |
+| AVCTORITAS | 1     | a humanist's press, no chancery behind it                       |
+| NOMINA     | 4     | German over Hungarian over Romanian - the Saxon order of speech |
+| LIMES      | 2     | the Carpathian ring is frame, wall and border at once           |
+| SILENTIVM  | 1     | little withheld; this is a portrait, not a dossier              |
+
+**Stratum IX · 71.5 cm · Vesconte _(lens)_**
+
+| Seal       | Score | Reading                                                     |
+| ---------- | ----- | ----------------------------------------------------------- |
+| MENSVRA    | 3     | compass-true at the waterline, unmeasured one league inland |
+| AVCTORITAS | 1.5   | merchant money and pilot knowledge, no crown behind them    |
+| NOMINA     | 2.5   | counting-house names: Licostomo, Moncastro, Costanza        |
+| LIMES      | 1     | the coast is the only line that matters                     |
+| SILENTIVM  | 4.5   | the interior is not hidden - it is simply not asked about   |
+
+**Stratum X · 72.6 cm · Hereford _(lens)_**
+
+| Seal       | Score | Reading                                                           |
+| ---------- | ----- | ----------------------------------------------------------------- |
+| MENSVRA    | 0     | no measure at all; the world as a diagram of salvation            |
+| AVCTORITAS | 3     | the Church's authority, textual and total                         |
+| NOMINA     | 1.5   | DACIA has left for Denmark; Gothia and Scythia squat in its house |
+| LIMES      | 0.5   | no edges conceived below the level of the world itself            |
+| SILENTIVM  | 5     | the land persists; the map has stopped looking                    |
+
+**Stratum XI · 167.6 cm · Peutingeriana**
+
+| Seal       | Score | Reading                                               |
+| ---------- | ----- | ----------------------------------------------------- |
+| MENSVRA    | 1     | distances true in miles, false in every direction     |
+| AVCTORITAS | 4     | the cursus publicus - logistics as worldview          |
+| NOMINA     | 2     | stations in clerk's Latin: Drubetis, Apula, Porolisso |
+| LIMES      | 1     | no frontier drawn; the road is the edge of attention  |
+| SILENTIVM  | 5     | everything off-route is silence                       |
+
+**Stratum XII · 187.6 cm · Ptolemaeus**
+
+| Seal       | Score | Reading                                                               |
+| ---------- | ----- | --------------------------------------------------------------------- |
+| MENSVRA    | 3     | longitudes from travel-times - measured, but by the clock of caravans |
+| AVCTORITAS | 2     | imperial archives read by a private scholar in Alexandria             |
+| NOMINA     | 3     | Dacian names in Greek dress: forty-four poleis, fifteen tribes        |
+| LIMES      | 2     | rivers stand in for borders - Tisia, Danube, Hierasus                 |
+| SILENTIVM  | 4     | beyond the catalogued towns, the interior goes quiet                  |
+
+</Section>
+
+<Section id="sectio" title="Section comparison" rooms={['archive', 'theatre']}>
+
+Overlay the Five-Seal profiles of two strata and read the deltas, as one reads two faces
+of a cut. Three sections are worth taking.
+
+### Sectio I · Stratum XII ·SVPER· Stratum IV
+
+<RadarChart
+  axes={['MENSVRA', 'AVCTORITAS', 'NOMINA', 'LIMES', 'SILENTIVM']}
+  interactive
+  caption="Ptolemy (c. 150) against the Josephine Survey (1769–73): sixteen centuries, and the state arrives."
+  series={[
+    { label: 'XII · Ptolemaeus', values: [0.6, 0.4, 0.6, 0.4, 0.8] },
+    { label: 'IV · Iosephina', values: [0.9, 1, 0.8, 0.8, 0.9] },
+  ]}
+/>
+
+Every seal rises, but not equally. _Mensura_ gains half again; _auctoritas_ more than
+doubles. The land did not become more measurable between Alexandria and Vienna - it became
+more **owned**, and measurement followed ownership rather than the reverse. Note that
+_silentium_ rises too: the more accurately the state saw, the more carefully it declined to
+say.
+
+### Sectio II · Stratum IX ·SVPER· Stratum I
+
+<RadarChart
+  axes={['MENSVRA', 'AVCTORITAS', 'NOMINA', 'LIMES', 'SILENTIVM']}
+  interactive
+  caption="Vesconte (1311) against the secret century (1916–89): two precisions, one merchant, one military."
+  series={[
+    { label: 'IX · Vesconte', values: [0.6, 0.3, 0.5, 0.2, 0.9] },
+    { label: 'I · Saec. Secretum', values: [1, 1, 0.8, 1, 0.9] },
+  ]}
+/>
+
+The two most precise instruments in the section, six centuries apart, and their
+_silentium_ scores are effectively identical - 4.5 out of 5 on both. What changes is the
+reason. The pilot withheld nothing; he simply never surveyed the interior. The general
+staff surveyed everything and withheld it on purpose. **The same silence, once a limit and
+once a policy.**
+
+### Sectio III · Stratum I ·SVPER· Stratum 0
+
+<RadarChart
+  axes={['MENSVRA', 'AVCTORITAS', 'NOMINA', 'LIMES', 'SILENTIVM']}
+  interactive
+  caption="The secret century against the present survey: measure holds, authority dissolves, silence lifts."
+  series={[
+    { label: 'I · Saec. Secretum', values: [1, 1, 0.8, 1, 0.9] },
+    { label: '0 · Satelles', values: [1, 0.5, 1, 1, 0.4] },
+  ]}
+/>
+
+_Mensura_ and _limes_ do not move: both layers measure to the limit of their instruments.
+_Auctoritas_ halves and _silentium_ falls by more than half - the only reversal of that
+size anywhere in the section. Authority withdrew and the silence lifted together, which is
+the argument of this trench in a single pair of deltas.
+
+</Section>
+
+<Section id="sondaje" title="The test pits" rooms={['border', 'city']}>
+
+Sink a pit on a single place and watch its name change as you pass through the layers - an
+artifact traced through every stratum it survives. _Extra muros_ means the sheet does not
+cover the ground; _absent_ means it covers the ground and declines to name it.
+
+### Pit 1 · SARMIZEGETVSA
+
+Two places share the name, forty kilometres apart: Sarmizegetusa Regia, the Dacian royal
+seat in the Orăștie Mountains, and colonia Ulpia Traiana Sarmizegetusa in Hațeg country.
+The pit is sunk on the colonia - within sight of Densuș.
+
+| Stratum         | Name found            | Tongue          | Note                                                                           |
+| --------------- | --------------------- | --------------- | ------------------------------------------------------------------------------ |
+| 0 · Satelles    | Sarmizegetusa         | Romanian        | the colonia's village keeps the name; Regia is a UNESCO site                   |
+| I · Secretum    | Sarmizegetusa         | Romanian, Hung. | the village of Grădiștea (Várhely), formally renamed in 1941                   |
+| II · Charta     | _extra muros_         | -               | the Charta covers Wallachia, not Hațeg country                                 |
+| III · Russia    | _extra muros_         | -               | the Russian sheets stop at the mountains                                       |
+| IV · Iosephina  | Várhely               | Hungarian       | "castle place" over the colonia's ruins                                        |
+| V · Cantemir    | _extra muros_         | -               | Moldavia only                                                                  |
+| VI · Cantacuz.  | _extra muros_         | -               | Wallachia only                                                                 |
+| VII · Ortelius  | Zarmizegethusa regia  | Latin           | restored to the sheet from the ancient authors                                 |
+| VIII · Honterus | Várhely _(uncertain)_ | Hungarian       | the village existed; whether the single surviving print marks it is unverified |
+| IX · Vesconte   | _absent_              | -               | a coastal chart has no use for an inland ruin                                  |
+| X · Hereford    | _absent_              | -               | the region itself has dissolved into Gothia and Scythia                        |
+| XI · Peutinger  | Sarmategte            | Latin           | a road station on the Tibiscum line, miles marked                              |
+| XII · Ptolemy   | Zarmizegethousa       | Greek, Dacian   | the royal seat - βασίλειον - of Decebalus                                      |
+
+### Pit 2 · APVLVM
+
+Apulum - Bălgrad - Weissenburg - Karlsburg - Alba Iulia: one hill above the Mureș, five
+names, every empire leaving its label on the gate.
+
+| Stratum         | Name found    | Tongue         | Note                                                      |
+| --------------- | ------------- | -------------- | --------------------------------------------------------- |
+| 0 · Satelles    | Alba Iulia    | Romanian       | the union city of 1918                                    |
+| I · Secretum    | Alba Iulia    | Romanian       | standardised on the secret sheets                         |
+| II · Charta     | _extra muros_ | -              | Transylvania is not on the Charta                         |
+| III · Russia    | _extra muros_ | -              | beyond the Russian survey                                 |
+| IV · Iosephina  | Karlsburg     | German         | the citadel cut for Charles VI, 1715–38, renames the town |
+| V · Cantemir    | _extra muros_ | -              | Moldavia only                                             |
+| VI · Cantacuz.  | _extra muros_ | -              | Wallachia only                                            |
+| VII · Ortelius  | Apulum        | Latin          | the legion town restored to the sheet                     |
+| VIII · Honterus | Weissenburg   | German, Slavic | Saxon name first; Slavic Bălgrad lies beneath it          |
+| IX · Vesconte   | _absent_      | -              | far inland of any pilot's interest                        |
+| X · Hereford    | _absent_      | -              | no town of this country is named                          |
+| XI · Peutinger  | Apula         | Latin          | the vulgar spelling of a road-book hand                   |
+| XII · Ptolemy   | Apoulon       | Greek, Dacian  | a Dacian name in Greek dress                              |
+
+### Pit 3 · NAPOCA
+
+The Roman name slept for eighteen centuries under Klausenburg, Kolozsvár and Cluj - and
+was re-attached by decree in 1974. A toponym excavated and re-used: spolia in city limits.
+
+| Stratum         | Name found              | Tongue        | Note                                       |
+| --------------- | ----------------------- | ------------- | ------------------------------------------ |
+| 0 · Satelles    | Cluj-Napoca             | Romanian      | the Roman name re-attached by decree, 1974 |
+| I · Secretum    | Cluj                    | Romanian      | on the classified sheets, plain Cluj       |
+| II · Charta     | _extra muros_           | -             | north of the Charta                        |
+| III · Russia    | _extra muros_           | -             | beyond the Russian survey                  |
+| IV · Iosephina  | Klausenburg / Kolozsvár | German, Hung. | German official, Hungarian beside it       |
+| V · Cantemir    | _extra muros_           | -             | Moldavia only                              |
+| VI · Cantacuz.  | _extra muros_           | -             | Wallachia only                             |
+| VII · Ortelius  | Napoca                  | Latin         | restored from Ptolemy and the itineraries  |
+| VIII · Honterus | Clausenburg             | German        | the Saxon town, drawn by a man who knew it |
+| IX · Vesconte   | _absent_                | -             | no rhumb line reaches the Someș            |
+| X · Hereford    | _absent_                | -             | the map has stopped looking                |
+| XI · Peutinger  | Napoca                  | Latin         | a station on the road to Porolissum        |
+| XII · Ptolemy   | Napouka                 | Greek, Dacian | a Dacian name in Greek transliteration     |
+
+### Pit 4 · DROBETA
+
+The Danube crossing: Trajan's bridge, the Tower of Severin, a town founded in 1833, and a
+hyphen added in 1972 to stitch the Roman name back on. The pit straddles the river road.
+
+| Stratum         | Name found                  | Tongue   | Note                                                           |
+| --------------- | --------------------------- | -------- | -------------------------------------------------------------- |
+| 0 · Satelles    | Drobeta-Turnu Severin       | Romanian | hyphenated back to its Roman self in 1972                      |
+| I · Secretum    | Turnu Severin               | Romanian | a county seat on the artillery sheets                          |
+| II · Charta     | Turnu-Severinu              | Romanian | a town barely thirty years old when printed                    |
+| III · Russia    | Turnu Severin _(uncertain)_ | Romanian | the survey straddles the town's founding, 1833                 |
+| IV · Iosephina  | _extra muros_               | -        | Oltenia lies outside the Transylvanian survey                  |
+| V · Cantemir    | _extra muros_               | -        | Moldavia only                                                  |
+| VI · Cantacuz.  | Severin - ruin              | Romanian | the Tower of Severin remembered; the Banat of Severin attested |
+| VII · Ortelius  | Drubetis · Pons Traiani     | Latin    | Trajan's bridge drawn across the Danube                        |
+| VIII · Honterus | _extra muros_               | -        | beyond the Carpathian ring                                     |
+| IX · Vesconte   | _absent_                    | -        | far upstream of any pilot's chart                              |
+| X · Hereford    | _absent_                    | -        | the crossing survives only in the authors                      |
+| XI · Peutinger  | Drubetis                    | Latin    | first station north of the river on the Lederata road          |
+| XII · Ptolemy   | _absent_                    | -        | not securely among Ptolemy's forty-four poleis                 |
+
+Four pits, one pattern. A name survives in one of three ways: because an empire wrote it
+down (Apulum, Napoca), because a road ran through it (Drubetis, Sarmategte), or because a
+later state decided to dig it up and re-attach it (Cluj-**Napoca**, 1974;
+**Drobeta**-Turnu Severin, 1972). None of the three has anything to do with whether people
+kept living there.
+
+</Section>
+
+## Finds shed
+
+### Scale anchors · the Five Seals
+
+| Seal       | 0                          | 5                                          |
+| ---------- | -------------------------- | ------------------------------------------ |
+| MENSVRA    | symbolic, unmeasured space | geodetic triangulation & projection        |
+| AVCTORITAS | private scholar's hand     | the state's full military apparatus        |
+| NOMINA     | sparse, monolingual        | dense, five or more language layers        |
+| LIMES      | no edges conceived         | surveyed treaty lines                      |
+| SILENTIVM  | little withheld            | structural or strategic silence throughout |
+
+### Scale anchors · the Six Readings
+
+| Reading    | 0                      | 5                                     |
+| ---------- | ---------------------- | ------------------------------------- |
+| ORDINATIO  | topological, ungridded | full geodetic armature                |
+| LITTERAE   | few names, one tongue  | dense, multi-scripted naming          |
+| RESTITVTIO | drawn from observation | wholly inherited from older sheets    |
+| CORRECTIO  | never verified         | instrumentally corrected, iteratively |
+| RASVRA     | nothing suppressed     | classified, censored, falsified       |
+| VACAT      | no blank space         | void dominates the sheet              |
+
+### Repositories of the originals
+
+- Tabula Peutingeriana - ÖNB Vienna, Cod. 324 · UNESCO Memory of the World, 2007
+- Hereford mappa mundi - Hereford Cathedral
+- Honterus, _Chorographia Transylvaniae_ - a single known print, likely Budapest
+- Cantacuzino's Wallachia - a handful of copies; one at the BnF, Paris
+- Josephine Survey of Transylvania - Kriegsarchiv, Vienna
+- Planurile directoare de tragere - georeferenced by geo-spatial.org
+
+### Site notes
+
+Verdicts are interpretive, not metric: an epigrapher's readings, offered to be argued
+with. Dates of medieval artifacts follow their content where the copy is later (the
+Peutinger roll is dated here by its 4th-century matter, not its c. 1200 parchment). Claims
+that resist verification - Honterus's orientation, Drobeta in Ptolemy's catalogue, the
+exact site of Vicina - are marked uncertain rather than asserted.
+
+This essay is a cousin of _Speculum Chartarum_ and its Six Bearings - same family,
+different instruments. The Five Seals and Six Readings were cut for Dacia alone.
+
+_Terra Sigillata · Lapidarium Dacicum. Campaign MMXXVI. Space on the wall is reserved for
+the next survey._
