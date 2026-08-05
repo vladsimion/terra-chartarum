@@ -26,7 +26,7 @@ schema and release gate are authoritative.
 14. [Deployment and recovery](#deployment-and-recovery)
 15. [Maintenance routines](#maintenance-routines)
 16. [What to add next](#what-to-add-next)
-17. [Known documentation drift](#known-documentation-drift)
+17. [Drift prevention](#drift-prevention)
 18. [Existing specialist documentation](#existing-specialist-documentation)
 
 ## The site in one minute
@@ -59,17 +59,10 @@ The seven rooms are:
 
 ### Current production-gated inventory
 
-The static build inspected on 5 August 2026 exposes:
-
-| Type                 | Published/searchable count | Source of truth                               |
-| -------------------- | -------------------------: | --------------------------------------------- |
-| Essays               |                          7 | `src/content/essays/` filtered by `releaseAt` |
-| Map records          |                         47 | `src/lib/corpus.ts`                           |
-| Cartographers        |                         18 | `src/lib/cartographers.ts`                    |
-| Searchable toponyms  |                         11 | `src/lib/toponyms.ts`                         |
-| Rooms                |                          7 | `src/data/rooms.ts`                           |
-| Published GIS assets |                          9 | `public/geo/manifest.json`                    |
-| Search documents     |                         83 | generated `/search-index.json`                |
+Counts, held essays, per-room depth, and the geo release are generated from the
+same registries and release gate as the site. Read the
+[generated corpus status](generated/corpus-status.md) rather than copying totals
+into another document.
 
 There are additional essay files in the repository that carry
 `releaseAt: '2099-01-01'`. They are intentionally held from normal builds. Use
@@ -386,14 +379,12 @@ room or search result
 Not every record is equally complete. Prefer records with explicit reproduction
 credit, licence, bibliography, provenance, and a high-resolution source.
 
-### Cite a map
+### Cite a map, essay, or dataset
 
-On a collection detail page, open **Cite this map**, choose BibTeX, RIS, or
-Chicago, then use **Copy**. Review the result before publication, especially when
-the record has no named cartographer or publisher.
-
-The canonical citation URL is the collection detail URL. The citation tool does
-not currently export essay citations; adding that is a recommended next step.
+On a collection or essay detail page, open its citation panel, choose BibTeX,
+RIS, or Chicago, then use **Copy**. The Atlas provides equivalent versioned
+citations for every published GIS asset under **Cite the Atlas data**. Review the
+result before publication, especially when a record has no named maker or date.
 
 ### Cite data
 
@@ -616,6 +607,8 @@ npm install --cache ./.npm-cache --no-audit --no-fund
 | `npm run format:check`          | Check Prettier formatting                                                                        |
 | `npm run format`                | Apply Prettier formatting                                                                        |
 | `npm run geo:validate`          | Verify geo catalogue, files, checksums, and manifest                                             |
+| `npm run reports:write`         | Rebuild generated corpus and collection-completeness reports                                     |
+| `npm run reports:check`         | Fail when generated publication reports do not match the current build                           |
 | `make vmn-validate`             | Validate compiled VMN schema, geometry, time, provenance, joins, and coastlines                  |
 
 ### Before opening a pull request
@@ -956,6 +949,26 @@ The platform already has substantial breadth. The best next work is not another
 large navigation surface; it is making the existing publication easier to enter,
 trust, cite, share, and keep accurate.
 
+### Delivered on 5 August 2026
+
+The audit recommendations requested for this release are now implemented:
+
+- VMN chronology verification is complete: 51 page-level ledger rows are tied
+  to Lane and O'Connell locators, corrections are reflected in the authority
+  tables, and `make vmn-validate` enforces the evidence contract.
+- Corpus counts and room depth are generated into
+  [`docs/generated/corpus-status.md`](generated/corpus-status.md); the production
+  build rejects stale reports.
+- The home page offers story, subject, and map/place entry paths.
+- Essays and versioned Atlas datasets export BibTeX, RIS, and Chicago citations.
+- [`docs/generated/collection-completeness.md`](generated/collection-completeness.md)
+  reports eight metadata criteria without blocking publication for an honest
+  unknown.
+- Atlas views can be copied and restored with query, essay, region, coverage,
+  year, zoom, layers, toponyms, focused feature, and hash state.
+- Punctuation policy and legacy `/embed/` path comments now match their
+  validators and implementation.
+
 ### Priority 0: finish and stabilise what already exists
 
 #### 1. Decide the release of _Invisible Maps of Trade_
@@ -969,84 +982,9 @@ reader-facing use of the VMN work.
 record the reason and real target date. If not, run the complete release preflight,
 re-enable its skipped e2e coverage, and use `npm run essay:release`.
 
-#### 2. Complete VMN chronology source verification
-
-**Why now:** the layer is live, but project documentation consistently identifies
-page-level Lane and O'Connell chronology verification as the remaining evidence
-gap. Provenance is a core product promise, so this is more important than a new
-visual feature.
-
-**Done when:** every affected chronology statement resolves to a page-level
-source or an explicit documented uncertainty, and the handoff/contract no longer
-describes the item as blocked.
-
-#### 3. Generate corpus facts instead of hand-maintaining them
-
-**Why now:** the release-aware build exposes seven essays across all seven rooms,
-while an older roadmap section says nine essays across six rooms. Manual counts
-will continue to drift as held essays move through the gate.
-
-**Build:** a small validation/report script that derives live essays, held essays,
-room depth, map count, registry counts, and GIS asset count. Run it in CI and
-either generate a status document or fail when designated summary blocks drift.
-
-#### 4. Resolve documented contract contradictions
-
-**Why now:** punctuation guidance and a few legacy-path comments disagree with
-the validators and actual `/embed/` architecture. Contributors should not have
-to discover policy through a failing build.
-
-**Done when:** the definition of done, starter, contribution guide, schema
-comments, specification, roadmap, and this handbook agree on release state,
-punctuation, counts, and legacy paths.
-
 ### Priority 1: improve reader entry and research utility
 
-#### 5. Add a “Start here” journey to the home page
-
-**Problem:** the home page offers the gallery and Atlas but does not explain
-which one suits a new visitor. The richest conceptual entry, Rooms, is absent
-from the hero actions.
-
-**Build:** a compact three-path block:
-
-- “I want a story” -> a featured anchor essay;
-- “I want a subject” -> Rooms;
-- “I want a map or place” -> global search or Atlas.
-
-Measure success through fewer immediate exits and more transitions from home to
-Rooms/essay detail, using aggregate pageviews only if analytics is enabled.
-
-#### 6. Add citation export for essays and datasets
-
-**Problem:** maps have excellent BibTeX/RIS/Chicago export, but essays and GIS
-releases do not have equivalent reader-facing tools.
-
-**Build:** reuse `CiteExport` with an essay/dataset input contract; include author
-or institutional author, title, publication/update date, canonical URL, access
-date policy, dataset version, and DOI or archive identifier when available.
-
-#### 7. Add a collection completeness dashboard
-
-**Problem:** the rich map schema permits sparse records, but editors cannot see
-at a glance which records lack maker links, imagery, rights, bibliography,
-provenance, room tags, coverage, or high-resolution sources.
-
-**Build:** a local/CI report, not a public score. Prioritise records used by live
-essays and featured room anchors. Establish minimum completeness for any newly
-published map while allowing historically unavoidable unknowns.
-
-#### 8. Make Atlas views explicitly shareable
-
-**Problem:** the Atlas already serialises meaningful state into URL parameters,
-but readers are not given a clear “Copy this view” action or a summary of what
-the link preserves.
-
-**Build:** a share control that copies the canonical query, announces success,
-and lists the selected essay, year, layers, and feature. Add tests for round-trip
-parsing and invalid/stale IDs.
-
-#### 9. Promote series as a first-class discovery type
+#### 2. Promote series as a first-class discovery type
 
 **Problem:** the Invisible Maps series has a route but series are absent from
 global search and primary/footer discovery beyond contextual links.
@@ -1057,26 +995,26 @@ membership on cards and essay pages.
 
 ### Priority 2: deepen the scholarly platform
 
-#### 10. Publish IIIF manifests and machine-readable collection records
+#### 3. Publish IIIF manifests and machine-readable collection records
 
 Where rights allow, add IIIF Presentation manifests for map records and JSON-LD
 for maps, essays, people, and citations. This would make the collection easier
 to reuse in teaching, annotation, and digital-humanities tools.
 
-#### 11. Add downloadable, versioned research bundles
+#### 4. Add downloadable, versioned research bundles
 
 Offer documented CSV/GeoJSON/FlatGeobuf downloads with a release note, licence,
 checksum, schema version, and suggested citation. Keep authored source tables
 distinct from browser-optimised binaries.
 
-#### 12. Create teaching paths
+#### 5. Create teaching paths
 
 Add 30-, 60-, and 90-minute lesson paths built from existing rooms, essays,
 maps, and meta-lens comparisons. Provide discussion prompts, learning goals,
 source notes, and printable citations. This adds value without introducing an
 account system or new content model.
 
-#### 13. Audit legacy essay interiors
+#### 6. Audit legacy essay interiors
 
 Portal-level axe tests exclude iframe contents. Run a dedicated accessibility,
 mobile, typography, and reduced-motion audit over every public legacy embed.
@@ -1105,24 +1043,15 @@ infrastructure, moderation, security, personal-data, and consent obligations
 without improving the site's strongest current advantage: a focused, static,
 well-sourced publication.
 
-## Known documentation drift
+## Drift prevention
 
-The audit that produced this handbook found several items to reconcile:
+`npm run build` now compares two committed, generated reports with the current
+static build. Any essay release, room reassignment, registry change, geo release,
+or catalogue enrichment that changes their facts fails until
+`npm run reports:write` intentionally refreshes them. This keeps editorial prose
+from becoming a competing source of corpus truth.
 
-- `docs/roadmap.md` says nine essays are live across six rooms. The current
-  release-aware build exposes seven essays, one primary essay in each of all
-  seven rooms.
-- `docs/essay-definition-of-done.md` describes an “em-dash-friendly” register,
-  while `CONTRIBUTING.md` and the typography validator specify house hyphens and
-  reject em dashes.
-- Some older schema comments describe legacy documents under `public/essays/`,
-  while the implemented and documented safe path is `public/embed/`.
-- The series description names Road and Theatre even when the release gate may
-  expose only the Theatre instalment.
-- Historical ticket/status prose in `SPECS.md` and the roadmap is useful
-  provenance but should not be treated as generated live state.
-
-Until those files are reconciled, follow the executable contracts:
+The executable contracts remain authoritative:
 
 1. `src/content/config.ts` for essay fields;
 2. `src/lib/release.ts` and `releaseAt` for visibility;
@@ -1135,22 +1064,24 @@ Until those files are reconciled, follow the executable contracts:
 
 Use this handbook as the overview and these files for detail:
 
-| Document                                                          | Subject                                      |
-| ----------------------------------------------------------------- | -------------------------------------------- |
-| [`README.md`](../README.md)                                       | Project overview and quick commands          |
-| [`SPECS.md`](../SPECS.md)                                         | Product and architecture specification       |
-| [`CONTRIBUTING.md`](../CONTRIBUTING.md)                           | Contribution workflow                        |
-| [`starter/README.md`](../starter/README.md)                       | Native essay starter kit                     |
-| [`docs/roadmap.md`](roadmap.md)                                   | Editorial waves and candidate backlog        |
-| [`docs/editorial/style-guide.md`](editorial/style-guide.md)       | Editorial voice and style                    |
-| [`docs/essay-definition-of-done.md`](essay-definition-of-done.md) | Essay merge bar                              |
-| [`docs/component-library.md`](component-library.md)               | Shared island API and conventions            |
-| [`docs/design-tokens.md`](design-tokens.md)                       | Palette, typography, spacing, and motion     |
-| [`docs/geo-layers.md`](geo-layers.md)                             | Layer release and Atlas integration          |
-| [`docs/geo-interoperability.md`](geo-interoperability.md)         | Linked Places and external geo use           |
-| [`docs/analytics-privacy.md`](analytics-privacy.md)               | Analytics configuration and privacy decision |
-| [`docs/launch-runbook.md`](launch-runbook.md)                     | Deployment, smoke tests, and rollback        |
-| [`docs/vmn/README.md`](vmn/README.md)                             | VMN pipeline and QA overview                 |
-| [`docs/vmn/data-dictionary.md`](vmn/data-dictionary.md)           | VMN field and temporal contracts             |
-| [`docs/vmn/source-log.md`](vmn/source-log.md)                     | VMN provenance policy and sources            |
-| [`docs/vmn/deep-links.md`](vmn/deep-links.md)                     | Essay-to-Atlas URL and ID contracts          |
+| Document                                                                            | Subject                                      |
+| ----------------------------------------------------------------------------------- | -------------------------------------------- |
+| [`README.md`](../README.md)                                                         | Project overview and quick commands          |
+| [`SPECS.md`](../SPECS.md)                                                           | Product and architecture specification       |
+| [`CONTRIBUTING.md`](../CONTRIBUTING.md)                                             | Contribution workflow                        |
+| [`starter/README.md`](../starter/README.md)                                         | Native essay starter kit                     |
+| [`docs/roadmap.md`](roadmap.md)                                                     | Editorial waves and candidate backlog        |
+| [`docs/generated/corpus-status.md`](generated/corpus-status.md)                     | Release-aware corpus and registry counts     |
+| [`docs/generated/collection-completeness.md`](generated/collection-completeness.md) | Collection metadata coverage                 |
+| [`docs/editorial/style-guide.md`](editorial/style-guide.md)                         | Editorial voice and style                    |
+| [`docs/essay-definition-of-done.md`](essay-definition-of-done.md)                   | Essay merge bar                              |
+| [`docs/component-library.md`](component-library.md)                                 | Shared island API and conventions            |
+| [`docs/design-tokens.md`](design-tokens.md)                                         | Palette, typography, spacing, and motion     |
+| [`docs/geo-layers.md`](geo-layers.md)                                               | Layer release and Atlas integration          |
+| [`docs/geo-interoperability.md`](geo-interoperability.md)                           | Linked Places and external geo use           |
+| [`docs/analytics-privacy.md`](analytics-privacy.md)                                 | Analytics configuration and privacy decision |
+| [`docs/launch-runbook.md`](launch-runbook.md)                                       | Deployment, smoke tests, and rollback        |
+| [`docs/vmn/README.md`](vmn/README.md)                                               | VMN pipeline and QA overview                 |
+| [`docs/vmn/data-dictionary.md`](vmn/data-dictionary.md)                             | VMN field and temporal contracts             |
+| [`docs/vmn/source-log.md`](vmn/source-log.md)                                       | VMN provenance policy and sources            |
+| [`docs/vmn/deep-links.md`](vmn/deep-links.md)                                       | Essay-to-Atlas URL and ID contracts          |

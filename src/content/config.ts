@@ -19,10 +19,10 @@ const essays = defineCollection({
     summary: z.string(),
     cover: z.string(), // path under /public (e.g. /covers/cartography.svg)
     hero: z.string().optional(), // optional in-essay hero; distinct from the gallery cover
-    // 'legacy' essays are rendered verbatim from public/essays/<slug>/ via the
+    // 'legacy' essays are rendered verbatim from public/embed/<slug>/ via the
     // host route's isolation boundary; 'native' essays are authored in MDX.
     status: z.enum(['legacy', 'native']).default('native'),
-    embedPath: z.string().optional(), // legacy only: /essays/<slug>/index.html
+    embedPath: z.string().optional(), // legacy only: /embed/<slug>/index.html
     eras: z.array(z.string()).default([]),
     regions: z.array(z.string()).default([]),
     lenses: z.array(z.string()).default([]), // native/original axis names

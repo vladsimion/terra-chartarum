@@ -16,8 +16,8 @@ not a nicety.
 
 - [ ] The essay makes a critical-cartography argument - it reads maps as
       arguments, not neutral windows (see the manifesto).
-- [ ] British spelling throughout; em-dash-friendly, academic-but-intimate
-      register consistent with the family.
+- [ ] British spelling throughout; academic-but-intimate register consistent with
+      the family, using the house spaced hyphen rather than em dashes.
 - [ ] Sources are credited; any claims that need support are referenced.
 - [ ] Summary/subtitle work as the card and social (OG) hook.
 

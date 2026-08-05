@@ -12,9 +12,12 @@ TypeScript, Tailwind, and a CSS custom-property design-token layer.
 > authoring pipeline, interactive Atlas + historical-GIS tier, collection catalogue,
 > cartographer & bibliography registries, unified search, and the seven-room
 > cosmography have all shipped - the four founding essays have grown into a
-> multi-room corpus. The Venetian Maritime Network atlas layer is live; only its
-> chronology source-verification (Jira KAN-140 / KAN-154) remains open, pending
-> page-level Lane & O'Connell excerpts.
+> multi-room corpus. The Venetian Maritime Network atlas layer and its page-level
+> Lane/O'Connell chronology verification (KAN-154) are complete and enforced by
+> the VMN validation gate.
+
+Live and held corpus counts are generated from the same release gate as the site:
+[`docs/generated/corpus-status.md`](docs/generated/corpus-status.md).
 
 ## The essays
 
@@ -128,6 +131,5 @@ procedure - gates, smoke tests, rollback - in the
 - **M5 - Collection catalogue** ✅ rich map schema, cartographer & bibliography
   registries, unified search, citation export.
 - **Cosmography & editorial waves** ✅ seven-room taxonomy, Wave 1–2 essays, and the
-  Venetian Maritime Network GIS layer. See [`docs/roadmap.md`](docs/roadmap.md) and
-  Jira `KAN` for the live plan; VMN chronology page-verification (KAN-140 / KAN-154)
-  is the one open thread.
+  Venetian Maritime Network GIS layer with page-level chronology verification. See
+  [`docs/roadmap.md`](docs/roadmap.md) and Jira `KAN` for the live plan.

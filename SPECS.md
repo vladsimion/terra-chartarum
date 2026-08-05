@@ -7,8 +7,8 @@ navigation, motion, and metadata** - each essay keeps its bespoke interior.
 - **Status:** Live. The portal shell, shared component library, interactive Atlas +
   historical-GIS tier, collection catalogue, seven-room cosmography, and the Venetian
   Maritime Network atlas layer have all shipped - the four founding essays have grown
-  into a multi-room corpus. Only the VMN chronology source-verification (Jira KAN-140
-  / KAN-154) remains open, pending page-level Lane & O'Connell excerpts.
+  into a multi-room corpus. VMN chronology source-verification against Lane and
+  O'Connell is complete (KAN-154) and enforced by the dataset QA gate.
 - **Stack:** Astro (static output, islands) + TypeScript (strict) + Tailwind +
   CSS custom-property tokens + Astro Content Collections (Zod).
 - **Full roadmap & backlog:** Jira project `KAN` (the live tracker);
@@ -244,4 +244,4 @@ These early deferrals are all resolved:
 - **M4 - Launch:** + E6 → production deploy; E7 runs continuously after. _(done)_
 - **M5 - Collection catalogue & beyond:** rich catalogue, cartographer/bibliography
   registries, unified search, the seven-room cosmography, and the VMN atlas layer.
-  _(done; VMN chronology page-verification KAN-140 / KAN-154 open)_
+  _(done, including VMN chronology page-verification KAN-154)_

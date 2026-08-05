@@ -85,6 +85,43 @@ test.describe('flow: gallery → essay', () => {
   });
 });
 
+test.describe('flow: first-visit guidance', () => {
+  test('offers story, subject, and map-or-place entry paths', async ({ page }) => {
+    await page.goto('/');
+
+    const start = page.getByRole('region', { name: 'Choose how you want to enter' });
+    await expect(start.getByRole('link', { name: /I want a story/ })).toHaveAttribute(
+      'href',
+      '/essays/',
+    );
+    await expect(start.getByRole('link', { name: /I want a subject/ })).toHaveAttribute(
+      'href',
+      '/rooms/',
+    );
+    await expect(start.getByRole('link', { name: /I want a map or place/ })).toHaveAttribute(
+      'href',
+      '/atlas/',
+    );
+  });
+});
+
+test.describe('flow: citations', () => {
+  test('exports essay and versioned dataset citations', async ({ page }) => {
+    await page.goto('/essays/cities-remember/');
+    const essayCitation = page.getByRole('region', { name: 'Cite this essay' });
+    await essayCitation.getByRole('tab', { name: 'RIS' }).click();
+    await expect(essayCitation.locator('[data-cite-out]')).toContainText('TY  - ELEC');
+
+    await page.goto('/atlas/');
+    const datasets = page.getByRole('region', { name: 'Cite the Atlas data' });
+    const firstDataset = datasets.locator('details').first();
+    await firstDataset.locator('summary').click();
+    await firstDataset.getByRole('tab', { name: 'RIS' }).click();
+    await expect(firstDataset.locator('[data-cite-out]')).toContainText('TY  - DATA');
+    await expect(firstDataset.locator('[data-cite-out]')).toContainText('ET  - ');
+  });
+});
+
 test.describe('flow: room-grouped gallery', () => {
   test('groups essay cards under their canonical room headings', async ({ page }) => {
     await page.goto('/essays/');
@@ -204,6 +241,33 @@ test.describe('flow: atlas context and timeline sync', () => {
     await year.fill(minimum);
     await expect(page).toHaveURL(new RegExp(`[?&]year=${minimum}(?:&|$)`));
     await expect(page.locator('[data-atlas-track][data-revealed="false"]').first()).toBeAttached();
+  });
+
+  test('copies a durable view URL and restores its controls', async ({ page }) => {
+    await page.goto('/atlas/');
+
+    const essay = page.getByRole('combobox', { name: 'Filter by essay' });
+    const slug = (await essay.locator('option').nth(1).getAttribute('value'))!;
+    await essay.selectOption(slug);
+    await page.getByRole('searchbox', { name: 'Search the corpus' }).fill('map');
+    await page.getByRole('slider', { name: 'Reveal through' }).fill('1450');
+    await page.getByRole('checkbox', { name: 'Ancient & medieval place-names' }).check();
+    await page.getByRole('button', { name: 'Copy this view' }).click();
+
+    const url = new URL(page.url());
+    expect(url.searchParams.get('essay')).toBe(slug);
+    expect(url.searchParams.get('q')).toBe('map');
+    expect(url.searchParams.get('year')).toBe('1450');
+    expect(url.searchParams.get('toponyms')).toBe('1');
+    await expect(page.locator('.am-share-status')).not.toBeEmpty();
+
+    await page.reload();
+    await expect(page.getByRole('combobox', { name: 'Filter by essay' })).toHaveValue(slug);
+    await expect(page.getByRole('searchbox', { name: 'Search the corpus' })).toHaveValue('map');
+    await expect(page.getByRole('slider', { name: 'Reveal through' })).toHaveValue('1450');
+    await expect(
+      page.getByRole('checkbox', { name: 'Ancient & medieval place-names' }),
+    ).toBeChecked();
   });
 });
 

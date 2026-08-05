@@ -183,6 +183,10 @@ const payload = {
         </label>
       )
     }
+    <div class="am-share">
+      <button type="button" class="am-share-button">Copy this view</button>
+      <output class="am-share-status" aria-live="polite"></output>
+    </div>
   </div>
 
   <div class="am-platform">
@@ -308,6 +312,7 @@ const payload = {
     type GraduateHint,
     type DashHint,
   } from '../../lib/geo-style';
+  import { buildAtlasShareUrl, parseAtlasShareState } from '../../lib/atlas-share';
   import {
     parseVmnAtlasState,
     resolveVmnBeatState,
@@ -426,6 +431,8 @@ const payload = {
     const yearIn = root.querySelector<HTMLInputElement>('.am-year')!;
     const yearOut = root.querySelector<HTMLOutputElement>('.am-year-out')!;
     const topoCheck = root.querySelector<HTMLInputElement>('.am-topo-check');
+    const shareButton = root.querySelector<HTMLButtonElement>('.am-share-button')!;
+    const shareStatus = root.querySelector<HTMLOutputElement>('.am-share-status')!;
     const list = root.querySelector<HTMLElement>('.am-list')!;
     const contextTitle = root.querySelector<HTMLElement>('.am-context-title')!;
     const contextSummary = root.querySelector<HTMLElement>('.am-context-summary')!;
@@ -567,7 +574,18 @@ const payload = {
       );
     };
 
-    const requestedEssay = new URLSearchParams(location.search).get('essay');
+    const sharedState = parseAtlasShareState(location.search);
+    if (sharedState.query) search.value = sharedState.query;
+    if (sharedState.covers && coversSel?.querySelector(`option[value="${sharedState.covers}"]`)) {
+      coversSel.value = sharedState.covers;
+    }
+    if (sharedState.toponyms && topoCheck) topoCheck.checked = true;
+    if (sharedState.year !== undefined) {
+      yearIn.value = String(
+        Math.max(Number(yearIn.min), Math.min(Number(yearIn.max), sharedState.year)),
+      );
+    }
+    const requestedEssay = sharedState.essay;
     if (requestedEssay && essayDetails.some((essay) => essay.slug === requestedEssay)) {
       essaySel.value = requestedEssay;
     }
@@ -581,6 +599,42 @@ const payload = {
       else updateUrlState(undefined, Number(yearIn.value));
     });
     yearIn.addEventListener('input', announceTime);
+
+    shareButton.addEventListener('click', async () => {
+      const base = new URL(location.href);
+      const selection = root.dataset.atlasSelection;
+      const target = root.dataset.atlasTarget;
+      if (selection?.startsWith('map:')) base.hash = selection.slice('map:'.length);
+      if (selection?.startsWith('toponym:'))
+        base.hash = `topo-${selection.slice('toponym:'.length)}`;
+      if (selection?.startsWith('map:') || selection?.startsWith('toponym:')) {
+        for (const key of ['beat', 'port', 'route', 'territory']) base.searchParams.delete(key);
+      } else if (target) {
+        const [kind, id] = target.split(':');
+        for (const key of ['port', 'route', 'territory']) base.searchParams.delete(key);
+        if (['port', 'route', 'territory'].includes(kind) && id) base.searchParams.set(kind, id);
+      }
+      const shareUrl = buildAtlasShareUrl(base.toString(), {
+        query: search.value.trim() || undefined,
+        essay: essaySel.value || undefined,
+        region: regionSel.value || undefined,
+        covers: coversSel?.value || undefined,
+        year: Number(yearIn.value),
+        zoom: map ? Number(map.getZoom().toFixed(2)) : sharedState.zoom,
+        layers: layerToggles
+          .filter((toggle) => toggle.checked)
+          .map((toggle) => toggle.dataset.layer!),
+        toponyms: topoCheck?.checked ?? false,
+      });
+      const url = new URL(shareUrl);
+      history.replaceState(history.state, '', `${url.pathname}${url.search}${url.hash}`);
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        shareStatus.textContent = 'View link copied.';
+      } catch {
+        shareStatus.textContent = 'Copy the link from the address bar.';
+      }
+    });
 
     const portPopupHtml = (properties: Record<string, unknown>) => {
       const historic = escapeHtml(properties.name);
@@ -1005,6 +1059,7 @@ const payload = {
             }
           }
         }
+        setTopoVisible(topoCheck?.checked ?? false);
         syncLayerTime(Number(yearIn.value));
         applyDeepLink();
       });
@@ -1165,7 +1220,7 @@ const payload = {
           Math.max(Number(yearIn.min), Math.min(Number(yearIn.max), state.year)),
         );
       }
-      const wanted = new Set(state.layers ?? []);
+      const wanted = new Set([...(sharedState.layers ?? []), ...(state.layers ?? [])]);
       if (state.port) wanted.add('venetian-ports');
       if (state.route) wanted.add('venetian-routes');
       if (state.territory) wanted.add('venetian-possessions');
@@ -1177,6 +1232,13 @@ const payload = {
           const l = geoLayers.find((x) => x.id === id);
           if (l) await addGeoLayer(l);
         }
+      }
+      if (
+        sharedState.region &&
+        !regionSel.disabled &&
+        regionSel.querySelector(`option[value="${sharedState.region}"]`)
+      ) {
+        regionSel.value = sharedState.region;
       }
       apply();
       if (state.zoom !== undefined && map) {
@@ -1371,6 +1433,30 @@ const payload = {
     font-family: var(--font-mono);
     font-size: var(--step--1);
     color: var(--ink-muted);
+  }
+  .am-share {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .am-share-button {
+    border: 1px solid var(--gold);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--gold);
+    cursor: pointer;
+    padding: 0.5rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+  }
+  .am-share-button:hover {
+    background: var(--gold);
+    color: var(--canvas);
+  }
+  .am-share-status {
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
   }
   .am-year {
     accent-color: var(--gold);

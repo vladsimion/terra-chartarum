@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "npm run editorial:validate && npm run typography:validate && npm run epic:validate && npm run release:validate && astro build && npm run embed:prune && npm run indexing:validate && npm run geo:interop:validate",
+    "build": "npm run editorial:validate && npm run typography:validate && npm run epic:validate && npm run release:validate && astro build && npm run reports:check && npm run embed:prune && npm run indexing:validate && npm run geo:interop:validate",
     "preview": "astro preview",
     "check": "astro check",
     "lint": "eslint .",
@@ -19,6 +19,8 @@
     "epic:validate": "node scripts/validate-epic-evidence.mjs",
     "release:validate": "node scripts/validate-next-55.mjs",
     "analytics:validate": "node scripts/validate-analytics.mjs",
+    "reports:write": "astro build && node scripts/generate-publication-reports.mjs --write",
+    "reports:check": "node scripts/generate-publication-reports.mjs --check",
     "indexing:validate": "node scripts/validate-indexing.mjs",
     "geo:interop:validate": "node scripts/validate-geo-interop.mjs",
     "geo:validate": "node scripts/geo-release.mjs --check",

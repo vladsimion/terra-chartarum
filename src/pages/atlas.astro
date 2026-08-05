@@ -2,6 +2,7 @@
 import PortalLayout from '../layouts/PortalLayout.astro';
 import AtlasMap from '../components/islands/AtlasMap.astro';
 import MetaLensExplorer from '../components/MetaLensExplorer.astro';
+import DatasetCitations from '../components/DatasetCitations.astro';
 import { getEssays, formatYear } from '../lib/registry';
 
 const essays = await getEssays();
@@ -45,6 +46,8 @@ const bars = essays.map((e) => {
       <a href="/embeds/vmn-network/">Explore the VMN route and commodity network →</a>
     </p>
     <AtlasMap />
+
+    <DatasetCitations />
 
     <MetaLensExplorer essays={essays} />
 

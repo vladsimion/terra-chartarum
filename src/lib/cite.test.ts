@@ -73,3 +73,35 @@ describe('formatCitation', () => {
     expect(formatCitation(mercator, 'chicago')).toBe(toChicago(mercator));
   });
 });
+
+describe('resource types', () => {
+  it('formats an essay as an electronic resource', () => {
+    const essay: CiteInput = {
+      id: 'cities-remember',
+      kind: 'essay',
+      title: 'Cities Remember',
+      author: 'Terra Chartarum',
+      year: 2026,
+      containerTitle: 'Terra Chartarum',
+      url: 'https://terra-chartarum.pages.dev/essays/cities-remember/',
+    };
+    expect(toRIS(essay)).toContain('TY  - ELEC');
+    expect(toRIS(essay)).toContain('T2  - Terra Chartarum');
+    expect(toBibTeX(essay)).toContain('note        = {Visual essay. Terra Chartarum.}');
+  });
+
+  it('formats a versioned dataset without requiring an invented year', () => {
+    const dataset: CiteInput = {
+      id: 'venetian-ports-4440ae3946c6',
+      kind: 'dataset',
+      title: 'Venetian maritime ports, c.1200–1500',
+      author: 'Terra Chartarum',
+      version: '4440ae3946c6',
+      license: 'CC BY',
+      url: 'https://terra-chartarum.pages.dev/geo/venetian-ports.fgb?v=4440ae3946c6',
+    };
+    expect(toRIS(dataset)).toContain('TY  - DATA');
+    expect(toRIS(dataset)).not.toContain('PY  -');
+    expect(toChicago(dataset)).toContain('Version 4440ae3946c6. Dataset. CC BY.');
+  });
+});
