@@ -1,0 +1,173 @@
+---
+/**
+ * SqueezeToggle (issue #75)
+ *
+ * Wraps the Lapidarium's stone plates and offers one control: read them as
+ * drawings, or as an epigrapher's *squeeze* - the damp-paper impression of a
+ * carved face, in which the strokes are channels rather than lines.
+ *
+ * The treatment is ported from the retired embed (`99091f6`), which is still on
+ * disk at `public/embed/dacia/index.html` as the working reference: the ink is
+ * flattened to paper tone and lit from a fixed angle, and the panel lifts to
+ * filter paper. Two things change for the native essay, both because the plates
+ * are now full prose width rather than 320px vignettes in a two-column wall:
+ * the drop-shadow offsets double to hold their ratio against strokes that
+ * scaled with the drawing, and the sticky bar carries the control alone - the
+ * notice that motivates it reads once, in flow, above the wall.
+ *
+ * The squeeze is deliberately low-contrast: an impression records relief, not
+ * ink. It is off by default and every plate keeps its `aria-label`, so the
+ * legible reading is the one served and nothing is only available in relief.
+ *
+ * Transitions are covered by the global `prefers-reduced-motion` block in
+ * `styles/global.css`, which zeroes every transition-duration with !important.
+ */
+---
+
+<div class="lapidarium" data-squeeze-toggle>
+  <p class="lapidarium-note">
+    Epigraphers press damp paper into carved letters to take a <em>squeeze</em> - in Romanian an <em
+      >estampaj</em
+    > or <em>calc</em>: the stone's negative. Turn it on to study every stone in relief.
+  </p>
+
+  <div class="lapidarium-bar">
+    <span class="lapidarium-state" aria-hidden="true" data-squeeze-state>Lapis</span>
+    <button type="button" class="lapidarium-btn" aria-pressed="false" data-squeeze-btn>
+      Squeeze view
+    </button>
+  </div>
+
+  <slot />
+</div>
+
+<script>
+  function initSqueeze(root: HTMLElement) {
+    const button = root.querySelector<HTMLButtonElement>('[data-squeeze-btn]')!;
+    const state = root.querySelector<HTMLElement>('[data-squeeze-state]')!;
+    const bar = root.querySelector<HTMLElement>('.lapidarium-bar')!;
+
+    // The bar pins over the plates, so the wall's own anchors - the timeline's
+    // jumps to #stela-* - have to clear it as well as the page chrome.
+    // essays/[slug].astro adds --in-essay-sticky-h into their scroll-margin;
+    // measure it rather than assume, since the bar's type is fluid.
+    const publishHeight = () =>
+      root.style.setProperty('--in-essay-sticky-h', `${bar.offsetHeight}px`);
+
+    button.addEventListener('click', () => {
+      const on = !root.hasAttribute('data-squeeze');
+      root.toggleAttribute('data-squeeze', on);
+      // The button keeps one accessible name and lets aria-pressed carry the
+      // state; renaming it as well announced the opposite of the truth in the
+      // embed. The Latin duality survives in the readout beside it.
+      button.setAttribute('aria-pressed', String(on));
+      state.textContent = on ? 'Calc' : 'Lapis';
+    });
+
+    publishHeight();
+    if (typeof ResizeObserver !== 'undefined') {
+      new ResizeObserver(publishHeight).observe(bar);
+    }
+  }
+
+  const boot = () =>
+    document.querySelectorAll<HTMLElement>('[data-squeeze-toggle]').forEach((root) => {
+      if (!root.dataset.ready) {
+        root.dataset.ready = '1';
+        initSqueeze(root);
+      }
+    });
+  boot();
+  document.addEventListener('astro:page-load', boot);
+</script>
+
+<style>
+  .lapidarium-note {
+    color: var(--ink-muted);
+    font-style: italic;
+  }
+  .lapidarium-bar {
+    position: sticky;
+    /*
+     * Below everything the page already keeps pinned - the site header and the
+     * essay bar under it, measured together as --essay-chrome-h by
+     * essays/[slug].astro. z-index stays under both (40 / 50).
+     */
+    top: var(--essay-chrome-h);
+    z-index: 20;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.6rem;
+    padding-block: 0.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--line);
+    /* Opaque enough that a plate scrolling under it does not read through. */
+    background: color-mix(in srgb, var(--canvas) 92%, transparent);
+    backdrop-filter: blur(10px);
+  }
+  .lapidarium-state {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .lapidarium-btn {
+    padding: 0.4rem 0.7rem;
+    border: 1px solid var(--line);
+    border-radius: 0.35rem;
+    color: var(--ink);
+    background: var(--panel);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .lapidarium-btn[aria-pressed='true'] {
+    border-color: var(--gold);
+    color: var(--canvas);
+    background: var(--gold);
+  }
+  .lapidarium-btn:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+  }
+
+  /*
+   * The plates themselves. This lives here rather than as an inline style on
+   * each <figure> in the MDX, because an inline background cannot be lifted to
+   * filter paper by a state selector - specificity, not taste.
+   */
+  .lapidarium :global(.stela-plate) {
+    margin: 0;
+    padding: 0.75rem;
+    border: 1px solid rgba(42, 34, 24, 0.35);
+    border-radius: 2px;
+    background: #efe9da;
+    transition:
+      background var(--dur-slow) var(--ease-out),
+      box-shadow var(--dur-slow) var(--ease-out);
+  }
+  .lapidarium :global(.stela-plate svg) {
+    width: 100%;
+    transition: filter var(--dur-slow) var(--ease-out);
+  }
+
+  /*
+   * The calc: ink flattened into damp filter paper, read by raking light from
+   * the upper left. The offsets are twice the embed's - the drawings render at
+   * roughly double the vignette's width here, so their strokes scaled with them
+   * and a half-pixel highlight no longer reaches the edge of one.
+   */
+  .lapidarium[data-squeeze] :global(.stela-plate) {
+    background: #f6f3ea;
+    box-shadow: inset 0 0 22px rgba(42, 34, 24, 0.07);
+  }
+  .lapidarium[data-squeeze] :global(.stela-plate svg) {
+    filter: grayscale(1) invert(1) brightness(1.06) contrast(0.94)
+      drop-shadow(-1px -1px 0 rgba(255, 255, 255, 0.9))
+      drop-shadow(1.4px 2px 1.2px rgba(42, 34, 24, 0.5));
+  }
+</style>
