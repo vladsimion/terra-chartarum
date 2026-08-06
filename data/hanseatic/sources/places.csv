@@ -1,0 +1,3 @@
+id,place_id,name,name_historic,name_modern,role,participation_class,valid_from,valid_to,region,parent_polity,certainty,latitude,longitude,essay_anchor,source,notes
+hse-place-lubeck-leading-1358,lubeck,Lübeck,Lubeca,Lübeck,leading_city,documented_collective_participation,1358,1669,Baltic Sea,Holy Roman Empire,high,53.8655,10.6866,lubeck-profile,hse-src-spec,"Phase-zero fixture: leading convening city; chronology remains provisional until KAN-304 review."
+hse-place-visby-market-1161,visby,Visby,Wisby,Visby,market,commercial_association_only,1161,1525,Baltic Sea,Gotland,medium,57.6348,18.2948,merchants-before-league,hse-src-spec,"Phase-zero corridor endpoint; participation classification remains provisional until KAN-306 review."

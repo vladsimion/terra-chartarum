@@ -7,15 +7,15 @@
 | Content type         | Count |
 | -------------------- | ----: |
 | Live essays          |     7 |
-| Held essays          |    10 |
+| Held essays          |    11 |
 | Map records          |    47 |
 | Cartographers        |    18 |
 | Bibliography entries |    28 |
 | Toponyms             |    11 |
 | Rooms                |     7 |
-| GIS layers           |     9 |
+| GIS layers           |    11 |
 
-Geo release: `geo-9a47b3a8884e35f2`.
+Geo release: `geo-6065acdaeddddd80`.
 
 ## Live essays by primary room
 
@@ -42,4 +42,5 @@ Geo release: `geo-9a47b3a8884e35f2`.
 | Anatomy of a Native Essay     | map          | unscheduled |
 | The Cartography of Empire     | border       | unscheduled |
 | The Geography of Power        | city         | unscheduled |
+| The League That Left No Map   | road         | unscheduled |
 | When Maps Create Countries    | border       | unscheduled |

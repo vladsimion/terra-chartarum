@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-labelledby="title desc">
+  <title id="title">The League That Left No Map</title>
+  <desc id="desc">A sparse blue-grey network linking northern port cities over a dark sea.</desc>
+  <rect width="800" height="500" fill="#0a0c0d"/>
+  <g fill="none" stroke="#7f9ca6" stroke-width="2" opacity="0.72">
+    <path d="M128 340 C250 246 333 300 420 214 S590 132 690 188"/>
+    <path d="M205 166 C315 222 446 160 578 278" stroke-dasharray="8 10"/>
+  </g>
+  <g fill="#b9c8cd" stroke="#0a0c0d" stroke-width="4">
+    <circle cx="128" cy="340" r="8"/>
+    <circle cx="205" cy="166" r="7"/>
+    <circle cx="420" cy="214" r="10"/>
+    <circle cx="578" cy="278" r="7"/>
+    <circle cx="690" cy="188" r="8"/>
+  </g>
+  <text x="58" y="74" fill="#7f9ca6" font-family="monospace" font-size="16" letter-spacing="5">THE ROAD · THE CITY · THE ARCHIVE</text>
+  <text x="56" y="408" fill="#e8ecec" font-family="Georgia, serif" font-size="46">The League That Left No Map</text>
+  <text x="58" y="448" fill="#9fb0b5" font-family="Georgia, serif" font-size="22">The Hanseatic League and the Geography of Privilege</text>
+</svg>

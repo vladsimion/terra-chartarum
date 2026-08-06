@@ -117,6 +117,32 @@
       "source": "Terra Chartarum (compiled) - Lane 1973; O'Connell 2009",
       "license": "CC BY",
       "attribution": "Terra Chartarum; after Lane and O'Connell"
+    },
+    {
+      "id": "hanseatic-places",
+      "file": "hanseatic-places.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": ["Point"],
+      "featureCount": 2,
+      "yearFrom": 1161,
+      "yearTo": 1669,
+      "source": "Terra Chartarum (compiled) - HSE KAN-302 vertical slice",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; provisional HSE research fixture"
+    },
+    {
+      "id": "hanseatic-routes",
+      "file": "hanseatic-routes.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": ["LineString"],
+      "featureCount": 1,
+      "yearFrom": 1161,
+      "yearTo": 1400,
+      "source": "Terra Chartarum (compiled) - HSE KAN-302 vertical slice",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; provisional HSE research fixture"
     }
   ]
 }

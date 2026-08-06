@@ -1,0 +1,51 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            10.6866,
+            53.8655
+          ],
+          [
+            11.2,
+            54.35
+          ],
+          [
+            13.9,
+            55.75
+          ],
+          [
+            16.7,
+            56.75
+          ],
+          [
+            18.2948,
+            57.6348
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "certainty": "medium",
+        "commodities": "salt|cloth",
+        "corridor_type": "maritime",
+        "directionality": "bidirectional",
+        "evidence_type": "generalized_reconstruction",
+        "from_place_id": "lubeck",
+        "id": "hse-route-lubeck-visby",
+        "name": "Lübeck–Visby corridor",
+        "notes": "Phase-zero generalized corridor, not an individual voyage track.",
+        "route_id": "hse-route-lubeck-visby",
+        "seasonality": "seasonal",
+        "source": "hse-src-spec",
+        "to_place_id": "visby",
+        "valid_from": 1161,
+        "valid_to": 1400,
+        "waypoints": "lubeck|visby"
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

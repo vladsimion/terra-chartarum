@@ -1,0 +1,76 @@
+---
+import { getHanseaticPlacePhase, toHanseaticAtlasHref } from '../../lib/hanseatic';
+
+interface Props {
+  placeId: string;
+}
+
+const { placeId } = Astro.props;
+const phase = getHanseaticPlacePhase(placeId);
+const atlasHref = toHanseaticAtlasHref(phase);
+const readable = (value: string) => value.replaceAll('_', ' ');
+---
+
+<aside class="hse-profile" aria-labelledby={`hse-profile-${phase.id}`}>
+  <p class="hse-profile__eyebrow">Generated HSE place phase</p>
+  <h3 id={`hse-profile-${phase.id}`}>{phase.name}</h3>
+  <p>{phase.notes}</p>
+  <dl>
+    <div>
+      <dt>Recorded phase</dt>
+      <dd>AD {phase.valid_from}–{phase.valid_to}</dd>
+    </div>
+    <div>
+      <dt>Role</dt>
+      <dd>{readable(phase.role)}</dd>
+    </div>
+    <div>
+      <dt>Participation</dt>
+      <dd>{readable(phase.participation_class)}</dd>
+    </div>
+    <div>
+      <dt>Evidence state</dt>
+      <dd>{phase.certainty} certainty · {phase.source}</dd>
+    </div>
+  </dl>
+  <a href={atlasHref}>Open this phase in the Atlas →</a>
+</aside>
+
+<style>
+  .hse-profile {
+    margin-block: var(--space-8, 2rem);
+    padding: clamp(1rem, 3vw, 1.75rem);
+    border: 1px solid color-mix(in srgb, #7f9ca6 55%, var(--line));
+    background: color-mix(in srgb, #7f9ca6 8%, var(--surface));
+  }
+
+  .hse-profile__eyebrow,
+  dt {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+
+  h3 {
+    margin-block: 0.25rem 0.75rem;
+  }
+
+  dl {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: 1rem;
+    margin-block: 1.25rem;
+  }
+
+  dd {
+    margin: 0.25rem 0 0;
+    text-transform: capitalize;
+  }
+
+  a {
+    color: #9fb8c1;
+    font-weight: 600;
+  }
+</style>

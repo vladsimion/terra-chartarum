@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "geo-9a47b3a8884e35f2",
+  "release": "geo-6065acdaeddddd80",
   "generatedBy": "scripts/geo-release.mjs",
   "assets": [
     {
@@ -174,6 +174,44 @@
       "sha256": "fad7b3ccc1abffc7de42e77342aa34270dc693097ffd3de2e3d3015b1cbe1b26",
       "version": "fad7b3ccc1ab",
       "url": "/geo/venetian-possessions.fgb?v=fad7b3ccc1ab"
+    },
+    {
+      "id": "hanseatic-places",
+      "file": "hanseatic-places.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": [
+        "Point"
+      ],
+      "featureCount": 2,
+      "yearFrom": 1161,
+      "yearTo": 1669,
+      "source": "Terra Chartarum (compiled) - HSE KAN-302 vertical slice",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; provisional HSE research fixture",
+      "bytes": 1827,
+      "sha256": "d4b58778da67a769aed111e750a7583ae64bbde6c5a2728e4b035f3dd8767148",
+      "version": "d4b58778da67",
+      "url": "/geo/hanseatic-places.geojson?v=d4b58778da67"
+    },
+    {
+      "id": "hanseatic-routes",
+      "file": "hanseatic-routes.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": [
+        "LineString"
+      ],
+      "featureCount": 1,
+      "yearFrom": 1161,
+      "yearTo": 1400,
+      "source": "Terra Chartarum (compiled) - HSE KAN-302 vertical slice",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; provisional HSE research fixture",
+      "bytes": 1174,
+      "sha256": "7fac6425870408ac0c2dd42de9b5d7926249d0c951825e86981f918d33446504",
+      "version": "7fac64258704",
+      "url": "/geo/hanseatic-routes.geojson?v=7fac64258704"
     }
   ]
 }

@@ -497,8 +497,11 @@ const payload = {
     let portFeatures: GeoJSON.Feature[] = [];
     let routeFeatures: GeoJSON.Feature[] = [];
     let possessionFeatures: GeoJSON.Feature[] = [];
+    const layerFeatures = new Map<string, GeoJSON.Feature[]>();
     let focusedRouteId = '';
     let focusedTerritoryId = '';
+    let focusedFeatureId = '';
+    let focusedFeatureLayer = '';
     const activeLayers = new Set<string>();
     const layerId = (id: string) => `geolyr-${id}`;
     const sourceId = (id: string) => `geosrc-${id}`;
@@ -608,11 +611,13 @@ const payload = {
       if (selection?.startsWith('toponym:'))
         base.hash = `topo-${selection.slice('toponym:'.length)}`;
       if (selection?.startsWith('map:') || selection?.startsWith('toponym:')) {
-        for (const key of ['beat', 'port', 'route', 'territory']) base.searchParams.delete(key);
+        for (const key of ['beat', 'port', 'route', 'territory', 'feature'])
+          base.searchParams.delete(key);
       } else if (target) {
         const [kind, id] = target.split(':');
-        for (const key of ['port', 'route', 'territory']) base.searchParams.delete(key);
-        if (['port', 'route', 'territory'].includes(kind) && id) base.searchParams.set(kind, id);
+        for (const key of ['port', 'route', 'territory', 'feature']) base.searchParams.delete(key);
+        if (['port', 'route', 'territory', 'feature'].includes(kind) && id)
+          base.searchParams.set(kind, id);
       }
       const shareUrl = buildAtlasShareUrl(base.toString(), {
         query: search.value.trim() || undefined,
@@ -624,6 +629,7 @@ const payload = {
         layers: layerToggles
           .filter((toggle) => toggle.checked)
           .map((toggle) => toggle.dataset.layer!),
+        feature: target?.startsWith('feature:') ? target.slice('feature:'.length) : undefined,
         toponyms: topoCheck?.checked ?? false,
       });
       const url = new URL(shareUrl);
@@ -846,7 +852,20 @@ const payload = {
       if (!map || !styleReady || map.getSource(sourceId(l.id))) return;
       const src = sourceId(l.id);
       if (l.format === 'geojson') {
-        map.addSource(src, { type: 'geojson', data: l.url });
+        if (sharedState.feature && sharedState.layers?.includes(l.id)) {
+          try {
+            const response = await fetch(l.url);
+            if (!response.ok) return;
+            const data = (await response.json()) as GeoJSON.FeatureCollection;
+            const features = Array.isArray(data.features) ? data.features : [];
+            layerFeatures.set(l.id, features);
+            map.addSource(src, { type: 'geojson', data });
+          } catch {
+            return;
+          }
+        } else {
+          map.addSource(src, { type: 'geojson', data: l.url });
+        }
       } else if (l.format === 'pmtiles') {
         map.addSource(src, { type: 'vector', url: `pmtiles://${location.origin}${l.url}` });
       } else if (l.format === 'flatgeobuf') {
@@ -862,6 +881,7 @@ const payload = {
           }
           if (!map || map.getSource(src)) return;
           map.addSource(src, { type: 'geojson', data: { type: 'FeatureCollection', features } });
+          layerFeatures.set(l.id, features);
           if (l.id === 'venetian-ports') {
             setPortRegions(features);
             portFeatures = features;
@@ -898,6 +918,11 @@ const payload = {
       }
       if (map.getSource(sourceId(id))) map.removeSource(sourceId(id));
       parts.delete(id);
+      layerFeatures.delete(id);
+      if (focusedFeatureLayer === id) {
+        focusedFeatureId = '';
+        focusedFeatureLayer = '';
+      }
       if (id === 'venetian-ports') {
         portFeatures = [];
         regionSel.disabled = true;
@@ -926,6 +951,19 @@ const payload = {
           map.setFilter(
             focusId,
             withTemporal(['==', ['get', field], value], cutoff) as FilterSpecification,
+          );
+        }
+      }
+      if (focusedFeatureId && focusedFeatureLayer) {
+        const focusId = `${layerId(focusedFeatureLayer)}--focus`;
+        if (map.getLayer(focusId)) {
+          const layer = geoLayers.find((candidate) => candidate.id === focusedFeatureLayer);
+          const idFilter = ['==', ['get', 'id'], focusedFeatureId];
+          map.setFilter(
+            focusId,
+            (layer?.perFeatureTime
+              ? withTemporal(idFilter, cutoff)
+              : idFilter) as FilterSpecification,
           );
         }
       }
@@ -1208,9 +1246,84 @@ const payload = {
       }
     };
 
-    // Query-param deep links (KAN-189/190/191):
-    // /atlas?year=<n>&zoom=<n>&layers=<a,b>&beat=<id>&port|route|territory=<id>.
-    // Target params imply their required layer and are resolved only by dataset ID.
+    const focusFeatureTarget = (value: string, requestedLayers: string[]) => {
+      if (!map) return;
+      for (const sourceLayerId of requestedLayers) {
+        const feature = (layerFeatures.get(sourceLayerId) ?? []).find(
+          (candidate) => String(candidate.properties?.id) === value,
+        );
+        const layer = geoLayers.find((candidate) => candidate.id === sourceLayerId);
+        if (!feature || !layer) continue;
+
+        root.dataset.atlasTarget = `feature:${value}`;
+        focusedFeatureId = value;
+        focusedFeatureLayer = sourceLayerId;
+        const essayLink = reverseEssayLink(sourceLayerId);
+        const properties = (feature.properties ?? {}) as Record<string, unknown>;
+        showContext(
+          {
+            id: `feature:${value}`,
+            title: String(properties.name || readable(value)),
+            summary: String(properties.notes || layer.id),
+            meta: `${readable(sourceLayerId)} · ${fmt(Number(yearIn.value))}`,
+            href: essayLink?.href ?? '/atlas/',
+            linkLabel: essayLink?.label ? `${essayLink.label} →` : 'Explore the Atlas →',
+            year: Number(yearIn.value),
+          },
+          false,
+        );
+
+        const focusId = `${layerId(sourceLayerId)}--focus`;
+        const idFilter = ['==', ['get', 'id'], value];
+        const filter = (
+          layer.perFeatureTime ? withTemporal(idFilter, Number(yearIn.value)) : idFilter
+        ) as FilterSpecification;
+        if (!map.getLayer(focusId)) {
+          if (layer.geometry === 'circle') {
+            map.addLayer({
+              id: focusId,
+              type: 'circle',
+              source: sourceId(sourceLayerId),
+              filter,
+              paint: {
+                'circle-radius': 11,
+                'circle-color': '#f4d06f',
+                'circle-opacity': 1,
+                'circle-stroke-width': 2,
+                'circle-stroke-color': '#0b0b0c',
+              },
+            });
+          } else {
+            map.addLayer({
+              id: focusId,
+              type: 'line',
+              source: sourceId(sourceLayerId),
+              filter,
+              paint: {
+                'line-color': '#f4d06f',
+                'line-width': 4,
+                'line-opacity': 1,
+              },
+            });
+          }
+        } else {
+          map.setFilter(focusId, filter);
+        }
+
+        if (feature.geometry.type === 'Point') {
+          map.flyTo({ center: feature.geometry.coordinates as [number, number], zoom: 6 });
+        } else {
+          const bounds = featureBounds(feature);
+          if (bounds) map.fitBounds(bounds, { padding: 72, maxZoom: 6 });
+        }
+        return;
+      }
+    };
+
+    // Query-param deep links (KAN-189/190/191, KAN-302):
+    // /atlas?year=<n>&zoom=<n>&layers=<a,b>&feature=<stable-id> plus the VMN
+    // beat/port/route/territory aliases. Generic features require an explicit
+    // layer so IDs never need to be globally unique across datasets.
     const applyDeepLink = async () => {
       const state = resolveVmnBeatState(parseVmnAtlasState(location.search), vmnLinks);
       delete root.dataset.atlasTarget;
@@ -1250,6 +1363,9 @@ const payload = {
       }
       if (state.territory) {
         focusLineTarget('venetian-possessions', possessionFeatures, 'territory', state.territory);
+      }
+      if (sharedState.feature) {
+        focusFeatureTarget(sharedState.feature, [...wanted]);
       }
     };
 

@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "npm run editorial:validate && npm run typography:validate && npm run epic:validate && npm run release:validate && astro build && npm run reports:check && npm run embed:prune && npm run indexing:validate && npm run geo:interop:validate",
+    "build": "npm run editorial:validate && npm run typography:validate && npm run epic:validate && npm run release:validate && npm run hanseatic:validate && astro build && npm run reports:check && npm run embed:prune && npm run indexing:validate && npm run geo:interop:validate",
     "preview": "astro preview",
     "check": "astro check",
     "lint": "eslint .",
@@ -26,6 +26,8 @@
     "lighthouse": "node scripts/lighthouse.mjs",
     "geo:validate": "node scripts/geo-release.mjs --check",
     "geo:manifest": "node scripts/geo-release.mjs --write",
+    "hanseatic:build": "python3 scripts/hanseatic/build.py",
+    "hanseatic:validate": "python3 scripts/hanseatic/validate.py",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "create-essay": "node scripts/create-essay.mjs",

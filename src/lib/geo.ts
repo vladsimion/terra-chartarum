@@ -352,6 +352,98 @@ const RAW: unknown[] = [
     perFeatureTime: true,
     defaultOn: false,
   },
+  {
+    id: 'hanseatic-places',
+    room: 'road',
+    secondaryRooms: ['city', 'archive'],
+    title: 'Hanseatic places - Phase 0 fixture',
+    description:
+      'Provisional Lübeck and Visby place phases proving the HSE source-to-Atlas contract before research-scale compilation.',
+    kind: 'vector',
+    format: 'geojson',
+    url: '/geo/hanseatic-places.geojson',
+    yearFrom: 1161,
+    yearTo: 1669,
+    source: 'Terra Chartarum (compiled) - HSE KAN-302 vertical slice',
+    license: 'CC BY 4.0',
+    attribution: 'Terra Chartarum; provisional HSE research fixture',
+    documentationLinks: [
+      {
+        label: 'Data dictionary',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/hanseatic/data-dictionary.md',
+      },
+      {
+        label: 'Decisions',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/hanseatic/decisions.md',
+      },
+    ],
+    essaySlugs: ['the-league-that-left-no-map'],
+    essayLinks: [
+      {
+        slug: 'the-league-that-left-no-map',
+        sectionId: 'lubeck-profile',
+        label: 'Lübeck vertical-slice profile',
+      },
+    ],
+    geometry: 'circle',
+    color: '#7f9ca6',
+    perFeatureTime: true,
+    graduate: {
+      field: 'role',
+      radius: {
+        leading_city: 8,
+        market: 5,
+      },
+      fallback: 4,
+    },
+    defaultOn: false,
+  },
+  {
+    id: 'hanseatic-routes',
+    room: 'road',
+    secondaryRooms: ['city'],
+    title: 'Hanseatic corridors - Phase 0 fixture',
+    description:
+      'One provisional generalized Lübeck–Visby corridor compiled independently from the essay prose.',
+    kind: 'vector',
+    format: 'geojson',
+    url: '/geo/hanseatic-routes.geojson',
+    yearFrom: 1161,
+    yearTo: 1400,
+    source: 'Terra Chartarum (compiled) - HSE KAN-302 vertical slice',
+    license: 'CC BY 4.0',
+    attribution: 'Terra Chartarum; provisional HSE research fixture',
+    documentationLinks: [
+      {
+        label: 'Data dictionary',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/hanseatic/data-dictionary.md',
+      },
+      {
+        label: 'Decisions',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/hanseatic/decisions.md',
+      },
+    ],
+    essaySlugs: ['the-league-that-left-no-map'],
+    essayLinks: [
+      {
+        slug: 'the-league-that-left-no-map',
+        sectionId: 'lubeck-profile',
+        label: 'Lübeck vertical-slice profile',
+      },
+    ],
+    geometry: 'line',
+    color: '#7f9ca6',
+    perFeatureTime: true,
+    dash: {
+      field: 'certainty',
+      patterns: {
+        high: [],
+        medium: [4, 3],
+        low: [2, 3],
+      },
+    },
+    defaultOn: false,
+  },
 ];
 
 export const GEO_LAYERS: GeoLayer[] = RAW.map((l) => GeoLayerSchema.parse(l));
