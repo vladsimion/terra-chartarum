@@ -16,6 +16,12 @@ Run `npm run hanseatic:build` after changing an authority table or trace, then
 `npm run hanseatic:validate`. Generated assets are committed so builds remain
 serverless and reproducible.
 
-This fixture is intentionally provisional. Historical chronology and source
-review belong to KAN-304; corpus rights belong to KAN-303; the full gazetteer
-belongs to KAN-306. Do not expand this slice while completing KAN-302.
+This fixture is intentionally provisional. The full gazetteer belongs to
+KAN-306.
+
+KAN-303/304/305 added the evidence apparatus alongside it - `terminology.csv`,
+`corpus.csv`, `chronology.csv` and `kontore.csv`, plus the promotion rules that
+stop an unfinished row being published as a finished one. The tables are
+deliberately unfilled: they hold the shape of the research, not its results. See
+[`decisions.md`](./decisions.md) for the vocabulary decisions and what is still
+open, and run `npm run hanseatic:validate` for the current readiness score.

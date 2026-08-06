@@ -1,4 +1,4 @@
-# HSE decisions - KAN-302
+# HSE decisions - KAN-302, KAN-303, KAN-304, KAN-305
 
 ## Frozen editorial contract
 
@@ -58,3 +58,43 @@ feature identifier never has to be globally unique across unrelated datasets.
 The Lübeck and Visby rows, Lübeck–Visby corridor and one provisional evidence
 row are engineering fixtures. They demonstrate joins, validation, temporal
 filtering, Atlas focus and MDX reuse; they are not a reviewed historical release.
+
+## KAN-303/304/305 - evidence machinery before evidence
+
+These three tickets are archival research, not engineering. What is committed
+here is the apparatus that research fills: `terminology.csv`, `corpus.csv`,
+`chronology.csv`, `kontore.csv`, the promotion rules that police them, and a
+readiness report. **No object ID, stable URL, rights statement, folio or
+Kontor profile has been supplied.** Every such field is `pending`, and the
+compiler will not let one be promoted while it stays that way.
+
+The reason is specific. A register of plausible-looking repository IDs and IIIF
+URLs would pass every structural check, read as authoritative, and propagate
+into published citations - which is worse than an empty table, because nothing
+downstream would signal that the provenance was never confirmed. The `pending`
+sentinel and the promotion rules exist so the unfinished state is impossible to
+mistake for a finished one.
+
+### Logged vocabulary decisions
+
+- **No founding date.** The League formed gradually; `founded_in` is deprecated
+  in favour of `disputed`. No single foundation year may be stated as fact.
+- **No dissolution.** 1669 is recorded as a _conventional terminus_ only. The
+  Hanse was never formally dissolved, so no dissolution event may be asserted.
+- **`member_city` is deprecated.** The Hanse kept no membership roll; the term
+  imports a modern corporate model. Use `documented_collective_participation`.
+- **A Kontor is not a colony.** `colony` and `factory` are deprecated in favour
+  of `merchant_compound`: a privileged precinct under _host_ jurisdiction, never
+  a territorial possession. This is the distinction KAN-305 asks the data to
+  make, so the compiler enforces it rather than leaving it to prose.
+- **`unattested` is not doubt.** It records that no page-level witness exists in
+  _this project's_ corpus yet. Stralsund 1370 and the 1669 terminus are carried
+  from the ticket text and sit `unattested` until a witness is entered.
+
+### Open at hand-off
+
+The readiness report (printed by `npm run hanseatic:validate`) is the running
+score. At the time of writing: 0 of 8 rights-cleared witnesses, 0 of 4 Kontor
+profiles, and no high-importance claim yet resting on a page or folio. The
+"every essay section has a witness" criterion cannot be computed until KAN-312
+fixes the section anchors.
