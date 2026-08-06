@@ -1,0 +1,44 @@
+[
+  {
+    "certainty": "high",
+    "coordinates": [
+      10.6866,
+      53.8655
+    ],
+    "essay_anchor": "lubeck-profile",
+    "id": "hse-place-lubeck-leading-1358",
+    "name": "Lübeck",
+    "name_historic": "Lubeca",
+    "name_modern": "Lübeck",
+    "notes": "Phase-zero fixture: leading convening city; chronology remains provisional until KAN-304 review.",
+    "parent_polity": "Holy Roman Empire",
+    "participation_class": "documented_collective_participation",
+    "place_id": "lubeck",
+    "region": "Baltic Sea",
+    "role": "leading_city",
+    "source": "hse-src-spec",
+    "valid_from": 1358,
+    "valid_to": 1669
+  },
+  {
+    "certainty": "medium",
+    "coordinates": [
+      18.2948,
+      57.6348
+    ],
+    "essay_anchor": "merchants-before-league",
+    "id": "hse-place-visby-market-1161",
+    "name": "Visby",
+    "name_historic": "Wisby",
+    "name_modern": "Visby",
+    "notes": "Phase-zero corridor endpoint; participation classification remains provisional until KAN-306 review.",
+    "parent_polity": "Gotland",
+    "participation_class": "commercial_association_only",
+    "place_id": "visby",
+    "region": "Baltic Sea",
+    "role": "market",
+    "source": "hse-src-spec",
+    "valid_from": 1161,
+    "valid_to": 1525
+  }
+]

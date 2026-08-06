@@ -21,6 +21,11 @@ src/components/islands/RadarChart.astro
 public/geo/
 public/pagefind/
 
+# `make hanseatic` writes this from Python, whose json.dumps(indent=2) always
+# expands arrays while Prettier collapses short ones. Reformatting it here would
+# only be undone by the next regeneration.
+src/data/hanseatic/generated/
+
 # Lockfiles and data dumps
 package-lock.json
 *.csv

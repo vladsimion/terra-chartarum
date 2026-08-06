@@ -11,6 +11,7 @@ describe('Atlas share state', () => {
       year: 1450,
       zoom: 5.25,
       layers: ['venetian-routes', 'venetian-ports', 'venetian-routes'],
+      feature: 'hse-place-lubeck-leading-1358',
       toponyms: true,
     });
     const parsedUrl = new URL(url);
@@ -24,13 +25,16 @@ describe('Atlas share state', () => {
       year: 1450,
       zoom: 5.25,
       layers: ['venetian-ports', 'venetian-routes'],
+      feature: 'hse-place-lubeck-leading-1358',
       toponyms: true,
     });
   });
 
   it('drops invalid IDs and non-finite numbers', () => {
     expect(
-      parseAtlasShareState('?essay=../../bad&covers=ok-id&layers=good,bad!,also_good&year=nope'),
+      parseAtlasShareState(
+        '?essay=../../bad&covers=ok-id&layers=good,bad!,also_good&feature=bad!&year=nope',
+      ),
     ).toEqual({
       query: undefined,
       essay: undefined,
@@ -39,6 +43,7 @@ describe('Atlas share state', () => {
       year: undefined,
       zoom: undefined,
       layers: ['good', 'also_good'],
+      feature: undefined,
       toponyms: false,
     });
   });

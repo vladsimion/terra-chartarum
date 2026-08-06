@@ -6,6 +6,7 @@ export interface AtlasShareState {
   year?: number;
   zoom?: number;
   layers?: string[];
+  feature?: string;
   toponyms?: boolean;
 }
 
@@ -35,6 +36,7 @@ export function parseAtlasShareState(search: string): AtlasShareState {
     year: finite(params.get('year')),
     zoom: finite(params.get('zoom')),
     layers: layers.length ? [...new Set(layers)] : undefined,
+    feature: safe('feature'),
     toponyms: params.get('toponyms') === '1',
   };
 }
@@ -52,6 +54,7 @@ export function buildAtlasShareUrl(baseUrl: string, state: AtlasShareState): str
   set('year', state.year);
   set('zoom', state.zoom);
   set('layers', state.layers?.length ? [...new Set(state.layers)].sort().join(',') : undefined);
+  set('feature', state.feature);
   set('toponyms', state.toponyms ? '1' : undefined);
   return url.toString();
 }

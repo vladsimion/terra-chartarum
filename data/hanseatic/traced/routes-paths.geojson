@@ -1,0 +1,21 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "hse-route-lubeck-visby"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [10.6866, 53.8655],
+          [11.2, 54.35],
+          [13.9, 55.75],
+          [16.7, 56.75],
+          [18.2948, 57.6348]
+        ]
+      }
+    }
+  ]
+}

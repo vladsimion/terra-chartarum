@@ -4,7 +4,7 @@
 # out-of-band data pipelines that are not part of the Astro build - currently the
 # Venetian Maritime Network (VMN) GIS dataset compilation (KAN-145).
 
-.PHONY: vmn vmn-venv vmn-validate
+.PHONY: vmn vmn-venv vmn-validate hanseatic hanseatic-validate
 
 VMN_VENV := .venv
 VMN_PY := $(VMN_VENV)/bin/python
@@ -31,3 +31,11 @@ vmn:
 # after `make vmn`; also runs in CI. Requires the venv from `make vmn-venv`.
 vmn-validate:
 	$(VMN_PY) scripts/vmn/validate.py
+
+# KAN-302 HSE vertical slice. This compiler intentionally uses only the Python
+# standard library; the later FGB publication ticket may adopt the VMN venv.
+hanseatic:
+	python3 scripts/hanseatic/build.py
+
+hanseatic-validate:
+	python3 scripts/hanseatic/validate.py

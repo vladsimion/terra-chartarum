@@ -1,0 +1,2 @@
+id,name,corridor_type,from_place_id,to_place_id,waypoints,valid_from,valid_to,directionality,seasonality,evidence_type,certainty,commodities,source,notes
+hse-route-lubeck-visby,Lübeck–Visby corridor,maritime,lubeck,visby,lubeck|visby,1161,1400,bidirectional,seasonal,generalized_reconstruction,medium,salt|cloth,hse-src-spec,"Phase-zero generalized corridor, not an individual voyage track."
