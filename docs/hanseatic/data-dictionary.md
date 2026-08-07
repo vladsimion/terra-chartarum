@@ -71,6 +71,45 @@ row must carry an `editorial_decision` recording the conflict. Once a row leaves
 `provisional` it must cite a `claim_id` in `evidence.csv` and can no longer keep
 its years open.
 
+## `temporal-exceptions.csv` (KAN-309)
+
+A corridor may not run outside the recorded phases of the places it connects.
+The mismatch is allowed, but only as a logged decision: one row per accepted
+case, carrying `subject_id`, `kind`, a `decision` stating why it is accepted,
+and `logged_in` pointing at a document under `docs/`.
+
+The rule cuts both ways. An undocumented mismatch fails the build, and so does
+an exception whose mismatch no longer exists - stale bookkeeping is as much a
+defect as a missing entry.
+
+## Compiled outputs and the release manifest (KAN-307 / KAN-309)
+
+`npm run hanseatic:build` writes:
+
+| Output                                       | Purpose                       |
+| -------------------------------------------- | ----------------------------- |
+| `public/geo/hanseatic-places.geojson`        | Atlas layer                   |
+| `public/geo/hanseatic-routes.geojson`        | Atlas layer                   |
+| `public/geo/hanseatic-places.fgb`            | FlatGeobuf twin for GIS reuse |
+| `src/data/hanseatic/generated/places.json`   | MDX place profiles            |
+| `src/data/hanseatic/generated/kontore.json`  | `KontorProfile` payload       |
+| `src/data/hanseatic/generated/manifest.json` | Release manifest              |
+
+The manifest records `schemaVersion`, a `release` id, the SHA-256 of every
+**input**, and the SHA-256, byte length and feature count of every **output**.
+It is deliberately timestamp-free, so identical inputs produce an identical
+manifest and the only thing that can move a hash is the data.
+
+Recording input hashes is what lets `npm run hanseatic:validate` detect a
+source edit that was never compiled, using the standard library alone - it
+never has to re-read the FlatGeobuf. Only the build needs GDAL, via the VMN
+venv; validation and the tests run on a bare `python3`.
+
+Coordinates are checked as EPSG:4326 degrees inside an HSE bounding box, which
+is what catches a transposed longitude/latitude pair - a swap stays inside the
+global range and would otherwise validate. Phases of one place may abut but
+never overlap.
+
 ## `kontore.csv` (KAN-305)
 
 One row per Kontor phase, keyed `hse-kontor-<kontor>`. `legal_status` is checked

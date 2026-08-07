@@ -26,7 +26,7 @@
     "lighthouse": "node scripts/lighthouse.mjs",
     "geo:validate": "node scripts/geo-release.mjs --check",
     "geo:manifest": "node scripts/geo-release.mjs --write",
-    "hanseatic:build": "python3 scripts/hanseatic/build.py",
+    "hanseatic:build": "make hanseatic",
     "hanseatic:validate": "python3 scripts/hanseatic/validate.py",
     "hanseatic:test": "python3 -m pytest scripts/hanseatic -q",
     "format": "prettier --write .",
