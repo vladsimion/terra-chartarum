@@ -67,6 +67,16 @@ export const GeoLayerSchema = z.object({
       patterns: z.record(z.string(), z.array(z.number())),
     })
     .optional(),
+  // Data-driven line width keyed on a categorical field (KAN-310), e.g. HSE
+  // corridors widened by `evidence_type`. Combines with `dash` so evidence
+  // strength and uncertainty are legible independently of colour.
+  width: z
+    .object({
+      field: z.string(),
+      widths: z.record(z.string(), z.number()),
+      fallback: z.number().default(1.2),
+    })
+    .optional(),
   // Seven-room cosmography (TC-102 / KAN-93). Optional here so existing layers
   // validate unchanged; retro-tagging lands in KAN-94.
   room: z.enum(ROOM_SLUGS).optional(),
@@ -441,6 +451,15 @@ const RAW: unknown[] = [
         medium: [4, 3],
         low: [2, 3],
       },
+    },
+    width: {
+      field: 'evidence_type',
+      widths: {
+        documented_route: 3.2,
+        repeated_connection: 2.2,
+        generalized_reconstruction: 1.2,
+      },
+      fallback: 1.2,
     },
     defaultOn: false,
   },
