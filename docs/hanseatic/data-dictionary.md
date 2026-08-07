@@ -62,6 +62,25 @@ Two rules are load-bearing. `provenance_class: dealer` may only ever be
 URL, resolution, attribution, verification date and an open rights statement -
 so "verified" cannot be asserted over unfilled provenance.
 
+`rights_statement` records the licence exactly. `public_domain`, `cc0`, `cc_by`
+and `cc_by_sa` clear the bar; `cc_by_nc`, `cc_by_nc_sa`, `cc_by_nc_nd` and
+`cc_by_nd` do not, and neither do `in_copyright` or `rights_unknown`. The
+restrictive Creative Commons terms are named rather than flattened into
+`in_copyright` because a register that cannot say _which_ restriction applies
+cannot tell you what it would take to clear it - but naming one never softens
+the bar it fails.
+
+In practice the restrictive licences are the common case: verification so far
+has found holding repositories readily enough, and been stopped by their terms.
+
+`resolution` accepts a third value, `not_published`, meaning the repository was
+checked and states no pixel figure - common where a tiled viewer serves the
+master. That is a finding, where `pending` is the absence of one, so a verified
+row may carry it and a `pending` one still may not. **Only `resolution` accepts
+it**: a repository that cannot state its own identifier, URL or attribution has
+not really been checked, and the compiler rejects `not_published` in those
+fields by name.
+
 ## `chronology.csv` (KAN-304)
 
 One row per institutional or chronological event. `date_type` is `year`,
