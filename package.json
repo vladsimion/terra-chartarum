@@ -28,6 +28,7 @@
     "geo:manifest": "node scripts/geo-release.mjs --write",
     "hanseatic:build": "python3 scripts/hanseatic/build.py",
     "hanseatic:validate": "python3 scripts/hanseatic/validate.py",
+    "hanseatic:test": "python3 -m pytest scripts/hanseatic -q",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "create-essay": "node scripts/create-essay.mjs",

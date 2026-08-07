@@ -4,7 +4,7 @@
 # out-of-band data pipelines that are not part of the Astro build - currently the
 # Venetian Maritime Network (VMN) GIS dataset compilation (KAN-145).
 
-.PHONY: vmn vmn-venv vmn-validate hanseatic hanseatic-validate
+.PHONY: vmn vmn-venv vmn-validate hanseatic hanseatic-validate hanseatic-test
 
 VMN_VENV := .venv
 VMN_PY := $(VMN_VENV)/bin/python
@@ -39,3 +39,9 @@ hanseatic:
 
 hanseatic-validate:
 	python3 scripts/hanseatic/validate.py
+
+# KAN-303 promotion-rule tests. pytest is the only test-time dependency and is
+# not vendored; install it once with `python3 -m pip install pytest` (or use a
+# venv). Also runs in CI, which installs it itself.
+hanseatic-test:
+	python3 -m pytest scripts/hanseatic -q

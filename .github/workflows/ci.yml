@@ -1,9 +1,10 @@
-# CI guardrail (KAN-14 / ATLAS-102, extended by KAN-176 and VMN-21).
-# Runs on every PR and on pushes to main. Four parallel jobs:
+# CI guardrail (KAN-14 / ATLAS-102, extended by KAN-176, VMN-21 and KAN-303).
+# Runs on every PR and on pushes to main. Five parallel jobs:
 #   verify - format, lint, type-check, unit tests, build (fast gate)
 #   e2e    - Playwright smoke + axe accessibility budget over the built site
 #   lighthouse - Lighthouse CI (accessibility budget hard, perf/bp/seo as warnings)
 #   vmn-data - VMN dataset QA gate: validates the compiled FGB artifacts (spec §8)
+#   hanseatic-data - HSE promotion-rule tests + the sources/outputs QA gate
 # Node is pinned via .node-version to match the Cloudflare Pages build (KAN-56).
 name: CI
 
@@ -133,3 +134,32 @@ jobs:
 
       - name: Validate compiled FGB artifacts
         run: python scripts/vmn/validate.py
+
+  hanseatic-data:
+    name: HSE promotion rules + dataset QA gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install pytest
+        # KAN-303: the HSE compiler is standard-library only by design, so
+        # pytest is the single test-time dependency. Deliberately not the VMN
+        # venv - nothing here touches GDAL or geometry.
+        run: pip install pytest
+
+      - name: Promotion-rule tests
+        # Guards the rules that stop unverified research being published as
+        # verified. These fire only on data nobody has written yet, so they
+        # would otherwise rot unnoticed between research phases.
+        run: python -m pytest scripts/hanseatic -q
+
+      - name: Validate sources and generated assets
+        # Same gate as `npm run hanseatic:validate`, run here without Node so
+        # it fails fast alongside the tests rather than only inside the build.
+        run: python scripts/hanseatic/validate.py
