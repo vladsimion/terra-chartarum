@@ -22,6 +22,10 @@ const SKIP_DIRS = new Set([
   'node_modules',
   'playwright-report',
   'test-results',
+  // Agent worktrees (.claude/worktrees/<name>) are full checkouts of another
+  // branch living inside this one. Walking them reports that branch's prose as
+  // if it were ours, and CI never sees it because it checks out clean.
+  'worktrees',
 ]);
 
 // Text formats a reader can end up seeing, plus the config/docs around them.

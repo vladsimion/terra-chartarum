@@ -18,6 +18,10 @@ export default tseslint.config(
       'starter/',
       'playwright-report/',
       'test-results/',
+      // Agent worktrees are full checkouts living inside the repo. Linting them
+      // reports another branch's problems as if they were this one's, and CI
+      // never sees them because it checks out clean.
+      '.claude/worktrees/',
     ],
   },
   eslint.configs.recommended,
