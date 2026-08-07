@@ -116,6 +116,8 @@ const payload = {
     perFeatureTime: l.perFeatureTime,
     graduate: l.graduate ?? null,
     dash: l.dash ?? null,
+    width: l.width ?? null,
+    documentationLinks: l.documentationLinks,
     essayLinks: l.essayLinks.map((link) => ({
       href: `/essays/${link.slug}/#${link.sectionId}`,
       label: link.label,
@@ -207,6 +209,7 @@ const payload = {
       </p>
       <p class="am-context-meta"></p>
       <a class="am-context-link" href="/essays/" hidden>Enter the essay →</a>
+      <ul class="am-context-docs" hidden></ul>
     </aside>
   </div>
 
@@ -306,11 +309,13 @@ const payload = {
   } from 'maplibre-gl';
   import {
     circleRadiusExpression,
+    lineWidthExpression,
     withTemporal,
     withRegion,
     dashSubLayers,
     type GraduateHint,
     type DashHint,
+    type WidthHint,
   } from '../../lib/geo-style';
   import { buildAtlasShareUrl, parseAtlasShareState } from '../../lib/atlas-share';
   import {
@@ -353,6 +358,8 @@ const payload = {
     perFeatureTime: boolean;
     graduate: GraduateHint | null;
     dash: DashHint | null;
+    width: WidthHint | null;
+    documentationLinks: { label: string; href: string }[];
     essayLinks: { href: string; label: string }[];
     available: boolean;
     defaultOn: boolean;
@@ -438,6 +445,7 @@ const payload = {
     const contextSummary = root.querySelector<HTMLElement>('.am-context-summary')!;
     const contextMeta = root.querySelector<HTMLElement>('.am-context-meta')!;
     const contextLink = root.querySelector<HTMLAnchorElement>('.am-context-link')!;
+    const contextDocs = root.querySelector<HTMLElement>('.am-context-docs')!;
     const layerToggles = Array.from(
       root.querySelectorAll<HTMLInputElement>('.am-layer input[data-layer]'),
     );
@@ -489,8 +497,10 @@ const payload = {
     let map: MLMap | null = null;
     let PopupCtor: (typeof import('maplibre-gl'))['Popup'] | null = null;
     let portPopup: MLPopup | null = null;
+    let hansePopup: MLPopup | null = null;
     let targetPopup: MLPopup | null = null;
     let portPopupPinned = false;
+    let hansePopupPinned = false;
     let styleReady = false;
     // Decoded VMN features, retained so ID-only deep links can focus their target
     // without re-fetching or duplicating geometry in the essay (KAN-190/191).
@@ -535,6 +545,8 @@ const payload = {
       linkLabel?: string;
       essaySlug?: string;
       year?: number;
+      /** Provenance links for the selected feature's layer (KAN-310). */
+      documents?: { label: string; href: string }[];
     };
 
     const updateUrlState = (essaySlug?: string, year?: number) => {
@@ -552,6 +564,18 @@ const payload = {
       contextLink.href = context.href;
       contextLink.textContent = context.linkLabel ?? 'Enter the essay →';
       contextLink.hidden = false;
+      const documents = context.documents ?? [];
+      contextDocs.replaceChildren(
+        ...documents.map((doc) => {
+          const item = document.createElement('li');
+          const anchor = document.createElement('a');
+          anchor.href = doc.href;
+          anchor.textContent = doc.label;
+          item.append(anchor);
+          return item;
+        }),
+      );
+      contextDocs.hidden = documents.length === 0;
       root.dataset.atlasSelection = context.id;
       if (persist) updateUrlState(context.essaySlug, context.year ?? Number(yearIn.value));
       document.dispatchEvent(
@@ -699,6 +723,123 @@ const payload = {
       );
     };
 
+    // Hanseatic place phases (KAN-310). The panel has to carry provenance, not
+    // just identity: an HSE feature is a dated claim, so the source key, the
+    // certainty and the documentation links travel with it.
+    const hansePopupHtml = (properties: Record<string, unknown>) => {
+      const historic = escapeHtml(properties.name);
+      const alternates = [escapeHtml(properties.name_historic), escapeHtml(properties.name_modern)]
+        .filter(
+          (name, index, values) => name && name !== historic && values.indexOf(name) === index,
+        )
+        .join(' · ');
+      const dates = `${escapeHtml(properties.valid_from)}–${escapeHtml(properties.valid_to)}`;
+      const notes = properties.notes
+        ? `<span class="am-pop-blurb">${escapeHtml(properties.notes)}</span>`
+        : '';
+      const essayLink = reverseEssayLink('hanseatic-places');
+      return (
+        `<div class="am-pop am-hse-pop">` +
+        `<span class="am-pop-year">${dates}</span>` +
+        `<strong class="am-pop-title">${historic}</strong>` +
+        (alternates ? `<span class="am-pop-names">${alternates}</span>` : '') +
+        `<span class="am-pop-meta">${escapeHtml(properties.region)} · ${escapeHtml(
+          readable(properties.role),
+        )}</span>` +
+        `<span class="am-pop-meta">${escapeHtml(readable(properties.participation_class))}</span>` +
+        `<span class="am-pop-meta">${escapeHtml(properties.certainty)} certainty · source ${escapeHtml(
+          properties.source,
+        )}</span>` +
+        notes +
+        (essayLink
+          ? `<a class="am-pop-link" href="${escapeHtml(essayLink.href)}">${escapeHtml(
+              essayLink.label,
+            )} →</a>`
+          : '') +
+        `</div>`
+      );
+    };
+
+    const showHanseContext = (properties: Record<string, unknown>, persist = true) => {
+      const layer = geoLayers.find((candidate) => candidate.id === 'hanseatic-places');
+      const anchor = String(properties.essay_anchor ?? '').trim();
+      // The row's own essay_anchor wins over the layer's default section, so the
+      // panel lands on the passage that actually discusses this phase.
+      const essayLink = reverseEssayLink('hanseatic-places');
+      const href = anchor
+        ? `/essays/the-league-that-left-no-map/#${anchor}`
+        : (essayLink?.href ?? '/essays/the-league-that-left-no-map/');
+      showContext(
+        {
+          id: `feature:${String(properties.id ?? '')}`,
+          title: String(properties.name ?? 'Hanseatic place phase'),
+          summary: String(properties.notes ?? ''),
+          meta:
+            `${readable(String(properties.role ?? ''))} · ` +
+            `${readable(String(properties.participation_class ?? ''))} · ` +
+            `${String(properties.valid_from ?? '')}–${String(properties.valid_to ?? '')} · ` +
+            `${String(properties.certainty ?? '')} certainty · source ${String(properties.source ?? '')}`,
+          href,
+          linkLabel: essayLink?.label ? `${essayLink.label} →` : undefined,
+          essaySlug: 'the-league-that-left-no-map',
+          year: Number(yearIn.value),
+          documents: layer?.documentationLinks ?? [],
+        },
+        persist,
+      );
+    };
+
+    const bindHanseInteractions = (renderLayerId: string) => {
+      if (!map || !PopupCtor) return;
+      const show = (event: MapLayerMouseEvent, pinned: boolean) => {
+        const feature = event.features?.[0];
+        if (!feature || feature.geometry.type !== 'Point' || !map || !PopupCtor) return;
+        hansePopup?.remove();
+        hansePopupPinned = pinned;
+        hansePopup = new PopupCtor({
+          offset: 10,
+          closeButton: pinned,
+          closeOnClick: pinned,
+        })
+          .setLngLat(feature.geometry.coordinates as [number, number])
+          .setHTML(hansePopupHtml((feature.properties ?? {}) as Record<string, unknown>))
+          .addTo(map);
+        hansePopup.on('close', () => {
+          hansePopupPinned = false;
+        });
+      };
+      const enter = (event: MapLayerMouseEvent) => {
+        if (!map) return;
+        map.getCanvas().style.cursor = 'pointer';
+        if (!hansePopupPinned) show(event, false);
+      };
+      const leave = () => {
+        if (!map) return;
+        map.getCanvas().style.cursor = '';
+        if (!hansePopupPinned) hansePopup?.remove();
+      };
+      const click = (event: MapLayerMouseEvent) => show(event, true);
+      const select = (event: MapLayerMouseEvent) => {
+        const feature = event.features?.[0];
+        if (feature) {
+          showHanseContext((feature.properties ?? {}) as Record<string, unknown>);
+        }
+      };
+      map.on('mouseenter', renderLayerId, enter);
+      map.on('mouseleave', renderLayerId, leave);
+      map.on('click', renderLayerId, click);
+      map.on('click', renderLayerId, select);
+      layerCleanups.set('hanseatic-places', () => {
+        map?.off('mouseenter', renderLayerId, enter);
+        map?.off('mouseleave', renderLayerId, leave);
+        map?.off('click', renderLayerId, click);
+        map?.off('click', renderLayerId, select);
+        hansePopup?.remove();
+        hansePopup = null;
+        hansePopupPinned = false;
+      });
+    };
+
     const setPortRegions = (features: GeoJSON.Feature[]) => {
       const selected = regionSel.value;
       const regions = [
@@ -811,11 +952,14 @@ const payload = {
       }
       // Line - dashed by a categorical field means one filtered sub-layer per value
       // (line-dasharray is not a data-driven paint property in MapLibre).
+      // Evidence strength rides on line-width, which *is* data-driven, so it
+      // varies inside each dashed sub-layer instead of multiplying them.
+      const lineWidth = l.width ? lineWidthExpression(l.width) : 1.2;
       if (l.dash) {
         return dashSubLayers(l.dash).map((s) => {
           const paint: Record<string, unknown> = {
             'line-color': l.color,
-            'line-width': 1.2,
+            'line-width': lineWidth,
             'line-opacity': 0.85,
           };
           if (s.dashArray.length) paint['line-dasharray'] = s.dashArray;
@@ -837,7 +981,7 @@ const payload = {
             id: lyr,
             type: 'line',
             source: src,
-            paint: { 'line-color': l.color, 'line-width': 1.2, 'line-opacity': 0.85 },
+            paint: { 'line-color': l.color, 'line-width': lineWidth, 'line-opacity': 0.85 },
           }),
           baseFilter: null,
         },
@@ -903,6 +1047,9 @@ const payload = {
       );
       if (l.id === 'venetian-ports' && built[0]) {
         bindPortInteractions(built[0].layer.id as string);
+      }
+      if (l.id === 'hanseatic-places' && built[0]) {
+        bindHanseInteractions(built[0].layer.id as string);
       }
       syncLayerTime(Number(yearIn.value));
     };
@@ -1638,6 +1785,24 @@ const payload = {
     color: var(--gold);
     font-family: var(--font-mono);
     font-size: var(--step--1);
+  }
+  /* Provenance links for the selected feature's layer (KAN-310). */
+  .am-context-docs {
+    list-style: none;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.9rem;
+  }
+  .am-context-docs a {
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+  }
+  .am-context-docs a:hover,
+  .am-context-docs a:focus-visible {
+    color: var(--gold);
   }
   .am-fallback-note {
     padding: 1rem;

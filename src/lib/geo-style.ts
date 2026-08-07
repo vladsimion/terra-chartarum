@@ -18,11 +18,32 @@ export type DashHint = {
   patterns: Record<string, number[]>;
 };
 
+export type WidthHint = {
+  field: string;
+  widths: Record<string, number>;
+  fallback: number;
+};
+
 /** `circle-radius` match expression: feature `field` value → px radius, else fallback. */
 export function circleRadiusExpression(g: GraduateHint): unknown[] {
   const expr: unknown[] = ['match', ['get', g.field]];
   for (const [value, r] of Object.entries(g.radius)) expr.push(value, r);
   expr.push(g.fallback);
+  return expr;
+}
+
+/**
+ * `line-width` match expression: feature `field` value → px width, else fallback.
+ *
+ * Unlike `line-dasharray` this *is* data-driven in MapLibre, so evidence strength
+ * can vary within a dashed sub-layer rather than multiplying the sub-layer count.
+ * Width carries evidence type while dash carries uncertainty, so the two read
+ * independently and neither depends on colour (KAN-310).
+ */
+export function lineWidthExpression(w: WidthHint): unknown[] {
+  const expr: unknown[] = ['match', ['get', w.field]];
+  for (const [value, px] of Object.entries(w.widths)) expr.push(value, px);
+  expr.push(w.fallback);
   return expr;
 }
 

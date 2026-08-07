@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   circleRadiusExpression,
+  lineWidthExpression,
   temporalFilter,
   withTemporal,
   withRegion,
@@ -15,6 +16,36 @@ describe('circleRadiusExpression (VMN-20 graduated ports, B3)', () => {
       fallback: 4,
     });
     expect(expr).toEqual(['match', ['get', 'status'], 'metropole', 9, 'subject', 5, 4]);
+  });
+});
+
+describe('lineWidthExpression (KAN-310 evidence strength, non-colour)', () => {
+  it('builds a match on the field with a trailing fallback', () => {
+    const expr = lineWidthExpression({
+      field: 'evidence_type',
+      widths: { documented_route: 3.2, generalized_reconstruction: 1.2 },
+      fallback: 1.2,
+    });
+    expect(expr).toEqual([
+      'match',
+      ['get', 'evidence_type'],
+      'documented_route',
+      3.2,
+      'generalized_reconstruction',
+      1.2,
+      1.2,
+    ]);
+  });
+
+  it('is independent of the dash hint, so evidence and uncertainty read separately', () => {
+    const width = lineWidthExpression({
+      field: 'evidence_type',
+      widths: { documented_route: 3.2 },
+      fallback: 1.2,
+    });
+    const dashes = dashSubLayers({ field: 'certainty', patterns: { high: [], low: [2, 3] } });
+    expect(dashes.every((sub) => !JSON.stringify(sub).includes('evidence_type'))).toBe(true);
+    expect(width).toContain('documented_route');
   });
 });
 
