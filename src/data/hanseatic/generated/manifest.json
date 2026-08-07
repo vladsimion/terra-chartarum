@@ -2,7 +2,7 @@
   "generatedBy": "scripts/hanseatic/build.py",
   "inputs": {
     "data/hanseatic/sources/chronology.csv": "3b68f8d5c4cfa93beebe4a86bc4df0bd55d9e201f6e16a79bc44abf5afd4d34c",
-    "data/hanseatic/sources/corpus.csv": "6a4804eb68c4b93c913cf6b32f8365daf7bd519759b0a43a88ff0e087275ef71",
+    "data/hanseatic/sources/corpus.csv": "0e89f56de9c5bf3ec9c03d6aa95e37c5df2c0a54d532bce07c568d7060b2fb4a",
     "data/hanseatic/sources/evidence.csv": "b9bd0096c31ec980e557e72f11546fd232fccbe209964986c3597825e3a79fd8",
     "data/hanseatic/sources/kontore.csv": "2ba696541d9c8924423a9b16410b1fceb51b9bf38d423c6a89e61b0d16165aae",
     "data/hanseatic/sources/places.csv": "87e944cbca9b1d9bbc11f8e648cfbd4149618e25370772cb84ea28080197e029",
