@@ -1,0 +1,112 @@
+---
+import { getHanseaticKontor, isPending } from '../../lib/hanseatic';
+
+interface Props {
+  kontorId: string;
+}
+
+const { kontorId } = Astro.props;
+const kontor = getHanseaticKontor(kontorId);
+const readable = (value: string) => value.replaceAll('_', ' ');
+
+// A pending field is an open research question, not a value. It is labelled as
+// such rather than rendered, so an unfinished dossier can never read as fact.
+const field = (value: string) => (isPending(value) ? null : value);
+
+const span =
+  isPending(kontor.valid_from) || isPending(kontor.valid_to)
+    ? null
+    : `AD ${kontor.valid_from}–${kontor.valid_to}`;
+
+const entries: { term: string; value: string | null }[] = [
+  { term: 'Recorded phase', value: span },
+  { term: 'Legal status', value: readable(kontor.legal_status) },
+  { term: 'Spatial setting', value: field(kontor.spatial_setting) },
+  { term: 'Regulations', value: field(kontor.regulations) },
+  { term: 'Commodities', value: field(kontor.commodities) },
+  { term: 'Primary witness', value: field(kontor.primary_witness) },
+];
+---
+
+<aside class="hse-kontor" aria-labelledby={`hse-kontor-${kontor.id}`}>
+  <p class="hse-kontor__eyebrow">Generated HSE Kontor dossier</p>
+  <h3 id={`hse-kontor-${kontor.id}`}>{kontor.name}</h3>
+  <p class="hse-kontor__host">at {kontor.host_settlement}</p>
+
+  {
+    kontor.review_status === 'provisional' && (
+      <p class="hse-kontor__provisional" role="note">
+        Provisional dossier. Its evidence has not been reviewed, and unfilled fields are shown as
+        open questions rather than findings.
+      </p>
+    )
+  }
+
+  {field(kontor.profile_summary) && <p>{kontor.profile_summary}</p>}
+
+  <dl>
+    {
+      entries.map((entry) => (
+        <div>
+          <dt>{entry.term}</dt>
+          <dd class={entry.value ? undefined : 'hse-kontor__open'}>
+            {entry.value ?? 'Not yet established'}
+          </dd>
+        </div>
+      ))
+    }
+  </dl>
+</aside>
+
+<style>
+  .hse-kontor {
+    margin-block: var(--space-8, 2rem);
+    padding: clamp(1rem, 3vw, 1.75rem);
+    border: 1px solid color-mix(in srgb, #7f9ca6 55%, var(--line));
+    background: color-mix(in srgb, #7f9ca6 8%, var(--surface));
+  }
+
+  .hse-kontor__eyebrow,
+  dt {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+
+  h3 {
+    margin-block: 0.25rem 0.25rem;
+  }
+
+  .hse-kontor__host {
+    margin-block: 0 0.75rem;
+    color: var(--ink-muted);
+  }
+
+  .hse-kontor__provisional {
+    margin-block: 0.75rem;
+    padding: 0.6rem 0.85rem;
+    border-left: 3px solid #b08b57;
+    background: color-mix(in srgb, #b08b57 10%, transparent);
+    font-size: var(--step--1);
+  }
+
+  dl {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: 1rem;
+    margin-block: 1.25rem 0;
+  }
+
+  dd {
+    margin: 0.25rem 0 0;
+    text-transform: capitalize;
+  }
+
+  .hse-kontor__open {
+    color: var(--ink-muted);
+    font-style: italic;
+    text-transform: none;
+  }
+</style>

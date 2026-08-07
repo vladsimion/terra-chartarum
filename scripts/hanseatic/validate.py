@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build import REPO, build_outputs, validate_inputs  # noqa: E402
+from build import REPO, build_outputs, readiness_lines, validate_inputs  # noqa: E402
 
 
 def main() -> int:
@@ -38,7 +38,9 @@ def main() -> int:
         for error in errors:
             print(f"ERROR: {error}", file=sys.stderr)
         return 1
-    print("Hanseatic vertical-slice QA: sources, joins, evidence and outputs are valid.")
+    print("Hanseatic QA: sources, joins, evidence, corpus and outputs are valid.")
+    for line in readiness_lines():
+        print(line)
     return 0
 
 

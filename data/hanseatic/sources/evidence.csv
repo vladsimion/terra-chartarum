@@ -1,2 +1,2 @@
-claim_id,feature_id,source_key,page_or_folio,quote_or_note,confidence,review_status
-hse-claim-lubeck-leading,hse-place-lubeck-leading-1358,hse-src-spec,§11 Phase 0,"Vertical-slice fixture only; historical chronology and page-level scholarly support remain gated by KAN-304.",low,provisional
+claim_id,feature_id,source_key,page_or_folio,locator_type,importance,quote_or_note,confidence,review_status
+hse-claim-lubeck-leading,hse-place-lubeck-leading-1358,hse-src-spec,§11 Phase 0,section,low,"Vertical-slice fixture only; historical chronology and page-level scholarly support remain gated by KAN-304.",low,provisional

@@ -1,4 +1,5 @@
 import places from '../data/hanseatic/generated/places.json';
+import kontore from '../data/hanseatic/generated/kontore.json';
 
 export interface HanseaticPlacePhase {
   id: string;
@@ -19,7 +20,47 @@ export interface HanseaticPlacePhase {
   notes: string;
 }
 
+/** Fields the compiler writes as `pending` until research establishes them. */
+export const HSE_PENDING = 'pending';
+
+export interface HanseaticKontor {
+  id: string;
+  kontor_id: string;
+  name: string;
+  host_settlement: string;
+  place_id: string;
+  legal_status: string;
+  valid_from: string;
+  valid_to: string;
+  status_phase: string;
+  spatial_setting: string;
+  regulations: string;
+  commodities: string;
+  primary_witness: string;
+  profile_summary: string;
+  certainty_term: string;
+  review_status: 'provisional' | 'reviewed' | 'approved';
+  source: string;
+  notes: string;
+}
+
 const PLACE_PHASES = places as HanseaticPlacePhase[];
+const KONTORE = kontore as HanseaticKontor[];
+
+/** True when research has not yet filled this field, so callers never print `pending`. */
+export function isPending(value: string): boolean {
+  return value.trim() === HSE_PENDING;
+}
+
+export function listHanseaticKontore(): HanseaticKontor[] {
+  return KONTORE;
+}
+
+export function getHanseaticKontor(kontorId: string): HanseaticKontor {
+  const found = KONTORE.find((candidate) => candidate.kontor_id === kontorId);
+  if (!found) throw new Error(`Unknown Hanseatic Kontor '${kontorId}'`);
+  return found;
+}
 
 export function getHanseaticPlacePhase(placeId: string): HanseaticPlacePhase {
   const phase = PLACE_PHASES.find((candidate) => candidate.place_id === placeId);
