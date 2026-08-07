@@ -17,6 +17,7 @@ node_modules/
 .npm-cache/
 .venv/
 __pycache__/
+.pytest_cache/
 
 # logs / env
 *.log
