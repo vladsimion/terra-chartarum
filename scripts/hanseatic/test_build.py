@@ -128,19 +128,6 @@ def test_copied_sources_validate(sources: Path) -> None:
 
 def test_verified_witness_may_not_leave_provenance_pending(sources: Path) -> None:
     """A row cannot be called verified while the fields verification means are pending."""
-    edit_row(
-        sources / "corpus.csv",
-        "hse-obj-lubeck-view",
-        # Rights and provenance_class are cleared so that only the pending-field
-        # rule can fire; every other provenance field is left as `pending`.
-        {
-            "verification_status": "verified",
-            "rights_statement": "public_domain",
-            "provenance_class": "repository",
-        },
-    )
-    errors = validate_inputs()
-
     pending_fields = {
         "repository",
         "repository_id",
@@ -150,6 +137,24 @@ def test_verified_witness_may_not_leave_provenance_pending(sources: Path) -> Non
         "verified_on",
         "date_made",
     }
+    edit_row(
+        sources / "corpus.csv",
+        "hse-obj-lubeck-view",
+        {
+            # Blank the provenance explicitly rather than relying on this row
+            # still being unresearched. Verification fills rows in as it goes,
+            # so a test that assumes a particular row is empty stops testing
+            # anything the moment that row is done.
+            **{field: PENDING for field in pending_fields},
+            # Rights and provenance_class are cleared so that only the
+            # pending-field rule can fire.
+            "verification_status": "verified",
+            "rights_statement": "public_domain",
+            "provenance_class": "repository",
+        },
+    )
+    errors = validate_inputs()
+
     reported = matching(errors, "verified witness still has")
     assert len(reported) == len(pending_fields), errors
     for field in pending_fields:
@@ -244,14 +249,6 @@ def test_kontor_may_not_be_promoted_while_its_profile_is_pending(
     sources: Path, review_status: str
 ) -> None:
     """Everything KontorProfile renders has to be real before the row leaves provisional."""
-    edit_row(
-        sources / "kontore.csv",
-        "hse-kontor-novgorod",
-        {"review_status": review_status},
-    )
-    errors = validate_inputs()
-
-    # primary_witness is the one field already filled in on this row.
     pending_fields = {
         "place_id",
         "valid_from",
@@ -262,6 +259,20 @@ def test_kontor_may_not_be_promoted_while_its_profile_is_pending(
         "commodities",
         "profile_summary",
     }
+    edit_row(
+        sources / "kontore.csv",
+        "hse-kontor-novgorod",
+        {
+            # Blanked explicitly, for the same reason as the corpus test: KAN-305
+            # will fill these rows in, and a test that assumes they are empty
+            # would quietly stop testing the rule at exactly that point.
+            # primary_witness is left alone; it is already filled on this row.
+            **{field: PENDING for field in pending_fields},
+            "review_status": review_status,
+        },
+    )
+    errors = validate_inputs()
+
     reported = matching(errors, "reviewed Kontor still has")
     assert len(reported) == len(pending_fields), errors
     for field in pending_fields:
