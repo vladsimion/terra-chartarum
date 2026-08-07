@@ -192,6 +192,27 @@ def test_verified_witness_needs_open_rights(sources: Path, rights: str) -> None:
     assert matching(errors, f"found '{rights}'"), errors
 
 
+@pytest.mark.parametrize("rights", sorted(build.RESTRICTED_RIGHTS))
+def test_non_commercial_licence_may_not_be_published(sources: Path, rights: str) -> None:
+    """A restrictive CC licence is recorded exactly, and still cannot be published.
+
+    These turn up constantly in real repositories, so the register has to be able
+    to name them - but naming one must not soften the bar it fails.
+    """
+    edit_row(
+        sources / "corpus.csv",
+        "hse-obj-lubeck-view",
+        {
+            **RESOLVED_PROVENANCE,
+            "rights_statement": rights,
+            "verification_status": "verified",
+        },
+    )
+    errors = validate_inputs()
+    assert matching(errors, "needs a cleared rights statement"), errors
+    assert matching(errors, f"found '{rights}'"), errors
+
+
 @pytest.mark.parametrize("rights", sorted(build.OPEN_RIGHTS))
 def test_fully_resolved_open_rights_witness_is_accepted(sources: Path, rights: str) -> None:
     """The mirror image: a genuinely finished row promotes without complaint."""

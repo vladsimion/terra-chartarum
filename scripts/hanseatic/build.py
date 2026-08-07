@@ -103,7 +103,15 @@ OBJECT_TYPES = {
 PROVENANCE_CLASSES = {"repository", "aggregator", "dealer", PENDING}
 CORPUS_ROLES = {"hero", "fallback", "section_witness", "reference_only"}
 OPEN_RIGHTS = {"public_domain", "cc0", "cc_by", "cc_by_sa"}
-RIGHTS_STATEMENTS = OPEN_RIGHTS | {"in_copyright", "rights_unknown", PENDING}
+# Restrictive Creative Commons terms are recorded exactly, not flattened into
+# `in_copyright`: a register that cannot say *which* restriction applies cannot
+# tell you what it would take to clear it. They are deliberately outside
+# OPEN_RIGHTS, so a non-commercial reproduction can never become a published
+# witness - which is the same line the dealer rule draws.
+RESTRICTED_RIGHTS = {"cc_by_nc", "cc_by_nc_sa", "cc_by_nc_nd", "cc_by_nd"}
+RIGHTS_STATEMENTS = (
+    OPEN_RIGHTS | RESTRICTED_RIGHTS | {"in_copyright", "rights_unknown", PENDING}
+)
 DEPENDENCY_RISKS = {"p0", "p1", "p2", "none"}
 VERIFICATION_STATUSES = {"unverified", "verified"}
 LOCATOR_TYPES = {"page", "folio", "section", "none"}
