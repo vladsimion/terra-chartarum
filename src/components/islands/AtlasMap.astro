@@ -191,6 +191,14 @@ const payload = {
     </div>
   </div>
 
+  <!-- Hanseatic gazetteer matches (KAN-311). The corpus search above indexes maps
+       and essays; historic place-names live in the HSE dataset, so they get their
+       own result group rather than being silently unsearchable. -->
+  <div class="am-gazetteer" hidden>
+    <p class="am-gazetteer-kicker">Hanseatic place-names</p>
+    <ul class="am-gazetteer-list" aria-label="Matching Hanseatic place-names"></ul>
+  </div>
+
   <div class="am-platform">
     <div class="am-stage">
       <div class="am-map" role="application" aria-label="Map of the essay corpus"></div>
@@ -323,6 +331,11 @@ const payload = {
     resolveVmnBeatState,
     type VmnBeatState,
   } from '../../lib/vmn-atlas-state';
+  import {
+    hanseaticPlaceNames,
+    searchHanseaticPlaces,
+    type HanseaticPlacePhase,
+  } from '../../lib/hanseatic';
 
   // Register the pmtiles:// protocol at most once across page-load re-inits.
   let protocolRegistered = false;
@@ -446,6 +459,8 @@ const payload = {
     const contextMeta = root.querySelector<HTMLElement>('.am-context-meta')!;
     const contextLink = root.querySelector<HTMLAnchorElement>('.am-context-link')!;
     const contextDocs = root.querySelector<HTMLElement>('.am-context-docs')!;
+    const gazetteer = root.querySelector<HTMLElement>('.am-gazetteer')!;
+    const gazetteerList = root.querySelector<HTMLElement>('.am-gazetteer-list')!;
     const layerToggles = Array.from(
       root.querySelectorAll<HTMLInputElement>('.am-layer input[data-layer]'),
     );
@@ -1407,18 +1422,24 @@ const payload = {
         focusedFeatureLayer = sourceLayerId;
         const essayLink = reverseEssayLink(sourceLayerId);
         const properties = (feature.properties ?? {}) as Record<string, unknown>;
-        showContext(
-          {
-            id: `feature:${value}`,
-            title: String(properties.name || readable(value)),
-            summary: String(properties.notes || layer.id),
-            meta: `${readable(sourceLayerId)} · ${fmt(Number(yearIn.value))}`,
-            href: essayLink?.href ?? '/atlas/',
-            linkLabel: essayLink?.label ? `${essayLink.label} →` : 'Explore the Atlas →',
-            year: Number(yearIn.value),
-          },
-          false,
-        );
+        // A deep-linked HSE phase must read exactly like a clicked one, or the
+        // shared link quietly shows less provenance than the map does (KAN-311).
+        if (sourceLayerId === 'hanseatic-places') {
+          showHanseContext(properties, false);
+        } else {
+          showContext(
+            {
+              id: `feature:${value}`,
+              title: String(properties.name || readable(value)),
+              summary: String(properties.notes || layer.id),
+              meta: `${readable(sourceLayerId)} · ${fmt(Number(yearIn.value))}`,
+              href: essayLink?.href ?? '/atlas/',
+              linkLabel: essayLink?.label ? `${essayLink.label} →` : 'Explore the Atlas →',
+              year: Number(yearIn.value),
+            },
+            false,
+          );
+        }
 
         const focusId = `${layerId(sourceLayerId)}--focus`;
         const idFilter = ['==', ['get', 'id'], value];
@@ -1596,8 +1617,38 @@ const payload = {
       });
     }
 
+    // Each match is a real link on the documented deep-link contract, so it is
+    // keyboard-reachable and shareable, and it exercises the same state
+    // restoration an essay link uses rather than a second, private code path.
+    const renderGazetteer = (query: string) => {
+      const matches: HanseaticPlacePhase[] = searchHanseaticPlaces(query);
+      gazetteerList.replaceChildren(
+        ...matches.map((phase) => {
+          const item = document.createElement('li');
+          const anchor = document.createElement('a');
+          anchor.href = `/atlas?year=${phase.valid_from}&layers=hanseatic-places&feature=${encodeURIComponent(phase.id)}`;
+          const names = hanseaticPlaceNames(phase);
+          anchor.textContent = names[0];
+          const rest = names.slice(1);
+          if (rest.length) {
+            const alias = document.createElement('span');
+            alias.className = 'am-gazetteer-alias';
+            alias.textContent = ` ${rest.join(' · ')}`;
+            anchor.append(alias);
+          }
+          const span = document.createElement('span');
+          span.className = 'am-gazetteer-span';
+          span.textContent = ` AD ${phase.valid_from}–${phase.valid_to}`;
+          item.append(anchor, span);
+          return item;
+        }),
+      );
+      gazetteer.hidden = matches.length === 0;
+    };
+
     const apply = () => {
       const q = search.value.trim().toLowerCase();
+      renderGazetteer(search.value);
       const slug = essaySel.value;
       const cutoff = Number(yearIn.value);
       // Footprint filter: keep only pins that fall inside the selected map's ring.
@@ -1786,6 +1837,39 @@ const payload = {
     font-family: var(--font-mono);
     font-size: var(--step--1);
   }
+  /* Hanseatic place-name matches (KAN-311). */
+  .am-gazetteer {
+    margin: 0.75rem 0 0;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+  }
+  .am-gazetteer-kicker {
+    margin: 0 0 0.4rem;
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .am-gazetteer-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.3rem;
+  }
+  .am-gazetteer-list a {
+    color: var(--ink);
+  }
+  .am-gazetteer-alias,
+  .am-gazetteer-span {
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+  }
+
   /* Provenance links for the selected feature's layer (KAN-310). */
   .am-context-docs {
     list-style: none;

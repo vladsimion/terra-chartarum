@@ -68,6 +68,35 @@ export function getHanseaticPlacePhase(placeId: string): HanseaticPlacePhase {
   return phase;
 }
 
+/**
+ * Fold case and diacritics so a typed "Lubeck" reaches "Lübeck" and a typed
+ * "Wisby" reaches "Visby" by its historic spelling. Without the fold, the
+ * historic names the essay actually uses are the ones hardest to search for.
+ */
+function foldName(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase();
+}
+
+/** Every name a place phase answers to: current, historic and modern. */
+export function hanseaticPlaceNames(phase: HanseaticPlacePhase): string[] {
+  return [...new Set([phase.name, phase.name_historic, phase.name_modern])].filter(Boolean);
+}
+
+/**
+ * Match place phases on any of their names (KAN-311). An empty query matches
+ * nothing rather than everything: this feeds a search affordance, not a listing.
+ */
+export function searchHanseaticPlaces(query: string): HanseaticPlacePhase[] {
+  const needle = foldName(query.trim());
+  if (!needle) return [];
+  return PLACE_PHASES.filter((phase) =>
+    hanseaticPlaceNames(phase).some((name) => foldName(name).includes(needle)),
+  );
+}
+
 export function toHanseaticAtlasHref(phase: HanseaticPlacePhase): string {
   const params = new URLSearchParams({
     year: String(phase.valid_from),

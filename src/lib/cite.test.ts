@@ -105,3 +105,38 @@ describe('resource types', () => {
     expect(toChicago(dataset)).toContain('Version 4440ae3946c6. Dataset. CC BY.');
   });
 });
+
+describe('dataset access details (KAN-311)', () => {
+  const dataset: CiteInput = {
+    id: 'hanseatic-places-d4b58778da67',
+    kind: 'dataset',
+    title: 'Hanseatic places - Phase 0 fixture',
+    author: 'Terra Chartarum',
+    version: 'd4b58778da67',
+    license: 'CC BY 4.0',
+    url: 'https://terra-chartarum.pages.dev/geo/hanseatic-places.geojson?v=d4b58778da67',
+    release: 'geo-6065acdaeddddd80',
+    checksum: 'd4b58778da67aa11bb22cc33dd44ee55ff6677889900aabbccddeeff00112233',
+  };
+
+  it('pins retrieval by release and checksum in every format', () => {
+    for (const rendered of [toBibTeX(dataset), toRIS(dataset), toChicago(dataset)]) {
+      expect(rendered).toContain('Release geo-6065acdaeddddd80');
+      expect(rendered).toContain('SHA-256 d4b58778da67aa11');
+    }
+  });
+
+  it('keeps the version alongside the access details', () => {
+    expect(toBibTeX(dataset)).toContain('version     = {d4b58778da67}');
+    expect(toRIS(dataset)).toContain('ET  - d4b58778da67');
+    expect(toChicago(dataset)).toContain('Version d4b58778da67.');
+  });
+
+  it('omits the access note entirely when a resource has no release', () => {
+    const map: CiteInput = { id: 'x', title: 'A map', year: 1500 };
+    for (const rendered of [toBibTeX(map), toRIS(map), toChicago(map)]) {
+      expect(rendered).not.toContain('Release');
+      expect(rendered).not.toContain('SHA-256');
+    }
+  });
+});
