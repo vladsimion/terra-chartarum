@@ -192,6 +192,56 @@ def test_verified_witness_needs_open_rights(sources: Path, rights: str) -> None:
     assert matching(errors, f"found '{rights}'"), errors
 
 
+def test_resolution_may_be_not_published_on_a_verified_witness(sources: Path) -> None:
+    """A repository that serves a tiled master states no pixel figure, and that is a finding."""
+    edit_row(
+        sources / "corpus.csv",
+        "hse-obj-lubeck-view",
+        {
+            **RESOLVED_PROVENANCE,
+            "resolution": build.NOT_PUBLISHED,
+            "rights_statement": "public_domain",
+            "verification_status": "verified",
+        },
+    )
+    assert validate_inputs() == []
+
+
+def test_resolution_pending_is_still_refused(sources: Path) -> None:
+    """not_published means checked; pending means nobody looked. Only the first passes."""
+    edit_row(
+        sources / "corpus.csv",
+        "hse-obj-lubeck-view",
+        {
+            **RESOLVED_PROVENANCE,
+            "resolution": PENDING,
+            "rights_statement": "public_domain",
+            "verification_status": "verified",
+        },
+    )
+    assert matching(validate_inputs(), "'resolution' pending"), validate_inputs()
+
+
+@pytest.mark.parametrize("field", ["repository", "repository_id", "stable_url", "attribution"])
+def test_not_published_is_confined_to_resolution(sources: Path, field: str) -> None:
+    """A repository that cannot state its own identifier has not really been checked.
+
+    `not_published` is not `pending`, so these rows do not trip the pending rule -
+    they must fail because the value is not a real one.
+    """
+    edit_row(
+        sources / "corpus.csv",
+        "hse-obj-lubeck-view",
+        {
+            **RESOLVED_PROVENANCE,
+            field: build.NOT_PUBLISHED,
+            "rights_statement": "public_domain",
+            "verification_status": "verified",
+        },
+    )
+    assert validate_inputs() != [], f"{field}=not_published was accepted"
+
+
 @pytest.mark.parametrize("rights", sorted(build.RESTRICTED_RIGHTS))
 def test_non_commercial_licence_may_not_be_published(sources: Path, rights: str) -> None:
     """A restrictive CC licence is recorded exactly, and still cannot be published.

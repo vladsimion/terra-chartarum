@@ -73,6 +73,14 @@ the bar it fails.
 In practice the restrictive licences are the common case: verification so far
 has found holding repositories readily enough, and been stopped by their terms.
 
+`resolution` accepts a third value, `not_published`, meaning the repository was
+checked and states no pixel figure - common where a tiled viewer serves the
+master. That is a finding, where `pending` is the absence of one, so a verified
+row may carry it and a `pending` one still may not. **Only `resolution` accepts
+it**: a repository that cannot state its own identifier, URL or attribution has
+not really been checked, and the compiler rejects `not_published` in those
+fields by name.
+
 ## `chronology.csv` (KAN-304)
 
 One row per institutional or chronological event. `date_type` is `year`,

@@ -96,6 +96,11 @@ REVIEW_STATUSES = {"provisional", "reviewed", "approved"}
 # tolerated while the row is still provisional/unverified; the promotion rules
 # below refuse to let a pending field reach a reviewed or published state.
 PENDING = "pending"
+# `not_published` is a finding, where `pending` is an absence of one: the
+# repository was checked and states no figure. Only resolution accepts it -
+# a repository that cannot tell you its own identifier or rights has not
+# really been checked.
+NOT_PUBLISHED = "not_published"
 OBJECT_TYPES = {
     "printed_map", "manuscript_map", "city_view", "charter", "documentary",
     "printed_book",
@@ -339,14 +344,27 @@ def validate_corpus(rows: list[dict[str, str]], errors: list[str]) -> None:
         # Promotion rule: 'verified' is a claim about real provenance, so every
         # field that provenance depends on must actually be filled in.
         if verification == "verified":
+            # `resolution` may be `not_published`: plenty of repositories serve a
+            # tiled master and state no pixel figure, and refusing those would
+            # exclude real, fully provenanced witnesses over a number nobody has.
+            # It may still not be `pending`, which would mean nobody looked.
             for field in (
                 "repository", "repository_id", "stable_url", "resolution",
                 "attribution", "verified_on", "date_made",
             ):
-                if row[field].strip() == PENDING:
+                value = row[field].strip()
+                if field == "resolution" and value == NOT_PUBLISHED:
+                    continue
+                if value == PENDING:
                     errors.append(
                         f"corpus row {row_number}: verified witness still has "
                         f"'{field}' pending"
+                    )
+                elif value == NOT_PUBLISHED:
+                    errors.append(
+                        f"corpus row {row_number}: '{field}' cannot be {NOT_PUBLISHED}; "
+                        "only resolution may be, since a repository that states no "
+                        "identifier, URL or attribution has not really been checked"
                     )
             if row["provenance_class"] == PENDING:
                 errors.append(
