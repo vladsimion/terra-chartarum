@@ -20,6 +20,21 @@ export interface CiteInput {
   version?: string;
   license?: string;
   url?: string; // canonical detail URL
+  /**
+   * Access details for a content-addressed dataset (KAN-311). The geo release
+   * manifest carries no timestamp on purpose - it is reproducible from content
+   * alone - so retrieval is pinned by release id and checksum rather than by an
+   * "accessed on" date that would differ between two identical builds.
+   */
+  release?: string;
+  checksum?: string;
+}
+
+/** The retrieval note shared by every format: how to get exactly this bytes-for-bytes. */
+function accessNote(m: CiteInput): string {
+  return [m.release ? `Release ${m.release}` : '', m.checksum ? `SHA-256 ${m.checksum}` : '']
+    .filter(Boolean)
+    .join('; ');
 }
 
 export type CiteFormat = 'bibtex' | 'ris' | 'chicago';
@@ -60,7 +75,12 @@ export function toBibTeX(m: CiteInput): string {
   field('journal', m.containerTitle);
   field('version', m.version);
   if (m.url) lines.push(`  ${'howpublished'.padEnd(12)}= {\\url{${m.url}}},`);
-  const note = [resourceLabel(m), m.license ? `Licence: ${m.license}` : '', 'Terra Chartarum.']
+  const note = [
+    resourceLabel(m),
+    m.license ? `Licence: ${m.license}` : '',
+    accessNote(m),
+    'Terra Chartarum.',
+  ]
     .filter(Boolean)
     .join('. ')
     .replace('..', '.');
@@ -83,6 +103,7 @@ export function toRIS(m: CiteInput): string {
   tag('T2', m.containerTitle);
   tag('ET', m.version);
   tag('N1', m.license ? `Licence: ${m.license}` : undefined);
+  tag('N1', accessNote(m) || undefined);
   tag('UR', m.url);
   lines.push('ER  - ');
   return lines.join('\n');
@@ -99,6 +120,8 @@ export function toChicago(m: CiteInput): string {
   if (m.version) parts.push(`Version ${m.version}.`);
   if (m.kind === 'dataset') parts.push('Dataset.');
   if (m.license) parts.push(`${m.license}.`);
+  const access = accessNote(m);
+  if (access) parts.push(`${access}.`);
   if (m.url) parts.push(`${m.url}.`);
   return parts.join(' ');
 }
