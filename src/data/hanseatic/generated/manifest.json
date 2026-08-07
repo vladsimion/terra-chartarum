@@ -1,0 +1,49 @@
+{
+  "generatedBy": "scripts/hanseatic/build.py",
+  "inputs": {
+    "data/hanseatic/sources/chronology.csv": "3b68f8d5c4cfa93beebe4a86bc4df0bd55d9e201f6e16a79bc44abf5afd4d34c",
+    "data/hanseatic/sources/corpus.csv": "6a4804eb68c4b93c913cf6b32f8365daf7bd519759b0a43a88ff0e087275ef71",
+    "data/hanseatic/sources/evidence.csv": "b9bd0096c31ec980e557e72f11546fd232fccbe209964986c3597825e3a79fd8",
+    "data/hanseatic/sources/kontore.csv": "2ba696541d9c8924423a9b16410b1fceb51b9bf38d423c6a89e61b0d16165aae",
+    "data/hanseatic/sources/places.csv": "87e944cbca9b1d9bbc11f8e648cfbd4149618e25370772cb84ea28080197e029",
+    "data/hanseatic/sources/routes.csv": "31cfc1d90fe36d58c348c01311ae960931c1e6e591d6d44cc1054a8b89249980",
+    "data/hanseatic/sources/sources.csv": "ac52441970427dd892cca79f4de5e217af4fef67cc5d6e168eadb7562705a328",
+    "data/hanseatic/sources/temporal-exceptions.csv": "f31e047582f5ed502f97495d517f168c11b6815502ee4a5911de516e5447a6a2",
+    "data/hanseatic/sources/terminology.csv": "ea1d826c6464d764cecfafb55d454989d17a923624ead3b2954853d0fb495989",
+    "data/hanseatic/traced/routes-paths.geojson": "3a0b869cc98a1d93a7089216282968517dfa5727d202adff49726c785e51582e"
+  },
+  "outputs": {
+    "public/geo/hanseatic-places.fgb": {
+      "bytes": 2576,
+      "featureCount": 2,
+      "sha256": "0b8535a27c4b4bd7589b63be5fffe559dc2046f4c14480758cd2b03a163e1cde",
+      "version": "0b8535a27c4b"
+    },
+    "public/geo/hanseatic-places.geojson": {
+      "bytes": 1827,
+      "featureCount": 2,
+      "sha256": "d4b58778da67a769aed111e750a7583ae64bbde6c5a2728e4b035f3dd8767148",
+      "version": "d4b58778da67"
+    },
+    "public/geo/hanseatic-routes.geojson": {
+      "bytes": 1174,
+      "featureCount": 1,
+      "sha256": "7fac6425870408ac0c2dd42de9b5d7926249d0c951825e86981f918d33446504",
+      "version": "7fac64258704"
+    },
+    "src/data/hanseatic/generated/kontore.json": {
+      "bytes": 2936,
+      "featureCount": 4,
+      "sha256": "e681372f4cb1d414087648c062fc7bad85819358a4f2619c785ec24be6f38a23",
+      "version": "e681372f4cb1"
+    },
+    "src/data/hanseatic/generated/places.json": {
+      "bytes": 1254,
+      "featureCount": 2,
+      "sha256": "512b512bf0ae880d6ffa8372199880686ae245086a3ac36e8eb34a96f592e60e",
+      "version": "512b512bf0ae"
+    }
+  },
+  "release": "hse-30fa45657c4036fc",
+  "schemaVersion": 1
+}

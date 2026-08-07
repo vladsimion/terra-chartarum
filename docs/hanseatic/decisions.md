@@ -91,6 +91,27 @@ mistake for a finished one.
   _this project's_ corpus yet. Stralsund 1370 and the 1669 terminus are carried
   from the ticket text and sit `unattested` until a witness is entered.
 
+## KAN-307/309 - deterministic compile and the release manifest
+
+- **The build adopts the VMN venv; nothing else does.** FlatGeobuf output needs
+  pyogrio, so `make hanseatic` now runs the venv python. `hanseatic-validate`
+  and `hanseatic-test` stay standard-library only, which keeps the CI gate and
+  the test harness free of GDAL.
+- **The manifest carries no timestamp.** Identical inputs must produce an
+  identical manifest, so the only thing that can move a hash is the data. It
+  records input hashes as well as output hashes, which is what lets validation
+  detect an uncompiled source edit without re-reading the binary.
+- **FlatGeobuf is reproducible only for a fixed output path.** GDAL embeds the
+  layer name it derives from the filename, so writing the same features to two
+  different paths yields two different files. The build always writes to the
+  one path, and rebuilds are byte-identical.
+- **Temporal exceptions are decisions, not tolerances.** A corridor running
+  outside its endpoints' phases fails unless `temporal-exceptions.csv` records
+  why. The current entry covers the Lübeck-Visby fixture, whose corridor opens
+  in 1161 against a Lübeck phase opening in 1358: two provisional fixture dates,
+  not a claim that traffic preceded the city's role. KAN-306 and KAN-308 must
+  re-derive both bounds and then remove or restate that row.
+
 ### Open at hand-off
 
 The readiness report (printed by `npm run hanseatic:validate`) is the running

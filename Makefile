@@ -32,10 +32,13 @@ vmn:
 vmn-validate:
 	$(VMN_PY) scripts/vmn/validate.py
 
-# KAN-302 HSE vertical slice. This compiler intentionally uses only the Python
-# standard library; the later FGB publication ticket may adopt the VMN venv.
+# HSE compile (KAN-302, FGB output added by KAN-307). The build now writes
+# public/geo/hanseatic-places.fgb, so it needs pyogrio/numpy from the VMN venv -
+# the adoption that the KAN-302 comment here anticipated. Everything else in
+# scripts/hanseatic stays standard-library only, so `hanseatic-validate` and
+# `hanseatic-test` still run on a bare python3.
 hanseatic:
-	python3 scripts/hanseatic/build.py
+	$(VMN_PY) scripts/hanseatic/build.py
 
 hanseatic-validate:
 	python3 scripts/hanseatic/validate.py

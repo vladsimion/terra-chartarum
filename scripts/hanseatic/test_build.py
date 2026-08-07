@@ -44,6 +44,7 @@ CSV_CONSTANTS = {
     "corpus.csv": "CORPUS_CSV",
     "chronology.csv": "CHRONOLOGY_CSV",
     "kontore.csv": "KONTORE_CSV",
+    "temporal-exceptions.csv": "TEMPORAL_EXCEPTIONS_CSV",
 }
 
 # A witness whose provenance has been fully established, used to isolate one
@@ -383,3 +384,90 @@ def test_unknown_participation_class_is_rejected(sources: Path) -> None:
     )
     errors = validate_inputs()
     assert matching(errors, "is not an approved participation term"), errors
+
+
+# --- geometry: EPSG:4326 degrees inside the HSE envelope (KAN-307) -------------
+
+
+def test_transposed_coordinates_are_rejected_by_the_bbox(sources: Path) -> None:
+    """A swapped lat/lon stays inside the global range, so only the bbox catches it."""
+    edit_row(
+        sources / "places.csv",
+        "hse-place-lubeck-leading-1358",
+        {"latitude": "10.6866", "longitude": "53.8655"},
+    )
+    errors = validate_inputs()
+    assert matching(errors, "outside the HSE bbox"), errors
+    assert matching(errors, "transposed longitude/latitude"), errors
+
+
+def test_coordinates_outside_the_hanseatic_world_are_rejected(sources: Path) -> None:
+    edit_row(
+        sources / "places.csv",
+        "hse-place-lubeck-leading-1358",
+        {"latitude": "-33.9", "longitude": "18.4"},  # Cape Town
+    )
+    assert matching(validate_inputs(), "outside the HSE bbox"), validate_inputs()
+
+
+# --- phases: one place holds one role at a time (KAN-307) ----------------------
+
+
+def test_overlapping_phases_for_one_place_are_rejected(sources: Path) -> None:
+    """Visby's phase is widened until it overlaps nothing else; Lübeck's is not.
+
+    Lübeck runs 1358-1669, so pulling Visby's phase over that window while
+    repointing it at Lübeck produces a genuine overlap on one place_id.
+    """
+    edit_row(
+        sources / "places.csv",
+        "hse-place-visby-market-1161",
+        {"place_id": "lubeck", "valid_from": "1400", "valid_to": "1500"},
+    )
+    errors = validate_inputs()
+    assert matching(errors, "overlaps"), errors
+    assert matching(errors, "for place 'lubeck'"), errors
+
+
+# --- temporal exceptions must be logged decisions (KAN-309) -------------------
+
+
+def test_route_outside_its_endpoints_needs_a_logged_exception(sources: Path) -> None:
+    """Removing the logged exception makes the existing mismatch fail the build."""
+    path = sources / "temporal-exceptions.csv"
+    header = path.read_text(encoding="utf-8").splitlines()[0]
+    path.write_text(header + "\n", encoding="utf-8")
+    errors = validate_inputs()
+    assert matching(errors, "outside its endpoints"), errors
+    assert matching(errors, "log the exception in temporal-exceptions.csv"), errors
+
+
+def test_stale_temporal_exception_is_rejected(sources: Path) -> None:
+    """An exception for a mismatch that no longer exists is stale bookkeeping."""
+    edit_row(
+        sources / "routes.csv",
+        "hse-route-lubeck-visby",
+        {"valid_from": "1358", "valid_to": "1400"},
+    )
+    errors = validate_inputs()
+    assert matching(errors, "no longer has a temporal mismatch"), errors
+
+
+def test_exception_without_a_real_reason_is_rejected(sources: Path) -> None:
+    edit_row(
+        sources / "temporal-exceptions.csv",
+        "hse-route-lubeck-visby",
+        {"decision": "fixture"},
+    )
+    errors = validate_inputs()
+    assert matching(errors, "too short to be a logged reason"), errors
+
+
+def test_exception_must_name_a_decisions_document(sources: Path) -> None:
+    edit_row(
+        sources / "temporal-exceptions.csv",
+        "hse-route-lubeck-visby",
+        {"logged_in": "somewhere else"},
+    )
+    errors = validate_inputs()
+    assert matching(errors, "must point at a decisions document"), errors

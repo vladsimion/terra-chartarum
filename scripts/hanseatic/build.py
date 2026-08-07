@@ -4,8 +4,10 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 import re
+import struct
 import sys
 from pathlib import Path
 
@@ -25,10 +27,24 @@ CHRONOLOGY_CSV = SOURCE_DIR / "chronology.csv"
 KONTORE_CSV = SOURCE_DIR / "kontore.csv"
 ROUTE_PATHS = TRACED_DIR / "routes-paths.geojson"
 
+TEMPORAL_EXCEPTIONS_CSV = SOURCE_DIR / "temporal-exceptions.csv"
+
 PLACES_GEOJSON = GEO_DIR / "hanseatic-places.geojson"
 ROUTES_GEOJSON = GEO_DIR / "hanseatic-routes.geojson"
+PLACES_FGB = GEO_DIR / "hanseatic-places.fgb"
 PLACES_JSON = GENERATED_DIR / "places.json"
 KONTORE_JSON = GENERATED_DIR / "kontore.json"
+MANIFEST_JSON = GENERATED_DIR / "manifest.json"
+
+# Bumped when the shape of a compiled output changes in a way a consumer
+# would have to care about. Recorded in the manifest so a downstream reader
+# can refuse a payload it does not understand.
+SCHEMA_VERSION = 1
+
+# The HSE world, generously bounded: Atlantic approaches to Novgorod, the
+# Alps to the top of the Gulf of Bothnia. A point outside this is a
+# transposed or mistyped coordinate, not a Hanseatic place.
+HSE_BBOX = (-12.0, 44.0, 40.0, 66.0)  # min_lon, min_lat, max_lon, max_lat
 
 PLACE_HEADER = [
     "id", "place_id", "name", "name_historic", "name_modern", "role",
@@ -59,6 +75,9 @@ CORPUS_HEADER = [
 CHRONOLOGY_HEADER = [
     "id", "event", "category", "date_type", "year_from", "year_to",
     "certainty_term", "claim_id", "editorial_decision", "review_status", "notes",
+]
+TEMPORAL_EXCEPTIONS_HEADER = [
+    "subject_id", "kind", "decision", "logged_in",
 ]
 KONTORE_HEADER = [
     "id", "kontor_id", "name", "host_settlement", "place_id", "legal_status",
@@ -185,6 +204,85 @@ def check_term(
         return
     if value not in approved.get(category, set()):
         errors.append(f"{label} row {row}: '{value}' is not an approved {category} term")
+
+
+def load_temporal_exceptions(errors: list[str]) -> dict[str, dict[str, str]]:
+    """Accepted route/place temporal mismatches, keyed by subject id (KAN-309)."""
+    header, rows = read_csv(TEMPORAL_EXCEPTIONS_CSV)
+    if header != TEMPORAL_EXCEPTIONS_HEADER:
+        errors.append(
+            f"temporal-exceptions.csv header {header} != {TEMPORAL_EXCEPTIONS_HEADER}"
+        )
+        return {}
+    accepted: dict[str, dict[str, str]] = {}
+    for row_number, row in enumerate(rows, start=2):
+        for field in TEMPORAL_EXCEPTIONS_HEADER:
+            if not row[field].strip():
+                errors.append(
+                    f"temporal-exceptions row {row_number}: required field '{field}' is empty"
+                )
+        # An exception is only a decision if it says why and where it was logged.
+        if len(row["decision"].strip()) < 40:
+            errors.append(
+                f"temporal-exceptions row {row_number}: decision is too short to be a "
+                "logged reason; state why the mismatch is accepted"
+            )
+        if not row["logged_in"].strip().startswith("docs/"):
+            errors.append(
+                f"temporal-exceptions row {row_number}: logged_in must point at a "
+                "decisions document under docs/"
+            )
+        accepted[row["subject_id"].strip()] = row
+    return accepted
+
+
+def validate_route_temporality(
+    routes: list[dict[str, str]],
+    place_spans: dict[str, list[tuple[int, int]]],
+    accepted: dict[str, dict[str, str]],
+    errors: list[str],
+) -> set[str]:
+    """A corridor may not run outside the phases of the places it connects.
+
+    KAN-309 allows the mismatch, but only as a recorded decision: an
+    undocumented one is a data error, and a documented one that has since been
+    fixed is stale bookkeeping. Both fail.
+    """
+    used: set[str] = set()
+    for row_number, row in enumerate(routes, start=2):
+        route_id = row["id"].strip()
+        try:
+            valid_from = int(row["valid_from"])
+            valid_to = int(row["valid_to"])
+        except ValueError:
+            continue  # already reported by the year check
+        outside: list[str] = []
+        for endpoint in (row["from_place_id"].strip(), row["to_place_id"].strip()):
+            spans = place_spans.get(endpoint)
+            if not spans:
+                continue
+            covered_from = min(start for start, _ in spans)
+            covered_to = max(end for _, end in spans)
+            if valid_from < covered_from or valid_to > covered_to:
+                outside.append(
+                    f"{endpoint} is recorded {covered_from}-{covered_to}"
+                )
+        if outside:
+            if route_id in accepted:
+                used.add(route_id)
+            else:
+                errors.append(
+                    f"routes row {row_number}: '{route_id}' runs {valid_from}-{valid_to}, "
+                    f"outside its endpoints ({'; '.join(outside)}). Either correct the "
+                    "dates or log the exception in temporal-exceptions.csv"
+                )
+    for subject_id in accepted:
+        if subject_id not in used:
+            errors.append(
+                f"temporal-exceptions: '{subject_id}' no longer has a temporal mismatch; "
+                "remove the stale exception"
+            )
+    return used
 
 
 def validate_corpus(rows: list[dict[str, str]], errors: list[str]) -> None:
@@ -462,6 +560,7 @@ def validate_inputs() -> list[str]:
     feature_ids: set[str] = set()
     place_ids: set[str] = set()
     phase_keys: set[tuple[str, int]] = set()
+    place_spans: dict[str, list[tuple[int, int, int]]] = {}
 
     for row_number, row in enumerate(places, start=2):
         for field in PLACE_HEADER:
@@ -486,8 +585,28 @@ def validate_inputs() -> list[str]:
             if phase_key in phase_keys:
                 errors.append(f"places row {row_number}: duplicate phase {phase_key}")
             phase_keys.add(phase_key)
-        coordinate(row["latitude"], "latitude", row_number, -90, 90, errors)
-        coordinate(row["longitude"], "longitude", row_number, -180, 180, errors)
+            # Two phases of one place may abut but never overlap: a place holds
+            # exactly one role at a time, so an overlap is a modelling error
+            # rather than a richer record.
+            for other_from, other_to, other_row in place_spans.get(place_id, []):
+                if valid_from <= other_to and other_from <= valid_to:
+                    errors.append(
+                        f"places row {row_number}: phase {valid_from}-{valid_to} overlaps "
+                        f"row {other_row} ({other_from}-{other_to}) for place '{place_id}'"
+                    )
+            place_spans.setdefault(place_id, []).append((valid_from, valid_to, row_number))
+        latitude = coordinate(row["latitude"], "latitude", row_number, -90, 90, errors)
+        longitude = coordinate(row["longitude"], "longitude", row_number, -180, 180, errors)
+        # EPSG:4326 degrees, inside the HSE envelope. Catches a transposed
+        # lat/lon pair, which stays inside the global range and so would
+        # otherwise sail through.
+        if latitude is not None and longitude is not None:
+            min_lon, min_lat, max_lon, max_lat = HSE_BBOX
+            if not (min_lon <= longitude <= max_lon and min_lat <= latitude <= max_lat):
+                errors.append(
+                    f"places row {row_number}: ({longitude}, {latitude}) is outside the HSE "
+                    f"bbox {HSE_BBOX}; check for a transposed longitude/latitude"
+                )
         if row["role"] not in ROLES:
             errors.append(f"places row {row_number}: unknown role '{row['role']}'")
         check_term(
@@ -577,6 +696,13 @@ def validate_inputs() -> list[str]:
                     "and cannot be the evidence for an approved claim"
                 )
 
+    validate_route_temporality(
+        routes,
+        {place: [(a, b) for a, b, _ in spans] for place, spans in place_spans.items()},
+        load_temporal_exceptions(errors),
+        errors,
+    )
+
     validate_corpus(corpus, errors)
     corpus_keys = {row["key"].strip() for row in corpus}
     validate_chronology(chronology, claim_ids, approved_terms, deprecated_terms, errors)
@@ -647,6 +773,112 @@ def build_outputs() -> dict[Path, str]:
     }
 
 
+SOURCE_FILES = [
+    PLACES_CSV, ROUTES_CSV, SOURCES_CSV, EVIDENCE_CSV, TERMINOLOGY_CSV,
+    CORPUS_CSV, CHRONOLOGY_CSV, KONTORE_CSV, TEMPORAL_EXCEPTIONS_CSV, ROUTE_PATHS,
+]
+
+
+def sha256_bytes(payload: bytes) -> str:
+    return hashlib.sha256(payload).hexdigest()
+
+
+def write_places_fgb(compiled_places: list[dict[str, object]]) -> None:
+    """Write the FlatGeobuf twin of the places layer (KAN-307).
+
+    pyogrio is imported here rather than at module scope so validate.py, the
+    test harness and every stdlib-only path keep working without GDAL. Only a
+    build needs it.
+
+    GDAL embeds the layer name, which it derives from the output filename, so
+    the bytes are reproducible only for a fixed path - which is what we use.
+    """
+    try:
+        import numpy as np
+        from pyogrio.raw import write
+    except ImportError as exc:  # pragma: no cover - environment-dependent
+        raise SystemExit(
+            f"FlatGeobuf output needs pyogrio and numpy ({exc}). "
+            "Run `make vmn-venv` and build with the venv python."
+        ) from exc
+
+    geometry = np.empty(len(compiled_places), dtype=object)
+    for index, place in enumerate(compiled_places):
+        longitude, latitude = place["coordinates"]  # type: ignore[misc]
+        # WKB point, little-endian, as VMN writes them: no shapely needed.
+        geometry[index] = struct.pack("<BIdd", 1, 1, float(longitude), float(latitude))
+
+    text_fields = [
+        "id", "place_id", "name", "name_historic", "name_modern", "role",
+        "participation_class", "region", "parent_polity", "certainty",
+        "essay_anchor", "source", "notes",
+    ]
+    fields = [*text_fields, "valid_from", "valid_to"]
+    field_data = [
+        *(np.array([str(p[key]) for p in compiled_places], dtype=object) for key in text_fields),
+        np.array([int(p["valid_from"]) for p in compiled_places], dtype="int64"),  # type: ignore[arg-type]
+        np.array([int(p["valid_to"]) for p in compiled_places], dtype="int64"),  # type: ignore[arg-type]
+    ]
+
+    PLACES_FGB.parent.mkdir(parents=True, exist_ok=True)
+    if PLACES_FGB.exists():
+        PLACES_FGB.unlink()
+    write(
+        str(PLACES_FGB),
+        geometry=geometry,
+        field_data=field_data,
+        fields=fields,
+        field_mask=None,
+        geometry_type="Point",
+        crs="EPSG:4326",
+        driver="FlatGeobuf",
+    )
+
+
+def feature_count(path: Path, payload: bytes) -> int:
+    """Features in a compiled output, for the manifest."""
+    if path == PLACES_FGB:
+        return len(read_csv(PLACES_CSV)[1])
+    data = json.loads(payload.decode("utf-8"))
+    if isinstance(data, dict) and data.get("type") == "FeatureCollection":
+        return len(data["features"])
+    return len(data)
+
+
+def manifest_payload() -> dict[str, object]:
+    """Content-addressed record of what this build consumed and produced.
+
+    Deliberately timestamp-free: identical inputs must produce an identical
+    manifest, so the only thing that can move a hash is the data itself.
+    Input hashes are what let validate.py detect a stale output tree without
+    needing GDAL to re-read the FlatGeobuf.
+    """
+    inputs = {
+        str(path.relative_to(REPO)): sha256_bytes(path.read_bytes())
+        for path in sorted(SOURCE_FILES)
+    }
+    outputs: dict[str, object] = {}
+    for path in sorted([*build_outputs(), PLACES_FGB]):
+        payload = path.read_bytes()
+        digest = sha256_bytes(payload)
+        outputs[str(path.relative_to(REPO))] = {
+            "bytes": len(payload),
+            "featureCount": feature_count(path, payload),
+            "sha256": digest,
+            "version": digest[:12],
+        }
+    release = sha256_bytes(
+        "\n".join(f"{name}:{entry['sha256']}" for name, entry in outputs.items()).encode()  # type: ignore[index]
+    )
+    return {
+        "schemaVersion": SCHEMA_VERSION,
+        "release": f"hse-{release[:16]}",
+        "generatedBy": "scripts/hanseatic/build.py",
+        "inputs": inputs,
+        "outputs": outputs,
+    }
+
+
 def readiness_lines() -> list[str]:
     _, corpus = read_csv(CORPUS_CSV)
     _, chronology = read_csv(CHRONOLOGY_CSV)
@@ -661,10 +893,20 @@ def main() -> int:
         for error in errors:
             print(f"ERROR: {error}", file=sys.stderr)
         return 1
-    for path, content in build_outputs().items():
+    outputs = build_outputs()
+    for path, content in outputs.items():
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8")
         print(f"Wrote {path.relative_to(REPO)}")
+
+    _, places = read_csv(PLACES_CSV)
+    write_places_fgb([place_properties(row) for row in places])
+    print(f"Wrote {PLACES_FGB.relative_to(REPO)}")
+
+    # Written last: it hashes everything above, including itself's siblings.
+    MANIFEST_JSON.write_text(json_text(manifest_payload()), encoding="utf-8")
+    print(f"Wrote {MANIFEST_JSON.relative_to(REPO)}")
+
     for line in readiness_lines():
         print(line)
     return 0
