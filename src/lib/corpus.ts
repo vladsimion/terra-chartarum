@@ -1216,7 +1216,8 @@ const RAW: unknown[] = [
       'The engraved city portrait calls Lübeck head of the Wendish cities and the Hanseatic society while presenting an autonomous imperial city.',
     cartographer: 'Georg Braun and Frans Hogenberg',
     cartographerId: 'georg-braun',
-    edition: 'Civitates Orbis Terrarum, vol. I, p. 24a',
+    edition:
+      'Civitates Orbis Terrarum, vol. I (first published 1572), p. 24a; cited from the 1593 issue',
     medium: 'Engraved city view',
     provenance: 'Universitätsbibliothek Heidelberg, braun1593bd1, canvas 0074',
     objectType: 'city_view',
@@ -1245,7 +1246,8 @@ const RAW: unknown[] = [
       'A river city is made visible as a civic body while the commercial relationships extending beyond it remain implicit.',
     cartographer: 'Georg Braun and Frans Hogenberg',
     cartographerId: 'georg-braun',
-    edition: 'Civitates Orbis Terrarum, vol. I, p. 24a; view dated 1572',
+    edition:
+      'Civitates Orbis Terrarum, vol. I (first published 1572), p. 24a; the Hamburg cartouche is dated M.D.LXXII, and this copy is the 1593 issue',
     medium: 'Engraved city view',
     provenance: 'Universitätsbibliothek Heidelberg, braun1593bd1, canvas 0074',
     objectType: 'city_view',
@@ -1274,7 +1276,8 @@ const RAW: unknown[] = [
       'The London plate pairs an urban view with a text naming the Steelyard, four Kontore and a confederated society of cities.',
     cartographer: 'Georg Braun and Frans Hogenberg',
     cartographerId: 'georg-braun',
-    edition: 'Civitates Orbis Terrarum, vol. I, p. Aa',
+    edition:
+      'Civitates Orbis Terrarum, vol. I (first published 1572), p. Aa; cited from the 1593 issue',
     medium: 'Engraved city view with descriptive text',
     provenance: 'Universitätsbibliothek Heidelberg, braun1593bd1, canvas 0026',
     objectType: 'city_view',
@@ -1303,7 +1306,8 @@ const RAW: unknown[] = [
       'A circular city portrait describes Bruges as having once been a flourishing emporium without fixing a single date for decline.',
     cartographer: 'Georg Braun and Frans Hogenberg',
     cartographerId: 'georg-braun',
-    edition: 'Civitates Orbis Terrarum, vol. I, p. 16a',
+    edition:
+      'Civitates Orbis Terrarum, vol. I (first published 1572), p. 16a; cited from the 1593 issue',
     medium: 'Engraved bird’s-eye city plan',
     provenance: 'Universitätsbibliothek Heidelberg, braun1593bd1, canvas 0058',
     objectType: 'city_view',
@@ -1332,7 +1336,8 @@ const RAW: unknown[] = [
       'The Rhine city’s plate names a league of seventy-two cities and four principal cities, a claim kept distinct from the four Kontore.',
     cartographer: 'Georg Braun and Frans Hogenberg',
     cartographerId: 'georg-braun',
-    edition: 'Civitates Orbis Terrarum, vol. I, p. 38a',
+    edition:
+      'Civitates Orbis Terrarum, vol. I (first published 1572), p. 38a; cited from the 1593 issue',
     medium: 'Engraved bird’s-eye city plan',
     provenance: 'Universitätsbibliothek Heidelberg, braun1593bd1, canvas 0103',
     objectType: 'city_view',
@@ -1361,7 +1366,8 @@ const RAW: unknown[] = [
       'Bremen appears as a river prospect on a sheet whose Lüneburg panel also names the salt economy behind a major corridor.',
     cartographer: 'Georg Braun and Frans Hogenberg',
     cartographerId: 'georg-braun',
-    edition: 'Civitates Orbis Terrarum, vol. I, p. 23a',
+    edition:
+      'Civitates Orbis Terrarum, vol. I (first published 1572), p. 23a; cited from the 1593 issue',
     medium: 'Engraved four-city plate',
     provenance: 'Universitätsbibliothek Heidelberg, braun1593bd1, canvas 0072',
     objectType: 'city_view',

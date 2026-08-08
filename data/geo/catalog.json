@@ -150,7 +150,7 @@
       "format": "geojson",
       "crs": "EPSG:4326",
       "geometry": ["Point"],
-      "featureCount": 16,
+      "featureCount": 17,
       "yearFrom": 1295,
       "yearTo": 1764,
       "source": "Terra Chartarum (compiled) - HSE events KAN-308",

@@ -96,7 +96,7 @@ describe('Hanseatic routes, commodities and events (KAN-308)', () => {
   it('ships the scoped production counts', () => {
     expect(listHanseaticRoutes()).toHaveLength(7);
     expect(listHanseaticCommodities()).toHaveLength(10);
-    expect(listHanseaticEvents()).toHaveLength(16);
+    expect(listHanseaticEvents()).toHaveLength(17);
   });
 
   it('carries normalized commodity joins for each route', () => {

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "geo-8bf9cf6444fcdc2d",
+  "release": "geo-1d4c7ccf65a3fcca",
   "generatedBy": "scripts/geo-release.mjs",
   "assets": [
     {
@@ -221,16 +221,16 @@
       "geometry": [
         "Point"
       ],
-      "featureCount": 16,
+      "featureCount": 17,
       "yearFrom": 1295,
       "yearTo": 1764,
       "source": "Terra Chartarum (compiled) - HSE events KAN-308",
       "license": "CC BY 4.0",
       "attribution": "Terra Chartarum; UNESCO; Wubs-Mrozewicz; Henn; Lambert & Sicking",
-      "bytes": 14119,
-      "sha256": "b674cef671bd35a6d2db1705f377dcc979096b8f18b732c872b6374be254c2fe",
-      "version": "b674cef671bd",
-      "url": "/geo/hanseatic-events.geojson?v=b674cef671bd"
+      "bytes": 15256,
+      "sha256": "f6257813320912ee7c5aa9e10b35cdeb1e64703eb927880af8f9322231e9fb24",
+      "version": "f62578133209",
+      "url": "/geo/hanseatic-events.geojson?v=f62578133209"
     }
   ]
 }
