@@ -1,4 +1,4 @@
-# HSE decisions - KAN-302, KAN-303, KAN-304, KAN-305
+# HSE decisions - KAN-302 through KAN-309
 
 ## Frozen editorial contract
 
@@ -39,25 +39,28 @@ are lowercase ASCII slugs and are never derived from mutable display names.
 
 ## Source and build contract
 
-The frozen Phase 0 authority tables are `places.csv`, `routes.csv`,
-`sources.csv`, and `evidence.csv`. Route geometry lives separately in
-`traced/routes-paths.geojson`. The compiler joins them and emits distinct Atlas
-and MDX projections; prose must not duplicate dates or geometry.
+The authority tables include `places.csv`, `routes.csv`, `commodities.csv`,
+`route_commodities.csv`, `events.csv`, `sources.csv` and `evidence.csv`. Route
+geometry lives separately in `traced/routes-paths.geojson`. The compiler joins
+them and emits distinct Atlas and essay projections; prose must not duplicate
+dates or geometry.
 
 The sample profile deep-links to:
 
 ```text
-/atlas?year=1358&layers=hanseatic-places&feature=hse-place-lubeck-leading-1358
+/atlas?year=1356&layers=hanseatic-places&feature=hse-place-lubeck-leading-1356
 ```
 
 `feature` is the stable generated-feature `id`. The layer remains explicit so a
 feature identifier never has to be globally unique across unrelated datasets.
 
-## Vertical-slice boundary
+## Superseded vertical-slice boundary
 
-The Lübeck and Visby rows, Lübeck–Visby corridor and one provisional evidence
-row are engineering fixtures. They demonstrate joins, validation, temporal
-filtering, Atlas focus and MDX reuse; they are not a reviewed historical release.
+KAN-302 began with Lübeck and Visby rows and one Lübeck–Visby corridor as
+engineering fixtures. KAN-306/307/308 replace that count contract with the
+production datasets described below. The original low-importance specification
+claim remains in the ledger as provenance for the engineering contract, not as
+historical evidence.
 
 ## KAN-303/304/305 - completed research pass
 
@@ -200,3 +203,38 @@ UNESCO dossier records copyright in the first three holding archives. The
 Bruges charter group is recorded as public domain, but remains `reference_only`
 until a direct repository surrogate is secured. Bergen’s Scholeus view and the
 Holbein remain separate rights questions and are not promoted.
+
+## KAN-306/307/308 - production gazetteer and network data
+
+The Phase 0 count guard has been replaced by the production contracts: 45–65
+distinct places, 60–90 dated role phases, 6–10 corridors and 6–10 commodity
+families. The first release contains 60 places/phases, seven corridors, ten
+commodity families, 22 normalized route joins and 16 institutional events.
+
+- **Phase dates are not membership dates.** The many 1356–1669 rows are an
+  editorial visualization window from the regular-Diet record to the
+  conventional terminus. Place notes say this explicitly. More specific bounds
+  are used only where the selected documentary evidence supports them.
+- **City selection and coordinates have different authorities.** The open
+  Marczinek–Maurer–Rauch data and article anchor the research-city universe;
+  modern urban-focus coordinates are checked against GeoNames. Historical,
+  modern and display names remain separate fields.
+- **The four Kontore now join to places.** Novgorod, Bergen, London and Bruges
+  resolve to gazetteer rows, closing the temporary KAN-305 `pending` allowance.
+- **All route lines are intentionally generalized.** The geometry connects
+  documented urban focuses and waypoints. It never claims to recover an
+  individual voyage, surveyed channel or precise road alignment.
+- **Commodities are qualitative and normalized.** The pipe-separated route
+  field is a display projection of `route_commodities.csv`. The compiler checks
+  the two representations for exact agreement. No volume field exists.
+- **The Sound Toll is not projected backward.** The Marczinek paper's flow data
+  begin after the medieval/early-modern phases used by several corridors and
+  omit important same-side connections. It supports identifiers and later
+  network context, never fabricated medieval quantities.
+- **Events model institutional action, not an institutional state.** Privileges,
+  ordinances, embargoes, conflict, peace, Diets, relocations, closures and
+  afterlives are distinct event types. The 1388 Flanders ordinance is recorded
+  together with Lambert and Sicking's evidence that it was repeatedly evaded.
+- **Every publication row needs evidence.** A valid source key is necessary but
+  no longer sufficient: each place phase, corridor, commodity, normalized join
+  and event must also be the target of an evidence-ledger claim.

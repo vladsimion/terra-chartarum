@@ -1,0 +1,405 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          31.2742,
+          58.5256
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "actor": "Overseas merchant community at Peterhof",
+        "certainty": "high",
+        "commodity_scope": "not_applicable",
+        "event_type": "kontor_rule",
+        "id": "hse-institution-novgorod-second-schra",
+        "notes": "1295 is the dossier's selected documentary date; it is not a foundation date for the Kontor or Hanse.",
+        "place_id": "novgorod",
+        "source": "hse-src-unesco-hanse-2017",
+        "summary": "The selected Riga copy records 64 articles governing an oath-bound merchant community and later interaction with Diet regulation.",
+        "target": "Merchants using Peterhof",
+        "title": "Second Novgorod Schra phase",
+        "valid_from": 1295,
+        "valid_to": 1295
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          10.6866,
+          53.8655
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "actor": "Hanseatic towns",
+        "certainty": "medium",
+        "commodity_scope": "not_applicable",
+        "event_type": "hansetag",
+        "id": "hse-institution-first-regular-hansetag",
+        "notes": "A date range is used because the first Hansetag is disputed; no foundation event is asserted.",
+        "place_id": "lubeck",
+        "source": "hse-src-wubs-mrozewicz-2013",
+        "summary": "The evidence window preserves the difference between a modern synthesis dating regular Diets from 1356 and the surviving copied recess series beginning in 1361.",
+        "target": "Participating and represented towns",
+        "title": "Beginning of the regular general-diet record",
+        "valid_from": 1356,
+        "valid_to": 1361
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          3.2247,
+          51.2093
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "actor": "Hanseatic merchants",
+        "certainty": "high",
+        "commodity_scope": "mixed_goods",
+        "event_type": "kontor_relocation",
+        "id": "hse-institution-bruges-dordrecht-1358",
+        "notes": "The event is a temporary institutional relocation and not a transfer of sovereignty.",
+        "place_id": "bruges",
+        "source": "hse-src-lambert-sicking-2025",
+        "summary": "Hanseatic merchants moved their Kontor from Bruges to Dordrecht for two years while negotiating commercial treatment.",
+        "target": "Flemish and Holland host authorities",
+        "title": "Temporary relocation from Bruges to Dordrecht",
+        "valid_from": 1358,
+        "valid_to": 1360
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          6.1552,
+          52.2661
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "actor": "Harderwijk Elburg Kampen Deventer and associated towns",
+        "certainty": "high",
+        "commodity_scope": "not_applicable",
+        "event_type": "hansetag",
+        "id": "hse-institution-ijssel-attendance-1367",
+        "notes": "The row records attendance and does not label the towns as members.",
+        "place_id": "deventer",
+        "source": "hse-src-henn-2017",
+        "summary": "Henn identifies 1367 as the first recorded Diet attendance for Harderwijk, Elburg, Kampen and Deventer in the study group.",
+        "target": "Hanseatic Diet",
+        "title": "Zuiderzee and IJssel towns enter the documented Diet record",
+        "valid_from": 1367,
+        "valid_to": 1367
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          10.6866,
+          53.8655
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "actor": "Cologne Confederation",
+        "certainty": "medium",
+        "commodity_scope": "mixed_goods",
+        "event_type": "conflict",
+        "id": "hse-institution-denmark-conflict-1368",
+        "notes": "The actor is named narrowly to avoid treating the confederation and the Hanse as identical.",
+        "place_id": "lubeck",
+        "source": "hse-src-wubs-mrozewicz-2013",
+        "summary": "A coalition overlapping only partly with the wider Hanse pursued conflict against Denmark before the Peace of Stralsund.",
+        "target": "Kingdom of Denmark",
+        "title": "Cologne Confederation conflict with Denmark",
+        "valid_from": 1368,
+        "valid_to": 1370
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          13.0818,
+          54.3091
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "actor": "Cologne Confederation and allied towns",
+        "certainty": "high",
+        "commodity_scope": "mixed_goods",
+        "event_type": "peace_treaty",
+        "id": "hse-institution-stralsund-peace-1370",
+        "notes": "The familiar high-point interpretation remains qualified in the chronology ledger.",
+        "place_id": "stralsund",
+        "source": "hse-src-unesco-hanse-2017",
+        "summary": "The treaty instruments dated 24 May 1370 record peace and renewed or expanded trading privileges.",
+        "target": "Kingdom of Denmark",
+        "title": "Peace of Stralsund",
+        "valid_from": 1370,
+        "valid_to": 1370
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          3.2247,
+          51.2093
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "actor": "Hanseatic Diet",
+        "certainty": "high",
+        "commodity_scope": "mixed_goods",
+        "event_type": "embargo",
+        "id": "hse-institution-flanders-embargo-1388",
+        "notes": "The source documents widespread evasion; the row does not imply perfect enforcement.",
+        "place_id": "bruges",
+        "source": "hse-src-lambert-sicking-2025",
+        "summary": "In May 1388 the Hanse left Flanders and forbade trade with Flemish merchants or goods that had passed through the county.",
+        "target": "Flemish merchants and goods",
+        "title": "Ordinance forbidding trade with Flanders",
+        "valid_from": 1388,
+        "valid_to": 1392
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          3.2247,
+          51.2093
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "actor": "Hanseatic merchants",
+        "certainty": "high",
+        "commodity_scope": "mixed_goods",
+        "event_type": "kontor_relocation",
+        "id": "hse-institution-bruges-return-1392",
+        "notes": "The return followed a negotiated settlement rather than a territorial acquisition.",
+        "place_id": "bruges",
+        "source": "hse-src-lambert-sicking-2025",
+        "summary": "After compensation and renewed concessions, Hanseatic merchants returned from Dordrecht and re-established their Kontor in Bruges in December 1392.",
+        "target": "Bruges and Flemish authorities",
+        "title": "Return of the Kontor to Bruges",
+        "valid_from": 1392,
+        "valid_to": 1392
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          3.2247,
+          51.2093
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "actor": "Bruges and Burgundian host authorities",
+        "certainty": "high",
+        "commodity_scope": "mixed_goods",
+        "event_type": "privilege_granted",
+        "id": "hse-institution-bruges-house-1458",
+        "notes": "The privilege located merchants inside host-city law and does not constitute territorial sovereignty.",
+        "place_id": "bruges",
+        "source": "hse-src-unesco-hanse-2017",
+        "summary": "Charters granted exclusive building rights at Oosterlingenplein and access to a House of Nations.",
+        "target": "Hanseatic merchants",
+        "title": "Bruges building and House of Nations rights",
+        "valid_from": 1458,
+        "valid_to": 1458
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          3.2247,
+          51.2093
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "actor": "Bruges and Burgundian host authorities",
+        "certainty": "high",
+        "commodity_scope": "mixed_goods",
+        "event_type": "privilege_confirmed",
+        "id": "hse-institution-bruges-staple-1487",
+        "notes": "No commodity volume is derived from the legal concession.",
+        "place_id": "bruges",
+        "source": "hse-src-unesco-hanse-2017",
+        "summary": "A charter confirmed staple rights for Hanseatic merchandise moving through Flanders and Brabant.",
+        "target": "Hanseatic merchants",
+        "title": "Bruges staple rights",
+        "valid_from": 1487,
+        "valid_to": 1487
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          31.2742,
+          58.5256
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "actor": "Novgorod authorities",
+        "certainty": "high",
+        "commodity_scope": "mixed_goods",
+        "event_type": "kontor_closure",
+        "id": "hse-institution-novgorod-closure-1494",
+        "notes": "Closure of this establishment is not treated as dissolution of the wider Hanse.",
+        "place_id": "novgorod",
+        "source": "hse-src-unesco-hanse-2017",
+        "summary": "The documentary dossier records the suppression of Peterhof in 1494.",
+        "target": "Hanseatic merchants",
+        "title": "Suppression of Peterhof",
+        "valid_from": 1494,
+        "valid_to": 1494
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -0.1278,
+          51.5074
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "actor": "Steelyard merchant community",
+        "certainty": "high",
+        "commodity_scope": "mixed_goods",
+        "event_type": "kontor_rule",
+        "id": "hse-institution-london-bylaws-1554",
+        "notes": "Internal jurisdiction remained grounded in English host privileges.",
+        "place_id": "london",
+        "source": "hse-src-unesco-hanse-2017",
+        "summary": "The by-laws regulated elections, internal jurisdiction, finances, conduct and training within the merchant community.",
+        "target": "Merchants represented through the London Kontor",
+        "title": "London Steelyard by-laws",
+        "valid_from": 1554,
+        "valid_to": 1554
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -0.1278,
+          51.5074
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "actor": "English Crown and civic authorities",
+        "certainty": "high",
+        "commodity_scope": "mixed_goods",
+        "event_type": "privilege_restricted",
+        "id": "hse-institution-london-restriction-1598",
+        "notes": "The event restricts a host-granted institution; it is not a wider Hanse dissolution.",
+        "place_id": "london",
+        "source": "hse-src-unesco-hanse-2017",
+        "summary": "English authorities suppressed the Kontor in 1598, ending the selected late documentary phase.",
+        "target": "Steelyard merchant community",
+        "title": "Suppression of the London Kontor",
+        "valid_from": 1598,
+        "valid_to": 1598
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -0.1278,
+          51.5074
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "actor": "English Crown and civic authorities",
+        "certainty": "high",
+        "commodity_scope": "mixed_goods",
+        "event_type": "kontor_closure",
+        "id": "hse-institution-london-closure-1598",
+        "notes": "A separate closure row supports event-type filtering while sharing the same documented act.",
+        "place_id": "london",
+        "source": "hse-src-unesco-hanse-2017",
+        "summary": "The 1554 by-laws phase closes with suppression in 1598.",
+        "target": "Steelyard merchant community",
+        "title": "Closure of the selected Steelyard phase",
+        "valid_from": 1598,
+        "valid_to": 1598
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          10.6866,
+          53.8655
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "actor": "Hanseatic towns",
+        "certainty": "high",
+        "commodity_scope": "not_applicable",
+        "event_type": "hansetag",
+        "id": "hse-institution-last-general-diet-1669",
+        "notes": "The project records a conventional terminus and explicitly rejects the language of formal dissolution.",
+        "place_id": "lubeck",
+        "source": "hse-src-wubs-mrozewicz-2013",
+        "summary": "The 1669 assembly is the last general Diet in the reviewed chronology.",
+        "target": "General Diet",
+        "title": "Last general Hanseatic Diet",
+        "valid_from": 1669,
+        "valid_to": 1669
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          5.3221,
+          60.3913
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "actor": "Bergen merchant community and Lübeck custodians",
+        "certainty": "high",
+        "commodity_scope": "stockfish",
+        "event_type": "institutional_afterlife",
+        "id": "hse-institution-bergen-afterlife-1669",
+        "notes": "The long afterlife demonstrates why 1669 is not a universal end date.",
+        "place_id": "bergen",
+        "source": "hse-src-unesco-hanse-2017",
+        "summary": "Bergen's court books continue to 1759, the last secretary left in 1761 and the archive transferred to Lübeck in 1764.",
+        "target": "Bryggen institutions and archive",
+        "title": "Bergen Kontor institutional afterlife",
+        "valid_from": 1669,
+        "valid_to": 1764
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

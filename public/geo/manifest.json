@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "geo-6065acdaeddddd80",
+  "release": "geo-8bf9cf6444fcdc2d",
   "generatedBy": "scripts/geo-release.mjs",
   "assets": [
     {
@@ -183,16 +183,16 @@
       "geometry": [
         "Point"
       ],
-      "featureCount": 2,
-      "yearFrom": 1161,
-      "yearTo": 1669,
-      "source": "Terra Chartarum (compiled) - HSE KAN-302 vertical slice",
+      "featureCount": 60,
+      "yearFrom": 1295,
+      "yearTo": 1761,
+      "source": "Terra Chartarum (compiled) - HSE gazetteer KAN-306/307",
       "license": "CC BY 4.0",
-      "attribution": "Terra Chartarum; provisional HSE research fixture",
-      "bytes": 1827,
-      "sha256": "d4b58778da67a769aed111e750a7583ae64bbde6c5a2728e4b035f3dd8767148",
-      "version": "d4b58778da67",
-      "url": "/geo/hanseatic-places.geojson?v=d4b58778da67"
+      "attribution": "Terra Chartarum; Marczinek, Maurer & Rauch; UNESCO; Henn; GeoNames",
+      "bytes": 54286,
+      "sha256": "dbbadcc6c42cb24306db89792e2d8a436327517250a977ed8308031af5f60034",
+      "version": "dbbadcc6c42c",
+      "url": "/geo/hanseatic-places.geojson?v=dbbadcc6c42c"
     },
     {
       "id": "hanseatic-routes",
@@ -202,16 +202,35 @@
       "geometry": [
         "LineString"
       ],
-      "featureCount": 1,
-      "yearFrom": 1161,
-      "yearTo": 1400,
-      "source": "Terra Chartarum (compiled) - HSE KAN-302 vertical slice",
+      "featureCount": 7,
+      "yearFrom": 1356,
+      "yearTo": 1669,
+      "source": "Terra Chartarum (compiled) - HSE network KAN-308",
       "license": "CC BY 4.0",
-      "attribution": "Terra Chartarum; provisional HSE research fixture",
-      "bytes": 1174,
-      "sha256": "7fac6425870408ac0c2dd42de9b5d7926249d0c951825e86981f918d33446504",
-      "version": "7fac64258704",
-      "url": "/geo/hanseatic-routes.geojson?v=7fac64258704"
+      "attribution": "Terra Chartarum; Wubs-Mrozewicz; UNESCO; Marczinek, Maurer & Rauch",
+      "bytes": 8760,
+      "sha256": "ae070d1eed1cb5f13d5a7807b107d2265d980a9cf8788166d4fa8b7332d306e0",
+      "version": "ae070d1eed1c",
+      "url": "/geo/hanseatic-routes.geojson?v=ae070d1eed1c"
+    },
+    {
+      "id": "hanseatic-events",
+      "file": "hanseatic-events.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": [
+        "Point"
+      ],
+      "featureCount": 16,
+      "yearFrom": 1295,
+      "yearTo": 1764,
+      "source": "Terra Chartarum (compiled) - HSE events KAN-308",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; UNESCO; Wubs-Mrozewicz; Henn; Lambert & Sicking",
+      "bytes": 14119,
+      "sha256": "b674cef671bd35a6d2db1705f377dcc979096b8f18b732c872b6374be254c2fe",
+      "version": "b674cef671bd",
+      "url": "/geo/hanseatic-events.geojson?v=b674cef671bd"
     }
   ]
 }

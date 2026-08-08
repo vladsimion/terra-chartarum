@@ -1,39 +1,36 @@
-# Hanseatic vertical slice
+# Hanseatic research and GIS pipeline
 
-KAN-302 proves the complete HSE source-to-publication path before research-scale
-data entry begins:
+The HSE pipeline compiles evidence-led research tables into Atlas layers,
+FlatGeobuf and typed essay payloads:
 
 ```text
-data/hanseatic/sources + traced route
+data/hanseatic/sources + traced routes
   -> scripts/hanseatic/build.py
-  -> public/geo/hanseatic-*.geojson
+  -> public/geo/hanseatic-{places,routes,events}.geojson
+  -> public/geo/hanseatic-places.fgb
   -> Atlas GeoLayer registry
-  -> src/data/hanseatic/generated/places.json
-  -> native MDX place profile
+  -> src/data/hanseatic/generated/*.json
 ```
 
 Run `npm run hanseatic:build` after changing an authority table or trace, then
 `npm run hanseatic:validate`. Generated assets are committed so builds remain
-serverless and reproducible.
+serverless and reproducible. The content-addressed manifest is deliberately
+timestamp-free; identical inputs must produce identical bytes.
 
-This fixture is intentionally provisional. The full gazetteer belongs to
-KAN-306.
+KAN-303/304/305 provide the evidence apparatus: `terminology.csv`, `corpus.csv`,
+`chronology.csv` and `kontore.csv`, plus promotion rules that stop unfinished
+research being published as settled fact. KAN-306/307/308 add the production
+gazetteer, publication assets, routes, normalized commodity joins and mapped
+institutional events. The current release contains 60 places/phases, seven
+corridors, ten commodity families, 22 joins and 16 events.
 
-KAN-303/304/305 add the evidence apparatus alongside it: `terminology.csv`,
-`corpus.csv`, `chronology.csv` and `kontore.csv`, plus promotion rules that stop
-unfinished research being published as settled fact. The first research pass is
-complete: all planned essay sections have a rights-cleared witness, the six
-institutional chronology rows have page-level claim support, and all four
-Kontor dossiers are reviewed. See [`decisions.md`](./decisions.md) for the
-editorial qualifications and run `npm run hanseatic:validate` for the current
-readiness score.
+See [`data-dictionary.md`](./data-dictionary.md) for schemas and
+[`decisions.md`](./decisions.md) for editorial qualifications. In particular,
+the broad place phases are not membership dates, route lines are generalized,
+and no unsupported traffic volume is encoded.
 
-The promotion rules are covered by
+The validation rules are covered by
 [`scripts/hanseatic/test_build.py`](../../scripts/hanseatic/test_build.py): each
-test copies the committed sources, breaks exactly one rule, and asserts that
+test copies the committed sources, breaks one rule, and asserts that
 `validate_inputs()` rejects the result. Run them with `npm run hanseatic:test`
-(or `make hanseatic-test`); CI runs them in the `hanseatic-data` job. pytest is
-the only test-time dependency and is not vendored - install it with
-`python3 -m pip install pytest`, or run `.venv/bin/python -m pytest
-scripts/hanseatic -q` after creating the project venv. Add a case here whenever a rule is added, or
-the rule will silently stop firing once research data starts filling the tables.
+or `.venv/bin/python -m pytest scripts/hanseatic -q`.

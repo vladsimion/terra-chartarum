@@ -5,25 +5,28 @@ import {
   getHanseaticPlacePhase,
   hanseaticPlaceNames,
   isPending,
+  listHanseaticCommodities,
+  listHanseaticEvents,
   listHanseaticKontore,
+  listHanseaticRoutes,
   searchHanseaticPlaces,
   toHanseaticAtlasHref,
 } from './hanseatic';
 
-describe('Hanseatic vertical slice', () => {
+describe('Hanseatic publication data', () => {
   it('resolves the Lübeck phase from generated data', () => {
     const phase = getHanseaticPlacePhase('lubeck');
-    expect(phase.id).toBe('hse-place-lubeck-leading-1358');
+    expect(phase.id).toBe('hse-place-lubeck-leading-1356');
     expect(phase.coordinates).toEqual([10.6866, 53.8655]);
-    expect(phase.source).toBe('hse-src-spec');
+    expect(phase.source).toBe('hse-src-marczinek-data-2025');
   });
 
   it('builds the frozen layer/year/feature Atlas contract', () => {
     const href = toHanseaticAtlasHref(getHanseaticPlacePhase('lubeck'));
     const parsed = parseAtlasShareState(new URL(href, 'https://example.test').search);
-    expect(parsed.year).toBe(1358);
+    expect(parsed.year).toBe(1356);
     expect(parsed.layers).toEqual(['hanseatic-places']);
-    expect(parsed.feature).toBe('hse-place-lubeck-leading-1358');
+    expect(parsed.feature).toBe('hse-place-lubeck-leading-1356');
   });
 });
 
@@ -49,7 +52,7 @@ describe('Hanseatic place-name search (KAN-311)', () => {
   it('returns nothing for an empty or unmatched query', () => {
     expect(searchHanseaticPlaces('')).toEqual([]);
     expect(searchHanseaticPlaces('   ')).toEqual([]);
-    expect(searchHanseaticPlaces('Novgorod')).toEqual([]);
+    expect(searchHanseaticPlaces('Novgorod').map((p) => p.place_id)).toEqual(['novgorod']);
   });
 
   it('lists each distinct name once', () => {
@@ -69,16 +72,53 @@ describe('Hanseatic Kontor dossiers', () => {
     }
   });
 
-  it('publishes complete reviewed dossiers while deferring the KAN-306 place join', () => {
+  it('publishes complete reviewed dossiers joined to the KAN-306 gazetteer', () => {
     const bergen = getHanseaticKontor('bergen');
     expect(bergen.review_status).toBe('reviewed');
     expect(isPending(bergen.profile_summary)).toBe(false);
     expect(isPending(bergen.primary_witness)).toBe(false);
-    expect(isPending(bergen.place_id)).toBe(true);
+    expect(isPending(bergen.place_id)).toBe(false);
+    expect(bergen.place_id).toBe('bergen');
     expect(bergen.profile_summary.split(/\n\s*\n/)).toHaveLength(3);
   });
 
   it('rejects an unknown Kontor', () => {
     expect(() => getHanseaticKontor('novgorod-2')).toThrow(/Unknown Hanseatic Kontor/);
+  });
+});
+
+describe('Hanseatic routes, commodities and events (KAN-308)', () => {
+  it('ships the scoped production counts', () => {
+    expect(listHanseaticRoutes()).toHaveLength(7);
+    expect(listHanseaticCommodities()).toHaveLength(10);
+    expect(listHanseaticEvents()).toHaveLength(16);
+  });
+
+  it('carries normalized commodity joins for each route', () => {
+    for (const route of listHanseaticRoutes()) {
+      expect(route.commodity_joins.length).toBeGreaterThan(0);
+      expect(new Set(route.commodity_joins.map((join) => join.commodity_id))).toEqual(
+        new Set(route.commodities.split('|')),
+      );
+    }
+  });
+
+  it('includes the four required core corridors', () => {
+    const ids = listHanseaticRoutes().map((route) => route.id);
+    expect(ids).toEqual(
+      expect.arrayContaining([
+        'hse-route-lubeck-visby-novgorod',
+        'hse-route-lubeck-bergen',
+        'hse-route-hamburg-london',
+        'hse-route-baltic-bruges',
+      ]),
+    );
+  });
+
+  it('represents sanctions, treaties, Diets and institutional afterlives', () => {
+    const types = new Set(listHanseaticEvents().map((event) => event.event_type));
+    expect([...types]).toEqual(
+      expect.arrayContaining(['embargo', 'peace_treaty', 'hansetag', 'institutional_afterlife']),
+    );
   });
 });

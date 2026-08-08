@@ -1,0 +1,340 @@
+[
+  {
+    "certainty": "medium",
+    "commodities": "hse-commodity-cloth|hse-commodity-fur|hse-commodity-salt|hse-commodity-wax",
+    "commodity_joins": [
+      {
+        "certainty": "medium",
+        "commodity_id": "hse-commodity-cloth",
+        "directionality": "eastbound",
+        "id": "hse-route-commodity-lubeck-novgorod-cloth",
+        "notes": "Qualitative corridor association; no volume or share is inferred.",
+        "route_id": "hse-route-lubeck-visby-novgorod",
+        "source": "hse-src-wubs-mrozewicz-2013"
+      },
+      {
+        "certainty": "high",
+        "commodity_id": "hse-commodity-fur",
+        "directionality": "westbound",
+        "id": "hse-route-commodity-lubeck-novgorod-fur",
+        "notes": "Novgorod dossier names eastern furs moving west; no volume is inferred.",
+        "route_id": "hse-route-lubeck-visby-novgorod",
+        "source": "hse-src-unesco-hanse-2017"
+      },
+      {
+        "certainty": "high",
+        "commodity_id": "hse-commodity-salt",
+        "directionality": "eastbound",
+        "id": "hse-route-commodity-lubeck-novgorod-salt",
+        "notes": "Novgorod dossier names western salt moving east; no volume is inferred.",
+        "route_id": "hse-route-lubeck-visby-novgorod",
+        "source": "hse-src-unesco-hanse-2017"
+      },
+      {
+        "certainty": "high",
+        "commodity_id": "hse-commodity-wax",
+        "directionality": "westbound",
+        "id": "hse-route-commodity-lubeck-novgorod-wax",
+        "notes": "Novgorod dossier names eastern wax moving west; no volume is inferred.",
+        "route_id": "hse-route-lubeck-visby-novgorod",
+        "source": "hse-src-unesco-hanse-2017"
+      }
+    ],
+    "corridor_type": "mixed",
+    "directionality": "bidirectional",
+    "evidence_type": "generalized_reconstruction",
+    "from_place_id": "lubeck",
+    "id": "hse-route-lubeck-visby-novgorod",
+    "name": "Lübeck–Visby–Novgorod corridor",
+    "notes": "Generalized maritime and riverine corridor joining documented commercial nodes; not an individual voyage track.",
+    "route_id": "hse-route-lubeck-visby-novgorod",
+    "seasonality": "seasonal_navigation",
+    "source": "hse-src-wubs-mrozewicz-2013",
+    "to_place_id": "novgorod",
+    "valid_from": 1356,
+    "valid_to": 1494,
+    "waypoints": "lubeck|visby|novgorod"
+  },
+  {
+    "certainty": "high",
+    "commodities": "hse-commodity-beer|hse-commodity-grain|hse-commodity-stockfish",
+    "commodity_joins": [
+      {
+        "certainty": "medium",
+        "commodity_id": "hse-commodity-beer",
+        "directionality": "northbound",
+        "id": "hse-route-commodity-lubeck-bergen-beer",
+        "notes": "Qualitative return-cargo family; no volume or exclusive origin is inferred.",
+        "route_id": "hse-route-lubeck-bergen",
+        "source": "hse-src-wubs-mrozewicz-2013"
+      },
+      {
+        "certainty": "medium",
+        "commodity_id": "hse-commodity-grain",
+        "directionality": "northbound",
+        "id": "hse-route-commodity-lubeck-bergen-grain",
+        "notes": "Qualitative return-cargo family; no volume or exclusive origin is inferred.",
+        "route_id": "hse-route-lubeck-bergen",
+        "source": "hse-src-wubs-mrozewicz-2013"
+      },
+      {
+        "certainty": "high",
+        "commodity_id": "hse-commodity-stockfish",
+        "directionality": "southbound",
+        "id": "hse-route-commodity-lubeck-bergen-stockfish",
+        "notes": "UNESCO identifies stockfish as Bryggen's defining export; no volume is inferred.",
+        "route_id": "hse-route-lubeck-bergen",
+        "source": "hse-src-unesco-bryggen"
+      }
+    ],
+    "corridor_type": "maritime",
+    "directionality": "bidirectional",
+    "evidence_type": "repeated_commercial_connection",
+    "from_place_id": "lubeck",
+    "id": "hse-route-lubeck-bergen",
+    "name": "Lübeck–Bergen corridor",
+    "notes": "Generalized North Sea corridor anchored by the documented Bryggen Kontor; no traffic volume is inferred.",
+    "route_id": "hse-route-lubeck-bergen",
+    "seasonality": "seasonal_navigation",
+    "source": "hse-src-unesco-hanse-2017",
+    "to_place_id": "bergen",
+    "valid_from": 1356,
+    "valid_to": 1669,
+    "waypoints": "lubeck|bergen"
+  },
+  {
+    "certainty": "medium",
+    "commodities": "hse-commodity-beer|hse-commodity-cloth|hse-commodity-grain",
+    "commodity_joins": [
+      {
+        "certainty": "medium",
+        "commodity_id": "hse-commodity-beer",
+        "directionality": "westbound",
+        "id": "hse-route-commodity-hamburg-london-beer",
+        "notes": "Qualitative network family; post-1668 Sound Toll flows are not projected into this phase.",
+        "route_id": "hse-route-hamburg-london",
+        "source": "hse-src-marczinek-2025"
+      },
+      {
+        "certainty": "medium",
+        "commodity_id": "hse-commodity-cloth",
+        "directionality": "mixed",
+        "id": "hse-route-commodity-hamburg-london-cloth",
+        "notes": "Direction varies by textile origin and grade; no volume is inferred.",
+        "route_id": "hse-route-hamburg-london",
+        "source": "hse-src-wubs-mrozewicz-2013"
+      },
+      {
+        "certainty": "medium",
+        "commodity_id": "hse-commodity-grain",
+        "directionality": "westbound",
+        "id": "hse-route-commodity-hamburg-london-grain",
+        "notes": "Qualitative network family; post-1668 Sound Toll flows are not projected into this phase.",
+        "route_id": "hse-route-hamburg-london",
+        "source": "hse-src-marczinek-2025"
+      }
+    ],
+    "corridor_type": "maritime",
+    "directionality": "bidirectional",
+    "evidence_type": "repeated_commercial_connection",
+    "from_place_id": "hamburg",
+    "id": "hse-route-hamburg-london",
+    "name": "Hamburg–London corridor",
+    "notes": "Generalized connection for the selected Steelyard documentary phase; Sound Toll flows are not projected backward.",
+    "route_id": "hse-route-hamburg-london",
+    "seasonality": "seasonal_navigation",
+    "source": "hse-src-marczinek-2025",
+    "to_place_id": "london",
+    "valid_from": 1554,
+    "valid_to": 1598,
+    "waypoints": "hamburg|london"
+  },
+  {
+    "certainty": "medium",
+    "commodities": "hse-commodity-cloth|hse-commodity-fur|hse-commodity-grain|hse-commodity-timber|hse-commodity-wax",
+    "commodity_joins": [
+      {
+        "certainty": "medium",
+        "commodity_id": "hse-commodity-cloth",
+        "directionality": "eastbound",
+        "id": "hse-route-commodity-baltic-bruges-cloth",
+        "notes": "Qualitative corridor association; no volume or exclusive origin is inferred.",
+        "route_id": "hse-route-baltic-bruges",
+        "source": "hse-src-wubs-mrozewicz-2013"
+      },
+      {
+        "certainty": "medium",
+        "commodity_id": "hse-commodity-fur",
+        "directionality": "westbound",
+        "id": "hse-route-commodity-baltic-bruges-fur",
+        "notes": "Qualitative corridor association; no volume or share is inferred.",
+        "route_id": "hse-route-baltic-bruges",
+        "source": "hse-src-wubs-mrozewicz-2013"
+      },
+      {
+        "certainty": "medium",
+        "commodity_id": "hse-commodity-grain",
+        "directionality": "westbound",
+        "id": "hse-route-commodity-baltic-bruges-grain",
+        "notes": "Qualitative corridor association; no volume or share is inferred.",
+        "route_id": "hse-route-baltic-bruges",
+        "source": "hse-src-wubs-mrozewicz-2013"
+      },
+      {
+        "certainty": "medium",
+        "commodity_id": "hse-commodity-timber",
+        "directionality": "westbound",
+        "id": "hse-route-commodity-baltic-bruges-timber",
+        "notes": "Qualitative corridor association; no volume or share is inferred.",
+        "route_id": "hse-route-baltic-bruges",
+        "source": "hse-src-wubs-mrozewicz-2013"
+      },
+      {
+        "certainty": "medium",
+        "commodity_id": "hse-commodity-wax",
+        "directionality": "westbound",
+        "id": "hse-route-commodity-baltic-bruges-wax",
+        "notes": "Qualitative corridor association; no volume or share is inferred.",
+        "route_id": "hse-route-baltic-bruges",
+        "source": "hse-src-wubs-mrozewicz-2013"
+      }
+    ],
+    "corridor_type": "maritime",
+    "directionality": "bidirectional",
+    "evidence_type": "generalized_reconstruction",
+    "from_place_id": "gdansk",
+    "id": "hse-route-baltic-bruges",
+    "name": "Baltic ports–Bruges corridor",
+    "notes": "Generalized corridor through Lübeck to the selected Bruges charter phase; not a precise sailing line.",
+    "route_id": "hse-route-baltic-bruges",
+    "seasonality": "seasonal_navigation",
+    "source": "hse-src-wubs-mrozewicz-2013",
+    "to_place_id": "bruges",
+    "valid_from": 1458,
+    "valid_to": 1502,
+    "waypoints": "gdansk|lubeck|bruges"
+  },
+  {
+    "certainty": "medium",
+    "commodities": "hse-commodity-grain|hse-commodity-timber",
+    "commodity_joins": [
+      {
+        "certainty": "medium",
+        "commodity_id": "hse-commodity-grain",
+        "directionality": "northbound",
+        "id": "hse-route-commodity-vistula-grain",
+        "notes": "Qualitative Vistula association; no flow value from the later Sound Toll series is reused.",
+        "route_id": "hse-route-gdansk-vistula-torun",
+        "source": "hse-src-marczinek-2025"
+      },
+      {
+        "certainty": "medium",
+        "commodity_id": "hse-commodity-timber",
+        "directionality": "northbound",
+        "id": "hse-route-commodity-vistula-timber",
+        "notes": "Qualitative Vistula association; no flow value from the later Sound Toll series is reused.",
+        "route_id": "hse-route-gdansk-vistula-torun",
+        "source": "hse-src-marczinek-2025"
+      }
+    ],
+    "corridor_type": "riverine",
+    "directionality": "bidirectional",
+    "evidence_type": "generalized_reconstruction",
+    "from_place_id": "gdansk",
+    "id": "hse-route-gdansk-vistula-torun",
+    "name": "Gdańsk–Vistula hinterland corridor",
+    "notes": "Simplified Vistula corridor between urban focuses; geometry does not claim a surveyed historical channel.",
+    "route_id": "hse-route-gdansk-vistula-torun",
+    "seasonality": "seasonal_navigation",
+    "source": "hse-src-marczinek-2025",
+    "to_place_id": "torun",
+    "valid_from": 1356,
+    "valid_to": 1669,
+    "waypoints": "gdansk|torun"
+  },
+  {
+    "certainty": "high",
+    "commodities": "hse-commodity-beer|hse-commodity-salt",
+    "commodity_joins": [
+      {
+        "certainty": "low",
+        "commodity_id": "hse-commodity-beer",
+        "directionality": "mixed",
+        "id": "hse-route-commodity-luneburg-lubeck-beer",
+        "notes": "Secondary qualitative association retained at low certainty; no volume is inferred.",
+        "route_id": "hse-route-luneburg-lubeck",
+        "source": "hse-src-wubs-mrozewicz-2013"
+      },
+      {
+        "certainty": "high",
+        "commodity_id": "hse-commodity-salt",
+        "directionality": "northbound",
+        "id": "hse-route-commodity-luneburg-lubeck-salt",
+        "notes": "Direction records the Lüneburg-to-Lübeck association; no tonnage is inferred.",
+        "route_id": "hse-route-luneburg-lubeck",
+        "source": "hse-src-wubs-mrozewicz-2013"
+      }
+    ],
+    "corridor_type": "overland",
+    "directionality": "northbound",
+    "evidence_type": "repeated_commercial_connection",
+    "from_place_id": "luneburg",
+    "id": "hse-route-luneburg-lubeck",
+    "name": "Lüneburg salt–Lübeck corridor",
+    "notes": "Generalized overland corridor; commodity direction is recorded in normalized joins and no volume is asserted.",
+    "route_id": "hse-route-luneburg-lubeck",
+    "seasonality": "year_round",
+    "source": "hse-src-wubs-mrozewicz-2013",
+    "to_place_id": "lubeck",
+    "valid_from": 1356,
+    "valid_to": 1669,
+    "waypoints": "luneburg|lubeck"
+  },
+  {
+    "certainty": "medium",
+    "commodities": "hse-commodity-cloth|hse-commodity-metals|hse-commodity-wine",
+    "commodity_joins": [
+      {
+        "certainty": "medium",
+        "commodity_id": "hse-commodity-cloth",
+        "directionality": "mixed",
+        "id": "hse-route-commodity-cologne-london-cloth",
+        "notes": "Qualitative corridor association; direction varies by textile origin.",
+        "route_id": "hse-route-cologne-london",
+        "source": "hse-src-wubs-mrozewicz-2013"
+      },
+      {
+        "certainty": "medium",
+        "commodity_id": "hse-commodity-metals",
+        "directionality": "westbound",
+        "id": "hse-route-commodity-cologne-london-metals",
+        "notes": "Qualitative Rhine corridor association; no volume is inferred.",
+        "route_id": "hse-route-cologne-london",
+        "source": "hse-src-wubs-mrozewicz-2013"
+      },
+      {
+        "certainty": "medium",
+        "commodity_id": "hse-commodity-wine",
+        "directionality": "westbound",
+        "id": "hse-route-commodity-cologne-london-wine",
+        "notes": "Rhenish wine is specifically attested in the Bruges charter group; this wider corridor link remains medium certainty.",
+        "route_id": "hse-route-cologne-london",
+        "source": "hse-src-unesco-hanse-2017"
+      }
+    ],
+    "corridor_type": "mixed",
+    "directionality": "bidirectional",
+    "evidence_type": "generalized_reconstruction",
+    "from_place_id": "cologne",
+    "id": "hse-route-cologne-london",
+    "name": "Cologne–London and Rhine corridor",
+    "notes": "Generalized Rhine-to-North-Sea connection for the Steelyard phase; not an individual itinerary.",
+    "route_id": "hse-route-cologne-london",
+    "seasonality": "seasonal_navigation",
+    "source": "hse-src-wubs-mrozewicz-2013",
+    "to_place_id": "london",
+    "valid_from": 1554,
+    "valid_to": 1598,
+    "waypoints": "cologne|london"
+  }
+]

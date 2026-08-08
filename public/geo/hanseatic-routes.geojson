@@ -8,41 +8,313 @@
             53.8655
           ],
           [
-            11.2,
-            54.35
-          ],
-          [
-            13.9,
-            55.75
-          ],
-          [
-            16.7,
-            56.75
+            13.5,
+            54.8
           ],
           [
             18.2948,
             57.6348
+          ],
+          [
+            22.5,
+            57.8
+          ],
+          [
+            26.0,
+            59.0
+          ],
+          [
+            31.2742,
+            58.5256
           ]
         ],
         "type": "LineString"
       },
       "properties": {
         "certainty": "medium",
-        "commodities": "salt|cloth",
-        "corridor_type": "maritime",
+        "commodities": "hse-commodity-cloth|hse-commodity-fur|hse-commodity-salt|hse-commodity-wax",
+        "corridor_type": "mixed",
         "directionality": "bidirectional",
         "evidence_type": "generalized_reconstruction",
         "from_place_id": "lubeck",
-        "id": "hse-route-lubeck-visby",
-        "name": "Lübeck–Visby corridor",
-        "notes": "Phase-zero generalized corridor, not an individual voyage track.",
-        "route_id": "hse-route-lubeck-visby",
-        "seasonality": "seasonal",
-        "source": "hse-src-spec",
-        "to_place_id": "visby",
-        "valid_from": 1161,
-        "valid_to": 1400,
-        "waypoints": "lubeck|visby"
+        "id": "hse-route-lubeck-visby-novgorod",
+        "name": "Lübeck–Visby–Novgorod corridor",
+        "notes": "Generalized maritime and riverine corridor joining documented commercial nodes; not an individual voyage track.",
+        "route_id": "hse-route-lubeck-visby-novgorod",
+        "seasonality": "seasonal_navigation",
+        "source": "hse-src-wubs-mrozewicz-2013",
+        "to_place_id": "novgorod",
+        "valid_from": 1356,
+        "valid_to": 1494,
+        "waypoints": "lubeck|visby|novgorod"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            10.6866,
+            53.8655
+          ],
+          [
+            11.0,
+            54.5
+          ],
+          [
+            12.5,
+            55.8
+          ],
+          [
+            10.5,
+            57.5
+          ],
+          [
+            6.0,
+            58.5
+          ],
+          [
+            5.3221,
+            60.3913
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "certainty": "high",
+        "commodities": "hse-commodity-beer|hse-commodity-grain|hse-commodity-stockfish",
+        "corridor_type": "maritime",
+        "directionality": "bidirectional",
+        "evidence_type": "repeated_commercial_connection",
+        "from_place_id": "lubeck",
+        "id": "hse-route-lubeck-bergen",
+        "name": "Lübeck–Bergen corridor",
+        "notes": "Generalized North Sea corridor anchored by the documented Bryggen Kontor; no traffic volume is inferred.",
+        "route_id": "hse-route-lubeck-bergen",
+        "seasonality": "seasonal_navigation",
+        "source": "hse-src-unesco-hanse-2017",
+        "to_place_id": "bergen",
+        "valid_from": 1356,
+        "valid_to": 1669,
+        "waypoints": "lubeck|bergen"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            9.9937,
+            53.5503
+          ],
+          [
+            8.5,
+            53.7
+          ],
+          [
+            5.0,
+            53.0
+          ],
+          [
+            2.0,
+            52.5
+          ],
+          [
+            -0.1278,
+            51.5074
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "certainty": "medium",
+        "commodities": "hse-commodity-beer|hse-commodity-cloth|hse-commodity-grain",
+        "corridor_type": "maritime",
+        "directionality": "bidirectional",
+        "evidence_type": "repeated_commercial_connection",
+        "from_place_id": "hamburg",
+        "id": "hse-route-hamburg-london",
+        "name": "Hamburg–London corridor",
+        "notes": "Generalized connection for the selected Steelyard documentary phase; Sound Toll flows are not projected backward.",
+        "route_id": "hse-route-hamburg-london",
+        "seasonality": "seasonal_navigation",
+        "source": "hse-src-marczinek-2025",
+        "to_place_id": "london",
+        "valid_from": 1554,
+        "valid_to": 1598,
+        "waypoints": "hamburg|london"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            18.6466,
+            54.352
+          ],
+          [
+            14.0,
+            55.5
+          ],
+          [
+            10.6866,
+            53.8655
+          ],
+          [
+            6.0,
+            54.0
+          ],
+          [
+            2.0,
+            52.5
+          ],
+          [
+            3.2247,
+            51.2093
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "certainty": "medium",
+        "commodities": "hse-commodity-cloth|hse-commodity-fur|hse-commodity-grain|hse-commodity-timber|hse-commodity-wax",
+        "corridor_type": "maritime",
+        "directionality": "bidirectional",
+        "evidence_type": "generalized_reconstruction",
+        "from_place_id": "gdansk",
+        "id": "hse-route-baltic-bruges",
+        "name": "Baltic ports–Bruges corridor",
+        "notes": "Generalized corridor through Lübeck to the selected Bruges charter phase; not a precise sailing line.",
+        "route_id": "hse-route-baltic-bruges",
+        "seasonality": "seasonal_navigation",
+        "source": "hse-src-wubs-mrozewicz-2013",
+        "to_place_id": "bruges",
+        "valid_from": 1458,
+        "valid_to": 1502,
+        "waypoints": "gdansk|lubeck|bruges"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            18.6466,
+            54.352
+          ],
+          [
+            18.75,
+            53.8
+          ],
+          [
+            18.5984,
+            53.0138
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "certainty": "medium",
+        "commodities": "hse-commodity-grain|hse-commodity-timber",
+        "corridor_type": "riverine",
+        "directionality": "bidirectional",
+        "evidence_type": "generalized_reconstruction",
+        "from_place_id": "gdansk",
+        "id": "hse-route-gdansk-vistula-torun",
+        "name": "Gdańsk–Vistula hinterland corridor",
+        "notes": "Simplified Vistula corridor between urban focuses; geometry does not claim a surveyed historical channel.",
+        "route_id": "hse-route-gdansk-vistula-torun",
+        "seasonality": "seasonal_navigation",
+        "source": "hse-src-marczinek-2025",
+        "to_place_id": "torun",
+        "valid_from": 1356,
+        "valid_to": 1669,
+        "waypoints": "gdansk|torun"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            10.4115,
+            53.2464
+          ],
+          [
+            10.5,
+            53.55
+          ],
+          [
+            10.6866,
+            53.8655
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "certainty": "high",
+        "commodities": "hse-commodity-beer|hse-commodity-salt",
+        "corridor_type": "overland",
+        "directionality": "northbound",
+        "evidence_type": "repeated_commercial_connection",
+        "from_place_id": "luneburg",
+        "id": "hse-route-luneburg-lubeck",
+        "name": "Lüneburg salt–Lübeck corridor",
+        "notes": "Generalized overland corridor; commodity direction is recorded in normalized joins and no volume is asserted.",
+        "route_id": "hse-route-luneburg-lubeck",
+        "seasonality": "year_round",
+        "source": "hse-src-wubs-mrozewicz-2013",
+        "to_place_id": "lubeck",
+        "valid_from": 1356,
+        "valid_to": 1669,
+        "waypoints": "luneburg|lubeck"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            6.9603,
+            50.9375
+          ],
+          [
+            6.7,
+            51.5
+          ],
+          [
+            5.3,
+            52.0
+          ],
+          [
+            2.0,
+            52.0
+          ],
+          [
+            -0.1278,
+            51.5074
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "certainty": "medium",
+        "commodities": "hse-commodity-cloth|hse-commodity-metals|hse-commodity-wine",
+        "corridor_type": "mixed",
+        "directionality": "bidirectional",
+        "evidence_type": "generalized_reconstruction",
+        "from_place_id": "cologne",
+        "id": "hse-route-cologne-london",
+        "name": "Cologne–London and Rhine corridor",
+        "notes": "Generalized Rhine-to-North-Sea connection for the Steelyard phase; not an individual itinerary.",
+        "route_id": "hse-route-cologne-london",
+        "seasonality": "seasonal_navigation",
+        "source": "hse-src-wubs-mrozewicz-2013",
+        "to_place_id": "london",
+        "valid_from": 1554,
+        "valid_to": 1598,
+        "waypoints": "cologne|london"
       },
       "type": "Feature"
     }

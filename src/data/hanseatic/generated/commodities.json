@@ -1,0 +1,72 @@
+[
+  {
+    "description": "Preserved-food and industrial salt grouped as one qualitative commodity family.",
+    "id": "hse-commodity-salt",
+    "name": "Salt",
+    "notes": "No tonnage, value or route share is encoded.",
+    "source": "hse-src-wubs-mrozewicz-2013"
+  },
+  {
+    "description": "Finished and semi-finished textiles grouped across local grades and origins.",
+    "id": "hse-commodity-cloth",
+    "name": "Cloth",
+    "notes": "The family prevents unsupported precision about fabric grade or volume.",
+    "source": "hse-src-wubs-mrozewicz-2013"
+  },
+  {
+    "description": "Cereal cargoes grouped without assigning crop-specific quantities.",
+    "id": "hse-commodity-grain",
+    "name": "Grain",
+    "notes": "No tonnage, value or route share is encoded.",
+    "source": "hse-src-wubs-mrozewicz-2013"
+  },
+  {
+    "description": "Wood, boards and related forest products grouped at corridor level.",
+    "id": "hse-commodity-timber",
+    "name": "Timber",
+    "notes": "No tonnage, value or route share is encoded.",
+    "source": "hse-src-unesco-hanse-2017"
+  },
+  {
+    "description": "Beeswax and related wax cargoes represented as a single family.",
+    "id": "hse-commodity-wax",
+    "name": "Wax",
+    "notes": "No tonnage, value or route share is encoded.",
+    "source": "hse-src-unesco-hanse-2017"
+  },
+  {
+    "description": "Furs and pelts grouped across species and quality.",
+    "id": "hse-commodity-fur",
+    "name": "Fur",
+    "notes": "No tonnage, value or route share is encoded.",
+    "source": "hse-src-unesco-hanse-2017"
+  },
+  {
+    "description": "Dried cod and related preserved fish associated especially with the Bergen corridor.",
+    "id": "hse-commodity-stockfish",
+    "name": "Stockfish",
+    "notes": "No tonnage, value or route share is encoded.",
+    "source": "hse-src-unesco-bryggen"
+  },
+  {
+    "description": "Beer represented as a corridor-level family without brewery or grade detail.",
+    "id": "hse-commodity-beer",
+    "name": "Beer",
+    "notes": "No tonnage, value or route share is encoded.",
+    "source": "hse-src-wubs-mrozewicz-2013"
+  },
+  {
+    "description": "Wine represented as a broad family; the Bruges dossier specifically attests Rhenish wine.",
+    "id": "hse-commodity-wine",
+    "name": "Wine",
+    "notes": "No tonnage, value or route share is encoded.",
+    "source": "hse-src-unesco-hanse-2017"
+  },
+  {
+    "description": "Metal ores, semi-finished metals and metal goods grouped conservatively.",
+    "id": "hse-commodity-metals",
+    "name": "Metals",
+    "notes": "No tonnage, value or route share is encoded.",
+    "source": "hse-src-wubs-mrozewicz-2013"
+  }
+]

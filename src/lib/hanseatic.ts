@@ -1,5 +1,8 @@
 import places from '../data/hanseatic/generated/places.json';
 import kontore from '../data/hanseatic/generated/kontore.json';
+import routes from '../data/hanseatic/generated/routes.json';
+import commodities from '../data/hanseatic/generated/commodities.json';
+import events from '../data/hanseatic/generated/events.json';
 
 export interface HanseaticPlacePhase {
   id: string;
@@ -44,8 +47,66 @@ export interface HanseaticKontor {
   notes: string;
 }
 
+export interface HanseaticRouteCommodity {
+  id: string;
+  route_id: string;
+  commodity_id: string;
+  directionality: string;
+  certainty: 'high' | 'medium' | 'low';
+  source: string;
+  notes: string;
+}
+
+export interface HanseaticRoute {
+  id: string;
+  route_id: string;
+  name: string;
+  corridor_type: 'maritime' | 'riverine' | 'overland' | 'mixed';
+  from_place_id: string;
+  to_place_id: string;
+  waypoints: string;
+  valid_from: number;
+  valid_to: number;
+  directionality: string;
+  seasonality: string;
+  evidence_type:
+    'documented_route' | 'repeated_commercial_connection' | 'generalized_reconstruction';
+  certainty: 'high' | 'medium' | 'low';
+  commodities: string;
+  commodity_joins: HanseaticRouteCommodity[];
+  source: string;
+  notes: string;
+}
+
+export interface HanseaticCommodity {
+  id: string;
+  name: string;
+  description: string;
+  source: string;
+  notes: string;
+}
+
+export interface HanseaticInstitutionalEvent {
+  id: string;
+  event_type: string;
+  title: string;
+  place_id: string;
+  valid_from: number;
+  valid_to: number;
+  actor: string;
+  target: string;
+  commodity_scope: string;
+  summary: string;
+  source: string;
+  certainty: 'high' | 'medium' | 'low';
+  notes: string;
+}
+
 const PLACE_PHASES = places as HanseaticPlacePhase[];
 const KONTORE = kontore as HanseaticKontor[];
+const ROUTES = routes as HanseaticRoute[];
+const COMMODITIES = commodities as HanseaticCommodity[];
+const EVENTS = events as HanseaticInstitutionalEvent[];
 
 /** True when research has not yet filled this field, so callers never print `pending`. */
 export function isPending(value: string): boolean {
@@ -54,6 +115,18 @@ export function isPending(value: string): boolean {
 
 export function listHanseaticKontore(): HanseaticKontor[] {
   return KONTORE;
+}
+
+export function listHanseaticRoutes(): HanseaticRoute[] {
+  return ROUTES;
+}
+
+export function listHanseaticCommodities(): HanseaticCommodity[] {
+  return COMMODITIES;
+}
+
+export function listHanseaticEvents(): HanseaticInstitutionalEvent[] {
+  return EVENTS;
 }
 
 export function getHanseaticKontor(kontorId: string): HanseaticKontor {

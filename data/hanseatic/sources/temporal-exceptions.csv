@@ -1,2 +1,1 @@
 subject_id,kind,decision,logged_in
-hse-route-lubeck-visby,route_outside_place_phase,"The corridor is dated from 1161, before the Lübeck phase recorded in places.csv opens in 1358. Both are Phase 0 fixtures carrying different provisional dates rather than a claim that traffic preceded the city's role; KAN-306 and KAN-308 must re-derive both bounds from evidence and this row should then be removed or restated.",docs/hanseatic/decisions.md
