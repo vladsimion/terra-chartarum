@@ -10,7 +10,16 @@ const essay = readFileSync(
   'utf8',
 );
 const failures = [];
-const expectedTickets = ['KAN-312', 'KAN-313', 'KAN-314', 'KAN-315', 'KAN-300', 'KAN-301'];
+const expectedTickets = Array.from({ length: 21 }, (_, index) => `KAN-${295 + index}`);
+const expectedEpics = {
+  'KAN-295': ['KAN-302', 'KAN-303'],
+  'KAN-296': ['KAN-304', 'KAN-305'],
+  'KAN-297': ['KAN-306', 'KAN-307'],
+  'KAN-298': ['KAN-308', 'KAN-309'],
+  'KAN-299': ['KAN-310', 'KAN-311'],
+  'KAN-300': ['KAN-312', 'KAN-313'],
+  'KAN-301': ['KAN-314', 'KAN-315'],
+};
 const expectedWitnesses = [
   'hse-rudimentum-lubeck',
   'hse-carta-marina',
@@ -33,6 +42,16 @@ if (release.releaseAt !== '2026-08-08' || !essay.includes(`releaseAt: '${release
 }
 if (JSON.stringify(release.tickets) !== JSON.stringify(expectedTickets)) {
   failures.push('Release ticket order/scope is incomplete');
+}
+if (JSON.stringify(release.epics) !== JSON.stringify(expectedEpics)) {
+  failures.push('The seven HSE epics must partition all fourteen leaf tickets');
+}
+if (
+  release.programmeRollup?.status !== 'repository_verified' ||
+  release.programmeRollup?.epicCount !== 7 ||
+  release.programmeRollup?.leafTicketCount !== 14
+) {
+  failures.push('Hanseatic programme roll-up totals are incomplete');
 }
 if (JSON.stringify(release.publishedWitnesses) !== JSON.stringify(expectedWitnesses)) {
   failures.push('The eight published witness ids are incomplete or out of order');
@@ -74,5 +93,5 @@ if (failures.length > 0) {
 }
 
 console.log(
-  `Hanseatic release QA passed: ${release.publishedWitnesses.length} witnesses, ${release.qa.length} gates, ${lighthouse.regressionPoints}-point Lighthouse regression.`,
+  `Hanseatic release QA passed: ${release.programmeRollup.epicCount} epics, ${release.programmeRollup.leafTicketCount} leaves, ${release.publishedWitnesses.length} witnesses, ${release.qa.length} gates, ${lighthouse.regressionPoints}-point Lighthouse regression.`,
 );

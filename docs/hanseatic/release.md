@@ -3,7 +3,7 @@
 - Release date: 8 August 2026
 - Release identifier: `hse-d383ae6dff5e3825`
 - Essay: `/essays/the-league-that-left-no-map/`
-- Tickets: KAN-312–315, KAN-300 and KAN-301
+- Tickets: KAN-295–315
 
 ## Publication contents
 
@@ -13,6 +13,7 @@
 - Four reference-only documentary witnesses whose images are not republished.
 - Linked Olaus Magnus and Georg Braun cartographer records, plus four research bibliography entries.
 - SVG cover and 1200 × 630 raster Open Graph card.
+- Repository-verified evidence for all seven programme epics and fourteen leaf tickets.
 
 ## Historical and rights review
 

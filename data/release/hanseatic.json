@@ -4,10 +4,42 @@
   "release": "hse-d383ae6dff5e3825",
   "essaySlug": "the-league-that-left-no-map",
   "releaseAt": "2026-08-08",
-  "tickets": ["KAN-312", "KAN-313", "KAN-314", "KAN-315", "KAN-300", "KAN-301"],
+  "tickets": [
+    "KAN-295",
+    "KAN-296",
+    "KAN-297",
+    "KAN-298",
+    "KAN-299",
+    "KAN-300",
+    "KAN-301",
+    "KAN-302",
+    "KAN-303",
+    "KAN-304",
+    "KAN-305",
+    "KAN-306",
+    "KAN-307",
+    "KAN-308",
+    "KAN-309",
+    "KAN-310",
+    "KAN-311",
+    "KAN-312",
+    "KAN-313",
+    "KAN-314",
+    "KAN-315"
+  ],
   "epics": {
+    "KAN-295": ["KAN-302", "KAN-303"],
+    "KAN-296": ["KAN-304", "KAN-305"],
+    "KAN-297": ["KAN-306", "KAN-307"],
+    "KAN-298": ["KAN-308", "KAN-309"],
+    "KAN-299": ["KAN-310", "KAN-311"],
     "KAN-300": ["KAN-312", "KAN-313"],
     "KAN-301": ["KAN-314", "KAN-315"]
+  },
+  "programmeRollup": {
+    "status": "repository_verified",
+    "epicCount": 7,
+    "leafTicketCount": 14
   },
   "publishedWitnesses": [
     "hse-rudimentum-lubeck",
