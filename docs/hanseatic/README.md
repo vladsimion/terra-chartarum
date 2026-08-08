@@ -25,7 +25,8 @@ institutional events. The current release contains 60 places/phases, seven
 corridors, ten commodity families, 22 joins and 16 events.
 
 See [`data-dictionary.md`](./data-dictionary.md) for schemas and
-[`decisions.md`](./decisions.md) for editorial qualifications. In particular,
+[`decisions.md`](./decisions.md) for editorial qualifications, and
+[`release.md`](./release.md) for the essay publication and QA record. In particular,
 the broad place phases are not membership dates, route lines are generalized,
 and no unsupported traffic volume is encoded.
 

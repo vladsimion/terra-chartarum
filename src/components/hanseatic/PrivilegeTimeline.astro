@@ -1,0 +1,253 @@
+---
+import { listHanseaticEvents, toHanseaticEventAtlasHref } from '../../lib/hanseatic';
+
+const events = [...listHanseaticEvents()].sort((a, b) => a.valid_from - b.valid_from);
+const eventTypes = [...new Set(events.map((event) => event.event_type))].sort();
+const from = Math.min(...events.map((event) => event.valid_from));
+const to = Math.max(...events.map((event) => event.valid_to));
+const span = Math.max(to - from, 1);
+const position = (year: number) => ((year - from) / span) * 100;
+const readable = (value: string) => value.replaceAll('_', ' ');
+---
+
+<section class="hse-timeline" data-hse-timeline aria-labelledby="hse-timeline-title">
+  <header>
+    <p class="eyebrow">Institutional events · AD {from}–{to}</p>
+    <h3 id="hse-timeline-title">Privilege is a geography that can change</h3>
+    <p>
+      Filter the published events by legal or institutional action. Dates and labels come from the
+      HSE event table; overlapping points remain separate because one act can restrict a privilege
+      while also closing a selected institutional phase.
+    </p>
+  </header>
+
+  <div class="hse-timeline__filters" role="group" aria-label="Filter institutional events">
+    <button type="button" data-event-filter="" aria-pressed="true">All events</button>
+    {
+      eventTypes.map((type) => (
+        <button type="button" data-event-filter={type} aria-pressed="false">
+          {readable(type)}
+        </button>
+      ))
+    }
+  </div>
+  <p class="hse-timeline__status" aria-live="polite">Showing all {events.length} events.</p>
+
+  <div class="hse-timeline__track" aria-hidden="true">
+    <span class="hse-timeline__axis"></span>
+    <span class="hse-timeline__bound hse-timeline__bound--from">{from}</span>
+    <span class="hse-timeline__bound hse-timeline__bound--to">{to}</span>
+    {
+      events.map((event, index) => (
+        <span
+          class:list={['hse-timeline__point', index % 2 === 0 ? 'is-above' : 'is-below']}
+          data-event-point={event.id}
+          data-event-type={event.event_type}
+          style={`left:${position(event.valid_from)}%`}
+          title={`${event.title}, ${event.valid_from}`}
+        />
+      ))
+    }
+  </div>
+
+  <ol class="hse-timeline__events" aria-label="Hanseatic institutional-event transcript">
+    {
+      events.map((event) => (
+        <li data-event-row={event.id} data-event-type={event.event_type}>
+          <p class="hse-timeline__date">
+            {event.valid_from === event.valid_to
+              ? `AD ${event.valid_from}`
+              : `AD ${event.valid_from}–${event.valid_to}`}
+          </p>
+          <h4>
+            <a href={toHanseaticEventAtlasHref(event)}>{event.title}</a>
+          </h4>
+          <p>{event.summary}</p>
+          <dl>
+            <div>
+              <>
+                <dt>Action</dt>
+                <dd>{readable(event.event_type)}</dd>
+              </>
+            </div>
+            <div>
+              <>
+                <dt>Actor</dt>
+                <dd>{event.actor}</dd>
+              </>
+            </div>
+            <div>
+              <>
+                <dt>Target</dt>
+                <dd>{event.target}</dd>
+              </>
+            </div>
+            <div>
+              <>
+                <dt>Evidence</dt>
+                <dd>
+                  {event.certainty} · {event.source}
+                </dd>
+              </>
+            </div>
+          </dl>
+          <p class="hse-timeline__note">{event.notes}</p>
+        </li>
+      ))
+    }
+  </ol>
+</section>
+
+<script>
+  const bootHanseaticTimelines = () => {
+    document.querySelectorAll<HTMLElement>('[data-hse-timeline]').forEach((root) => {
+      if (root.dataset.ready) return;
+      root.dataset.ready = 'true';
+      const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-event-filter]'));
+      const rows = Array.from(root.querySelectorAll<HTMLElement>('[data-event-row]'));
+      const points = Array.from(root.querySelectorAll<HTMLElement>('[data-event-point]'));
+      const status = root.querySelector<HTMLElement>('.hse-timeline__status');
+      for (const button of buttons) {
+        button.addEventListener('click', () => {
+          const filter = button.dataset.eventFilter ?? '';
+          for (const candidate of buttons) {
+            candidate.setAttribute('aria-pressed', String(candidate === button));
+          }
+          let count = 0;
+          for (const row of rows) {
+            const visible = !filter || row.dataset.eventType === filter;
+            row.hidden = !visible;
+            if (visible) count += 1;
+          }
+          for (const point of points) {
+            point.hidden = Boolean(filter && point.dataset.eventType !== filter);
+          }
+          if (status) {
+            status.textContent = filter
+              ? `${button.textContent?.trim()}: ${count} event${count === 1 ? '' : 's'}.`
+              : `Showing all ${count} events.`;
+          }
+        });
+      }
+    });
+  };
+  bootHanseaticTimelines();
+  document.addEventListener('astro:page-load', bootHanseaticTimelines);
+</script>
+
+<style>
+  .hse-timeline {
+    margin-block: 2rem;
+    padding: clamp(1rem, 3vw, 1.75rem);
+    border: 1px solid color-mix(in srgb, #7f9ca6 55%, var(--line));
+    background: color-mix(in srgb, #7f9ca6 7%, var(--panel));
+  }
+  h3 {
+    margin-block: 0.2rem 0.5rem;
+  }
+  header p:last-child,
+  .hse-timeline__status,
+  .hse-timeline__note {
+    color: var(--ink-muted);
+  }
+  .hse-timeline__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-block: 1.25rem 0.5rem;
+  }
+  button {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.38rem 0.68rem;
+    background: var(--surface);
+    color: var(--ink-muted);
+    font: inherit;
+    text-transform: capitalize;
+    cursor: pointer;
+  }
+  button[aria-pressed='true'] {
+    border-color: #7f9ca6;
+    color: var(--ink);
+    background: color-mix(in srgb, #7f9ca6 18%, var(--surface));
+  }
+  .hse-timeline__track {
+    position: relative;
+    height: 6rem;
+    margin-block: 1.5rem;
+  }
+  .hse-timeline__axis {
+    position: absolute;
+    inset: 50% 0 auto;
+    height: 1px;
+    background: var(--line);
+  }
+  .hse-timeline__bound {
+    position: absolute;
+    top: calc(50% + 0.6rem);
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+  }
+  .hse-timeline__bound--from {
+    left: 0;
+  }
+  .hse-timeline__bound--to {
+    right: 0;
+  }
+  .hse-timeline__point {
+    position: absolute;
+    top: 50%;
+    width: 0.75rem;
+    height: 0.75rem;
+    border: 2px solid #9fb8c1;
+    border-radius: 50%;
+    background: var(--surface);
+    transform: translate(-50%, -50%);
+  }
+  .hse-timeline__point.is-above {
+    margin-top: -0.85rem;
+  }
+  .hse-timeline__point.is-below {
+    margin-top: 0.85rem;
+  }
+  .hse-timeline__events {
+    display: grid;
+    gap: 0.8rem;
+    list-style: none;
+    padding: 0;
+  }
+  .hse-timeline__events li {
+    padding: 1rem;
+    border-left: 3px solid #7f9ca6;
+    background: var(--surface);
+  }
+  .hse-timeline__date {
+    margin: 0;
+    color: #9fb8c1;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+  }
+  h4 {
+    margin-block: 0.2rem 0.45rem;
+  }
+  .hse-timeline__events p {
+    margin-block: 0.35rem;
+  }
+  dl {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: 0.6rem;
+    margin-block: 0.75rem;
+  }
+  dt {
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  dd {
+    margin: 0.15rem 0 0;
+  }
+</style>

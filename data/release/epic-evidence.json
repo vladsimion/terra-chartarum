@@ -17,6 +17,11 @@
       "batch": 11,
       "rationale": "Dependency-bearing geo, VMN and Wave-2 parents. KAN-9, KAN-84 and KAN-89 can close; KAN-140 remains In Progress until the explicitly blocked chronology child is resolved.",
       "epicKeys": ["KAN-9", "KAN-84", "KAN-89", "KAN-140"]
+    },
+    {
+      "batch": 12,
+      "rationale": "The native Hanseatic essay and its comparison/publication epics are reconciled after their four implementation children and production release evidence landed together.",
+      "epicKeys": ["KAN-300", "KAN-301"]
     }
   ],
   "epics": [
@@ -316,6 +321,42 @@
         "data/vmn/chronology-discrepancies.csv",
         "docs/vmn/chronology-handoff.md",
         "public/geo/venetian-routes.fgb"
+      ]
+    },
+    {
+      "key": "KAN-300",
+      "title": "Native essay and interactive components",
+      "children": ["KAN-312", "KAN-313"],
+      "acceptance": [
+        "A 5,000–8,000-word native MDX essay follows the approved nine-section architecture.",
+        "Five generated-data interactives expose accessible controls, uncertainty language and static fallbacks.",
+        "Room metadata, search metadata, catalogue witnesses and claim-ledger references ship with the essay."
+      ],
+      "evidence": [
+        "src/content/essays/the-league-that-left-no-map.mdx",
+        "src/components/hanseatic/NetworkReveal.astro",
+        "src/components/hanseatic/KontorProfile.astro",
+        "src/components/hanseatic/CommodityNetworkMap.astro",
+        "src/components/hanseatic/PrivilegeTimeline.astro",
+        "src/components/hanseatic/CityWitnessStrip.astro",
+        "src/lib/hanseatic-essay.test.ts"
+      ]
+    },
+    {
+      "key": "KAN-301",
+      "title": "Venice comparison, cross-linking and publication",
+      "children": ["KAN-314", "KAN-315"],
+      "acceptance": [
+        "The comparison keeps VMN and HSE sources separate while explaining their different political geometries.",
+        "At least three reciprocal incoming and three outgoing links connect the essay, comparison and catalogue.",
+        "Catalogue, bibliography, social assets and production QA are recorded in a validated release manifest."
+      ],
+      "evidence": [
+        "src/components/hanseatic/VeniceHanseaticComparison.astro",
+        "data/release/hanseatic.json",
+        "docs/hanseatic/release.md",
+        "e2e/hanseatic-release.spec.ts",
+        "public/og/the-league-that-left-no-map.png"
       ]
     }
   ]

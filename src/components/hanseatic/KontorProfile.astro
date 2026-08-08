@@ -1,5 +1,11 @@
 ---
-import { getHanseaticKontor, isPending } from '../../lib/hanseatic';
+import {
+  getHanseaticKontor,
+  getHanseaticPlacePhase,
+  isPending,
+  toHanseaticAtlasHref,
+} from '../../lib/hanseatic';
+import { getCorpus } from '../../lib/corpus';
 
 interface Props {
   kontorId: string;
@@ -7,6 +13,12 @@ interface Props {
 
 const { kontorId } = Astro.props;
 const kontor = getHanseaticKontor(kontorId);
+const place = getHanseaticPlacePhase(kontor.place_id);
+const atlasHref = toHanseaticAtlasHref(place);
+const primaryWitness = getCorpus().find((map) => map.sourceObjectId === kontor.primary_witness);
+if (!primaryWitness) {
+  throw new Error(`${kontor.id}: catalogue record missing for ${kontor.primary_witness}`);
+}
 const readable = (value: string) => value.replaceAll('_', ' ');
 
 // A pending field is an open research question, not a value. It is labelled as
@@ -68,6 +80,11 @@ const entries: { term: string; value: string | null; caps?: boolean }[] = [
       ))
     }
   </dl>
+  <p class="hse-kontor__links">
+    <a href={atlasHref}>Open the host-place phase in the Atlas →</a>
+    <a href={`/collection/${primaryWitness.id}/`}>Open the primary witness →</a>
+  </p>
+  <p class="hse-kontor__source">Evidence source: <code>{kontor.source}</code></p>
 </aside>
 
 <style>
@@ -124,5 +141,23 @@ const entries: { term: string; value: string | null; caps?: boolean }[] = [
     color: var(--ink-muted);
     font-style: italic;
     text-transform: none;
+  }
+
+  .hse-kontor__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.25rem;
+    margin-block: 1rem 0;
+  }
+
+  .hse-kontor__links a {
+    color: #9fb8c1;
+    font-weight: 600;
+  }
+
+  .hse-kontor__source {
+    margin-block: 0.75rem 0;
+    color: var(--ink-muted);
+    font-size: var(--step--1);
   }
 </style>

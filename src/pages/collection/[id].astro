@@ -45,6 +45,12 @@ const metaRows: [string, string | undefined][] = [
   ['Condition', map.condition],
   ['Provenance', map.provenance],
   ['Acquisition', map.acquisition],
+  ['Object type', map.objectType],
+  ['Repository', map.repository],
+  ['Repository ID', map.repositoryId],
+  ['Rights', map.rightsStatement],
+  ['Attribution', map.attribution],
+  ['Publication status', map.publicationStatus?.replaceAll('_', ' ')],
 ];
 const rows = metaRows.filter(([, v]) => v);
 
@@ -172,6 +178,14 @@ const tileSource = cover?.dziTileSource ?? cover?.iiif;
                   <td>{value}</td>
                 </tr>
               ))}
+              {map.sourceUrl && (
+                <tr>
+                  <th scope="row">Source record</th>
+                  <td>
+                    <a href={map.sourceUrl}>Open the institutional record →</a>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </section>

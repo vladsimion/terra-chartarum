@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "status": "qa_complete",
+  "release": "hse-d383ae6dff5e3825",
+  "essaySlug": "the-league-that-left-no-map",
+  "releaseAt": "2026-08-08",
+  "tickets": ["KAN-312", "KAN-313", "KAN-314", "KAN-315", "KAN-300", "KAN-301"],
+  "epics": {
+    "KAN-300": ["KAN-312", "KAN-313"],
+    "KAN-301": ["KAN-314", "KAN-315"]
+  },
+  "publishedWitnesses": [
+    "hse-rudimentum-lubeck",
+    "hse-carta-marina",
+    "hse-lubeck-view",
+    "hse-hamburg-view",
+    "hse-london-view",
+    "hse-bruges-view",
+    "hse-cologne-view",
+    "hse-bremen-view"
+  ],
+  "assets": {
+    "cover": "public/covers/the-league-that-left-no-map.svg",
+    "openGraph": "public/og/the-league-that-left-no-map.png",
+    "generatedDataManifest": "src/data/hanseatic/generated/manifest.json"
+  },
+  "historicalRightsReview": {
+    "status": "passed",
+    "publishedWitnessCount": 8,
+    "referenceOnlyDocumentCount": 4,
+    "notes": "Published witnesses carry repository, object ID, stable source URL, attribution and an explicit public-domain rights statement. Restricted documentary witnesses remain metadata-only."
+  },
+  "lighthouse": {
+    "comparableEssay": "cities-remember",
+    "comparablePerformance": 100,
+    "hanseaticPerformance": 100,
+    "regressionPoints": 0,
+    "maximumRegressionPoints": 2
+  },
+  "qa": [
+    { "command": "npm run check", "status": "passed", "result": "0 errors" },
+    { "command": "npm test", "status": "passed", "result": "199 tests" },
+    {
+      "command": ".venv/bin/python -m pytest scripts/hanseatic -q",
+      "status": "passed",
+      "result": "55 tests"
+    },
+    { "command": "npm run hanseatic:validate", "status": "passed" },
+    { "command": "npm run build", "status": "passed", "result": "107 pages" },
+    {
+      "command": "playwright test e2e/hanseatic-release.spec.ts --project=chromium",
+      "status": "passed",
+      "result": "5 tests"
+    },
+    {
+      "command": "npm run lighthouse",
+      "status": "passed",
+      "result": "HSE performance 100; comparable essay 100; 0-point regression"
+    }
+  ],
+  "postPublicationChecks": [
+    { "surface": "essay route", "status": "passed" },
+    { "surface": "search index", "status": "passed" },
+    { "surface": "room routes", "status": "passed" },
+    { "surface": "bibliography", "status": "passed" },
+    { "surface": "catalogue and cartographers", "status": "passed" },
+    { "surface": "citation and evidence exports", "status": "passed" }
+  ]
+}

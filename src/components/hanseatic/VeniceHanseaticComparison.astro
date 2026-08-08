@@ -1,0 +1,298 @@
+---
+import { getPortProfiles, getPossessionPhases } from '../../lib/vmn';
+import { getVmnNetwork } from '../../lib/vmn-network';
+import {
+  getHanseaticNetwork,
+  listHanseaticCommodities,
+  listHanseaticEvents,
+  listHanseaticKontore,
+} from '../../lib/hanseatic';
+
+const comparisonYear = 1400;
+const [vmn, vmnPorts, possessionPhases] = await Promise.all([
+  getVmnNetwork(),
+  getPortProfiles(),
+  getPossessionPhases(),
+]);
+const hse = getHanseaticNetwork();
+const hseCommodities = listHanseaticCommodities();
+const hseEvents = listHanseaticEvents();
+const hseKontore = listHanseaticKontore();
+const vmnPossessionsAt1400 = possessionPhases.filter(
+  (phase) => phase.validFrom <= comparisonYear && phase.validTo >= comparisonYear,
+);
+const vmnForeignInstitutions = vmnPorts.filter((port) =>
+  port.phases.some(
+    (phase) =>
+      phase.validFrom <= comparisonYear &&
+      phase.validTo >= comparisonYear &&
+      ['quarter', 'fondaco', 'foreign_port'].includes(phase.status),
+  ),
+);
+const hseKontoreAt1400 = hseKontore.filter(
+  (kontor) =>
+    Number(kontor.valid_from) <= comparisonYear && Number(kontor.valid_to) >= comparisonYear,
+);
+const hseSources = new Set([
+  ...hse.routes.map((route) => route.source),
+  ...hseEvents.map((event) => event.source),
+  ...hseKontore.map((kontor) => kontor.source),
+]);
+
+const views = [
+  {
+    id: 'territory',
+    label: 'Territory',
+    venice: `${vmnPossessionsAt1400.length} dated possession phases intersect AD ${comparisonYear}; territorial and jurisdictional statuses remain explicit.`,
+    hansa:
+      'No common-territory polygon. The comparison deliberately leaves the Hanseatic territory view empty.',
+  },
+  {
+    id: 'routes',
+    label: 'Routes',
+    venice: `${vmn.routes.length} VMN routes connect ${vmn.nodes.length} published ports and waypoints as ordered maritime calls.`,
+    hansa: `${hse.routes.length} HSE corridors connect ${hse.nodes.length} published waypoint cities as generalized relationships.`,
+  },
+  {
+    id: 'quarters',
+    label: 'Foreign quarters',
+    venice: `${vmnForeignInstitutions.length} VMN port profiles carry a quarter, fondaco or foreign-port phase at AD ${comparisonYear}.`,
+    hansa: `${hseKontoreAt1400.length} of four reviewed Kontor documentary phases intersect AD ${comparisonYear}; all remain merchant compounds under host jurisdiction.`,
+  },
+  {
+    id: 'commodities',
+    label: 'Commodities',
+    venice: `${vmn.commodities.length} VMN commodity terms are attached to authored routes in the Venetian authority data.`,
+    hansa: `${hseCommodities.length} HSE commodity families are attached through normalized joins without quantities or route shares.`,
+  },
+  {
+    id: 'authority',
+    label: 'Authority',
+    venice:
+      'A republic, its possessions and negotiated foreign presences are modelled through dated port and territorial authority phases.',
+    hansa:
+      'Towns, merchant communities, Diets and host authorities act through privileges, ordinances, embargoes and agreements rather than a sovereign centre.',
+  },
+  {
+    id: 'evidence',
+    label: 'Evidence',
+    venice:
+      'VMN retains separate gazetteer, authority, route, commodity and traced-geometry sources compiled into published FlatGeobuf.',
+    hansa: `${hseSources.size} HSE source keys support the displayed routes, events and Kontor dossiers; every publication row resolves to the evidence ledger.`,
+  },
+];
+---
+
+<section class="hse-compare" data-hse-compare aria-labelledby="hse-compare-title">
+  <header>
+    <p class="eyebrow">Comparative synthesis · c. AD {comparisonYear}</p>
+    <h3 id="hse-compare-title">Two commercial systems, two political geometries</h3>
+    <p>
+      Switch dimensions without merging the sources. Venice and the Hansa are rendered in parallel
+      columns so a shared maritime vocabulary never implies political equivalence.
+    </p>
+  </header>
+
+  <div class="hse-compare__tabs" role="tablist" aria-label="Comparison dimension">
+    {
+      views.map((view, index) => (
+        <button
+          type="button"
+          role="tab"
+          id={`hse-compare-tab-${view.id}`}
+          aria-controls={`hse-compare-panel-${view.id}`}
+          aria-selected={index === 0 ? 'true' : 'false'}
+          tabindex={index === 0 ? 0 : -1}
+          data-comparison-tab={view.id}
+        >
+          {view.label}
+        </button>
+      ))
+    }
+  </div>
+
+  {
+    views.map((view, index) => (
+      <div
+        class="hse-compare__panel"
+        role="tabpanel"
+        id={`hse-compare-panel-${view.id}`}
+        aria-labelledby={`hse-compare-tab-${view.id}`}
+        data-comparison-panel={view.id}
+        hidden={index !== 0}
+      >
+        <article class="hse-compare__system hse-compare__system--venice">
+          <p class="hse-compare__label">Venetian Maritime Network</p>
+          <h4>Republic, jurisdiction and route</h4>
+          <p>{view.venice}</p>
+          <small>Source boundary: VMN publication assets only.</small>
+        </article>
+        <article class="hse-compare__system hse-compare__system--hansa">
+          <p class="hse-compare__label">Hanseatic network</p>
+          <h4>Association, privilege and host city</h4>
+          <p>{view.hansa}</p>
+          <small>Source boundary: HSE publication assets only.</small>
+        </article>
+      </div>
+    ))
+  }
+
+  <details>
+    <summary>Read the complete comparison without interaction</summary>
+    <div class="hse-compare__table-wrap">
+      <table>
+        <thead><tr><th>Dimension</th><th>Venice / VMN</th><th>Hansa / HSE</th></tr></thead>
+        <tbody>
+          {
+            views.map((view) => (
+              <tr>
+                <>
+                  <th scope="row">{view.label}</th>
+                  <td>{view.venice}</td>
+                  <td>{view.hansa}</td>
+                </>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <nav class="hse-compare__links" aria-label="Continue the Venice and Hanseatic comparison">
+    <a href="/essays/venice-sicily/#rotta">Read La Rotta e il Catasto →</a>
+    <a href="/essays/cities-remember/#city-as-fragment">Read Cities Remember →</a>
+    <a href="/collection/trade-barbari-1500/">Inspect the View of Venice →</a>
+  </nav>
+</section>
+
+<script>
+  const bootHanseaticComparisons = () => {
+    document.querySelectorAll<HTMLElement>('[data-hse-compare]').forEach((root) => {
+      if (root.dataset.ready) return;
+      root.dataset.ready = 'true';
+      const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-comparison-tab]'));
+      const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-comparison-panel]'));
+      const select = (tab: HTMLButtonElement) => {
+        const id = tab.dataset.comparisonTab;
+        for (const candidate of tabs) {
+          const active = candidate === tab;
+          candidate.setAttribute('aria-selected', String(active));
+          candidate.tabIndex = active ? 0 : -1;
+        }
+        for (const panel of panels) panel.hidden = panel.dataset.comparisonPanel !== id;
+      };
+      tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => select(tab));
+        tab.addEventListener('keydown', (event) => {
+          if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+          event.preventDefault();
+          const nextIndex =
+            event.key === 'Home'
+              ? 0
+              : event.key === 'End'
+                ? tabs.length - 1
+                : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+          select(tabs[nextIndex]);
+          tabs[nextIndex].focus();
+        });
+      });
+    });
+  };
+  bootHanseaticComparisons();
+  document.addEventListener('astro:page-load', bootHanseaticComparisons);
+</script>
+
+<style>
+  .hse-compare {
+    margin-block: 2rem;
+    padding: clamp(1rem, 3vw, 1.75rem);
+    border: 1px solid color-mix(in srgb, #7f9ca6 55%, var(--line));
+    background: color-mix(in srgb, #7f9ca6 7%, var(--panel));
+  }
+  h3 {
+    margin-block: 0.2rem 0.5rem;
+  }
+  header p:last-child,
+  details,
+  small {
+    color: var(--ink-muted);
+  }
+  .hse-compare__tabs {
+    display: flex;
+    gap: 0.4rem;
+    overflow-x: auto;
+    margin-block: 1.25rem 0.8rem;
+    padding-bottom: 0.3rem;
+  }
+  button {
+    flex: 0 0 auto;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.42rem 0.76rem;
+    background: var(--surface);
+    color: var(--ink-muted);
+    font: inherit;
+    cursor: pointer;
+  }
+  button[aria-selected='true'] {
+    border-color: #7f9ca6;
+    color: var(--ink);
+    background: color-mix(in srgb, #7f9ca6 18%, var(--surface));
+  }
+  .hse-compare__panel {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+  .hse-compare__panel[hidden] {
+    display: none;
+  }
+  .hse-compare__system {
+    padding: 1.1rem;
+    border: 1px solid var(--line);
+    background: var(--surface);
+  }
+  .hse-compare__system--venice {
+    border-top: 3px solid #b89962;
+  }
+  .hse-compare__system--hansa {
+    border-top: 3px solid #7f9ca6;
+  }
+  .hse-compare__label {
+    margin: 0;
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+  h4 {
+    margin-block: 0.35rem 0.55rem;
+  }
+  .hse-compare__table-wrap {
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--step--1);
+  }
+  th,
+  td {
+    padding: 0.65rem;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+  }
+  .hse-compare__links {
+    display: grid;
+    gap: 0.45rem;
+    margin-top: 1.25rem;
+  }
+  @media (max-width: 44rem) {
+    .hse-compare__panel {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

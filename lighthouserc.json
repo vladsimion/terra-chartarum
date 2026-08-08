@@ -5,6 +5,8 @@
       "url": [
         "http://localhost/index.html",
         "http://localhost/essays/index.html",
+        "http://localhost/essays/cities-remember/index.html",
+        "http://localhost/essays/the-league-that-left-no-map/index.html",
         "http://localhost/atlas/index.html"
       ],
       "numberOfRuns": 1,
@@ -25,7 +27,7 @@
         },
         {
           "comment": "Content routes are light; hold them to the full >=0.9 budget.",
-          "matchingUrlPattern": "(localhost/index|essays/index)\\.html$",
+          "matchingUrlPattern": "(localhost/index|essays/(index|cities-remember|the-league-that-left-no-map)/index)\\.html$",
           "assertions": {
             "categories:performance": ["error", { "minScore": 0.9 }]
           }

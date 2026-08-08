@@ -1,0 +1,303 @@
+---
+import {
+  getHanseaticNetwork,
+  listHanseaticCommodities,
+  toHanseaticRouteAtlasHref,
+} from '../../lib/hanseatic';
+
+const network = getHanseaticNetwork();
+const commodities = listHanseaticCommodities();
+const width = 920;
+const height = 500;
+const padding = 52;
+const xs = network.nodes.map((node) => node.coordinates[0]);
+const ys = network.nodes.map((node) => node.coordinates[1]);
+const minX = Math.min(...xs);
+const maxX = Math.max(...xs);
+const minY = Math.min(...ys);
+const maxY = Math.max(...ys);
+const positions = Object.fromEntries(
+  network.nodes.map((node) => [
+    node.id,
+    {
+      x:
+        padding + ((node.coordinates[0] - minX) / Math.max(maxX - minX, 1)) * (width - 2 * padding),
+      y:
+        height -
+        padding -
+        ((node.coordinates[1] - minY) / Math.max(maxY - minY, 1)) * (height - 2 * padding),
+    },
+  ]),
+);
+const routeById = new Map(network.routes.map((route) => [route.id, route]));
+---
+
+<section class="hse-commodity" data-hse-commodity aria-labelledby="hse-commodity-title">
+  <header>
+    <p class="eyebrow">Generated HSE commodity relations</p>
+    <h3 id="hse-commodity-title">Goods draw different leagues</h3>
+    <p>
+      Choose a commodity family to isolate the corridors associated with it. Line presence records
+      qualitative evidence only: width never represents tonnage, value or market share.
+    </p>
+  </header>
+
+  <div class="hse-commodity__filters" role="group" aria-label="Filter by commodity family">
+    <button type="button" data-commodity="" aria-pressed="true">All families</button>
+    {
+      commodities.map((commodity) => {
+        const count = network.routes.filter((route) =>
+          route.commodity_joins.some((join) => join.commodity_id === commodity.id),
+        ).length;
+        return (
+          <button
+            type="button"
+            data-commodity={commodity.id}
+            aria-pressed="false"
+            title={`${commodity.description} ${commodity.notes}`}
+          >
+            {commodity.name} <span>{count}</span>
+          </button>
+        );
+      })
+    }
+  </div>
+
+  <p class="hse-commodity__status" aria-live="polite">Showing all seven corridors.</p>
+
+  <div
+    class="hse-commodity__map"
+    tabindex="0"
+    aria-label="Scrollable Hanseatic commodity corridor diagram"
+  >
+    <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-labelledby="hse-cm-title hse-cm-desc">
+      <title id="hse-cm-title">Hanseatic commodity corridor diagram</title>
+      <desc id="hse-cm-desc">
+        A filterable analytical diagram of generalized Hanseatic corridors and their waypoint
+        cities. It does not encode trade volume or exact voyage paths.
+      </desc>
+      <g>
+        {
+          network.edges.map((edge) => {
+            const route = routeById.get(edge.routeId)!;
+            return (
+              <line
+                data-route={edge.routeId}
+                data-commodities={route.commodity_joins.map((join) => join.commodity_id).join('|')}
+                data-certainty={route.certainty}
+                x1={positions[edge.source].x}
+                y1={positions[edge.source].y}
+                x2={positions[edge.target].x}
+                y2={positions[edge.target].y}
+              />
+            );
+          })
+        }
+      </g>
+      <g>
+        {
+          network.nodes.map((node) => (
+            <g transform={`translate(${positions[node.id].x} ${positions[node.id].y})`}>
+              <circle r={6} />
+              <text x="11" y="4">
+                {node.label}
+              </text>
+            </g>
+          ))
+        }
+      </g>
+    </svg>
+  </div>
+
+  <ol class="hse-commodity__routes" aria-label="Published Hanseatic corridors">
+    {
+      network.routes.map((route) => (
+        <li
+          data-route-summary={route.id}
+          data-commodities={route.commodity_joins.map((join) => join.commodity_id).join('|')}
+        >
+          <a href={toHanseaticRouteAtlasHref(route)}>{route.name}</a>
+          <span>
+            {route.evidence_type.replaceAll('_', ' ')} · {route.certainty} certainty ·{' '}
+            {route.valid_from}–{route.valid_to}
+          </span>
+        </li>
+      ))
+    }
+  </ol>
+
+  <details>
+    <summary>Read the complete commodity evidence table</summary>
+    <div class="hse-commodity__table-wrap">
+      <table>
+        <thead>
+          <tr><th>Family</th><th>Corridors</th><th>Editorial qualification</th></tr>
+        </thead>
+        <tbody>
+          {
+            commodities.map((commodity) => {
+              const routes = network.routes.filter((route) =>
+                route.commodity_joins.some((join) => join.commodity_id === commodity.id),
+              );
+              return (
+                <tr>
+                  <th scope="row">{commodity.name}</th>
+                  <td>{routes.map((route) => route.name).join('; ')}</td>
+                  <td>{commodity.notes}</td>
+                </tr>
+              );
+            })
+          }
+        </tbody>
+      </table>
+    </div>
+  </details>
+</section>
+
+<script>
+  const bootHanseaticCommodities = () => {
+    document.querySelectorAll<HTMLElement>('[data-hse-commodity]').forEach((root) => {
+      if (root.dataset.ready) return;
+      root.dataset.ready = 'true';
+      const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-commodity]'));
+      const lines = Array.from(root.querySelectorAll<SVGLineElement>('line[data-commodities]'));
+      const summaries = Array.from(root.querySelectorAll<HTMLElement>('[data-route-summary]'));
+      const status = root.querySelector<HTMLElement>('.hse-commodity__status');
+      for (const button of buttons) {
+        button.addEventListener('click', () => {
+          const selected = button.dataset.commodity ?? '';
+          for (const candidate of buttons) {
+            candidate.setAttribute('aria-pressed', String(candidate === button));
+          }
+          const matches = (element: HTMLElement | SVGElement) =>
+            !selected ||
+            (element.getAttribute('data-commodities') ?? '').split('|').includes(selected);
+          for (const line of lines) line.classList.toggle('is-dim', !matches(line));
+          let count = 0;
+          for (const summary of summaries) {
+            const visible = matches(summary);
+            summary.hidden = !visible;
+            if (visible) count += 1;
+          }
+          const label = button.textContent?.trim().replace(/\s+\d+$/, '') ?? 'All families';
+          if (status) {
+            status.textContent = selected
+              ? `${label}: ${count} qualitative corridor${count === 1 ? '' : 's'}.`
+              : 'Showing all seven corridors.';
+          }
+        });
+      }
+    });
+  };
+  bootHanseaticCommodities();
+  document.addEventListener('astro:page-load', bootHanseaticCommodities);
+</script>
+
+<style>
+  .hse-commodity {
+    margin-block: 2rem;
+    padding: clamp(1rem, 3vw, 1.75rem);
+    border: 1px solid color-mix(in srgb, #7f9ca6 55%, var(--line));
+    background: color-mix(in srgb, #7f9ca6 7%, var(--panel));
+  }
+  h3 {
+    margin-block: 0.2rem 0.5rem;
+  }
+  header p:last-child,
+  .hse-commodity__status,
+  details,
+  .hse-commodity__routes span {
+    color: var(--ink-muted);
+  }
+  .hse-commodity__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-block: 1.25rem 0.5rem;
+  }
+  button {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.4rem 0.72rem;
+    background: var(--surface);
+    color: var(--ink-muted);
+    font: inherit;
+    cursor: pointer;
+  }
+  button span {
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+  }
+  button[aria-pressed='true'] {
+    border-color: #7f9ca6;
+    color: var(--ink);
+    background: color-mix(in srgb, #7f9ca6 18%, var(--surface));
+  }
+  .hse-commodity__map {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    background: var(--surface);
+  }
+  svg {
+    width: 100%;
+    min-width: 44rem;
+  }
+  line {
+    stroke: #8fb0ba;
+    stroke-width: 3;
+    transition: opacity 180ms ease;
+  }
+  line[data-certainty='medium'] {
+    stroke-dasharray: 7 5;
+  }
+  line.is-dim {
+    opacity: 0.08;
+  }
+  circle {
+    fill: var(--surface);
+    stroke: #c6d5da;
+    stroke-width: 2;
+  }
+  text {
+    fill: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+  .hse-commodity__routes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 0.65rem;
+    list-style: none;
+    padding: 0;
+  }
+  .hse-commodity__routes li {
+    display: grid;
+    gap: 0.2rem;
+    padding: 0.75rem;
+    border-left: 2px solid #7f9ca6;
+    background: var(--surface);
+  }
+  .hse-commodity__routes span {
+    font-size: var(--step--1);
+  }
+  .hse-commodity__table-wrap {
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--step--1);
+  }
+  th,
+  td {
+    padding: 0.6rem;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    line {
+      transition: none;
+    }
+  }
+</style>

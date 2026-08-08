@@ -1,0 +1,196 @@
+---
+import { getMapById, type HistoricalMap } from '../../lib/corpus';
+
+interface Props {
+  ids?: string[];
+}
+
+const defaultIds = [
+  'hse-rudimentum-lubeck',
+  'hse-carta-marina',
+  'hse-lubeck-view',
+  'hse-hamburg-view',
+  'hse-london-view',
+  'hse-bruges-view',
+  'hse-cologne-view',
+  'hse-bremen-view',
+];
+const { ids = defaultIds } = Astro.props;
+const witnesses = ids
+  .map((id) => getMapById(id))
+  .filter((map): map is HistoricalMap => Boolean(map));
+---
+
+<section class="hse-witnesses" data-hse-witnesses aria-labelledby="hse-witnesses-title">
+  <header>
+    <div>
+      <p class="eyebrow">Rights-cleared catalogue witnesses</p>
+      <h3 id="hse-witnesses-title">The city makes the network visible by fragments</h3>
+    </div>
+    <div class="hse-witnesses__controls" aria-label="Scroll witness strip">
+      <button type="button" data-witness-direction="previous" aria-label="Previous witnesses"
+        >←</button
+      >
+      <button type="button" data-witness-direction="next" aria-label="Next witnesses">→</button>
+    </div>
+  </header>
+
+  <p class="hse-witnesses__instruction">
+    Browse {witnesses.length} catalogue records. Each card links to repository, rights and citation metadata;
+    no restricted archival image is reproduced.
+  </p>
+
+  <ol class="hse-witnesses__strip" tabindex="0" aria-label="Hanseatic map and city witnesses">
+    {
+      witnesses.map((map) => (
+        <li>
+          <article>
+            <p class="hse-witnesses__date">
+              {map.year} · {map.region}
+            </p>
+            <h4>
+              <a href={`/collection/${map.id}/`}>{map.title}</a>
+            </h4>
+            <p>{map.blurb}</p>
+            <dl>
+              <div>
+                <>
+                  <dt>Repository</dt>
+                  <dd>{map.repository ?? 'See catalogue record'}</dd>
+                </>
+              </div>
+              <div>
+                <>
+                  <dt>Rights</dt>
+                  <dd>{map.rightsStatement ?? 'See catalogue record'}</dd>
+                </>
+              </div>
+            </dl>
+            <a class="hse-witnesses__record" href={`/collection/${map.id}/`}>
+              Open catalogue record →
+            </a>
+          </article>
+        </li>
+      ))
+    }
+  </ol>
+</section>
+
+<script>
+  const bootHanseaticWitnesses = () => {
+    document.querySelectorAll<HTMLElement>('[data-hse-witnesses]').forEach((root) => {
+      if (root.dataset.ready) return;
+      root.dataset.ready = 'true';
+      const strip = root.querySelector<HTMLOListElement>('.hse-witnesses__strip');
+      if (!strip) return;
+      root.querySelectorAll<HTMLButtonElement>('[data-witness-direction]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const direction = button.dataset.witnessDirection === 'previous' ? -1 : 1;
+          const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          strip.scrollBy({
+            left: direction * strip.clientWidth * 0.82,
+            behavior: reduced ? 'auto' : 'smooth',
+          });
+        });
+      });
+    });
+  };
+  bootHanseaticWitnesses();
+  document.addEventListener('astro:page-load', bootHanseaticWitnesses);
+</script>
+
+<style>
+  .hse-witnesses {
+    margin-block: 2rem;
+    padding: clamp(1rem, 3vw, 1.75rem);
+    border: 1px solid color-mix(in srgb, #7f9ca6 55%, var(--line));
+    background: color-mix(in srgb, #7f9ca6 7%, var(--panel));
+  }
+  header {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  h3 {
+    margin-block: 0.2rem 0;
+  }
+  .hse-witnesses__instruction,
+  article > p,
+  dd {
+    color: var(--ink-muted);
+  }
+  .hse-witnesses__controls {
+    display: flex;
+    gap: 0.4rem;
+  }
+  button {
+    width: 2.4rem;
+    height: 2.4rem;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit;
+    cursor: pointer;
+  }
+  button:hover,
+  button:focus-visible {
+    border-color: #7f9ca6;
+  }
+  .hse-witnesses__strip {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(min(82vw, 18rem), 1fr);
+    gap: 0.8rem;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: inline mandatory;
+    list-style: none;
+    margin: 1.25rem 0 0;
+    padding: 0 0 0.75rem;
+  }
+  .hse-witnesses__strip li {
+    scroll-snap-align: start;
+  }
+  article {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    border: 1px solid var(--line);
+    background: var(--surface);
+  }
+  .hse-witnesses__date {
+    margin: 0;
+    color: #9fb8c1;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+  }
+  h4 {
+    margin-block: 0.35rem 0.55rem;
+  }
+  dl {
+    display: grid;
+    gap: 0.5rem;
+    margin-block: auto 1rem;
+  }
+  dt {
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  dd {
+    margin: 0.1rem 0 0;
+    font-size: var(--step--1);
+  }
+  .hse-witnesses__record {
+    font-weight: 600;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hse-witnesses__strip {
+      scroll-behavior: auto;
+    }
+  }
+</style>

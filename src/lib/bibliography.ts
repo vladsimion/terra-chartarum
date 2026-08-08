@@ -254,6 +254,43 @@ const RAW: unknown[] = [
     url: 'https://doi.org/10.1163/9789004241930_002',
   },
   {
+    id: 'marczinek-maurer-rauch-2025',
+    author: 'Marczinek, Max; Maurer, Stephan; Rauch, Ferdinand',
+    year: 2025,
+    title: 'Networks in trade - Evidence from the legacy of the Hanseatic league',
+    citation:
+      'Marczinek, Max, Stephan Maurer and Ferdinand Rauch. “Networks in trade - Evidence from the legacy of the Hanseatic league.” Journal of International Economics 157 (2025): 104102.',
+    url: 'https://doi.org/10.1016/j.jinteco.2025.104102',
+  },
+  {
+    id: 'marczinek-maurer-rauch-data-2025',
+    author: 'Marczinek, Max; Maurer, Stephan; Rauch, Ferdinand',
+    year: 2025,
+    title: 'Networks in Trade - Evidence from the Legacy of the Hanseatic League: replication data',
+    citation:
+      'Marczinek, Max, Stephan Maurer and Ferdinand Rauch. Networks in Trade - Evidence from the Legacy of the Hanseatic League. Replication data, Mendeley Data, version 1, 2025.',
+    url: 'https://doi.org/10.17632/m3w5by2gdh.1',
+  },
+  {
+    id: 'henn-2017-zuiderzee',
+    author: 'Henn, Volker',
+    year: 2017,
+    title: 'Die Städte an Zuiderzee und IJssel auf den Hansetagen',
+    citation:
+      'Henn, Volker. “Die Städte an Zuiderzee und IJssel auf den Hansetagen.” Hansische Geschichtsblätter 135 (2017).',
+    url: 'https://doi.org/10.21248/hgbll.2017.83',
+  },
+  {
+    id: 'lambert-sicking-2025',
+    author: 'Lambert, Bart; Sicking, Louis',
+    year: 2025,
+    title:
+      'Counts, cities and commerce: a comparative study of the institutional foundations of international trade in late medieval Flanders, Holland and Zeeland',
+    citation:
+      'Lambert, Bart and Louis Sicking. “Counts, cities and commerce: a comparative study of the institutional foundations of international trade in late medieval Flanders, Holland and Zeeland.” Continuity and Change 39, no. 3 (2024): 309–343; published online 2025.',
+    url: 'https://doi.org/10.1017/S0268416025000049',
+  },
+  {
     id: 'unesco-hanse-documents-2017',
     author: 'Archives of the Hanse',
     year: 2017,

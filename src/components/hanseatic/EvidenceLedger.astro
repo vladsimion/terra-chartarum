@@ -1,0 +1,129 @@
+---
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+
+interface Props {
+  claimIds: string[];
+}
+
+interface ClaimRow {
+  claim_id: string;
+  feature_id: string;
+  source_key: string;
+  page_or_folio: string;
+  locator_type: string;
+  importance: string;
+  quote_or_note: string;
+  confidence: string;
+  review_status: string;
+}
+
+function parseCsv(input: string): ClaimRow[] {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let field = '';
+  let quoted = false;
+  for (let index = 0; index < input.length; index += 1) {
+    const character = input[index];
+    if (character === '"') {
+      if (quoted && input[index + 1] === '"') {
+        field += '"';
+        index += 1;
+      } else quoted = !quoted;
+    } else if (character === ',' && !quoted) {
+      row.push(field);
+      field = '';
+    } else if ((character === '\n' || character === '\r') && !quoted) {
+      if (character === '\r' && input[index + 1] === '\n') index += 1;
+      row.push(field);
+      if (row.some(Boolean)) rows.push(row);
+      row = [];
+      field = '';
+    } else field += character;
+  }
+  if (field || row.length) {
+    row.push(field);
+    rows.push(row);
+  }
+  const [header, ...body] = rows;
+  return body.map(
+    (values) =>
+      Object.fromEntries(
+        header.map((name, index) => [name, values[index] ?? '']),
+      ) as unknown as ClaimRow,
+  );
+}
+
+const { claimIds } = Astro.props;
+const source = await readFile(
+  join(process.cwd(), 'data', 'hanseatic', 'sources', 'evidence.csv'),
+  'utf8',
+);
+const byId = new Map(parseCsv(source).map((claim) => [claim.claim_id, claim] as const));
+const claims = claimIds.map((id) => {
+  const claim = byId.get(id);
+  if (!claim) throw new Error(`Unknown HSE evidence claim '${id}'`);
+  return claim;
+});
+---
+
+<aside class="hse-evidence" id="evidence-ledger" aria-labelledby="hse-evidence-title">
+  <p class="eyebrow">Claim-ledger resolution</p>
+  <h2 id="hse-evidence-title">Evidence used by this essay</h2>
+  <p>
+    These entries are projected directly from <code>evidence.csv</code>. Claim IDs used in the prose
+    resolve here to their reviewed source key and page or folio locator.
+  </p>
+  <ol>
+    {
+      claims.map((claim) => (
+        <li id={claim.claim_id}>
+          <p>
+            <code>{claim.claim_id}</code>
+          </p>
+          <strong>
+            {claim.source_key} · {claim.page_or_folio}
+          </strong>
+          <span>{claim.quote_or_note}</span>
+          <small>
+            {claim.confidence} confidence · {claim.review_status}
+          </small>
+        </li>
+      ))
+    }
+  </ol>
+</aside>
+
+<style>
+  .hse-evidence {
+    margin-block: 3rem;
+    padding: clamp(1rem, 3vw, 1.75rem);
+    border: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .hse-evidence > p:not(.eyebrow),
+  .hse-evidence span,
+  .hse-evidence small {
+    color: var(--ink-muted);
+  }
+  ol {
+    display: grid;
+    gap: 0.75rem;
+    padding-left: 1.25rem;
+  }
+  li {
+    scroll-margin-top: calc(var(--essay-chrome-h) + 1rem);
+    padding: 0.8rem;
+    border-left: 2px solid #7f9ca6;
+    background: var(--surface);
+  }
+  li p,
+  li span,
+  li small {
+    display: block;
+    margin-block: 0.2rem;
+  }
+  code {
+    font-size: var(--step--1);
+  }
+</style>

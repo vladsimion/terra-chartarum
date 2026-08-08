@@ -2,15 +2,20 @@ import { describe, expect, it } from 'vitest';
 import { parseAtlasShareState } from './atlas-share';
 import {
   getHanseaticKontor,
+  getHanseaticNetwork,
   getHanseaticPlacePhase,
   hanseaticPlaceNames,
   isPending,
   listHanseaticCommodities,
   listHanseaticEvents,
   listHanseaticKontore,
+  listHanseaticPlaces,
   listHanseaticRoutes,
+  listHanseaticRoutesForCommodity,
   searchHanseaticPlaces,
   toHanseaticAtlasHref,
+  toHanseaticEventAtlasHref,
+  toHanseaticRouteAtlasHref,
 } from './hanseatic';
 
 describe('Hanseatic publication data', () => {
@@ -120,5 +125,42 @@ describe('Hanseatic routes, commodities and events (KAN-308)', () => {
     expect([...types]).toEqual(
       expect.arrayContaining(['embargo', 'peace_treaty', 'hansetag', 'institutional_afterlife']),
     );
+  });
+});
+
+describe('Hanseatic essay projections (KAN-313)', () => {
+  it('derives an abstract network from generated route waypoints and place coordinates', () => {
+    const network = getHanseaticNetwork();
+    expect(network.routes).toHaveLength(7);
+    expect(network.edges).toHaveLength(9);
+    expect(network.nodes.map((node) => node.id)).toEqual(
+      expect.arrayContaining(['lubeck', 'novgorod', 'bergen', 'london', 'bruges']),
+    );
+    for (const node of network.nodes) {
+      expect(node.coordinates).toHaveLength(2);
+      expect(node.routeIds.length).toBeGreaterThan(0);
+    }
+  });
+
+  it('filters routes through normalized commodity joins', () => {
+    const salt = listHanseaticRoutesForCommodity('hse-commodity-salt');
+    expect(salt.map((route) => route.id)).toEqual(
+      expect.arrayContaining(['hse-route-lubeck-visby-novgorod', 'hse-route-luneburg-lubeck']),
+    );
+  });
+
+  it('builds restorable Atlas links for routes and events', () => {
+    const route = listHanseaticRoutes()[0];
+    const event = listHanseaticEvents()[0];
+    expect(
+      parseAtlasShareState(new URL(toHanseaticRouteAtlasHref(route), 'https://x.test').search),
+    ).toMatchObject({ year: route.valid_from, layers: ['hanseatic-routes'], feature: route.id });
+    expect(
+      parseAtlasShareState(new URL(toHanseaticEventAtlasHref(event), 'https://x.test').search),
+    ).toMatchObject({ year: event.valid_from, layers: ['hanseatic-events'], feature: event.id });
+  });
+
+  it('exposes every published place phase to essay components', () => {
+    expect(listHanseaticPlaces()).toHaveLength(60);
   });
 });
