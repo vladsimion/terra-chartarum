@@ -120,15 +120,20 @@ describe('Venice–Hanseatic comparison (KAN-314)', () => {
 });
 
 describe('Hanseatic production release (KAN-315)', () => {
-  it('releases the essay with cover and raster social assets', async () => {
+  it('releases the essay with cover, hero and raster social assets', async () => {
     const essay = await readFile(essayPath, 'utf8');
     expect(essay).toContain("releaseAt: '2026-08-08'");
-    await expect(access(join(root, 'public/covers/the-league-that-left-no-map.svg'))).resolves.toBe(
-      undefined,
-    );
-    await expect(access(join(root, 'public/og/the-league-that-left-no-map.png'))).resolves.toBe(
-      undefined,
-    );
+    // The photographic plate replaced the generated SVG cover; both derivatives
+    // come from scripts/build-room-images.mjs.
+    expect(essay).toContain('cover: /images/the-league-that-left-no-map/cover.webp');
+    expect(essay).toContain('hero: /images/the-league-that-left-no-map/hero.webp');
+    for (const asset of [
+      'public/images/the-league-that-left-no-map/cover.webp',
+      'public/images/the-league-that-left-no-map/hero.webp',
+      'public/og/the-league-that-left-no-map.png',
+    ]) {
+      await expect(access(join(root, asset))).resolves.toBe(undefined);
+    }
   });
 
   it('links Olaus Magnus and Georg Braun to the new catalogue witnesses', () => {

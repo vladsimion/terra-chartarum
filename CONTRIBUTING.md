@@ -47,6 +47,11 @@ backed up in iCloud Drive at
 `Documents/Terra Chartarum/media-masters/rooms/`; restore them to
 `media-src/rooms/` before running `npm run build-room-images`.
 
+The same script also derives the `cover`/`hero` pair for any non-anchor essay
+that carries a photographic plate rather than a generated SVG cover - see
+`ESSAY_PLATES` in the script, which maps an essay slug to its untitled and
+titled masters and writes into `public/images/<slug>/`.
+
 ## Adding a native essay
 
 The full authoring walkthrough - scaffold, frontmatter reference, and the island
