@@ -112,6 +112,35 @@ mistake for a finished one.
   not a claim that traffic preceded the city's role. KAN-306 and KAN-308 must
   re-derive both bounds and then remove or restate that row.
 
+### Two different fours - do not conflate them
+
+The Civitates plates attest **two separate groups of four**, and they are not the
+same four:
+
+- The **London** plate says the Hanse "habet ea quatuor Emporia, Cuntores quidam
+  vocant" - four _Kontore_, the overseas establishments: Novgorod, Bergen,
+  London, Bruges.
+- The **Köln** plate says Köln is reckoned "inter quatuor praecipuas" of the
+  "Hanseatico foedere septuaginta duarum civitatum" - four _principal cities_
+  within a league of seventy-two, which is the quarter structure, not the
+  Kontore.
+
+An essay sentence that says "the four" without saying which is wrong half the
+time. Any claim about "four" must name whether it means Kontore or principal
+cities, and cite the plate that attests that sense.
+
+The Köln plate also supplies a contemporary printed figure for the league's
+size - seventy-two cities - which KAN-306 should weigh against modern estimates
+rather than adopt.
+
+### Bruges in the past tense
+
+The Bruges plate closes "florentissimum quondam emporium fuit": it _once was_ a
+most flourishing emporium. A source printed in 1593 already places the city's
+commercial primacy in the past, which supports the decline narrative without
+anyone having to assert a date for it. Filed as evidence against the Bruges
+Kontor.
+
 ### Verification outcome
 
 The readiness report (printed by `npm run hanseatic:validate`) is the running
