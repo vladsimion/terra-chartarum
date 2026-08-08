@@ -112,10 +112,28 @@ mistake for a finished one.
   not a claim that traffic preceded the city's role. KAN-306 and KAN-308 must
   re-derive both bounds and then remove or restate that row.
 
-### Open at hand-off
+### Verification outcome
 
 The readiness report (printed by `npm run hanseatic:validate`) is the running
-score. At the time of writing: 0 of 8 rights-cleared witnesses, 0 of 4 Kontor
-profiles, and no high-importance claim yet resting on a page or folio. The
-"every essay section has a witness" criterion cannot be computed until KAN-312
-fixes the section anchors.
+score. The corpus now stands at **8 of 8 rights-cleared witnesses**, 1 hero and
+2 fallbacks, no unresolved P0, and 3 high-importance claims resting on a page.
+Four of KAN-303's five criteria are met; "every essay section has a witness"
+cannot be computed until KAN-312 fixes the section anchors.
+
+Two things the verification pass established that are worth keeping:
+
+- **The blocker is licensing, not discoverability.** Holding repositories were
+  found readily. What stopped rows was terms: Bergen's record asserts copyright
+  on a 1590 engraving, the Holbein is CC BY-NC-SA, and the one privilege charter
+  found was CC BY-NC-ND. Restrictive licences are named exactly in
+  `rights_statement` so the register can say what clearing each would take.
+- **One volume carries most of the corpus.** Six of the eight witnesses are
+  plates in Heidelberg's Civitates Orbis Terrarum vol. 1, all under one
+  shelfmark and one Public Domain Mark. That concentration is a risk worth
+  stating: a single repository outage or rights change moves six rows at once.
+  It is also why the London plate matters twice over, since its STILLIARDS text
+  block is documentary evidence and not only a view.
+
+Novgorod remains the one unidentified witness. Bergen and the Holbein are
+rights questions for their museums rather than research, and are kept as
+`reference_only` or unverified rather than assumed away.
