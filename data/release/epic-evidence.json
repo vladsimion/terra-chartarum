@@ -20,8 +20,8 @@
     },
     {
       "batch": 12,
-      "rationale": "The native Hanseatic essay and its comparison/publication epics are reconciled after their four implementation children and production release evidence landed together.",
-      "epicKeys": ["KAN-300", "KAN-301"]
+      "rationale": "The complete Hanseatic programme is reconciled after all fourteen leaf tickets, seven parent outcomes and the production release evidence landed together.",
+      "epicKeys": ["KAN-295", "KAN-296", "KAN-297", "KAN-298", "KAN-299", "KAN-300", "KAN-301"]
     }
   ],
   "epics": [
@@ -321,6 +321,97 @@
         "data/vmn/chronology-discrepancies.csv",
         "docs/vmn/chronology-handoff.md",
         "public/geo/venetian-routes.fgb"
+      ]
+    },
+    {
+      "key": "KAN-295",
+      "title": "Concept, corpus and rights",
+      "children": ["KAN-302", "KAN-303"],
+      "acceptance": [
+        "Title, slug, AD 1150–1669 scope, room assignments, source schemas and stable identifiers are frozen in repository documentation.",
+        "Eight production witnesses include a hero and two fallbacks, cover every planned essay section and carry no unresolved P0 rights dependency.",
+        "The source-to-data-to-Atlas-to-native-MDX vertical slice builds without duplicating source geometry or dates in essay code."
+      ],
+      "evidence": [
+        "docs/hanseatic/decisions.md",
+        "data/hanseatic/sources/corpus.csv",
+        "scripts/hanseatic/validate.py",
+        "src/lib/geo.ts",
+        "src/components/hanseatic/HanseaticPlaceProfile.astro",
+        "src/content/essays/the-league-that-left-no-map.mdx"
+      ]
+    },
+    {
+      "key": "KAN-296",
+      "title": "Historical research and evidence ledger",
+      "children": ["KAN-304", "KAN-305"],
+      "acceptance": [
+        "High-importance chronological and institutional claims resolve to page- or folio-level evidence and a review decision.",
+        "Controlled terminology preserves participation uncertainty and rejects unsupported foundation, membership and dissolution claims.",
+        "Novgorod, Bergen, London and Bruges have reviewed multi-paragraph dossiers with primary witnesses and complete component payloads."
+      ],
+      "evidence": [
+        "data/hanseatic/sources/chronology.csv",
+        "data/hanseatic/sources/evidence.csv",
+        "data/hanseatic/sources/terminology.csv",
+        "data/hanseatic/sources/kontore.csv",
+        "src/components/hanseatic/EvidenceLedger.astro",
+        "src/components/hanseatic/KontorProfile.astro"
+      ]
+    },
+    {
+      "key": "KAN-297",
+      "title": "Hanseatic places and institutions dataset",
+      "children": ["KAN-306", "KAN-307"],
+      "acceptance": [
+        "Sixty EPSG:4326 place phases use stable IDs, controlled roles, participation classes and evidence joins without a boolean membership field.",
+        "All four Kontor hosts resolve to complete reviewed profiles and the required core cities are present.",
+        "GeoJSON, FlatGeobuf, generated essay JSON and the content-addressed manifest pass deterministic publication validation."
+      ],
+      "evidence": [
+        "data/hanseatic/sources/places.csv",
+        "public/geo/hanseatic-places.geojson",
+        "public/geo/hanseatic-places.fgb",
+        "src/data/hanseatic/generated/places.json",
+        "src/data/hanseatic/generated/kontore.json",
+        "src/data/hanseatic/generated/manifest.json"
+      ]
+    },
+    {
+      "key": "KAN-298",
+      "title": "Routes, commodities, privileges and build pipeline",
+      "children": ["KAN-308", "KAN-309"],
+      "acceptance": [
+        "Seven evidence-labelled corridors include all four required cores without implying exact voyages or encoding unsupported volume.",
+        "Ten commodity families, twenty-two normalized joins and sixteen institutional events resolve to source and evidence rows.",
+        "The deterministic compiler validates schemas, enums, IDs, geometry, time, waypoints and provenance and records hashes and feature counts."
+      ],
+      "evidence": [
+        "data/hanseatic/sources/routes.csv",
+        "data/hanseatic/sources/commodities.csv",
+        "data/hanseatic/sources/route_commodities.csv",
+        "data/hanseatic/sources/events.csv",
+        "scripts/hanseatic/build.py",
+        "scripts/hanseatic/test_build.py",
+        "src/data/hanseatic/generated/manifest.json"
+      ]
+    },
+    {
+      "key": "KAN-299",
+      "title": "Atlas integration and research reuse",
+      "children": ["KAN-310", "KAN-311"],
+      "acceptance": [
+        "Places, routes and events are registered as temporal Atlas layers with evidence-legible styling and no territory polygon.",
+        "Feature panels expose provenance, notes, essay anchors and documentary links while historic and modern names remain searchable.",
+        "Typed deep links restore layer, feature and year state, and versioned citation/research-reuse metadata is covered by tests."
+      ],
+      "evidence": [
+        "src/lib/geo.ts",
+        "src/components/islands/AtlasMap.astro",
+        "src/lib/atlas-share.test.ts",
+        "src/lib/cite.ts",
+        "src/lib/cite.test.ts",
+        "docs/hanseatic/data-dictionary.md"
       ]
     },
     {
