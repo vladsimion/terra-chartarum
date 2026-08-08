@@ -1,13 +1,13 @@
 {
   "generatedBy": "scripts/hanseatic/build.py",
   "inputs": {
-    "data/hanseatic/sources/chronology.csv": "3b68f8d5c4cfa93beebe4a86bc4df0bd55d9e201f6e16a79bc44abf5afd4d34c",
-    "data/hanseatic/sources/corpus.csv": "7071ec5cc87339d56879c06d64b908af4e9425ba186c08615977da77245a724f",
-    "data/hanseatic/sources/evidence.csv": "a19a667ab51606447d9f7abd08d30847d6dabdfa496a5be53a2326f1b878d416",
-    "data/hanseatic/sources/kontore.csv": "4f9e1bf913c7ed31785018f9774c127598f3d8f87b1d105c254e80ee97faaef5",
+    "data/hanseatic/sources/chronology.csv": "69ff6aeb1a10e955c3216191a67fa2543def869983a5d4982550c25af4b69f62",
+    "data/hanseatic/sources/corpus.csv": "16cfbd1bcda9d393e357c7cd7512a6fea3d4c1c13a81c2f5105888fca68c0308",
+    "data/hanseatic/sources/evidence.csv": "600f68ccb7bc699b8d4e285a11e6d3616785b210b328cd8807334197a4fe1a68",
+    "data/hanseatic/sources/kontore.csv": "f72a711849351b0968267b4f2de991f5dec8ce6ab4908bc3d661afc6959c9c8d",
     "data/hanseatic/sources/places.csv": "87e944cbca9b1d9bbc11f8e648cfbd4149618e25370772cb84ea28080197e029",
     "data/hanseatic/sources/routes.csv": "31cfc1d90fe36d58c348c01311ae960931c1e6e591d6d44cc1054a8b89249980",
-    "data/hanseatic/sources/sources.csv": "873b7353ee760f42aa579deacb26f2d952809ebb89986e2aeb2eb04073b28fa8",
+    "data/hanseatic/sources/sources.csv": "4f7dedfcc66bd2323e5b35b66f028535998642d7f2c1fb32e1cc495f2041fa17",
     "data/hanseatic/sources/temporal-exceptions.csv": "f31e047582f5ed502f97495d517f168c11b6815502ee4a5911de516e5447a6a2",
     "data/hanseatic/sources/terminology.csv": "ea1d826c6464d764cecfafb55d454989d17a923624ead3b2954853d0fb495989",
     "data/hanseatic/traced/routes-paths.geojson": "3a0b869cc98a1d93a7089216282968517dfa5727d202adff49726c785e51582e"
@@ -32,10 +32,10 @@
       "version": "7fac64258704"
     },
     "src/data/hanseatic/generated/kontore.json": {
-      "bytes": 5395,
+      "bytes": 9695,
       "featureCount": 4,
-      "sha256": "e7c49dc16d29b79bc339ea9f77223028035998626ebff59e955d7e6880af5694",
-      "version": "e7c49dc16d29"
+      "sha256": "501796408d3227f467d894c9b8a96181f3d0e4e60e2bb5a8f1d0e1c494013fd1",
+      "version": "501796408d32"
     },
     "src/data/hanseatic/generated/places.json": {
       "bytes": 1254,
@@ -44,6 +44,6 @@
       "version": "512b512bf0ae"
     }
   },
-  "release": "hse-d475659c35fc87fb",
+  "release": "hse-79fa8994da7a6bb3",
   "schemaVersion": 1
 }

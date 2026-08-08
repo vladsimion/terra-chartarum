@@ -244,6 +244,32 @@ const RAW: unknown[] = [
       'Library of Congress. Schedel, Hartmann. Liber chronicarum. Nuremberg: Anton Koberger, 1493. World Digital Library record.',
     url: 'https://www.loc.gov/item/2021667043/',
   },
+  {
+    id: 'wubs-mrozewicz-2013-hanse',
+    author: 'Wubs-Mrozewicz, Justyna',
+    year: 2013,
+    title: 'The Hanse in Medieval and Early Modern Europe: An Introduction',
+    citation:
+      'Wubs-Mrozewicz, Justyna. “The Hanse in Medieval and Early Modern Europe: An Introduction.” In The Hanse in Medieval and Early Modern Europe, edited by Justyna Wubs-Mrozewicz and Stuart Jenks, 1–24. Leiden: Brill, 2013.',
+    url: 'https://doi.org/10.1163/9789004241930_002',
+  },
+  {
+    id: 'unesco-hanse-documents-2017',
+    author: 'Archives of the Hanse',
+    year: 2017,
+    title: 'Documents on the History of the Hanse',
+    citation:
+      'Archives of the Hanse. Documents on the History of the Hanse. UNESCO Memory of the World International Register nomination dossier, 2017.',
+    url: 'https://media.unesco.org/sites/default/files/webform/mow001/documents-on-the-history-of-the-hanse_nom_en_0.pdf',
+  },
+  {
+    id: 'unesco-bryggen',
+    author: 'UNESCO World Heritage Centre',
+    title: 'Bryggen',
+    citation:
+      'UNESCO World Heritage Centre. “Bryggen.” World Heritage List no. 59, statement of Outstanding Universal Value.',
+    url: 'https://whc.unesco.org/en/list/59',
+  },
 ];
 
 export const BIBLIOGRAPHY: BibEntry[] = RAW.map((b) => BibEntrySchema.parse(b));

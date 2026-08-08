@@ -59,21 +59,27 @@ The Lübeck and Visby rows, Lübeck–Visby corridor and one provisional evidenc
 row are engineering fixtures. They demonstrate joins, validation, temporal
 filtering, Atlas focus and MDX reuse; they are not a reviewed historical release.
 
-## KAN-303/304/305 - evidence machinery before evidence
+## KAN-303/304/305 - completed research pass
 
-These three tickets are archival research, not engineering. What is committed
-here is the apparatus that research fills: `terminology.csv`, `corpus.csv`,
-`chronology.csv`, `kontore.csv`, the promotion rules that police them, and a
-readiness report. **No object ID, stable URL, rights statement, folio or
-Kontor profile has been supplied.** Every such field is `pending`, and the
-compiler will not let one be promoted while it stays that way.
+The first corpus, chronology and Kontor research pass was completed on
+2026-08-08. The implementation keeps the original promotion model - `pending`
+still means research has not established a value - but the release-facing rows
+now carry repository identifiers, page or folio locators, rights decisions and
+reviewed profiles.
 
-The reason is specific. A register of plausible-looking repository IDs and IIIF
-URLs would pass every structural check, read as authoritative, and propagate
-into published citations - which is worse than an empty table, because nothing
-downstream would signal that the provenance was never confirmed. The `pending`
-sentinel and the promotion rules exist so the unfinished state is impossible to
-mistake for a finished one.
+Two sources carry most of the new historical argument:
+
+- Justyna Wubs-Mrozewicz’s peer-reviewed introduction supplies the chronology’s
+  institutional interpretations and the warning against foundation,
+  replacement and dissolution moments.
+- The 2017 UNESCO Memory of the World nomination dossier identifies the primary
+  documents, repository shelfmarks and page-level context for the four Kontore,
+  the Peace of Stralsund and the surviving Diet record.
+
+The compiler now treats chronology events as evidence targets, requires every
+verified corpus object to name at least one frozen essay section, and reports
+coverage across all nine planned sections. These are release contracts rather
+than informal checklist items.
 
 ### Logged vocabulary decisions
 
@@ -86,10 +92,30 @@ mistake for a finished one.
 - **A Kontor is not a colony.** `colony` and `factory` are deprecated in favour
   of `merchant_compound`: a privileged precinct under _host_ jurisdiction, never
   a territorial possession. This is the distinction KAN-305 asks the data to
-  make, so the compiler enforces it rather than leaving it to prose.
-- **`unattested` is not doubt.** It records that no page-level witness exists in
-  _this project's_ corpus yet. Stralsund 1370 and the 1669 terminus are carried
-  from the ticket text and sit `unattested` until a witness is entered.
+  make, so the compiler enforces it rather than leaving it to prose. UNESCO’s
+  Bryggen description uses “foreign colony” and “quasi-extraterritoriality”; the
+  profile preserves the evidence for internal autonomy but rejects “colony” as
+  sovereignty shorthand because Norwegian Crown privilege remained the basis.
+- **A documentary window is not the life of an institution.** The dates on each
+  Kontor row describe the phase supported by its chosen primary witness. London
+  1554 and Bruges 1458 are not foundation dates; Bergen 1761 is the departure
+  of the last secretary, not dissolution of the wider Hanse.
+- **The first Hansetag stays disputed.** Wubs-Mrozewicz uses 1356 for the start
+  of regular Diets, while the UNESCO dossier describes the copied Rezess series
+  as beginning in 1361. The ledger records a 1356–1361 evidence window rather
+  than picking a false single first.
+- **Stralsund is dated but its meaning is qualified.** The treaty is securely
+  dated 24 May 1370. Calling it the high point of the whole Hanse remains an
+  interpretation because the Cologne Confederation only partly overlapped with
+  the wider association.
+- **Decline is not a single curve.** The 1554–1669 phase brackets institutional
+  reorganisation and the last general Diet. It does not erase sixteenth-century
+  economic strength or the collective action of Lübeck, Hamburg and Bremen
+  after 1669.
+- **`place_id` is a gazetteer join.** KAN-305 supplies everything rendered by
+  `KontorProfile`; the four host-place joins remain `pending` until KAN-306
+  creates those place rows. A profile may be reviewed without expanding the
+  vertical-slice gazetteer out of sequence.
 
 ## KAN-307/309 - deterministic compile and the release manifest
 
@@ -144,10 +170,14 @@ Kontor.
 ### Verification outcome
 
 The readiness report (printed by `npm run hanseatic:validate`) is the running
-score. The corpus now stands at **8 of 8 rights-cleared witnesses**, 1 hero and
-2 fallbacks, no unresolved P0, and 3 high-importance claims resting on a page.
-Four of KAN-303's five criteria are met; "every essay section has a witness"
-cannot be computed until KAN-312 fixes the section anchors.
+score. The corpus stands at **8 rights-cleared witnesses**, 1 hero and 2
+fallbacks, no unresolved P0, and **9 of 9 planned essay sections covered**. The
+claim ledger carries **15 high-importance claims**, all with page or folio
+locators. All six chronology rows and all four Kontor dossiers are reviewed.
+
+The section IDs are frozen from the approved essay specification even though
+KAN-312 still owns the MDX draft. This records witness coverage without pulling
+essay writing into the research tickets.
 
 Two things the verification pass established that are worth keeping:
 
@@ -156,13 +186,17 @@ Two things the verification pass established that are worth keeping:
   on a 1590 engraving, the Holbein is CC BY-NC-SA, and the one privilege charter
   found was CC BY-NC-ND. Restrictive licences are named exactly in
   `rights_statement` so the register can say what clearing each would take.
-- **One volume carries most of the corpus.** Six of the eight witnesses are
+- **One volume carries most of the corpus.** Six of the eight rights-cleared witnesses are
   plates in Heidelberg's Civitates Orbis Terrarum vol. 1, all under one
   shelfmark and one Public Domain Mark. That concentration is a risk worth
   stating: a single repository outage or rights change moves six rows at once.
   It is also why the London plate matters twice over, since its STILLIARDS text
   block is documentary evidence and not only a view.
 
-Novgorod remains the one unidentified witness. Bergen and the Holbein are
-rights questions for their museums rather than research, and are kept as
-`reference_only` or unverified rather than assumed away.
+The Second Novgorod Schra, Bergen court books, London by-laws and Bruges
+charters are now
+identified to repository and shelfmark, but remain `reference_only` because the
+UNESCO dossier records copyright in the first three holding archives. The
+Bruges charter group is recorded as public domain, but remains `reference_only`
+until a direct repository surrogate is secured. Bergen’s Scholeus view and the
+Holbein remain separate rights questions and are not promoted.

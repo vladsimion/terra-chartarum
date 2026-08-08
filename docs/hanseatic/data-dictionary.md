@@ -56,6 +56,12 @@ One row per witness object, keyed `hse-obj-<short-name>`. Carries repository,
 `attribution` and `corpus_role` (`hero`, `fallback`, `section_witness`,
 `reference_only`).
 
+`essay_section` is a pipe-separated set drawn from the nine frozen section IDs
+in `scripts/hanseatic/build.py`. A verified witness must name at least one
+section, unknown IDs fail validation, and readiness reports the union of
+rights-cleared coverage. This makes “every planned essay section has a witness”
+an enforceable release condition rather than a prose checklist.
+
 Two rules are load-bearing. `provenance_class: dealer` may only ever be
 `reference_only`, so a dealer listing cannot become a published witness. And
 `verification_status: verified` requires a real repository, object ID, stable
@@ -89,6 +95,11 @@ One row per institutional or chronological event. `date_type` is `year`,
 row must carry an `editorial_decision` recording the conflict. Once a row leaves
 `provisional` it must cite a `claim_id` in `evidence.csv` and can no longer keep
 its years open.
+
+Chronology event IDs are valid `evidence.feature_id` targets, alongside places,
+routes and Kontore. This lets the page-level witness attach to the event whose
+date or interpretation it supports instead of being filed against an unrelated
+map feature.
 
 ## `temporal-exceptions.csv` (KAN-309)
 
@@ -137,3 +148,8 @@ against the `association` vocabulary, where `colony` is deprecated in favour of
 resolves to `places.csv` once the gazetteer exists (KAN-306). Compiled to
 `src/data/hanseatic/generated/kontore.json` for `KontorProfile.astro`, which
 renders a pending field as "Not yet established" rather than printing it.
+
+A row may be reviewed while `place_id` remains `pending`, because that join is
+owned by KAN-306 and is not rendered by `KontorProfile`. Every field the profile
+does render - dates, phase, setting, regulations, commodities, witness and
+summary - must be complete before review.
