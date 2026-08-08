@@ -3,24 +3,24 @@
   "inputs": {
     "data/hanseatic/sources/chronology.csv": "69ff6aeb1a10e955c3216191a67fa2543def869983a5d4982550c25af4b69f62",
     "data/hanseatic/sources/commodities.csv": "4ab14ffe71ef0a399a65e5bdf94c4c1581fd53a4876092c6106850491f0fda2c",
-    "data/hanseatic/sources/corpus.csv": "16cfbd1bcda9d393e357c7cd7512a6fea3d4c1c13a81c2f5105888fca68c0308",
-    "data/hanseatic/sources/events.csv": "fe0a70ed541e4c7023c108a871ab9af4a7d8cbc41ddc3e356dcefe07e5eab3d7",
-    "data/hanseatic/sources/evidence.csv": "d8bc722dfa181d427bddd4d5763efdf514ce152d3036c0effcb6e30d2a547b84",
+    "data/hanseatic/sources/corpus.csv": "46a4baee1d782f7ae5875bcf2c8e9f7634143915f1b286e82954848c9d45fdf6",
+    "data/hanseatic/sources/events.csv": "22d5da3e5a572cd76fab878064848ce5f2333787846eb6684f119d4de2b7f21a",
+    "data/hanseatic/sources/evidence.csv": "309cff4e959b94b3c58e553e47cfd5f8dcfc24d826860381dc296a2d9e4335ef",
     "data/hanseatic/sources/kontore.csv": "dfcfcee7780c5ccfab55fdf889300b30185a2889a9de2fc83855faa2ce0f082a",
     "data/hanseatic/sources/places.csv": "0e6b8998fad9493e033e271dee4652fcaa6f7e53d6ca969dff902589f16622f6",
     "data/hanseatic/sources/route_commodities.csv": "b9c3976579ff372c11b68d29b0d84ad056ef4ac8b10a2158b1a9c6d64dd0bf31",
     "data/hanseatic/sources/routes.csv": "d7e1d55a51f234ef7ac374078897917a42559f93147d829d2f9ee951572a8c87",
-    "data/hanseatic/sources/sources.csv": "662afad7abcbd88cdbcd2c26f2a615924fe7cfb07fbb7d4865b896090cd19848",
+    "data/hanseatic/sources/sources.csv": "d8ecb06977ee7dcd7c1e82a008a54c7173fe476b5b4e4700a1f3e1911866c03c",
     "data/hanseatic/sources/temporal-exceptions.csv": "86287c4d8aebed5edfc4185389986092d8ffe21279deef4ce826377c21338416",
     "data/hanseatic/sources/terminology.csv": "983639b0f52ddd47c1307a809595dd7e984a5e579b5b89df7cbc3c38469c684b",
     "data/hanseatic/traced/routes-paths.geojson": "14f2e63f411a04b96035af7a4e9a079472d5b53c67cfee1474d1d8cfa33296dc"
   },
   "outputs": {
     "public/geo/hanseatic-events.geojson": {
-      "bytes": 14119,
-      "featureCount": 16,
-      "sha256": "b674cef671bd35a6d2db1705f377dcc979096b8f18b732c872b6374be254c2fe",
-      "version": "b674cef671bd"
+      "bytes": 15256,
+      "featureCount": 17,
+      "sha256": "f6257813320912ee7c5aa9e10b35cdeb1e64703eb927880af8f9322231e9fb24",
+      "version": "f62578133209"
     },
     "public/geo/hanseatic-places.fgb": {
       "bytes": 30312,
@@ -47,10 +47,10 @@
       "version": "82e618abdfce"
     },
     "src/data/hanseatic/generated/events.json": {
-      "bytes": 10283,
-      "featureCount": 16,
-      "sha256": "9478449ca5d7925f2e58244d5e438fe5a6b676df467fe42ac15a28e57d2b75e2",
-      "version": "9478449ca5d7"
+      "bytes": 11184,
+      "featureCount": 17,
+      "sha256": "3ed5844b49fd194565243261d038136b026af68bf5f24529de7d6bf7e64e08f0",
+      "version": "3ed5844b49fd"
     },
     "src/data/hanseatic/generated/kontore.json": {
       "bytes": 9708,
@@ -71,6 +71,6 @@
       "version": "e8e56ceff14d"
     }
   },
-  "release": "hse-d383ae6dff5e3825",
+  "release": "hse-93858ddbe5f0da50",
   "schemaVersion": 2
 }
