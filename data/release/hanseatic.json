@@ -52,7 +52,8 @@
     "hse-bremen-view"
   ],
   "assets": {
-    "cover": "public/covers/the-league-that-left-no-map.svg",
+    "cover": "public/images/the-league-that-left-no-map/cover.webp",
+    "hero": "public/images/the-league-that-left-no-map/hero.webp",
     "openGraph": "public/og/the-league-that-left-no-map.png",
     "generatedDataManifest": "src/data/hanseatic/generated/manifest.json"
   },
