@@ -18,9 +18,21 @@ const span =
     ? null
     : `AD ${kontor.valid_from}–${kontor.valid_to}`;
 
-const entries: { term: string; value: string | null }[] = [
+// The ticket asks for a 2-3 paragraph profile, so the source keeps real
+// paragraph breaks and they are rendered as paragraphs rather than collapsed
+// into one block of prose.
+const summaryParagraphs = isPending(kontor.profile_summary)
+  ? []
+  : kontor.profile_summary
+      .split(/\n\s*\n/)
+      .map((paragraph) => paragraph.trim())
+      .filter(Boolean);
+
+// `caps` is opt-in: it suits a vocabulary term rendered from a slug, and ruins
+// sourced prose ("A House Called The Gildehalla Teutonica") and identifiers.
+const entries: { term: string; value: string | null; caps?: boolean }[] = [
   { term: 'Recorded phase', value: span },
-  { term: 'Legal status', value: readable(kontor.legal_status) },
+  { term: 'Legal status', value: readable(kontor.legal_status), caps: true },
   { term: 'Spatial setting', value: field(kontor.spatial_setting) },
   { term: 'Regulations', value: field(kontor.regulations) },
   { term: 'Commodities', value: field(kontor.commodities) },
@@ -42,14 +54,14 @@ const entries: { term: string; value: string | null }[] = [
     )
   }
 
-  {field(kontor.profile_summary) && <p>{kontor.profile_summary}</p>}
+  {summaryParagraphs.map((paragraph) => <p>{paragraph}</p>)}
 
   <dl>
     {
       entries.map((entry) => (
         <div>
           <dt>{entry.term}</dt>
-          <dd class={entry.value ? undefined : 'hse-kontor__open'}>
+          <dd class:list={[!entry.value && 'hse-kontor__open', entry.caps && 'hse-kontor__term']}>
             {entry.value ?? 'Not yet established'}
           </dd>
         </div>
@@ -101,6 +113,10 @@ const entries: { term: string; value: string | null }[] = [
 
   dd {
     margin: 0.25rem 0 0;
+  }
+
+  /* Only vocabulary terms rendered from a slug; never sourced prose or ids. */
+  .hse-kontor__term {
     text-transform: capitalize;
   }
 
