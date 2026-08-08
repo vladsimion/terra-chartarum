@@ -5,6 +5,7 @@ import {
   isPending,
   toHanseaticAtlasHref,
 } from '../../lib/hanseatic';
+import { getCorpus } from '../../lib/corpus';
 
 interface Props {
   kontorId: string;
@@ -14,6 +15,10 @@ const { kontorId } = Astro.props;
 const kontor = getHanseaticKontor(kontorId);
 const place = getHanseaticPlacePhase(kontor.place_id);
 const atlasHref = toHanseaticAtlasHref(place);
+const primaryWitness = getCorpus().find((map) => map.sourceObjectId === kontor.primary_witness);
+if (!primaryWitness) {
+  throw new Error(`${kontor.id}: catalogue record missing for ${kontor.primary_witness}`);
+}
 const readable = (value: string) => value.replaceAll('_', ' ');
 
 // A pending field is an open research question, not a value. It is labelled as
@@ -77,7 +82,7 @@ const entries: { term: string; value: string | null; caps?: boolean }[] = [
   </dl>
   <p class="hse-kontor__links">
     <a href={atlasHref}>Open the host-place phase in the Atlas →</a>
-    <a href={`/collection/${kontor.primary_witness}/`}>Open the primary witness →</a>
+    <a href={`/collection/${primaryWitness.id}/`}>Open the primary witness →</a>
   </p>
   <p class="hse-kontor__source">Evidence source: <code>{kontor.source}</code></p>
 </aside>

@@ -6,11 +6,11 @@
 
 | Content type         | Count |
 | -------------------- | ----: |
-| Live essays          |     7 |
-| Held essays          |    11 |
-| Map records          |    47 |
-| Cartographers        |    18 |
-| Bibliography entries |    31 |
+| Live essays          |     8 |
+| Held essays          |    10 |
+| Map records          |    59 |
+| Cartographers        |    19 |
+| Bibliography entries |    37 |
 | Toponyms             |    11 |
 | Rooms                |     7 |
 | GIS layers           |    12 |
@@ -19,15 +19,15 @@ Geo release: `geo-8bf9cf6444fcdc2d`.
 
 ## Live essays by primary room
 
-| Room           | Count | Essays                                                                                               |
-| -------------- | ----: | ---------------------------------------------------------------------------------------------------- |
-| 1. The Earth   |     1 | [The Shape of a Civilization](https://terra-chartarum.pages.dev/essays/the-shape-of-a-civilization/) |
-| 2. The Map     |     1 | [The Cartographic Sacrifice](https://terra-chartarum.pages.dev/essays/cartography/)                  |
-| 3. The City    |     1 | [Cities Remember](https://terra-chartarum.pages.dev/essays/cities-remember/)                         |
-| 4. The Border  |     1 | [Terra Sigillata · Lapidarium Dacicum](https://terra-chartarum.pages.dev/essays/dacia/)              |
-| 5. The Road    |     1 | [La Rotta e il Catasto](https://terra-chartarum.pages.dev/essays/venice-sicily/)                     |
-| 6. The Archive |     1 | [Maps That Age](https://terra-chartarum.pages.dev/essays/maps-that-age/)                             |
-| 7. The Theatre |     1 | [Invisible Maps of Religion](https://terra-chartarum.pages.dev/essays/invisible-maps-religion/)      |
+| Room           | Count | Essays                                                                                                                                                                                  |
+| -------------- | ----: | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1. The Earth   |     1 | [The Shape of a Civilization](https://terra-chartarum.pages.dev/essays/the-shape-of-a-civilization/)                                                                                    |
+| 2. The Map     |     1 | [The Cartographic Sacrifice](https://terra-chartarum.pages.dev/essays/cartography/)                                                                                                     |
+| 3. The City    |     1 | [Cities Remember](https://terra-chartarum.pages.dev/essays/cities-remember/)                                                                                                            |
+| 4. The Border  |     1 | [Terra Sigillata · Lapidarium Dacicum](https://terra-chartarum.pages.dev/essays/dacia/)                                                                                                 |
+| 5. The Road    |     2 | [La Rotta e il Catasto](https://terra-chartarum.pages.dev/essays/venice-sicily/) · [The League That Left No Map](https://terra-chartarum.pages.dev/essays/the-league-that-left-no-map/) |
+| 6. The Archive |     1 | [Maps That Age](https://terra-chartarum.pages.dev/essays/maps-that-age/)                                                                                                                |
+| 7. The Theatre |     1 | [Invisible Maps of Religion](https://terra-chartarum.pages.dev/essays/invisible-maps-religion/)                                                                                         |
 
 ## Held essays
 
@@ -42,5 +42,4 @@ Geo release: `geo-8bf9cf6444fcdc2d`.
 | Anatomy of a Native Essay     | map          | unscheduled |
 | The Cartography of Empire     | border       | unscheduled |
 | The Geography of Power        | city         | unscheduled |
-| The League That Left No Map   | road         | unscheduled |
 | When Maps Create Countries    | border       | unscheduled |

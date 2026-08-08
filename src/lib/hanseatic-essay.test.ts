@@ -1,6 +1,8 @@
-import { readFile } from 'node:fs/promises';
+import { access, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { getBibEntryById } from './bibliography';
+import { getCartographerById, mapsByCartographer } from './cartographers';
 import { getCorpus } from './corpus';
 
 const root = process.cwd();
@@ -114,5 +116,41 @@ describe('Venice–Hanseatic comparison (KAN-314)', () => {
       expect(source).toContain('/essays/the-league-that-left-no-map/#');
     }
     expect(comparison.match(/<a href="\/(?:essays|collection)\//g)).toHaveLength(3);
+  });
+});
+
+describe('Hanseatic production release (KAN-315)', () => {
+  it('releases the essay with cover and raster social assets', async () => {
+    const essay = await readFile(essayPath, 'utf8');
+    expect(essay).toContain("releaseAt: '2026-08-08'");
+    await expect(access(join(root, 'public/covers/the-league-that-left-no-map.svg'))).resolves.toBe(
+      undefined,
+    );
+    await expect(access(join(root, 'public/og/the-league-that-left-no-map.png'))).resolves.toBe(
+      undefined,
+    );
+  });
+
+  it('links Olaus Magnus and Georg Braun to the new catalogue witnesses', () => {
+    expect(getCartographerById('olaus-magnus')?.essaySlugs).toContain(
+      'the-league-that-left-no-map',
+    );
+    expect(getCartographerById('georg-braun')?.essaySlugs).toContain('the-league-that-left-no-map');
+    expect(mapsByCartographer('olaus-magnus').map((map) => map.id)).toEqual(['hse-carta-marina']);
+    expect(
+      mapsByCartographer('georg-braun').filter((map) => map.id.startsWith('hse-')),
+    ).toHaveLength(6);
+  });
+
+  it('merges the four HSE research sources into the public bibliography', () => {
+    for (const id of [
+      'marczinek-maurer-rauch-2025',
+      'marczinek-maurer-rauch-data-2025',
+      'henn-2017-zuiderzee',
+      'lambert-sicking-2025',
+    ]) {
+      expect(getBibEntryById(id), id).toBeDefined();
+      expect(getBibEntryById(id)?.url, id).toMatch(/^https:\/\/doi\.org\//);
+    }
   });
 });

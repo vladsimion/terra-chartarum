@@ -235,6 +235,24 @@ const RAW: unknown[] = [
     ],
   },
   {
+    id: 'olaus-magnus',
+    room: 'road',
+    secondaryRooms: ['map', 'theatre'],
+    name: 'Olaus Magnus',
+    sortName: 'Magnus, Olaus',
+    born: 1490,
+    died: 1557,
+    places: ['Linköping', 'Rome', 'Venice'],
+    bio: 'Swedish churchman, historian and mapmaker whose Carta Marina (1539) assembled geographic, ethnographic and maritime knowledge into a monumental printed image of northern Europe.',
+    essaySlugs: ['the-league-that-left-no-map'],
+    links: [
+      {
+        label: 'Uppsala University Library record',
+        url: 'https://www.alvin-portal.org/alvin/view.jsf?pid=alvin-record:88495',
+      },
+    ],
+  },
+  {
     id: 'georg-braun',
     room: 'theatre',
     secondaryRooms: ['city', 'archive'],
@@ -244,7 +262,7 @@ const RAW: unknown[] = [
     died: 1622,
     places: ['Cologne'],
     bio: 'Canon and editor of the Civitates Orbis Terrarum, the six-volume city atlas that assembled plans, prospects, figures and descriptive texts into a comparable urban world.',
-    essaySlugs: ['cities-remember'],
+    essaySlugs: ['cities-remember', 'the-league-that-left-no-map'],
     links: [
       {
         label: 'Library of Congress atlas',

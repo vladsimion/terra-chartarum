@@ -61,10 +61,16 @@ const position = Object.fromEntries(
         The double-page woodcut at ff. 85v–86r names regions and peoples, but it does not chart
         ports, routes, warehouses, privileges or Kontore.
       </span>
-      <a href="/collection/religion-rudimentum/">Open the catalogue witness →</a>
+      <a href="/collection/hse-rudimentum-lubeck/">Open the catalogue witness →</a>
     </div>
 
-    <div class="hse-reveal__network" data-reveal-panel="network" hidden>
+    <div
+      class="hse-reveal__network"
+      data-reveal-panel="network"
+      tabindex="0"
+      aria-label="Scrollable analytical Hanseatic route network"
+      hidden
+    >
       <svg
         viewBox={`0 0 ${width} ${height}`}
         role="img"
@@ -109,7 +115,7 @@ const position = Object.fromEntries(
       {
         network.routes.map((route) => (
           <li>
-            <strong>{route.name}</strong> — {route.valid_from}–{route.valid_to};{' '}
+            <strong>{route.name}</strong> - {route.valid_from}–{route.valid_to};{' '}
             {route.evidence_type.replaceAll('_', ' ')}; {route.certainty} certainty. {route.notes}
           </li>
         ))

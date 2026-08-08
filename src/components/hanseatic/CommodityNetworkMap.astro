@@ -65,7 +65,11 @@ const routeById = new Map(network.routes.map((route) => [route.id, route]));
 
   <p class="hse-commodity__status" aria-live="polite">Showing all seven corridors.</p>
 
-  <div class="hse-commodity__map">
+  <div
+    class="hse-commodity__map"
+    tabindex="0"
+    aria-label="Scrollable Hanseatic commodity corridor diagram"
+  >
     <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-labelledby="hse-cm-title hse-cm-desc">
       <title id="hse-cm-title">Hanseatic commodity corridor diagram</title>
       <desc id="hse-cm-desc">
