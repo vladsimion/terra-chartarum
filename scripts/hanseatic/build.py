@@ -685,6 +685,12 @@ def validate_inputs() -> list[str]:
     if set(traced_by_id) != route_ids:
         errors.append("routes-paths.geojson ids do not exactly match routes.csv")
 
+    # A Kontor dossier is a claimable subject in its own right. Evidence about
+    # the Kontore - their number, their legal standing, the name of a house -
+    # has nowhere else to attach, and forcing it onto a place phase would file
+    # it against the wrong thing.
+    feature_ids.update(row["id"].strip() for row in kontore)
+
     claim_ids: set[str] = set()
     for row_number, row in enumerate(evidence, start=2):
         for field in EVIDENCE_HEADER:
