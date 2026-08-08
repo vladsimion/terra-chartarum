@@ -85,6 +85,8 @@ def main() -> int:
     for path in expected:
         if path.suffix not in {".json", ".geojson"}:
             continue
+        if not path.exists():
+            continue  # already reported above; avoid turning a QA error into a traceback
         data = json.loads(path.read_text(encoding="utf-8"))
         if isinstance(data, dict) and data.get("type") == "FeatureCollection":
             for feature in data["features"]:

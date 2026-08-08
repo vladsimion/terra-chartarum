@@ -3,17 +3,98 @@
   "features": [
     {
       "type": "Feature",
-      "properties": {
-        "id": "hse-route-lubeck-visby"
-      },
+      "properties": { "id": "hse-route-lubeck-visby-novgorod" },
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [10.6866, 53.8655],
-          [11.2, 54.35],
-          [13.9, 55.75],
-          [16.7, 56.75],
-          [18.2948, 57.6348]
+          [13.5, 54.8],
+          [18.2948, 57.6348],
+          [22.5, 57.8],
+          [26.0, 59.0],
+          [31.2742, 58.5256]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "hse-route-lubeck-bergen" },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [10.6866, 53.8655],
+          [11.0, 54.5],
+          [12.5, 55.8],
+          [10.5, 57.5],
+          [6.0, 58.5],
+          [5.3221, 60.3913]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "hse-route-hamburg-london" },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [9.9937, 53.5503],
+          [8.5, 53.7],
+          [5.0, 53.0],
+          [2.0, 52.5],
+          [-0.1278, 51.5074]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "hse-route-baltic-bruges" },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [18.6466, 54.352],
+          [14.0, 55.5],
+          [10.6866, 53.8655],
+          [6.0, 54.0],
+          [2.0, 52.5],
+          [3.2247, 51.2093]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "hse-route-gdansk-vistula-torun" },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [18.6466, 54.352],
+          [18.75, 53.8],
+          [18.5984, 53.0138]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "hse-route-luneburg-lubeck" },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [10.4115, 53.2464],
+          [10.5, 53.55],
+          [10.6866, 53.8655]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "hse-route-cologne-london" },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [6.9603, 50.9375],
+          [6.7, 51.5],
+          [5.3, 52.0],
+          [2.0, 52.0],
+          [-0.1278, 51.5074]
         ]
       }
     }

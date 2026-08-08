@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compile the KAN-302 Hanseatic vertical slice into Atlas and MDX assets."""
+"""Compile the Hanseatic research tables into Atlas and essay assets."""
 
 from __future__ import annotations
 
@@ -19,6 +19,9 @@ GENERATED_DIR = REPO / "src" / "data" / "hanseatic" / "generated"
 
 PLACES_CSV = SOURCE_DIR / "places.csv"
 ROUTES_CSV = SOURCE_DIR / "routes.csv"
+COMMODITIES_CSV = SOURCE_DIR / "commodities.csv"
+ROUTE_COMMODITIES_CSV = SOURCE_DIR / "route_commodities.csv"
+EVENTS_CSV = SOURCE_DIR / "events.csv"
 SOURCES_CSV = SOURCE_DIR / "sources.csv"
 EVIDENCE_CSV = SOURCE_DIR / "evidence.csv"
 TERMINOLOGY_CSV = SOURCE_DIR / "terminology.csv"
@@ -31,15 +34,19 @@ TEMPORAL_EXCEPTIONS_CSV = SOURCE_DIR / "temporal-exceptions.csv"
 
 PLACES_GEOJSON = GEO_DIR / "hanseatic-places.geojson"
 ROUTES_GEOJSON = GEO_DIR / "hanseatic-routes.geojson"
+EVENTS_GEOJSON = GEO_DIR / "hanseatic-events.geojson"
 PLACES_FGB = GEO_DIR / "hanseatic-places.fgb"
 PLACES_JSON = GENERATED_DIR / "places.json"
+ROUTES_JSON = GENERATED_DIR / "routes.json"
+COMMODITIES_JSON = GENERATED_DIR / "commodities.json"
+EVENTS_JSON = GENERATED_DIR / "events.json"
 KONTORE_JSON = GENERATED_DIR / "kontore.json"
 MANIFEST_JSON = GENERATED_DIR / "manifest.json"
 
 # Bumped when the shape of a compiled output changes in a way a consumer
 # would have to care about. Recorded in the manifest so a downstream reader
 # can refuse a payload it does not understand.
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 
 # The HSE world, generously bounded: Atlantic approaches to Novgorod, the
 # Alps to the top of the Gulf of Bothnia. A point outside this is a
@@ -55,6 +62,16 @@ ROUTE_HEADER = [
     "id", "name", "corridor_type", "from_place_id", "to_place_id", "waypoints",
     "valid_from", "valid_to", "directionality", "seasonality", "evidence_type",
     "certainty", "commodities", "source", "notes",
+]
+COMMODITY_HEADER = [
+    "id", "name", "description", "source", "notes",
+]
+ROUTE_COMMODITY_HEADER = [
+    "id", "route_id", "commodity_id", "directionality", "certainty", "source", "notes",
+]
+EVENT_HEADER = [
+    "id", "event_type", "title", "place_id", "valid_from", "valid_to", "actor",
+    "target", "commodity_scope", "summary", "source", "certainty", "notes",
 ]
 SOURCE_HEADER = [
     "key", "short_citation", "full_citation", "url", "license", "accessed", "source_type",
@@ -87,8 +104,30 @@ KONTORE_HEADER = [
 ]
 
 SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
-ROLES = {"leading_city", "market"}
+ROLES = {
+    "leading_city", "active_city", "represented_city", "associated_town", "kontor",
+    "foreign_branch", "market", "fair", "entrepot",
+}
 CORRIDOR_TYPES = {"maritime", "riverine", "overland", "mixed"}
+ROUTE_EVIDENCE_TYPES = {
+    "documented_route", "repeated_commercial_connection", "generalized_reconstruction",
+}
+DIRECTIONALITIES = {
+    "bidirectional", "eastbound", "westbound", "northbound", "southbound", "mixed",
+}
+EVENT_TYPES = {
+    "privilege_granted", "privilege_confirmed", "privilege_restricted", "kontor_rule",
+    "embargo", "conflict", "peace_treaty", "hansetag", "kontor_relocation",
+    "kontor_closure", "institutional_afterlife",
+}
+CORE_PLACE_IDS = {
+    "lubeck", "hamburg", "bremen", "cologne", "visby", "gdansk", "riga",
+    "novgorod", "bergen", "london", "bruges",
+}
+CORE_ROUTE_IDS = {
+    "hse-route-lubeck-visby-novgorod", "hse-route-lubeck-bergen",
+    "hse-route-hamburg-london", "hse-route-baltic-bruges",
+}
 CERTAINTIES = {"high", "medium", "low"}
 REVIEW_STATUSES = {"provisional", "reviewed", "approved"}
 
@@ -288,15 +327,15 @@ def validate_route_temporality(
         except ValueError:
             continue  # already reported by the year check
         outside: list[str] = []
-        for endpoint in (row["from_place_id"].strip(), row["to_place_id"].strip()):
-            spans = place_spans.get(endpoint)
+        for place_id in row["waypoints"].split("|"):
+            spans = place_spans.get(place_id)
             if not spans:
                 continue
             covered_from = min(start for start, _ in spans)
             covered_to = max(end for _, end in spans)
             if valid_from < covered_from or valid_to > covered_to:
                 outside.append(
-                    f"{endpoint} is recorded {covered_from}-{covered_to}"
+                    f"{place_id} is recorded {covered_from}-{covered_to}"
                 )
         if outside:
             if route_id in accepted:
@@ -536,6 +575,10 @@ def validate_kontore(
             )
 
         if review_status != "provisional":
+            if place_id == PENDING:
+                errors.append(
+                    f"kontore row {row_number}: reviewed Kontor still has 'place_id' pending"
+                )
             # Everything the KontorProfile renders has to be real before publication.
             for field in KONTOR_PROFILE_FIELDS:
                 if row[field].strip() == PENDING:
@@ -550,6 +593,11 @@ def readiness(
     chronology: list[dict[str, str]],
     kontore: list[dict[str, str]],
     evidence: list[dict[str, str]],
+    places: list[dict[str, str]],
+    routes: list[dict[str, str]],
+    commodities: list[dict[str, str]],
+    route_commodities: list[dict[str, str]],
+    events: list[dict[str, str]],
 ) -> list[str]:
     """Report acceptance-criteria progress for KAN-303/304/305.
 
@@ -599,12 +647,23 @@ def readiness(
         f"{len(profiled)}/{len(kontore)} have a written profile, "
         f"{len(reviewed)}/{len(kontore)} are reviewed"
     )
+    lines.append(
+        f"KAN-306 gazetteer: {len({row['place_id'] for row in places})} places, "
+        f"{len(places)} dated role phases"
+    )
+    lines.append(
+        f"KAN-308 network: {len(routes)} corridors, {len(commodities)} commodity families, "
+        f"{len(route_commodities)} route joins, {len(events)} institutional events"
+    )
     return lines
 
 
 def validate_inputs() -> list[str]:
     place_header, places = read_csv(PLACES_CSV)
     route_header, routes = read_csv(ROUTES_CSV)
+    commodity_header, commodities = read_csv(COMMODITIES_CSV)
+    route_commodity_header, route_commodities = read_csv(ROUTE_COMMODITIES_CSV)
+    event_header, events = read_csv(EVENTS_CSV)
     source_header, sources = read_csv(SOURCES_CSV)
     evidence_header, evidence = read_csv(EVIDENCE_CSV)
     corpus_header, corpus = read_csv(CORPUS_CSV)
@@ -615,6 +674,9 @@ def validate_inputs() -> list[str]:
     for label, actual, expected in (
         ("places", place_header, PLACE_HEADER),
         ("routes", route_header, ROUTE_HEADER),
+        ("commodities", commodity_header, COMMODITY_HEADER),
+        ("route_commodities", route_commodity_header, ROUTE_COMMODITY_HEADER),
+        ("events", event_header, EVENT_HEADER),
         ("sources", source_header, SOURCE_HEADER),
         ("evidence", evidence_header, EVIDENCE_HEADER),
         ("corpus", corpus_header, CORPUS_HEADER),
@@ -628,7 +690,10 @@ def validate_inputs() -> list[str]:
     source_keys = {row["key"].strip() for row in sources}
     source_types = {row["key"].strip(): row["source_type"].strip() for row in sources}
     feature_ids: set[str] = set()
+    publication_feature_ids: set[str] = set()
     place_ids: set[str] = set()
+    place_coordinates: dict[str, tuple[float, float]] = {}
+    coordinate_places: dict[tuple[float, float], str] = {}
     phase_keys: set[tuple[str, int]] = set()
     place_spans: dict[str, list[tuple[int, int, int]]] = {}
 
@@ -645,6 +710,7 @@ def validate_inputs() -> list[str]:
         if feature_id in feature_ids:
             errors.append(f"places row {row_number}: duplicate feature id '{feature_id}'")
         feature_ids.add(feature_id)
+        publication_feature_ids.add(feature_id)
         place_ids.add(place_id)
         valid_from = year(row["valid_from"], "places", row_number, errors)
         valid_to = year(row["valid_to"], "places", row_number, errors)
@@ -677,6 +743,15 @@ def validate_inputs() -> list[str]:
                     f"places row {row_number}: ({longitude}, {latitude}) is outside the HSE "
                     f"bbox {HSE_BBOX}; check for a transposed longitude/latitude"
                 )
+            coordinate_key = (longitude, latitude)
+            other_place = coordinate_places.get(coordinate_key)
+            if other_place is not None and other_place != place_id:
+                errors.append(
+                    f"places row {row_number}: coordinate {coordinate_key} overlaps distinct "
+                    f"place '{other_place}'"
+                )
+            coordinate_places[coordinate_key] = place_id
+            place_coordinates.setdefault(place_id, coordinate_key)
         if row["role"] not in ROLES:
             errors.append(f"places row {row_number}: unknown role '{row['role']}'")
         check_term(
@@ -687,6 +762,16 @@ def validate_inputs() -> list[str]:
             errors.append(f"places row {row_number}: unknown certainty '{row['certainty']}'")
         if row["source"] not in source_keys:
             errors.append(f"places row {row_number}: unresolved source '{row['source']}'")
+
+    if not 45 <= len(place_ids) <= 65:
+        errors.append(
+            f"KAN-306 contract expects 45..65 distinct places, found {len(place_ids)}"
+        )
+    if not 60 <= len(places) <= 90:
+        errors.append(f"KAN-306 contract expects 60..90 place phases, found {len(places)}")
+    missing_core_places = CORE_PLACE_IDS - place_ids
+    if missing_core_places:
+        errors.append(f"KAN-306 gazetteer is missing core places {sorted(missing_core_places)}")
 
     with ROUTE_PATHS.open(encoding="utf-8") as handle:
         traced = json.load(handle)
@@ -709,14 +794,29 @@ def validate_inputs() -> list[str]:
         if row["from_place_id"] not in place_ids or row["to_place_id"] not in place_ids:
             errors.append(f"routes row {row_number}: endpoint does not resolve to places.csv")
         waypoints = row["waypoints"].split("|")
-        if waypoints != [row["from_place_id"], row["to_place_id"]]:
-            errors.append(f"routes row {row_number}: vertical-slice waypoints must match endpoints")
+        if len(waypoints) < 2 or waypoints[0] != row["from_place_id"] or waypoints[-1] != row["to_place_id"]:
+            errors.append(
+                f"routes row {row_number}: waypoints must begin and end with the route endpoints"
+            )
+        unresolved_waypoints = [place for place in waypoints if place not in place_ids]
+        if unresolved_waypoints:
+            errors.append(
+                f"routes row {row_number}: unresolved waypoint(s) {sorted(set(unresolved_waypoints))}"
+            )
         valid_from = year(row["valid_from"], "routes", row_number, errors)
         valid_to = year(row["valid_to"], "routes", row_number, errors)
         if valid_from is not None and valid_to is not None and valid_from > valid_to:
             errors.append(f"routes row {row_number}: valid_from exceeds valid_to")
         if row["corridor_type"] not in CORRIDOR_TYPES:
             errors.append(f"routes row {row_number}: unknown corridor_type '{row['corridor_type']}'")
+        if row["directionality"] not in DIRECTIONALITIES:
+            errors.append(
+                f"routes row {row_number}: unknown directionality '{row['directionality']}'"
+            )
+        if row["evidence_type"] not in ROUTE_EVIDENCE_TYPES:
+            errors.append(
+                f"routes row {row_number}: unknown evidence_type '{row['evidence_type']}'"
+            )
         if row["certainty"] not in CERTAINTIES:
             errors.append(f"routes row {row_number}: unknown certainty '{row['certainty']}'")
         if row["source"] not in source_keys:
@@ -724,10 +824,161 @@ def validate_inputs() -> list[str]:
         feature = traced_by_id.get(route_id)
         if not feature or feature.get("geometry", {}).get("type") != "LineString":
             errors.append(f"routes row {row_number}: missing LineString trace for '{route_id}'")
+        else:
+            trace_coordinates = feature["geometry"].get("coordinates", [])
+            if len(trace_coordinates) < 2:
+                errors.append(
+                    f"routes row {row_number}: trace for '{route_id}' needs at least two vertices"
+                )
+            trace_points = {
+                (float(point[0]), float(point[1]))
+                for point in trace_coordinates
+                if isinstance(point, list) and len(point) >= 2
+            }
+            for waypoint in waypoints:
+                expected_coordinate = place_coordinates.get(waypoint)
+                if expected_coordinate is not None and expected_coordinate not in trace_points:
+                    errors.append(
+                        f"routes row {row_number}: trace for '{route_id}' does not pass through "
+                        f"waypoint '{waypoint}' at {expected_coordinate}"
+                    )
         feature_ids.add(route_id)
+        publication_feature_ids.add(route_id)
 
     if set(traced_by_id) != route_ids:
         errors.append("routes-paths.geojson ids do not exactly match routes.csv")
+
+    if not 6 <= len(routes) <= 10:
+        errors.append(f"KAN-308 contract expects 6..10 corridors, found {len(routes)}")
+    missing_core_routes = CORE_ROUTE_IDS - route_ids
+    if missing_core_routes:
+        errors.append(f"KAN-308 routes are missing core corridors {sorted(missing_core_routes)}")
+
+    commodity_ids: set[str] = set()
+    for row_number, row in enumerate(commodities, start=2):
+        for field in COMMODITY_HEADER:
+            if not row[field].strip():
+                errors.append(
+                    f"commodities row {row_number}: required field '{field}' is empty"
+                )
+        commodity_id = row["id"].strip()
+        if not SLUG.fullmatch(commodity_id):
+            errors.append(
+                f"commodities row {row_number}: id '{commodity_id}' is not stable-id shaped"
+            )
+        if commodity_id in commodity_ids:
+            errors.append(f"commodities row {row_number}: duplicate id '{commodity_id}'")
+        commodity_ids.add(commodity_id)
+        if row["source"] not in source_keys:
+            errors.append(
+                f"commodities row {row_number}: unresolved source '{row['source']}'"
+            )
+        feature_ids.add(commodity_id)
+        publication_feature_ids.add(commodity_id)
+    if not 6 <= len(commodities) <= 10:
+        errors.append(
+            f"KAN-308 contract expects 6..10 commodity families, found {len(commodities)}"
+        )
+
+    route_commodity_ids: set[str] = set()
+    route_commodity_pairs: set[tuple[str, str]] = set()
+    commodity_ids_by_route: dict[str, set[str]] = {route_id: set() for route_id in route_ids}
+    for row_number, row in enumerate(route_commodities, start=2):
+        for field in ROUTE_COMMODITY_HEADER:
+            if not row[field].strip():
+                errors.append(
+                    f"route_commodities row {row_number}: required field '{field}' is empty"
+                )
+        join_id = row["id"].strip()
+        if not SLUG.fullmatch(join_id):
+            errors.append(
+                f"route_commodities row {row_number}: id '{join_id}' is not stable-id shaped"
+            )
+        if join_id in route_commodity_ids:
+            errors.append(
+                f"route_commodities row {row_number}: duplicate id '{join_id}'"
+            )
+        route_commodity_ids.add(join_id)
+        route_id = row["route_id"].strip()
+        commodity_id = row["commodity_id"].strip()
+        pair = (route_id, commodity_id)
+        if pair in route_commodity_pairs:
+            errors.append(
+                f"route_commodities row {row_number}: duplicate route/commodity pair {pair}"
+            )
+        route_commodity_pairs.add(pair)
+        if route_id not in route_ids:
+            errors.append(
+                f"route_commodities row {row_number}: unresolved route '{route_id}'"
+            )
+        else:
+            commodity_ids_by_route[route_id].add(commodity_id)
+        if commodity_id not in commodity_ids:
+            errors.append(
+                f"route_commodities row {row_number}: unresolved commodity '{commodity_id}'"
+            )
+        if row["directionality"] not in DIRECTIONALITIES:
+            errors.append(
+                f"route_commodities row {row_number}: unknown directionality "
+                f"'{row['directionality']}'"
+            )
+        if row["certainty"] not in CERTAINTIES:
+            errors.append(
+                f"route_commodities row {row_number}: unknown certainty '{row['certainty']}'"
+            )
+        if row["source"] not in source_keys:
+            errors.append(
+                f"route_commodities row {row_number}: unresolved source '{row['source']}'"
+            )
+        feature_ids.add(join_id)
+        publication_feature_ids.add(join_id)
+
+    for row_number, row in enumerate(routes, start=2):
+        listed = set(row["commodities"].split("|"))
+        joined = commodity_ids_by_route.get(row["id"], set())
+        if listed != joined:
+            errors.append(
+                f"routes row {row_number}: presentation commodities {sorted(listed)} "
+                f"do not match normalized joins {sorted(joined)}"
+            )
+
+    event_ids: set[str] = set()
+    used_event_types: set[str] = set()
+    for row_number, row in enumerate(events, start=2):
+        for field in EVENT_HEADER:
+            if not row[field].strip():
+                errors.append(f"events row {row_number}: required field '{field}' is empty")
+        event_id = row["id"].strip()
+        if not SLUG.fullmatch(event_id):
+            errors.append(f"events row {row_number}: id '{event_id}' is not stable-id shaped")
+        if event_id in event_ids:
+            errors.append(f"events row {row_number}: duplicate id '{event_id}'")
+        event_ids.add(event_id)
+        if row["event_type"] not in EVENT_TYPES:
+            errors.append(
+                f"events row {row_number}: unknown event_type '{row['event_type']}'"
+            )
+        else:
+            used_event_types.add(row["event_type"])
+        if row["place_id"] not in place_ids:
+            errors.append(
+                f"events row {row_number}: unresolved place_id '{row['place_id']}'"
+            )
+        valid_from = year(row["valid_from"], "events", row_number, errors)
+        valid_to = year(row["valid_to"], "events", row_number, errors)
+        if valid_from is not None and valid_to is not None and valid_from > valid_to:
+            errors.append(f"events row {row_number}: valid_from exceeds valid_to")
+        if row["certainty"] not in CERTAINTIES:
+            errors.append(f"events row {row_number}: unknown certainty '{row['certainty']}'")
+        if row["source"] not in source_keys:
+            errors.append(f"events row {row_number}: unresolved source '{row['source']}'")
+        feature_ids.add(event_id)
+        publication_feature_ids.add(event_id)
+    missing_event_types = EVENT_TYPES - used_event_types
+    if missing_event_types:
+        errors.append(
+            f"KAN-308 events are missing required type(s) {sorted(missing_event_types)}"
+        )
 
     # A Kontor dossier is a claimable subject in its own right. Evidence about
     # the Kontore - their number, their legal standing, the name of a house -
@@ -740,6 +991,7 @@ def validate_inputs() -> list[str]:
     feature_ids.update(row["id"].strip() for row in chronology)
 
     claim_ids: set[str] = set()
+    evidenced_features: set[str] = set()
     for row_number, row in enumerate(evidence, start=2):
         for field in EVIDENCE_HEADER:
             if not row[field].strip():
@@ -749,6 +1001,8 @@ def validate_inputs() -> list[str]:
         claim_ids.add(row["claim_id"])
         if row["feature_id"] not in feature_ids:
             errors.append(f"evidence row {row_number}: unresolved feature '{row['feature_id']}'")
+        else:
+            evidenced_features.add(row["feature_id"])
         if row["source_key"] not in source_keys:
             errors.append(f"evidence row {row_number}: unresolved source '{row['source_key']}'")
         if row["confidence"] not in CERTAINTIES:
@@ -776,6 +1030,9 @@ def validate_inputs() -> list[str]:
                     "and cannot be the evidence for an approved claim"
                 )
 
+    for feature_id in sorted(publication_feature_ids - evidenced_features):
+        errors.append(f"publication feature '{feature_id}' has no evidence.csv claim")
+
     validate_route_temporality(
         routes,
         {place: [(a, b) for a, b, _ in spans] for place, spans in place_spans.items()},
@@ -790,8 +1047,6 @@ def validate_inputs() -> list[str]:
         kontore, place_ids, corpus_keys, source_keys, approved_terms, deprecated_terms, errors,
     )
 
-    if len(places) != 2 or len(routes) != 1:
-        errors.append("KAN-302 contract expects exactly 2 place phases and 1 corridor")
     return errors
 
 
@@ -813,9 +1068,20 @@ def route_properties(row: dict[str, str]) -> dict[str, object]:
     }
 
 
+def event_properties(row: dict[str, str]) -> dict[str, object]:
+    return {
+        **{key: row[key] for key in EVENT_HEADER},
+        "valid_from": int(row["valid_from"]),
+        "valid_to": int(row["valid_to"]),
+    }
+
+
 def build_outputs() -> dict[Path, str]:
     _, places = read_csv(PLACES_CSV)
     _, routes = read_csv(ROUTES_CSV)
+    _, commodities = read_csv(COMMODITIES_CSV)
+    _, route_commodities = read_csv(ROUTE_COMMODITIES_CSV)
+    _, events = read_csv(EVENTS_CSV)
     with ROUTE_PATHS.open(encoding="utf-8") as handle:
         traced = json.load(handle)
     traced_by_id = {
@@ -823,6 +1089,9 @@ def build_outputs() -> dict[Path, str]:
     }
 
     compiled_places = [place_properties(row) for row in places]
+    place_by_id: dict[str, dict[str, object]] = {}
+    for place in compiled_places:
+        place_by_id.setdefault(str(place["place_id"]), place)
     place_features = [
         {
             "type": "Feature",
@@ -842,19 +1111,50 @@ def build_outputs() -> dict[Path, str]:
             }
         )
 
+    compiled_routes = [route_properties(row) for row in routes]
+    compiled_commodities = [
+        {key: row[key] for key in COMMODITY_HEADER} for row in commodities
+    ]
+    joins_by_route: dict[str, list[dict[str, str]]] = {}
+    for row in route_commodities:
+        joins_by_route.setdefault(row["route_id"], []).append(
+            {key: row[key] for key in ROUTE_COMMODITY_HEADER}
+        )
+    for route in compiled_routes:
+        route["commodity_joins"] = sorted(
+            joins_by_route.get(str(route["id"]), []), key=lambda join: join["commodity_id"]
+        )
+
+    compiled_events = [event_properties(row) for row in events]
+    event_features = []
+    for event in compiled_events:
+        place = place_by_id[str(event["place_id"])]
+        event_features.append(
+            {
+                "type": "Feature",
+                "properties": event,
+                "geometry": {"type": "Point", "coordinates": place["coordinates"]},
+            }
+        )
+
     _, kontore = read_csv(KONTORE_CSV)
     compiled_kontore = [{key: row[key] for key in KONTORE_HEADER} for row in kontore]
 
     return {
         PLACES_GEOJSON: json_text({"type": "FeatureCollection", "features": place_features}),
         ROUTES_GEOJSON: json_text({"type": "FeatureCollection", "features": route_features}),
+        EVENTS_GEOJSON: json_text({"type": "FeatureCollection", "features": event_features}),
         PLACES_JSON: json_text(compiled_places),
+        ROUTES_JSON: json_text(compiled_routes),
+        COMMODITIES_JSON: json_text(compiled_commodities),
+        EVENTS_JSON: json_text(compiled_events),
         KONTORE_JSON: json_text(compiled_kontore),
     }
 
 
 SOURCE_FILES = [
-    PLACES_CSV, ROUTES_CSV, SOURCES_CSV, EVIDENCE_CSV, TERMINOLOGY_CSV,
+    PLACES_CSV, ROUTES_CSV, COMMODITIES_CSV, ROUTE_COMMODITIES_CSV, EVENTS_CSV,
+    SOURCES_CSV, EVIDENCE_CSV, TERMINOLOGY_CSV,
     CORPUS_CSV, CHRONOLOGY_CSV, KONTORE_CSV, TEMPORAL_EXCEPTIONS_CSV, ROUTE_PATHS,
 ]
 
@@ -964,7 +1264,15 @@ def readiness_lines() -> list[str]:
     _, chronology = read_csv(CHRONOLOGY_CSV)
     _, kontore = read_csv(KONTORE_CSV)
     _, evidence = read_csv(EVIDENCE_CSV)
-    return readiness(corpus, chronology, kontore, evidence)
+    _, places = read_csv(PLACES_CSV)
+    _, routes = read_csv(ROUTES_CSV)
+    _, commodities = read_csv(COMMODITIES_CSV)
+    _, route_commodities = read_csv(ROUTE_COMMODITIES_CSV)
+    _, events = read_csv(EVENTS_CSV)
+    return readiness(
+        corpus, chronology, kontore, evidence, places, routes, commodities,
+        route_commodities, events,
+    )
 
 
 def main() -> int:

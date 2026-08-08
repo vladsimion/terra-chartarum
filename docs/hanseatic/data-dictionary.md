@@ -6,18 +6,47 @@ One row per dated place/status phase. `id` is phase-specific; `place_id` persist
 across phases. `valid_from` and `valid_to` are inclusive integer years.
 Coordinates are modern WGS84 longitude/latitude for the relevant urban focus.
 
-Controlled values in this slice:
+Controlled values in the production gazetteer:
 
-- `role`: `leading_city`, `market`
+- `role`: `leading_city`, `active_city`, `represented_city`,
+  `associated_town`, `kontor`, `foreign_branch`, `market`, `fair`, `entrepot`
 - `participation_class`: `documented_collective_participation`,
-  `commercial_association_only`
+  `documented_regional_participation`, `represented_through_another_city`,
+  `commercial_association_only`, `disputed_or_late_attribution`
 - `certainty`: `high`, `medium`, `low`
+
+The broad 1356–1669 rows are publication phases bounded by the regular-Diet
+record and the conventional terminus. They are not membership intervals. More
+specific documentary phases replace that window where the selected evidence
+supports them, especially at the four Kontore and in the Zuiderzee/IJssel group.
 
 ## `routes.csv`
 
 One row per generalized corridor. `from_place_id`, `to_place_id` and ordered
 `waypoints` resolve to stable `place_id` values. `commodities` is a pipe-separated
 set. Geometry is joined from `traced/routes-paths.geojson` by `id`.
+
+Every waypoint resolves to `places.csv`, and the first and last waypoint must
+equal the route endpoints. `evidence_type` distinguishes `documented_route`,
+`repeated_commercial_connection` and `generalized_reconstruction`; it is a claim
+about evidentiary strength, not cartographic precision.
+
+## `commodities.csv` and `route_commodities.csv`
+
+`commodities.csv` defines 6–10 qualitative commodity families. The normalized
+join table carries a stable row ID, route and commodity foreign keys,
+directionality, certainty, source and note. `routes.commodities` is only a
+pipe-separated presentation projection and must exactly match the normalized
+joins. There is deliberately no volume field: the source base does not support
+comparable traffic quantities across the medieval phases.
+
+## `events.csv`
+
+One row per mapped institutional event. Types cover privilege grants,
+confirmations and restrictions, Kontor rules, embargoes, conflicts, peace
+treaties, Hansetage, Kontor relocations and closures, and institutional
+afterlives. Events join to a gazetteer `place_id`; compiled GeoJSON uses that
+place's modern urban-focus point while retaining the event's own temporal span.
 
 ## `sources.csv` and `evidence.csv`
 
@@ -31,6 +60,10 @@ historical evidence.
 on anything looser than a page or folio, and no approved claim may cite a source
 whose `source_type` is `project_specification` - the project's own planning
 documents are not historical evidence.
+
+Every publication row in places, routes, commodities, route-commodity joins and
+events must also be the target of at least one evidence claim. A source foreign
+key alone is not enough to pass validation.
 
 ## `pending` and the promotion rules
 
@@ -116,14 +149,18 @@ defect as a missing entry.
 
 `npm run hanseatic:build` writes:
 
-| Output                                       | Purpose                       |
-| -------------------------------------------- | ----------------------------- |
-| `public/geo/hanseatic-places.geojson`        | Atlas layer                   |
-| `public/geo/hanseatic-routes.geojson`        | Atlas layer                   |
-| `public/geo/hanseatic-places.fgb`            | FlatGeobuf twin for GIS reuse |
-| `src/data/hanseatic/generated/places.json`   | MDX place profiles            |
-| `src/data/hanseatic/generated/kontore.json`  | `KontorProfile` payload       |
-| `src/data/hanseatic/generated/manifest.json` | Release manifest              |
+| Output                                          | Purpose                       |
+| ----------------------------------------------- | ----------------------------- |
+| `public/geo/hanseatic-places.geojson`           | Atlas layer                   |
+| `public/geo/hanseatic-routes.geojson`           | Atlas layer                   |
+| `public/geo/hanseatic-events.geojson`           | Institutional events layer    |
+| `public/geo/hanseatic-places.fgb`               | FlatGeobuf twin for GIS reuse |
+| `src/data/hanseatic/generated/places.json`      | MDX place profiles            |
+| `src/data/hanseatic/generated/routes.json`      | Routes with normalized joins  |
+| `src/data/hanseatic/generated/commodities.json` | Commodity reference data      |
+| `src/data/hanseatic/generated/events.json`      | Essay event payload           |
+| `src/data/hanseatic/generated/kontore.json`     | `KontorProfile` payload       |
+| `src/data/hanseatic/generated/manifest.json`    | Release manifest              |
 
 The manifest records `schemaVersion`, a `release` id, the SHA-256 of every
 **input**, and the SHA-256, byte length and feature count of every **output**.
@@ -149,7 +186,7 @@ resolves to `places.csv` once the gazetteer exists (KAN-306). Compiled to
 `src/data/hanseatic/generated/kontore.json` for `KontorProfile.astro`, which
 renders a pending field as "Not yet established" rather than printing it.
 
-A row may be reviewed while `place_id` remains `pending`, because that join is
-owned by KAN-306 and is not rendered by `KontorProfile`. Every field the profile
-does render - dates, phase, setting, regulations, commodities, witness and
-summary - must be complete before review.
+KAN-306 closes the temporary `pending` allowance for `place_id`: every reviewed
+Kontor now resolves to its host in the gazetteer. Every rendered field - dates,
+phase, setting, regulations, commodities, witness and summary - must likewise be
+complete before review.
