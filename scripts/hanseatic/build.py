@@ -130,6 +130,24 @@ CHRONOLOGY_CATEGORIES = {
 NON_EVIDENTIARY_SOURCE_TYPES = {"project_specification"}
 # KAN-303: the register must reach this many verified witnesses before release.
 REQUIRED_WITNESSES = 8
+ESSAY_SECTIONS = {
+    "prologue-remove-network",
+    "merchants-before-league",
+    "four-cities-inside-other-cities",
+    "city-is-unit",
+    "goods-draw-different-leagues",
+    "power-without-sovereignty",
+    "charter-is-a-map",
+    "sea-becomes-legible",
+    "epilogue-sea-between-cities",
+}
+# These are the fields rendered by KontorProfile. `place_id` is deliberately
+# absent: it is a KAN-306 gazetteer join, not profile content, and may stay
+# pending until the four host settlements exist in places.csv.
+KONTOR_PROFILE_FIELDS = (
+    "valid_from", "valid_to", "status_phase", "spatial_setting",
+    "regulations", "commodities", "primary_witness", "profile_summary",
+)
 
 
 def read_csv(path: Path) -> tuple[list[str], list[dict[str, str]]]:
@@ -334,6 +352,20 @@ def validate_corpus(rows: list[dict[str, str]], errors: list[str]) -> None:
                 f"corpus row {row_number}: unknown verification_status '{verification}'"
             )
 
+        section_value = row["essay_section"].strip()
+        if section_value != PENDING:
+            sections = {section.strip() for section in section_value.split("|")}
+            unknown_sections = sections - ESSAY_SECTIONS
+            if "" in sections:
+                errors.append(
+                    f"corpus row {row_number}: essay_section contains an empty section"
+                )
+            if unknown_sections:
+                errors.append(
+                    f"corpus row {row_number}: unknown essay_section value(s) "
+                    f"{sorted(unknown_sections)}"
+                )
+
         # KAN-303: a dealer listing may be consulted but never stand as a final source.
         if row["provenance_class"] == "dealer" and row["corpus_role"] != "reference_only":
             errors.append(
@@ -344,6 +376,11 @@ def validate_corpus(rows: list[dict[str, str]], errors: list[str]) -> None:
         # Promotion rule: 'verified' is a claim about real provenance, so every
         # field that provenance depends on must actually be filled in.
         if verification == "verified":
+            if section_value == PENDING:
+                errors.append(
+                    f"corpus row {row_number}: verified witness still has "
+                    "'essay_section' pending"
+                )
             # `resolution` may be `not_published`: plenty of repositories serve a
             # tiled master and state no pixel figure, and refusing those would
             # exclude real, fully provenanced witnesses over a number nobody has.
@@ -500,10 +537,7 @@ def validate_kontore(
 
         if review_status != "provisional":
             # Everything the KontorProfile renders has to be real before publication.
-            for field in (
-                "place_id", "valid_from", "valid_to", "status_phase", "spatial_setting",
-                "regulations", "commodities", "primary_witness", "profile_summary",
-            ):
+            for field in KONTOR_PROFILE_FIELDS:
                 if row[field].strip() == PENDING:
                     errors.append(
                         f"kontore row {row_number}: reviewed Kontor still has "
@@ -532,9 +566,17 @@ def readiness(
         row for row in corpus
         if row["dependency_risk"] == "p0" and row["verification_status"].strip() != "verified"
     ]
+    covered_sections = {
+        section.strip()
+        for row in cleared
+        for section in row["essay_section"].split("|")
+        if row["essay_section"].strip() != PENDING
+    }
     lines.append(
         f"KAN-303 corpus: {len(cleared)}/{REQUIRED_WITNESSES} rights-cleared witnesses, "
-        f"{len(heroes)} hero + {len(fallbacks)}/2 fallbacks, {len(open_p0)} unresolved P0"
+        f"{len(heroes)} hero + {len(fallbacks)}/2 fallbacks, "
+        f"{len(covered_sections)}/{len(ESSAY_SECTIONS)} essay sections covered, "
+        f"{len(open_p0)} unresolved P0"
     )
 
     sourced = [
@@ -551,9 +593,11 @@ def readiness(
 
     with_witness = [row for row in kontore if row["primary_witness"].strip() != PENDING]
     profiled = [row for row in kontore if row["profile_summary"].strip() != PENDING]
+    reviewed = [row for row in kontore if row["review_status"].strip() != "provisional"]
     lines.append(
         f"KAN-305 Kontore: {len(with_witness)}/{len(kontore)} have a witness identified, "
-        f"{len(profiled)}/{len(kontore)} have a written profile"
+        f"{len(profiled)}/{len(kontore)} have a written profile, "
+        f"{len(reviewed)}/{len(kontore)} are reviewed"
     )
     return lines
 
@@ -690,6 +734,10 @@ def validate_inputs() -> list[str]:
     # has nowhere else to attach, and forcing it onto a place phase would file
     # it against the wrong thing.
     feature_ids.update(row["id"].strip() for row in kontore)
+    # Institutional events are also first-class claim subjects. Without this,
+    # chronology.csv can cite a claim, but that claim cannot attach to the event
+    # whose date or interpretation it supports.
+    feature_ids.update(row["id"].strip() for row in chronology)
 
     claim_ids: set[str] = set()
     for row_number, row in enumerate(evidence, start=2):

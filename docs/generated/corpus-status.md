@@ -10,7 +10,7 @@
 | Held essays          |    11 |
 | Map records          |    47 |
 | Cartographers        |    18 |
-| Bibliography entries |    28 |
+| Bibliography entries |    31 |
 | Toponyms             |    11 |
 | Rooms                |     7 |
 | GIS layers           |    11 |

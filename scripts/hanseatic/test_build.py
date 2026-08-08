@@ -175,6 +175,26 @@ def test_verified_witness_may_not_leave_provenance_class_pending(sources: Path) 
     assert matching(validate_inputs(), "verified witness has no provenance_class")
 
 
+def test_verified_witness_must_cover_a_planned_essay_section(sources: Path) -> None:
+    edit_row(
+        sources / "corpus.csv",
+        "hse-obj-lubeck-view",
+        {"essay_section": PENDING},
+    )
+    errors = validate_inputs()
+    assert matching(errors, "verified witness still has 'essay_section' pending"), errors
+
+
+def test_unknown_essay_section_is_rejected(sources: Path) -> None:
+    edit_row(
+        sources / "corpus.csv",
+        "hse-obj-lubeck-view",
+        {"essay_section": "not-a-real-section"},
+    )
+    errors = validate_inputs()
+    assert matching(errors, "unknown essay_section value"), errors
+
+
 @pytest.mark.parametrize("rights", ["in_copyright", "rights_unknown", PENDING])
 def test_verified_witness_needs_open_rights(sources: Path, rights: str) -> None:
     """Verification without a cleared licence is not publishable (OPEN_RIGHTS)."""
@@ -321,7 +341,6 @@ def test_kontor_may_not_be_promoted_while_its_profile_is_pending(
 ) -> None:
     """Everything KontorProfile renders has to be real before the row leaves provisional."""
     pending_fields = {
-        "place_id",
         "valid_from",
         "valid_to",
         "status_phase",
@@ -350,6 +369,16 @@ def test_kontor_may_not_be_promoted_while_its_profile_is_pending(
         assert matching(errors, f"'{field}' pending"), f"{field} not reported: {errors}"
 
 
+def test_reviewed_kontor_may_defer_place_join_to_kan_306(sources: Path) -> None:
+    """A complete dossier is reviewable before its host enters the gazetteer."""
+    edit_row(
+        sources / "kontore.csv",
+        "hse-kontor-london",
+        {"place_id": PENDING, "review_status": "reviewed"},
+    )
+    assert validate_inputs() == []
+
+
 # --- chronology: open dates and disputed dates (KAN-304) ----------------------
 
 
@@ -363,14 +392,23 @@ def test_chronology_may_not_be_promoted_with_pending_years(
         "hse-event-hanse-term-shift",
         # A real claim_id keeps the parallel 'reviewed event must cite a claim_id'
         # rule quiet, so only the pending-years rule can fire.
-        {"review_status": review_status, "claim_id": "hse-claim-lubeck-leading"},
+        {
+            "year_from": PENDING,
+            "year_to": PENDING,
+            "review_status": review_status,
+            "claim_id": "hse-claim-lubeck-leading",
+        },
     )
     errors = validate_inputs()
     assert matching(errors, "cannot leave years pending once reviewed"), errors
 
 
 def test_chronology_years_must_be_set_or_pending_together(sources: Path) -> None:
-    edit_row(sources / "chronology.csv", "hse-event-hanse-term-shift", {"year_from": "1356"})
+    edit_row(
+        sources / "chronology.csv",
+        "hse-event-hanse-term-shift",
+        {"year_from": "1356", "year_to": PENDING},
+    )
     errors = validate_inputs()
     assert matching(errors, "must both be set or both pending"), errors
 
@@ -575,3 +613,21 @@ def test_evidence_against_an_unknown_kontor_is_rejected(sources: Path) -> None:
         {"feature_id": "hse-kontor-atlantis"},
     )
     assert matching(validate_inputs(), "unresolved feature 'hse-kontor-atlantis'")
+
+
+def test_evidence_may_target_a_chronology_event(sources: Path) -> None:
+    """Chronology claims attach to the event whose date they support."""
+    with (sources / "evidence.csv").open(newline="", encoding="utf-8") as handle:
+        rows = list(csv.DictReader(handle))
+    chronology_rows = [r for r in rows if r["feature_id"].startswith("hse-event-")]
+    assert chronology_rows, "expected at least one chronology-targeted evidence row"
+    assert validate_inputs() == []
+
+
+def test_evidence_against_an_unknown_chronology_event_is_rejected(sources: Path) -> None:
+    edit_row(
+        sources / "evidence.csv",
+        "hse-claim-hanse-term-shift",
+        {"feature_id": "hse-event-invented"},
+    )
+    assert matching(validate_inputs(), "unresolved feature 'hse-event-invented'")

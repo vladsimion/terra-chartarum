@@ -69,11 +69,13 @@ describe('Hanseatic Kontor dossiers', () => {
     }
   });
 
-  it('marks unresearched fields as pending so the profile can withhold them', () => {
+  it('publishes complete reviewed dossiers while deferring the KAN-306 place join', () => {
     const bergen = getHanseaticKontor('bergen');
-    expect(bergen.review_status).toBe('provisional');
-    expect(isPending(bergen.profile_summary)).toBe(true);
+    expect(bergen.review_status).toBe('reviewed');
+    expect(isPending(bergen.profile_summary)).toBe(false);
     expect(isPending(bergen.primary_witness)).toBe(false);
+    expect(isPending(bergen.place_id)).toBe(true);
+    expect(bergen.profile_summary.split(/\n\s*\n/)).toHaveLength(3);
   });
 
   it('rejects an unknown Kontor', () => {
