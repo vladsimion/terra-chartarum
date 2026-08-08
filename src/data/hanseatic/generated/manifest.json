@@ -2,8 +2,8 @@
   "generatedBy": "scripts/hanseatic/build.py",
   "inputs": {
     "data/hanseatic/sources/chronology.csv": "3b68f8d5c4cfa93beebe4a86bc4df0bd55d9e201f6e16a79bc44abf5afd4d34c",
-    "data/hanseatic/sources/corpus.csv": "e0ae0d9803d6a4b015655a10d9b882a5ef85e0743c1fe5674c9930c0549438fb",
-    "data/hanseatic/sources/evidence.csv": "4b9776a61b764cdcf95a86cd47a8fac6db7d94eb44ac7f4cb11ceca6a767340f",
+    "data/hanseatic/sources/corpus.csv": "e0ea048258c941885b9971f40fc8216615150f20579c4ddae312d4a89ec3c44b",
+    "data/hanseatic/sources/evidence.csv": "30fffe21d6c43c6785352353c5ca3a18c6df849853379ef16db1a543fb6084f1",
     "data/hanseatic/sources/kontore.csv": "2ba696541d9c8924423a9b16410b1fceb51b9bf38d423c6a89e61b0d16165aae",
     "data/hanseatic/sources/places.csv": "87e944cbca9b1d9bbc11f8e648cfbd4149618e25370772cb84ea28080197e029",
     "data/hanseatic/sources/routes.csv": "31cfc1d90fe36d58c348c01311ae960931c1e6e591d6d44cc1054a8b89249980",
