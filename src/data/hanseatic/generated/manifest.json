@@ -2,12 +2,12 @@
   "generatedBy": "scripts/hanseatic/build.py",
   "inputs": {
     "data/hanseatic/sources/chronology.csv": "3b68f8d5c4cfa93beebe4a86bc4df0bd55d9e201f6e16a79bc44abf5afd4d34c",
-    "data/hanseatic/sources/corpus.csv": "3bef4f4416222212e99e265d80bf1032c1288e592055306c9fda06dca6dfe0ae",
-    "data/hanseatic/sources/evidence.csv": "b9bd0096c31ec980e557e72f11546fd232fccbe209964986c3597825e3a79fd8",
+    "data/hanseatic/sources/corpus.csv": "7358821469ae6a98ac93b78af36d07672983f81ea12135f9b552d97c860ccf53",
+    "data/hanseatic/sources/evidence.csv": "4b9776a61b764cdcf95a86cd47a8fac6db7d94eb44ac7f4cb11ceca6a767340f",
     "data/hanseatic/sources/kontore.csv": "2ba696541d9c8924423a9b16410b1fceb51b9bf38d423c6a89e61b0d16165aae",
     "data/hanseatic/sources/places.csv": "87e944cbca9b1d9bbc11f8e648cfbd4149618e25370772cb84ea28080197e029",
     "data/hanseatic/sources/routes.csv": "31cfc1d90fe36d58c348c01311ae960931c1e6e591d6d44cc1054a8b89249980",
-    "data/hanseatic/sources/sources.csv": "ac52441970427dd892cca79f4de5e217af4fef67cc5d6e168eadb7562705a328",
+    "data/hanseatic/sources/sources.csv": "3db9f6d28c49bc26d06c743a411a816c46c6deec8865a22b4c09a1ab80c96821",
     "data/hanseatic/sources/temporal-exceptions.csv": "f31e047582f5ed502f97495d517f168c11b6815502ee4a5911de516e5447a6a2",
     "data/hanseatic/sources/terminology.csv": "ea1d826c6464d764cecfafb55d454989d17a923624ead3b2954853d0fb495989",
     "data/hanseatic/traced/routes-paths.geojson": "3a0b869cc98a1d93a7089216282968517dfa5727d202adff49726c785e51582e"

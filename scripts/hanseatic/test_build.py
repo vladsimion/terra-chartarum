@@ -553,3 +553,25 @@ def test_exception_must_name_a_decisions_document(sources: Path) -> None:
     )
     errors = validate_inputs()
     assert matching(errors, "must point at a decisions document"), errors
+
+
+# --- evidence may be filed against a Kontor, not only a place (KAN-303/305) ----
+
+
+def test_evidence_may_target_a_kontor(sources: Path) -> None:
+    """The committed ledger files the four-Kontore attestation against a Kontor."""
+    with (sources / "evidence.csv").open(newline="", encoding="utf-8") as handle:
+        rows = list(csv.DictReader(handle))
+    kontor_rows = [r for r in rows if r["feature_id"].startswith("hse-kontor-")]
+    assert kontor_rows, "expected at least one Kontor-targeted evidence row"
+    assert validate_inputs() == []
+
+
+def test_evidence_against_an_unknown_kontor_is_rejected(sources: Path) -> None:
+    """Widening the target set must not stop unresolved ids being caught."""
+    edit_row(
+        sources / "evidence.csv",
+        "hse-claim-four-kontore-attested",
+        {"feature_id": "hse-kontor-atlantis"},
+    )
+    assert matching(validate_inputs(), "unresolved feature 'hse-kontor-atlantis'")
