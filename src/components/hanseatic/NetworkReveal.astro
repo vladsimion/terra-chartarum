@@ -1,0 +1,254 @@
+---
+import { getHanseaticNetwork } from '../../lib/hanseatic';
+
+const network = getHanseaticNetwork();
+const width = 920;
+const height = 480;
+const padding = 48;
+const longitudes = network.nodes.map((node) => node.coordinates[0]);
+const latitudes = network.nodes.map((node) => node.coordinates[1]);
+const minLongitude = Math.min(...longitudes);
+const maxLongitude = Math.max(...longitudes);
+const minLatitude = Math.min(...latitudes);
+const maxLatitude = Math.max(...latitudes);
+const position = Object.fromEntries(
+  network.nodes.map((node) => [
+    node.id,
+    {
+      x:
+        padding +
+        ((node.coordinates[0] - minLongitude) / Math.max(maxLongitude - minLongitude, 1)) *
+          (width - padding * 2),
+      y:
+        height -
+        padding -
+        ((node.coordinates[1] - minLatitude) / Math.max(maxLatitude - minLatitude, 1)) *
+          (height - padding * 2),
+    },
+  ]),
+);
+---
+
+<section class="hse-reveal" data-hse-reveal aria-labelledby="hse-reveal-title">
+  <header>
+    <p class="eyebrow">Witness / reconstruction</p>
+    <h3 id="hse-reveal-title">Remove the network</h3>
+    <p>
+      Compare what a Lübeck world map printed in 1475 makes visible with a modern relational diagram
+      derived from the published HSE waypoints. The second view is an analytical aid, not a
+      historical Hanseatic map.
+    </p>
+  </header>
+
+  <div class="hse-reveal__controls" role="group" aria-label="Choose a view">
+    <button type="button" data-reveal-mode="witness" aria-pressed="true">
+      Historical witness
+    </button>
+    <button type="button" data-reveal-mode="network" aria-pressed="false">
+      Analytical network
+    </button>
+  </div>
+
+  <p class="hse-reveal__status" aria-live="polite">
+    Historical witness selected: the network is not drawn.
+  </p>
+
+  <div class="hse-reveal__frame">
+    <div class="hse-reveal__witness" data-reveal-panel="witness">
+      <p>Rudimentum Novitiorum · Lübeck · 1475</p>
+      <strong>A world printed at a Hanseatic centre, without a Hanseatic route system.</strong>
+      <span>
+        The double-page woodcut at ff. 85v–86r names regions and peoples, but it does not chart
+        ports, routes, warehouses, privileges or Kontore.
+      </span>
+      <a href="/collection/religion-rudimentum/">Open the catalogue witness →</a>
+    </div>
+
+    <div class="hse-reveal__network" data-reveal-panel="network" hidden>
+      <svg
+        viewBox={`0 0 ${width} ${height}`}
+        role="img"
+        aria-labelledby="hse-network-title hse-network-desc"
+      >
+        <title id="hse-network-title">Abstract Hanseatic route network</title>
+        <desc id="hse-network-desc">
+          An analytical diagram of the published HSE route waypoints. Lines express documented or
+          reconstructed relationships and do not reproduce individual voyages.
+        </desc>
+        <g class="hse-reveal__edges">
+          {
+            network.edges.map((edge) => (
+              <line
+                x1={position[edge.source].x}
+                y1={position[edge.source].y}
+                x2={position[edge.target].x}
+                y2={position[edge.target].y}
+              />
+            ))
+          }
+        </g>
+        <g>
+          {
+            network.nodes.map((node) => (
+              <g transform={`translate(${position[node.id].x} ${position[node.id].y})`}>
+                <circle r={5 + Math.min(node.routeIds.length, 3) * 2} />
+                <text x="12" y="4">
+                  {node.label}
+                </text>
+              </g>
+            ))
+          }
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <details>
+    <summary>Read the network as text</summary>
+    <ol>
+      {
+        network.routes.map((route) => (
+          <li>
+            <strong>{route.name}</strong> — {route.valid_from}–{route.valid_to};{' '}
+            {route.evidence_type.replaceAll('_', ' ')}; {route.certainty} certainty. {route.notes}
+          </li>
+        ))
+      }
+    </ol>
+  </details>
+</section>
+
+<script>
+  const bootHanseaticReveals = () => {
+    document.querySelectorAll<HTMLElement>('[data-hse-reveal]').forEach((root) => {
+      if (root.dataset.ready) return;
+      root.dataset.ready = 'true';
+      const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-reveal-mode]'));
+      const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-reveal-panel]'));
+      const status = root.querySelector<HTMLElement>('.hse-reveal__status');
+      for (const button of buttons) {
+        button.addEventListener('click', () => {
+          const mode = button.dataset.revealMode ?? 'witness';
+          for (const candidate of buttons) {
+            candidate.setAttribute('aria-pressed', String(candidate === button));
+          }
+          for (const panel of panels) panel.hidden = panel.dataset.revealPanel !== mode;
+          if (status) {
+            status.textContent =
+              mode === 'network'
+                ? 'Analytical network selected: seven generalized corridors are visible.'
+                : 'Historical witness selected: the network is not drawn.';
+          }
+        });
+      }
+    });
+  };
+  bootHanseaticReveals();
+  document.addEventListener('astro:page-load', bootHanseaticReveals);
+</script>
+
+<style>
+  .hse-reveal {
+    margin-block: 2rem;
+    padding: clamp(1rem, 3vw, 1.75rem);
+    border: 1px solid color-mix(in srgb, #7f9ca6 55%, var(--line));
+    background: color-mix(in srgb, #7f9ca6 7%, var(--panel));
+  }
+  header p:last-child,
+  .hse-reveal__status,
+  details {
+    color: var(--ink-muted);
+  }
+  h3 {
+    margin-block: 0.2rem 0.5rem;
+  }
+  .hse-reveal__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-block: 1.25rem 0.5rem;
+  }
+  button {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.45rem 0.8rem;
+    background: var(--surface);
+    color: var(--ink-muted);
+    font: inherit;
+    cursor: pointer;
+  }
+  button[aria-pressed='true'] {
+    border-color: #7f9ca6;
+    color: var(--ink);
+    background: color-mix(in srgb, #7f9ca6 18%, var(--surface));
+  }
+  .hse-reveal__frame {
+    min-height: 24rem;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background:
+      radial-gradient(
+        circle at 50% 45%,
+        color-mix(in srgb, #7f9ca6 12%, transparent),
+        transparent 58%
+      ),
+      var(--surface);
+  }
+  .hse-reveal__witness {
+    max-width: 36rem;
+    padding: 2rem;
+    text-align: center;
+    display: grid;
+    gap: 0.8rem;
+  }
+  .hse-reveal__witness p,
+  .hse-reveal__witness span {
+    margin: 0;
+    color: var(--ink-muted);
+  }
+  .hse-reveal__witness strong {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 500;
+  }
+  svg {
+    width: 100%;
+    min-width: 42rem;
+  }
+  .hse-reveal__network {
+    width: 100%;
+    overflow-x: auto;
+  }
+  line {
+    stroke: #7f9ca6;
+    stroke-width: 2.5;
+    stroke-dasharray: 7 5;
+  }
+  circle {
+    fill: var(--surface);
+    stroke: #b9ccd2;
+    stroke-width: 2;
+  }
+  text {
+    fill: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+  details {
+    margin-top: 1rem;
+  }
+  details li + li {
+    margin-top: 0.65rem;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      scroll-behavior: auto !important;
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+    }
+  }
+</style>

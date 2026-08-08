@@ -4,29 +4,61 @@ subtitle: The Hanseatic League and the Geography of Privilege
 summary: >-
   A commercial system from London to Novgorod became powerful without acquiring
   a continuous territory. Its operative map survived in routes, privileges,
-  warehouses and archives.
+  warehouses, city jurisdictions and archives.
 cover: /covers/the-league-that-left-no-map.svg
 status: native
 eras: [Medieval, Early Modern]
-regions: [Baltic Sea, North Sea, Northern Europe]
+regions: [Baltic Sea, North Sea, Northern Europe, England, Low Countries, Scandinavia, Novgorod]
 lenses: [Measure, Witness, Use, Cosmos, Power, Silence]
 yearFrom: 1150
 yearTo: 1669
-mapCount: 0
-readingMinutes: 2
+mapCount: 8
+readingMinutes: 38
 accent: '#7f9ca6'
 order: 70
-featured: false
+featured: true
 room: road
 secondaryRooms: [city, archive]
 roomAnchor: false
 sections:
-  - id: lubeck-profile
-    title: Lübeck as a dated institutional phase
+  - id: prologue-remove-network
+    title: Remove the network
+    room: road
+    secondaryRooms: [archive, theatre]
+  - id: merchants-before-league
+    title: Merchants before the League
+    room: road
+    secondaryRooms: [archive]
+  - id: four-cities-inside-other-cities
+    title: Four cities inside other cities
     room: city
     secondaryRooms: [road, archive]
-publishedAt: '2026-08-06'
-updatedAt: '2026-08-06'
+  - id: city-is-unit
+    title: The city is the unit
+    room: city
+    secondaryRooms: [road]
+  - id: goods-draw-different-leagues
+    title: Goods draw different leagues
+    room: road
+    secondaryRooms: [city]
+  - id: power-without-sovereignty
+    title: Power without sovereignty
+    room: border
+    secondaryRooms: [road, archive]
+  - id: charter-is-a-map
+    title: The charter is a map
+    room: archive
+    secondaryRooms: [road]
+  - id: sea-becomes-legible
+    title: The sea becomes legible as the institution fragments
+    room: map
+    secondaryRooms: [road]
+  - id: epilogue-sea-between-cities
+    title: A sea between cities
+    room: road
+    secondaryRooms: [city, archive]
+publishedAt: '2026-08-08'
+updatedAt: '2026-08-08'
 releaseAt: '2099-01-01'
 metaScores:
   measure: 0.55
@@ -38,17 +70,584 @@ metaScores:
 ---
 
 import Section from '../../components/Section.astro';
-import HanseaticPlaceProfile from '../../components/hanseatic/HanseaticPlaceProfile.astro';
+import CityWitnessStrip from '../../components/hanseatic/CityWitnessStrip.astro';
+import CommodityNetworkMap from '../../components/hanseatic/CommodityNetworkMap.astro';
+import EvidenceLedger from '../../components/hanseatic/EvidenceLedger.astro';
+import KontorProfile from '../../components/hanseatic/KontorProfile.astro';
+import NetworkReveal from '../../components/hanseatic/NetworkReveal.astro';
+import PrivilegeTimeline from '../../components/hanseatic/PrivilegeTimeline.astro';
+import VeniceHanseaticComparison from '../../components/hanseatic/VeniceHanseaticComparison.astro';
 
-This held native shell proves the Hanseatic source-to-publication contract. It is
-not the essay draft: chronology, prose and corpus review remain in their assigned
-backlog items.
+<p class="essay-kicker">The Road · The City · The Archive · AD 1150–1669</p>
 
-<Section id="lubeck-profile" title="Lübeck as a dated institutional phase" rooms={['city', 'road', 'archive']}>
+<p>
+  Read beside <a href="/essays/invisible-maps-trade/">Invisible Maps of Trade</a>,{' '}
+  <a href="/essays/venice-sicily/">La Rotta e il Catasto</a>, and{' '}
+  <a href="/essays/cities-remember/">Cities Remember</a>.
+</p>
 
-The profile below is resolved from the generated HSE data projection. Its dates,
-classification, source key and Atlas target are not copied into this MDX file.
+# The League That Left No Map
 
-<HanseaticPlaceProfile placeId="lubeck" />
+## The Hansa connected half a continent, but possessed no shape that a map could easily hold.
+
+Draw northern Europe in the later Middle Ages and one temptation arrives before the ink is dry.
+Give the Hanseatic League a colour. Fill the towns that appear in a modern list, join them with
+lines, and let the resulting web stand for a political body. The picture will be immediately
+recognisable. It will also be too certain in almost every way that matters.
+
+The Hanse was not a kingdom with a stable frontier, a republic with one sovereign council, or a
+corporation with a surviving roll of members. It gathered merchants, towns, regional groupings,
+assemblies, overseas establishments, treaties, privileges and habits of cooperation that changed
+over centuries. A city could attend one Diet and not another. Merchants from a town could trade
+within the network without establishing a constitutional status that a modern database can safely
+call membership. A Kontor could exercise serious internal discipline while remaining inside the
+law and political authority of London, Bergen, Bruges or Novgorod. The vocabulary of a modern
+political map—border, capital, province, colony—therefore hides the mechanism it claims to reveal.
+
+This essay begins elsewhere: with witnesses that show cities, seas and documents but do not show a
+single Hanseatic territory. It treats absence as evidence of a mismatch between institution and
+cartographic form, not as proof that contemporaries failed to understand their commercial world.
+The maps knew how to depict the world they were made to depict. The problem is ours when we ask
+one image to perform the work of a privilege charter, an ordinance, a merchant oath, a city view
+and a route history at once.
+
+The interactive diagrams below are modern analytical reconstructions built from the published HSE
+datasets. Their lines are generalized relationships between documented nodes. Their dates are
+evidence windows, not a concealed membership list. Their commodity filters record qualitative
+associations, not cargo quantities. Whenever the historical sources support less certainty than the
+screen can display, the text and legend keep that limitation visible.
+
+<Section id="prologue-remove-network" title="Remove the network" rooms={['road', 'archive', 'theatre']}>
+
+Open the _Rudimentum Novitiorum_ at folios 85 verso and 86 recto. Printed in Lübeck by Lucas
+Brandis in 1475, the double-page woodcut gives a world organized through inherited universal
+history. Regions become hills or compartments. Cities rise as signs. East, south and north orient a
+cosmos in which sacred, historical and geographical order meet. Northern names are present:
+Gothia, Livonia, Dacia, Frisia, England and Muscovy belong to the printed world. What is absent is
+the commercial system surrounding the press that made the book.
+
+There are no Hanseatic routes, no Kontore, no warehouses and no visual grammar for a privilege
+negotiated in another ruler’s city. This is not a complaint that a world chronicle failed to become
+a trade atlas. It is a precise observation about a specific opening. A map printed at a leading
+Hanseatic centre could make the whole world meaningful without turning the Hansa into a visible
+object. The source therefore establishes a problem of representation, not a proposition that
+fifteenth-century merchants lacked geographical knowledge. [Evidence:
+`hse-claim-lubeck-worldmap-not-a-trade-map`](#hse-claim-lubeck-worldmap-not-a-trade-map).
+
+Now place a modern network over that opening. Lübeck connects east through Visby toward Novgorod,
+north toward Bergen, and west through North Sea cities toward London and Bruges. The lines make a
+relationship legible in seconds. They also import a powerful fiction: that the relationship existed
+as one simultaneous, bounded and measurable thing. A clean overlay tends to erase the difference
+between an itinerary and a treaty, a repeated commercial connection and a traced voyage, a
+merchant community and a town’s participation in collective action.
+
+The responsible reconstruction must therefore be removable. When the network disappears, the
+historical witness is not reduced to a blank background. Its own categories return. The
+_Rudimentum_ orders universal space, salvation history and accumulated geographic names. It does
+not wait passively for a twenty-first-century data layer to complete it. When the network returns,
+it should be read as our question laid over the source: where did relationships operate that this
+cartographic genre had no reason to draw?
+
+<NetworkReveal />
+
+The alternation matters because visualisation often makes analytical convenience look like
+historical presence. A line has endpoints, a stroke width and a continuous path. The evidence may
+support only repeated connection between places across a broad period. The HSE route table answers
+that problem by labelling every corridor with an evidence type and certainty term. The diagram
+answers it by keeping the historical witness and the reconstruction as different modes rather than
+blending them into one seamless authority.
+
+The Hansa left many maps in the ordinary sense: maps printed in its cities, maps used by merchants,
+charts of the seas through which ships moved, city views of the urban centres involved. What it did
+not leave was one contemporary map that corresponds to the modern desire for “the Hanseatic League”
+as a single territorial object. The absence is productive. It tells us to look for operative
+geography in other records and to return to maps with a different question.
 
 </Section>
+
+<Section id="merchants-before-league" title="Merchants before the League" rooms={['road', 'archive']}>
+
+Begin this time with a rule book. The Second Novgorod _Schra_, preserved in a Riga copy dated before
+1298, contains sixty-four articles for the overseas merchant community at Peterhof. Its world is
+made from oaths, mutual aid, duties and internal procedure. It offers no founding scene in which a
+League suddenly appears. Instead it shows merchants organizing life abroad and later encountering
+the growing regulatory reach of interurban assemblies.
+
+The word _hansa_ itself moved through this history. Modern scholarship traces it from communities
+of long-distance merchants toward later use for “the Hanse,” while warning that a change in
+language does not reveal a clean constitutional birth. Towns became involved through their
+merchants; merchant groupings and town cooperation overlapped rather than succeeding one another
+like governments in a chronology. [Evidence: `hse-claim-hanse-term-shift`](#hse-claim-hanse-term-shift).
+The Second _Schra_ supports the same layered reading: an oath-bound voluntary union existed before
+and alongside later Diet regulation. [Evidence:
+`hse-claim-merchant-to-town-regulation`](#hse-claim-merchant-to-town-regulation).
+
+That distinction changes how an origin story should be mapped. A conventional animation might
+begin with Lübeck, send a line to Visby, extend it to Novgorod and label the final frame “the
+League.” The sequence would turn a useful narrative corridor into a constitutional diagram. It
+would also imply that places nearer the line belonged earlier or more fully than places outside it.
+The sources permit a more modest claim: merchants, settlements and routes in this eastern corridor
+formed important contexts for cooperation; they do not supply a single institutional birth track.
+
+The problem becomes sharper around 1356. That year is often used for the beginning of regular
+general Diets, while the surviving copied series of recesses begins in 1361. The project records a
+1356–1361 evidence window rather than naming an uncontested first Hansetag. The modern synthesis
+also rejects the old story in which a merchant Hanse was simply replaced by a town Hanse at this
+moment. [Evidence: `hse-claim-hansetag-documentation-window`](#hse-claim-hansetag-documentation-window).
+There is an institutional change to describe, but no need to convert it into a foundation ceremony.
+
+This is why the gazetteer avoids `member_city`. The term sounds harmless, yet it presumes a stable
+body that could admit, record and remove members in a consistent way. The surviving evidence is
+more uneven. Attendance at a Diet, representation through another town, participation in a regional
+quarter, commercial association and the presence of merchants in an overseas establishment are
+different relationships. The HSE data keeps them different. Its broad AD 1356–1669 phases are
+analytical windows for visualisation, not claims that sixty towns possessed one unbroken status for
+313 years.
+
+The route from Lübeck through Visby to Novgorod remains valuable when its purpose is stated. It
+allows the reader to move between a leading convening city, a Baltic market and an overseas
+merchant compound. It gathers evidence that otherwise sits in separate archives. It helps explain
+why the Hansa is best approached through movement and institutional layering. What it cannot do is
+serve as the League’s spine, border or birth certificate.
+
+At Peterhof, the rules show a community substantial enough to discipline its participants. They
+also show the limits of that autonomy. The merchants lived and traded within Novgorod’s political
+world. Their compound was not a detached province. The discipline of the _Schra_ was real; so was
+the dependence of the establishment on relations with its host. That combination—internal order
+without territorial sovereignty—will recur in every principal Kontor.
+
+</Section>
+
+<Section id="four-cities-inside-other-cities" title="Four cities inside other cities" rooms={['city', 'road', 'archive']}>
+
+The London plate in the 1593 _Civitates Orbis Terrarum_ does something unusual. Beside its view of
+the city, a printed block headed “Stilliards” describes the Hansa as a confederated society of many
+cities. It says that the association has four emporia, which some call Kontore, where the cities’
+merchants reside; it then names the London house as the _Gildehalla Teutonica_, commonly called the
+Steelyard. The plate supplies a contemporary printed vocabulary for an institution the skyline
+alone cannot explain. [Evidence:
+`hse-claim-hansa-confoederata-societas`](#hse-claim-hansa-confoederata-societas) and
+`hse-claim-four-kontore-attested`](#hse-claim-four-kontore-attested).
+
+Those four overseas establishments—Novgorod, Bergen, London and Bruges—were not four colonies in a
+Hanseatic empire. They were merchant communities embedded in cities governed by others. Their
+privileges, spatial arrangements and internal regulations differed. Even “merchant compound,” the
+project’s controlled term, is a practical comparison rather than a claim that their physical forms
+were identical. What joins them is an institutional problem: how could merchants maintain a
+recognisable communal order abroad while depending on host-city and host-ruler authority?
+
+Peterhof answers through the Second _Schra_. Its articles bind merchants by oath, require mutual
+aid and organize conduct. Later Diet intervention demonstrates that the community’s internal rules
+were connected to a wider interurban order. Yet nothing in the selected evidence turns Peterhof
+into Hanseatic territory. The dossier uses AD 1295–1494 for the phase attested by the ordinance and
+its institutional afterlife, ending with the documented suppression of the establishment. Neither
+bound is promoted into a beginning or ending for the wider Hanse. [Evidence:
+`hse-claim-novgorod-second-schra`](#hse-claim-novgorod-second-schra).
+
+<KontorProfile kontorId="novgorod" />
+
+Bryggen answers through its harbour fabric and its court books. Warehouses, offices, dwellings,
+assembly rooms, kitchens and stone cellars made the community materially durable. Norwegian Crown
+privileges supported an internal commercial court, communal contributions, fire rules, elected
+officers and annual price lists. Such autonomy could be considerable without becoming sovereignty.
+The court books continue from 1633 to 1759; the last secretary left in 1761 and the archive moved to
+Lübeck in 1764. Bergen therefore refuses the idea that the general Diet of 1669 ended every
+Hanseatic institution at once. [Evidence:
+`hse-claim-bergen-court-and-afterlife`](#hse-claim-bergen-court-and-afterlife).
+
+<KontorProfile kontorId="bergen" />
+
+The Steelyard answers through a city view and thirty leaves of by-laws. The London plate locates the
+merchant house inside the metropolis and beside the river world on which its trade depended. The
+1554 ordinance regulates elections, internal jurisdiction, finance, conduct and training for a
+community described in the dossier as representing sixty-six towns. This was meaningful corporate
+self-government, but its foundation remained English privilege. Suppression in 1598 demonstrates
+the consequence: host authorities could close the selected institutional phase. [Evidence:
+`hse-claim-london-bylaws-1554`](#hse-claim-london-bylaws-1554).
+
+<KontorProfile kontorId="london" />
+
+Bruges answers through a dispersed documentary geography. Charters granted building rights at
+Oosterlingenplein and access to a House of Nations in 1458, staple rights in 1487 and reduced excise
+on Rhenish wine in 1502. Each concession connected a commercial activity to a place and a legal
+condition. None detached that place from the city’s authority. The dossier’s AD 1458–1502 span is
+therefore the window of the selected charter group, not the life of Hanseatic presence in Bruges.
+[Evidence: `hse-claim-bruges-chartered-rights`](#hse-claim-bruges-chartered-rights).
+
+<KontorProfile kontorId="bruges" />
+
+Together the four profiles reveal a geography inside geography. A merchant could cross a gate,
+enter a hall, sleep in a compound, submit to rules, elect officers, store goods and resolve disputes
+within an institution recognisable to colleagues from distant towns. Yet every one of those acts
+took place in a host political world. The Kontor was powerful precisely because it translated
+between internal organisation and external privilege. Calling it a colony erases that translation
+and replaces negotiated access with a territorial fiction.
+
+</Section>
+
+<Section id="city-is-unit" title="The city is the unit" rooms={['city', 'road']}>
+
+Look at the shared Lübeck and Hamburg plate in the _Civitates Orbis Terrarum_. Each city is given a
+portrait, name, arms, waterfront and civic claim. Lübeck’s cartouche calls it an imperial free city
+and head of the Wendish cities and the illustrious Hanseatic society. That wording is valuable as
+evidence of how a 1593 printed source described the city; it is not an independent constitutional
+proof that all Hanseatic authority radiated from one capital. [Evidence:
+`hse-claim-lubeck-societatis-caput`](#hse-claim-lubeck-societatis-caput).
+
+The city view is exceptionally good at making civic bodies appear coherent. Walls and waterways
+hold a settlement together. Towers and churches organise the skyline. Ships approach a named
+harbour. A title and heraldic device turn a dense urban field into a political individual. The
+Hansa, by contrast, appears indirectly. It can be named in a cartouche or descriptive paragraph,
+suggested by ships and warehouses, or inferred from relationships among several plates. It does
+not acquire a shared wall.
+
+This difference explains why the city is the most useful unit in the gazetteer. Lübeck, Hamburg,
+Bremen, Cologne, Gdańsk, Riga and dozens of other places can be located without pretending that
+their relationship created one territory. Their roles can be described: leading city, active city,
+represented town, market, Kontor host, foreign branch or commercial associate. Their participation
+terms can preserve uncertainty. Their historic and modern names can remain searchable. The Atlas
+can then assemble a network view for a selected year without baking a constitutional judgment into
+the coordinate itself.
+
+The Cologne plate demonstrates why careful naming matters. Its text speaks of a league of
+seventy-two cities and says Cologne was reckoned among four principal cities. The London plate, in
+the same volume, speaks of four Kontore. These are two different fours: one concerns a contemporary
+printed description of principal cities, the other overseas emporia. A map caption that says only
+“the four Hanseatic centres” would collapse separate institutional categories into a neat but false
+hierarchy.
+
+City portraits can also carry chronology in their grammar. The 1593 Bruges plate describes the
+city as having once been a most flourishing emporium. The past tense supports a narrative of lost
+commercial primacy without supplying a single date for decline. [Evidence:
+`hse-claim-bruges-emporium-past-tense`](#hse-claim-bruges-emporium-past-tense). The difference is
+important. A source can remember former greatness while the institutions associated with that
+greatness continue, relocate or change. Decline is not one switch that the map allows us to date.
+
+The witness strip makes this civic fragmentation visible. Most entries are city views from one
+rights-cleared Heidelberg volume. That concentration is itself part of the source story: six
+production witnesses depend on one repository and one digitised book. The interface therefore
+links to catalogue records carrying repository IDs and rights statements rather than presenting
+the plates as anonymous illustrations.
+
+<CityWitnessStrip />
+
+A city-based model does not claim that cities acted alone. Merchants, rulers, guilds, regional
+groupings and foreign communities appear throughout the evidence. It claims only that the city is
+a safer cartographic unit than an invented Hanseatic province. The city can be plotted, inspected
+and compared while the relationships around it remain dated and qualified. In this sense the city
+view’s limitation becomes a methodological advantage: it refuses to supply the common border that
+the institution never possessed.
+
+</Section>
+
+<Section id="goods-draw-different-leagues" title="Goods draw different leagues" rooms={['road', 'city']}>
+
+On the four-city plate that includes Bremen, the Lüneburg panel is captioned as a noble Saxon city
+famous for its salt works. That small textual claim points beyond civic portraiture. Salt links an
+inland production centre to Lübeck and to eastern corridors where it appears among the goods moving
+toward Novgorod. Select a different commodity and a different configuration emerges. Stockfish
+pulls the eye toward Bergen. Cloth connects western markets and eastern demand. Grain makes river
+and maritime passages legible. Wine and metals gather another set of relations around the Rhine
+and London.
+
+There was never one commodity network identical to “the Hansa.” Each family depended on different
+origins, seasons, intermediaries, privileges and destinations. A merchant association could be
+strong along one chain and weak along another. Towns that look peripheral in a diagram of fish may
+be central to salt or cloth. A generalized network becomes more historically useful when it can be
+redrawn by goods, provided that the redrawing does not pretend to measure what the sources do not
+measure.
+
+The HSE commodity table therefore contains families rather than cargo totals. Salt groups
+preserving and industrial uses without tonnage. Cloth joins finished and semi-finished textiles
+without claiming that grades and origins were interchangeable. Grain avoids crop-specific
+quantities. Timber gathers boards and forest products at corridor level. Wax, fur, stockfish,
+herring, wine, metals and beer follow the same rule: the category says that a relation is evidenced,
+not how much passed through it.
+
+This restraint is especially important for the later Sound Toll data that informs the modern
+network study used by the project. Those flow records begin after several medieval and early-modern
+phases displayed here, and their coverage has structural omissions. Projecting their quantities
+back into AD 1356, 1458 or 1554 would turn excellent later evidence into fabricated earlier volume.
+The HSE model uses that scholarship for identifiers, network context and carefully bounded
+associations. It does not back-project numbers.
+
+<CommodityNetworkMap />
+
+The Lübeck–Visby–Novgorod corridor illustrates the result. Its four commodity families include
+cloth and salt moving east and fur and wax moving west at a qualitative level. The path is a
+generalized mixed maritime and riverine reconstruction joining documented nodes. It is not an
+individual voyage. The Lübeck–Bergen corridor associates stockfish moving south and selected
+return-cargo families moving north, again without a share or total. Hamburg–London and
+Cologne–London represent different western relations even when both terminate in the same host
+city.
+
+The interface keeps every line the same weight. That visual decision is not merely aesthetic. A
+thicker line would invite the reader to infer volume. Animation speed would invite an inference
+about frequency or journey time. Direction arrows could imply a stable one-way flow where the
+underlying category is mixed. Instead the filter performs a simpler operation: show which authored
+corridors carry a normalized join to the selected commodity family, and disclose the evidence type,
+certainty and dates beside each route.
+
+Goods thus draw different leagues without defining separate constitutions. They reveal overlapping
+fields of dependence and access. Stockfish cannot explain the place of Cologne; Rhenish wine cannot
+explain Peterhof; salt cannot by itself explain the institutional endurance of Bryggen. Taken
+together, the families show why the Hansa was both coherent and difficult to bound. Its geography
+changed with the question being asked.
+
+</Section>
+
+<Section id="power-without-sovereignty" title="Power without sovereignty" rooms={['border', 'road', 'archive']}>
+
+Two treaty instruments dated 24 May 1370 record the Peace of Stralsund. They followed conflict in
+which the Cologne Confederation, overlapping only partly with the wider Hanse, confronted Denmark.
+The settlement renewed and expanded privileges and is often interpreted as a political high-water
+mark. The date is secure; the meaning needs qualification. A coalition’s success cannot be made
+identical to a permanent Hanseatic state. [Evidence:
+`hse-claim-stralsund-1370`](#hse-claim-stralsund-1370).
+
+The event shows power operating through access. The outcome mattered because privileges, trading
+conditions and the ability to move through a political maritime world could change. None of that
+required the victors to annex a continuous northern territory. Power could be exerted by
+coordination, embargo, negotiation, compensation, threat and the temporary withdrawal of merchants.
+Its map was a field of permitted and obstructed relations.
+
+The Flanders embargo of 1388 makes the limits equally visible. The Diet ordered merchants to leave
+Flanders and prohibited trade with Flemish merchants or goods that had passed through the county.
+The evidence also records widespread evasion. A legal act could attempt to close access without
+perfectly controlling behaviour. When merchants returned from Dordrecht to Bruges in December 1392,
+they did so after compensation and renewed concessions. The sequence is neither territorial conquest
+nor simple compliance. It is negotiated commercial geography unfolding through imperfect collective
+action.
+
+Privilege could be granted, confirmed, narrowed or suppressed. The Bruges charters locate rights in
+buildings, staples and excise. The London by-laws sit within privileges vulnerable to English
+decisions. Peterhof could be suppressed in 1494. The Steelyard’s selected late phase could be closed
+in 1598. Each event changes the network’s usable geography without redrawing the sovereignty of
+Europe.
+
+<PrivilegeTimeline />
+
+The timeline also resists a smooth rise-and-fall story. Sixteenth-century reorganisation and
+political fragmentation coincided with economic strength in parts of the network. The 1554 and 1557
+changes were not merely the final movement of a dying institution. [Evidence:
+`hse-claim-decline-not-linear`](#hse-claim-decline-not-linear). Different cities, routes and
+establishments followed different trajectories. Printed cartography of the north could become more
+detailed as the association’s collective political position became less commanding.
+
+This is the point at which a territory layer would do the most damage. Filling a Hanseatic polygon
+for 1370 would make diplomatic success look like sovereign possession. Shrinking it after 1494 or
+1598 would make the closure of overseas establishments look like lost provinces. Leaving the
+territory view empty is not a visual failure. It is the historically substantive choice. The proper
+alternatives are layers for places, corridors and institutional events, each with its own temporal
+and evidentiary contract.
+
+Power without sovereignty is not weak power. Merchants could secure durable privileges, organise
+collective responses and build institutions whose records survived for centuries. Towns could
+coordinate war and peace. Overseas communities could regulate conduct and adjudicate disputes. The
+qualification concerns the form of power: substantial effects did not require a single sovereign
+territory, and the map should not grant one after the fact.
+
+</Section>
+
+<Section id="charter-is-a-map" title="The charter is a map" rooms={['archive', 'road']}>
+
+Take the Bruges charter group as a spatial document. A grant in 1458 concerns building rights at
+Oosterlingenplein and a House of Nations. A 1487 charter concerns staple rights for merchandise
+moving through Flanders and Brabant. A 1502 concession reduces excise on Rhenish wine. Read in
+sequence, the documents define places, goods, obligations and routes of access more precisely than
+a small-scale map of northern Europe could.
+
+A charter is not literally a cartographic image. Yet it can perform cartographic work. It names
+where an activity may occur, who may undertake it, which authority grants permission, what payment
+is modified and how movement through a jurisdiction is structured. The operative geography lies in
+conditions. Remove the conditions from a route line and the line becomes an abstract possibility.
+Restore them and the route becomes a historically situated permission.
+
+The London ordinance performs a related operation inside the merchant community. Elections,
+finance, jurisdiction, conduct and training organize a social space. The rules make the Steelyard
+more than a warehouse marker. They tell us how a group reproduced itself, disciplined participants
+and managed common affairs. The city view provides location and public description; the ordinance
+provides procedures. Neither source is complete, but their difference is productive.
+
+Peterhof’s _Schra_ reaches further back. Its oath and mutual-aid provisions turn a group of
+travelling merchants into a regulated community without creating a sovereign enclave. Later Diet
+intervention writes interurban authority into that local rule system. The document therefore maps
+institutional scale: participant, merchant compound, leading legal tradition and collective town
+assembly overlap in one record.
+
+Bryggen’s court books extend the method through time. Annual entries about disputes, fees, safety,
+office holders and prices make continuity visible at a resolution no general map can match. They
+also reveal why end dates must attach to specific institutions. A last general Diet in 1669 does not
+close court books that continue to 1759. The departure of a last secretary in 1761 and transfer of
+an archive in 1764 are Bergen events, not universal dissolution dates.
+
+Archives pose a visual challenge. The most important documentary objects are not always available
+under terms that permit reproduction. The Peterhof copy, Bergen court books and London ordinance
+are identified to repositories and shelfmarks, but their archival images remain restricted. The
+Bruges charters are treated as public-domain objects, yet a direct repository surrogate has not
+been secured. The catalogue therefore publishes metadata, rights status and evidence without
+smuggling a convenient image from a dealer or an unlicensed reproduction into the essay.
+
+This absence must remain visible too. A polished visual essay can create pressure to fill every
+section with an image. Doing so would make licensing convenience govern historical importance. The
+better approach distinguishes a rights-cleared visual witness from a reference-only documentary
+record. A reader can inspect the citation, source key, page or folio locator and publication status
+even where no image appears.
+
+The charter is a map, then, in two senses. Historically, it organizes access through words rather
+than lines. Editorially, it directs the project toward a responsible representation of what can be
+shown, what can only be described and what remains to be cleared. The archive does not sit behind
+the map as supporting detail. It supplies the operative geography that the map cannot carry.
+
+</Section>
+
+<Section id="sea-becomes-legible" title="The sea becomes legible as the institution fragments" rooms={['map', 'road']}>
+
+Olaus Magnus’s _Carta Marina_ of 1539 makes the northern seas abundant. Coasts, islands, towns,
+ships, animals, currents of attention and regions of wonder crowd a monumental printed surface. The
+north is no longer a sparse edge of a universal diagram. It has become a richly differentiated
+world that invites movement and comparison.
+
+That new visibility does not amount to a map of the Hansa. The _Carta Marina_ shows places and
+maritime life, not a constitutional network. Its importance here lies in historical juxtaposition.
+Northern cartography grows more elaborate during centuries in which Hanseatic institutions adapt,
+compete and fragment. Better mapped seas do not produce a clearer outline for an association whose
+power still rests in relations rather than common territory.
+
+Later sixteenth-century charts and atlases sharpen the paradox. Cornelis Anthonisz’s _Caerte van
+Oostlant_, Ortelius’s northern regional sheets and Waghenaer’s _Spieghel der Zeevaerdt_ belong to a
+world of increasingly standardised printed navigation and regional description. Dutch competition,
+territorial states and changing commercial structures altered the conditions under which Hanseatic
+collective power operated. The sea becomes more legible at the same time that the institution is
+less easily narrated as a single dominant arc.
+
+The 1593 city plates contribute another kind of legibility. Lübeck, Hamburg, London, Bruges,
+Cologne and Bremen can be compared as visible urban bodies. Their texts name commercial roles and
+institutional claims. Yet the volume still requires a reader to assemble the association across
+separate pages. The Hansa exists between images: in shared vocabulary, linked goods, repeated
+privileges and remembered status.
+
+This is why an analytical Atlas remains useful. It can put the HSE place, route and event layers on
+one temporal interface; allow historic and modern names to be searched; preserve a selected feature
+in a deep link; and expose source metadata in a panel. It can do what no one historical map was made
+to do. Its authority, however, depends on refusing to imitate a recovered original. The Atlas is a
+research instrument assembled from distinct evidence classes.
+
+The difference is visible in line style and language. A documented repeated connection can be
+distinguished from a generalized reconstruction. Medium certainty can be dashed rather than merely
+coloured. Event points carry actors and targets instead of becoming anonymous dates. Place roles
+remain categories of evidence and participation, not ranks in a state hierarchy. A user who cannot
+perceive colour can still read the distinctions; a user who turns off motion loses no information.
+
+As cartography becomes more capable of describing the sea, it also teaches a caution. Richness of
+display is not completeness of institution. A chart may know harbours and hazards while omitting
+privileges. A city atlas may know walls and quays while omitting commodity chains. A network diagram
+may know relationships while omitting the textual instruments that made them lawful. Every form
+clarifies by selecting.
+
+</Section>
+
+<Section id="epilogue-sea-between-cities" title="A sea between cities" rooms={['road', 'city', 'archive']}>
+
+Return finally to the Bruges view of 1593. Its text remembers a city that had once been a most
+flourishing emporium. The image itself remains full, ordered and dignified. Former commercial
+primacy does not appear as a ruined gap in the engraved city. Decline enters through tense, through
+comparison with charters and relocations, and through knowledge of relationships that the plate
+cannot draw.
+
+The last general Hanseatic Diet in 1669 offers a similar editorial temptation. It is a useful
+terminus for the essay because it closes the regular general-assembly sequence used by the project.
+It is not a formal dissolution. Lübeck, Hamburg and Bremen continued to act together, and Bergen’s
+institutional records and office-holders followed their own chronology. [Evidence:
+`hse-claim-1669-conventional-terminus`](#hse-claim-1669-conventional-terminus). The essay ends at a
+documented threshold, not at the disappearance of every Hanseatic practice.
+
+What remains after the network is removed? Cities, first. Lübeck and Hamburg face their waterways;
+Bruges remembers an emporium; London contains the Steelyard; Bergen’s harbour fabric outlives the
+general Diet; Novgorod preserves the memory of Peterhof through a copied rule text. None is a
+fragment of a missing national territory. Each is a political place in its own right, connected to
+others through selective institutions.
+
+Routes remain too, but as claims with limits. The seven published corridors do not recover ship
+tracks. They connect waypoints at the level supported by the project’s evidence and disclose where
+the reconstruction is generalized. Their commodity joins show that the network changes when the
+question changes. Their dates are bounded by selected evidence, not by an imagined continuous
+membership.
+
+Documents remain most powerfully. A treaty can alter access across a sea. An embargo can attempt to
+close a market and be evaded. A charter can assign building and staple rights. An ordinance can
+organise elections and jurisdiction. A court book can carry an institution past the conventional
+end of its wider assembly. These texts are not illustrations of a map hidden elsewhere. Together
+they are the map of operative relations.
+
+The comparison with Venice clarifies the argument by resisting symmetry. Venice was a republic
+that held territories, governed possessions, organised convoys and maintained foreign quarters.
+The Hansa was a looser association of merchants and autonomous towns whose collective reach rested
+in privileges, meetings and overseas communities. Both can be studied through routes, commodities,
+ports and documentary evidence. They must remain separate data sources because similar commercial
+forms operated within different political structures.
+
+<VeniceHanseaticComparison />
+
+The point is not that Venice was territorial and the Hansa was immaterial. Venetian power also
+depended on negotiation, and Hanseatic power produced substantial buildings, archives and coercive
+effects. The comparison asks a narrower question: what kinds of political claim become visible when
+we switch among territory, route, foreign quarter, commodity, authority and evidence? A single
+colour wash answers only one of those questions and answers the Hanseatic case particularly badly.
+
+A sea between cities is not empty space. It is filled by voyages, seasons, dangers, credit,
+translation, storage, tolls, privileges and expectations. Yet those relations do not necessarily
+compose a sovereign body. The Hansa’s historical importance lies partly in its capacity to sustain
+continental-scale cooperation without acquiring the shape modern cartography most readily
+recognises.
+
+That is why the League left no map adequate to the name we give it. The cartographic record is not
+silent: it shows worlds, seas and cities with extraordinary force. The institutional record is not
+silent either: it preserves rules, charters, treaties, recesses and court books. The silence appears
+only when we demand that one medium display every relation at once.
+
+The answer is not to invent the missing territory. It is to keep the sources in productive tension.
+Show the city, then ask what joins it to another. Draw the corridor, then state whether it is a
+documented connection or a generalized reconstruction. Name the privilege, then name the host
+authority. Mark 1669, then follow Bergen to 1764. Let the network appear—and let it disappear—so
+that the evidence beneath the line remains visible.
+
+</Section>
+
+<EvidenceLedger
+  claimIds={[
+    'hse-claim-lubeck-worldmap-not-a-trade-map',
+    'hse-claim-hanse-term-shift',
+    'hse-claim-merchant-to-town-regulation',
+    'hse-claim-hansetag-documentation-window',
+    'hse-claim-hansa-confoederata-societas',
+    'hse-claim-four-kontore-attested',
+    'hse-claim-novgorod-second-schra',
+    'hse-claim-bergen-court-and-afterlife',
+    'hse-claim-london-bylaws-1554',
+    'hse-claim-bruges-chartered-rights',
+    'hse-claim-lubeck-societatis-caput',
+    'hse-claim-bruges-emporium-past-tense',
+    'hse-claim-stralsund-1370',
+    'hse-claim-decline-not-linear',
+    'hse-claim-1669-conventional-terminus',
+  ]}
+/>
+
+## Sources and further reading
+
+- Wubs-Mrozewicz, Justyna. “The Hanse in Medieval and Early Modern Europe: An
+  Introduction.” In _The Hanse in Medieval and Early Modern Europe_, edited by
+  Justyna Wubs-Mrozewicz and Stuart Jenks, 1–24. Leiden: Brill, 2013.
+- Archives of the Hanse. _Documents on the History of the Hanse_. UNESCO Memory
+  of the World International Register nomination dossier, 2017.
+- Henn, Volker. “Hanseatic League.” Research on the Zuiderzee and IJssel towns,
+  cited in the HSE evidence ledger for documented Diet participation.
+- Lambert, Bart, and Louis Sicking. Study of Hanseatic conflict, embargo and
+  negotiation in late-fourteenth-century Flanders, 2025.
+- Marczinek, Philipp, Stephan Maurer and Ferdinand Rauch. Open city and maritime
+  network data accompanying their study of the Hanse and the Sound Toll, 2025.
+- _Rudimentum Novitiorum_. Lübeck: Lucas Brandis, 1475. Bayerische
+  Staatsbibliothek, bsb00031549, ff. 85v–86r.
+- Braun, Georg, and Frans Hogenberg. _Civitates Orbis Terrarum_, vol. I. Cologne, 1593. Universitätsbibliothek Heidelberg, digitised volume braun1593bd1.
+- Magnus, Olaus. _Carta Marina et descriptio septemtrionalium terrarum_. Venice, 1539. Uppsala University Library, Alvin record 88495.

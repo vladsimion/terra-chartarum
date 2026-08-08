@@ -108,6 +108,26 @@ const ROUTES = routes as HanseaticRoute[];
 const COMMODITIES = commodities as HanseaticCommodity[];
 const EVENTS = events as HanseaticInstitutionalEvent[];
 
+export interface HanseaticNetworkNode {
+  id: string;
+  label: string;
+  coordinates: [number, number];
+  routeIds: string[];
+}
+
+export interface HanseaticNetworkEdge {
+  id: string;
+  source: string;
+  target: string;
+  routeId: string;
+}
+
+export interface HanseaticNetwork {
+  nodes: HanseaticNetworkNode[];
+  edges: HanseaticNetworkEdge[];
+  routes: HanseaticRoute[];
+}
+
 /** True when research has not yet filled this field, so callers never print `pending`. */
 export function isPending(value: string): boolean {
   return value.trim() === HSE_PENDING;
@@ -115,6 +135,10 @@ export function isPending(value: string): boolean {
 
 export function listHanseaticKontore(): HanseaticKontor[] {
   return KONTORE;
+}
+
+export function listHanseaticPlaces(): HanseaticPlacePhase[] {
+  return PLACE_PHASES;
 }
 
 export function listHanseaticRoutes(): HanseaticRoute[] {
@@ -127,6 +151,54 @@ export function listHanseaticCommodities(): HanseaticCommodity[] {
 
 export function listHanseaticEvents(): HanseaticInstitutionalEvent[] {
   return EVENTS;
+}
+
+/**
+ * Build an abstract route graph from generated waypoint IDs and place
+ * coordinates. This is intentionally not a voyage reconstruction: components
+ * use it for relational diagrams while the Atlas keeps the authored route
+ * geometry in the publication assets.
+ */
+export function getHanseaticNetwork(): HanseaticNetwork {
+  const routesByPlace = new Map<string, Set<string>>();
+  const edges: HanseaticNetworkEdge[] = [];
+
+  for (const route of ROUTES) {
+    const waypoints = route.waypoints.split('|').filter(Boolean);
+    for (const placeId of waypoints) {
+      const routeIds = routesByPlace.get(placeId) ?? new Set<string>();
+      routeIds.add(route.id);
+      routesByPlace.set(placeId, routeIds);
+    }
+    for (let index = 1; index < waypoints.length; index += 1) {
+      edges.push({
+        id: `${route.id}:${index - 1}`,
+        source: waypoints[index - 1],
+        target: waypoints[index],
+        routeId: route.id,
+      });
+    }
+  }
+
+  const nodes = [...routesByPlace]
+    .map(([placeId, routeIds]) => {
+      const place = getHanseaticPlacePhase(placeId);
+      return {
+        id: placeId,
+        label: place.name,
+        coordinates: place.coordinates,
+        routeIds: [...routeIds].sort(),
+      };
+    })
+    .sort((a, b) => a.label.localeCompare(b.label));
+
+  return { nodes, edges, routes: ROUTES };
+}
+
+export function listHanseaticRoutesForCommodity(commodityId: string): HanseaticRoute[] {
+  return ROUTES.filter((route) =>
+    route.commodity_joins.some((join) => join.commodity_id === commodityId),
+  );
 }
 
 export function getHanseaticKontor(kontorId: string): HanseaticKontor {
@@ -175,6 +247,24 @@ export function toHanseaticAtlasHref(phase: HanseaticPlacePhase): string {
     year: String(phase.valid_from),
     layers: 'hanseatic-places',
     feature: phase.id,
+  });
+  return `/atlas?${params.toString()}`;
+}
+
+export function toHanseaticRouteAtlasHref(route: HanseaticRoute): string {
+  const params = new URLSearchParams({
+    year: String(route.valid_from),
+    layers: 'hanseatic-routes',
+    feature: route.id,
+  });
+  return `/atlas?${params.toString()}`;
+}
+
+export function toHanseaticEventAtlasHref(event: HanseaticInstitutionalEvent): string {
+  const params = new URLSearchParams({
+    year: String(event.valid_from),
+    layers: 'hanseatic-events',
+    feature: event.id,
   });
   return `/atlas?${params.toString()}`;
 }
