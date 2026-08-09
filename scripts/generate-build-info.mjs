@@ -32,7 +32,11 @@ const info = {
   builtAt: new Date().toISOString(),
   branch: process.env.CF_PAGES_BRANCH ?? process.env.GITHUB_REF_NAME ?? null,
   deployment: {
-    provider: process.env.CF_PAGES ? 'cloudflare-pages' : process.env.GITHUB_ACTIONS ? 'github-actions' : 'local',
+    provider: process.env.CF_PAGES
+      ? 'cloudflare-pages'
+      : process.env.GITHUB_ACTIONS
+        ? 'github-actions'
+        : 'local',
     url: process.env.CF_PAGES_URL ?? null,
   },
   releases: {
