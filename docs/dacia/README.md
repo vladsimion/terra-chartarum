@@ -16,6 +16,16 @@ There is no compile step yet. KAN-337 adds the deterministic CND 0.1 build and
 its release manifest; until then the tables are the artefact and the validator
 is the gate.
 
+The reference directory also holds two pre-digitisation research ledgers:
+[`hiatus-witness-families.csv`](../../data/dacia/reference/hiatus-witness-families.csv)
+for KAN-348 and
+[`treaty-frontier-sources.csv`](../../data/dacia/reference/treaty-frontier-sources.csv)
+for KAN-351. Their minimum sets are hash-frozen together in
+[`source-ledger-manifest.json`](../../data/dacia/reference/source-ledger-manifest.json).
+See the [witness audit](./hiatus-witness-audit.md) and
+[frontier source ledger](./treaty-frontier-source-ledger.md) for the review and
+rights boundaries.
+
 ## The trench roster
 
 | ID      | Trench                                   | Epic    | Campaign |

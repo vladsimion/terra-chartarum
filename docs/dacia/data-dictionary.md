@@ -246,3 +246,25 @@ a new version and hash fails the gate. See
 [`README.md`](./README.md). `gates.csv`, `trench-gates.csv`, `campaigns.csv` and
 `verification-debt.csv` carry the Definition of Done; see
 [`definition-of-done.md`](./definition-of-done.md).
+
+## Research source ledgers (KAN-348, KAN-351)
+
+`reference/hiatus-witness-families.csv` is one row per candidate evidence
+family. `historical_question` and `coverage_scope` define what the witness can
+answer; `survival_limitations` records what may be missing;
+`silence_assessment` records the later evidential decision. The validator keeps
+those concerns separate and refuses `meaningful_silence` until a row is
+`reviewed`. `not_applicable` is an explicit result, not a euphemism for silent.
+
+`reference/treaty-frontier-sources.csv` is one row per selected legal source.
+`record_type` separates proposals, negotiated lines, final instruments,
+implementation instruments, arbitration awards, armistices, and later
+reconstructions. An ambiguous or disputed interpretation must name its
+alternatives and confidence. `geometry_status` only describes the source's
+pre-digitisation state; it cannot assert authoritative geometry.
+
+Both tables require repository, citation/locator, HTTPS source URL, rights
+posture, and review status. Rows marked `minimum_set: yes` must exactly match
+the IDs and SHA-256 values in `reference/source-ledger-manifest.json`, so a
+change requires a dated re-freeze rather than silently altering the research
+brief.
