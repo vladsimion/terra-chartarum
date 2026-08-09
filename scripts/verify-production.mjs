@@ -1,3 +1,5 @@
+import { setTimeout as sleep } from 'node:timers/promises';
+
 const origin = (process.env.PRODUCTION_ORIGIN ?? 'https://terra-chartarum.pages.dev').replace(
   /\/$/,
   '',
@@ -11,10 +13,8 @@ if (!expectedSha) {
   process.exit(2);
 }
 
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
 async function get(path, { json = false } = {}) {
-  const response = await fetch(`${origin}${path}`, {
+  const response = await globalThis.fetch(`${origin}${path}`, {
     headers: { 'cache-control': 'no-cache', pragma: 'no-cache' },
     redirect: 'follow',
   });
