@@ -82,10 +82,32 @@ applicable". It is tolerated only while a record is `raw`; promoting a record is
 what forces its pending fields to be filled. An unfinished table stays loudly
 unfinished instead of quietly looking finished.
 
-Every record currently in the corpus is seeded from Trench A at `raw` or
-`normalized` with `normalization_method: llm_assisted` and no reviewer. Nothing
-here is published evidence yet; KAN-334 and KAN-335 do the transcription and the
-human review.
+Every record currently in the corpus is compiled at `raw` or `normalized` with
+`normalization_method: llm_assisted` and no reviewer. Nothing here is published
+evidence. The compilation is done (KAN-334/335); the human review is not, and
+cannot be done by whatever compiled the rows.
+
+### Promotion is a tool, not a column (KAN-335)
+
+`scripts/dacia/review.py` is how a record moves up the ladder, and its one
+important property is that it cannot be used to fake the move:
+
+```bash
+python3 scripts/dacia/review.py queue --verbose
+```
+
+```bash
+python3 scripts/dacia/review.py promote att-0002 --reviewer "Name" --set locator_type=sheet --set 'locator=segm. VIII'
+```
+
+Every promotion is written to a scratch copy of the tables, validated with the
+ordinary gate, and kept only if the gate passes. A reviewer who has not supplied
+a locator, or whose reading was captured from this project's own display rather
+than from a witness, gets the refusal and nothing on disk changes.
+
+`queue` computes what is blocking each record by trial-promoting it against the
+real validator, so the tool never carries a second copy of the rules that could
+drift from the first.
 
 ## `places.csv` (KAN-332)
 
@@ -95,7 +117,15 @@ name the project uses to talk about the place, not a claim about any source.
 `ref_lon` / `ref_lat` are the normalized reference location in EPSG:4326
 degrees, checked against a Dacia bounding box - which is what catches a
 transposed pair, since a swap stays inside the global range and would otherwise
-validate. `ref_geometry_provenance` says where that location came from.
+validate. `ref_geometry_provenance` says where that location came from, and
+`modern_reference` is the common case: the living settlement's own coordinates,
+which are a reference point rather than a historical claim about anything.
+
+`location_status` (KAN-334) is `located` or `unlocated`. An **unlocated** place
+carries no coordinates and no provenance at all, and must record why. This
+exists because the pilot deliberately includes Vicina, which is well attested
+and whose site is unsettled: publishing one of the candidate positions would
+convert an open question into a point on a map, and the schema refuses to let it.
 
 External identifiers (`pleiades_id`, `whg_id`) are optional and gated by
 `external_verified`. The rule cuts both ways: `yes` with no identifier fails,
@@ -116,6 +146,18 @@ scope cannot support an absence, so the compiler refuses one.
 for any particular reproduction: the Trench A sources are public domain as
 works while their witness images remain institutionally held. Reproduction
 rights are cleared per image, at the rights gate, not by this column.
+
+`source_family` (KAN-334) classifies the kind of witness - coordinate
+catalogue, itinerary, mappa mundi, portolan, regional print, antiquarian
+reconstruction, military survey, national survey, digital survey. The pilot has
+to argue across evidence regimes rather than pile up one kind of witness, so the
+compiler requires at least four distinct families.
+
+`edition_state` and `repository_object_id` are optional while a source is being
+compiled and **required before it can be reviewed**. A repository that cannot
+state its own object identifier has not really been checked, and the bar is
+placed at review rather than at compilation so that unfinished work can still be
+recorded honestly.
 
 ## `attestations.csv` (KAN-332)
 
@@ -139,13 +181,59 @@ source giving a place two names is two rows - the Josephinian sheet prints
 Klausenburg and Kolozsvár side by side, and they are separate claims in separate
 languages.
 
+`locator_type: whole_work` (KAN-335) is the documented maximum precision for an
+indivisible witness - a single-sheet map has no folio to cite. It is not a way
+round the locator rule: a reviewed row using it must say why nothing finer
+exists.
+
+`last_verified` records when the row was last checked against its source, as
+against `review_date` which records when it was first cleared. Approved rows
+need both.
+
+## `transcriptions.csv` (KAN-335)
+
+Raw capture, kept in its own table so that normalisation can never quietly
+overwrite what the witness carried. One row per reading, holding the `verbatim`
+string, where it came from (`capture_source`), when, and by what method.
+
+`capture_method` is the load-bearing column. `from_witness` and `from_edition`
+are the two that can support a reviewed attestation; `from_secondary` and
+`from_local_display` cannot. Every reading currently in the corpus is
+`from_local_display` - captured from this project's own exhibition rather than
+from any witness - which is precisely why none of them can be promoted. That is
+the migration discipline stated as data: **moving a reading out of Terra
+Sigillata does not make it evidence, it only makes it a candidate.**
+
+## `name-uses.csv` and `name-use-edges.csv` (KAN-336)
+
+What a name meant, when, and to whom. A `name_use` pairs a `lexical_form` with a
+referent, a period, a `fate_class` and either a source or the institution that
+exercised it. The fate classes are `translatio` (the name is carried to another
+referent), `restitutio` (restored to one it formerly held), `inventio` (coined
+for a referent that never carried it), `applicatio` (applied to a new
+administrative entity) and `commercium` (passed into branded use).
+
+**Relationships are rows, never inferences.** `name-use-edges.csv` holds the
+links, and the four kinds are `continuity`, `derivation`, `revival` and
+`homonym_only`. A `continuity` edge must cite an attestation: a shared string is
+not a relationship, and the compiler will not let one become one. A `revival`
+must name the instrument that reinstated the name.
+
+`homonym_only` is the edge that does the real work. Roman Dacia and the Dacia of
+the Hereford map share a word and nothing else, and the corpus says so in a row
+rather than leaving a reader to join them up by eye. A use that shares its form
+with another and is joined to none of them fails validation, so every homonym
+has to be adjudicated one way or the other.
+
 ## `pilot/` (KAN-333)
 
 `trench-a-inventory.csv` gives every Trench A place or source datum a
 disposition: `migrate`, `link`, `preserve_local` or `retire`. A `migrate` row
 also carries a `migration_state` - `done`, `partial` or `planned` - and the rule
 cuts both ways: a `done` target must resolve in its authority table, and a
-`planned` target that already exists is stale bookkeeping and fails.
+`planned` target that already exists is stale bookkeeping and fails. An
+attestation set additionally counts `migrated_cells` against `cell_count`, and
+the state has to agree with the count rather than be asserted beside it.
 
 `pilot-places.csv` is the frozen 40-place pilot; `pilot-manifest.json` records
 its version, freeze date, count and SHA-256. Editing the pilot without recording

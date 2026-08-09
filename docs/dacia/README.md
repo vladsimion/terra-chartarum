@@ -58,6 +58,7 @@ Entities carry a typed prefix, registered in
 | `src-` | source            | `cnd-0.1`              |
 | `att-` | attestation       | `cnd-1.0`              |
 | `nmu-` | name use          | `cnd-1.0`              |
+| `nue-` | name-use edge     | `cnd-1.0`              |
 | `obj-` | collection object | Trench G release       |
 | `frn-` | frontier segment  | GIS release            |
 
@@ -106,8 +107,14 @@ npm run dacia:validate
 npm run dacia:test
 ```
 
+```bash
+python3 scripts/dacia/review.py queue --verbose
+```
+
 `dacia:validate` runs inside `npm run build`. `dacia:test` needs pytest, which
 is not vendored - use the venv from `make vmn-venv`, or install it yourself.
+`review.py` is the adjudication workflow: it promotes a record only if the
+ordinary gate still passes afterwards, so an unearned promotion writes nothing.
 
 See [`data-dictionary.md`](./data-dictionary.md) for the schemas,
 [`definition-of-done.md`](./definition-of-done.md) for the gates, and
