@@ -17,12 +17,16 @@ async function get(path, { json = false } = {}) {
     headers: { 'cache-control': 'no-cache', pragma: 'no-cache' },
     redirect: 'follow',
   });
-  if (!response.ok) throw new Error(`${path} returned HTTP ${response.status}`);
+  if (!response.ok) {
+    throw new Error(`${path} returned HTTP ${response.status}`);
+  }
   return json ? response.json() : response.text();
 }
 
 async function verify() {
-  const info = await get(`/build-info.json?verify=${Date.now()}`, { json: true });
+  const info = await get(`/build-info.json?verify=${Date.now()}`, {
+    json: true,
+  });
   if (info.gitSha !== expectedSha) {
     throw new Error(
       `deployed SHA ${info.gitSha} does not match expected ${expectedSha}`,
