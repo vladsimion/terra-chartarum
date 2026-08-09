@@ -34,6 +34,15 @@ See the [witness audit](./hiatus-witness-audit.md) and
 [frontier source ledger](./treaty-frontier-source-ledger.md) for the review and
 rights boundaries.
 
+The next research tranche adds the filterable
+[Hiatus timeline](./hiatus-timeline.md), the
+[Carta Rubra evidence package](./carta-rubra-evidence-package.md), and the
+[bounded Borroczyn seam](./borroczyn-seam-source-package.md). Their tables and
+the seam GeoJSON are hash-frozen in
+[`research-package-manifest.json`](../../data/dacia/reference/research-package-manifest.json).
+These are candidate research packages: a valid table is not a substitute for a
+named scholarly review or a production reuse grant.
+
 ## The trench roster
 
 | ID      | Trench                                   | Epic    | Campaign |
