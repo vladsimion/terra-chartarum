@@ -43,6 +43,28 @@ MIGRATION_STATES = {"done", "partial", "planned"}
 GATE_STATUSES = {"pending", "partial", "passed", "waived"}
 TABLE_STATES = {"live", "planned", "reserved"}
 SOURCE_LEDGER_REVIEW_STATES = {"candidate", "source_checked", "reviewed"}
+HIATUS_ABSENCE_CLASSES = {
+    "not_surveyed",
+    "not_asked",
+    "not_named",
+    "named_elsewhere",
+    "extra_muros",
+    "survival_unknown",
+}
+RESEARCH_SOURCE_TYPES = {"map_witness", "statistical_table", "diplomatic_context"}
+RESEARCH_RESOLUTION_STATES = {"sufficient", "catalogue_preview_only", "unverified"}
+RESEARCH_PRODUCTION_ROLES = {
+    "production_primary",
+    "production_fallback",
+    "research_only",
+}
+OPEN_PRODUCTION_RIGHTS = {"no_known_restrictions", "cc_by_sa_4_0", "odbl_1_0"}
+BORROCZYN_SOURCE_TYPES = {
+    "borroczyn_witness",
+    "later_reference",
+    "modern_reference",
+    "context",
+}
 HIATUS_SILENCE_ASSESSMENTS = {"not_assessed", "not_applicable", "meaningful_silence"}
 HIATUS_APPLICABILITY = {"applicable", "place_names_only", "not_applicable"}
 SOURCE_LEDGER_RIGHTS = {
@@ -53,6 +75,12 @@ SOURCE_LEDGER_RIGHTS = {
     "rights_review_required",
     "un_reuse_review_required",
     "us_government_work",
+}
+RESEARCH_RIGHTS = SOURCE_LEDGER_RIGHTS | {
+    "cc_by_sa_4_0",
+    "no_copyright_us",
+    "odbl_1_0",
+    "teaching_use_only",
 }
 TREATY_RECORD_TYPES = {
     "proposal_map",
@@ -142,7 +170,12 @@ TABLES = {
     "campaigns": f"{REFERENCE}/campaigns.csv",
     "verification_debt": f"{REFERENCE}/verification-debt.csv",
     "hiatus_witness_families": f"{REFERENCE}/hiatus-witness-families.csv",
+    "hiatus_absence_classes": f"{REFERENCE}/hiatus-absence-classes.csv",
+    "hiatus_timeline": f"{REFERENCE}/hiatus-timeline.csv",
     "treaty_frontier_sources": f"{REFERENCE}/treaty-frontier-sources.csv",
+    "carta_rubra_sources": f"{REFERENCE}/carta-rubra-sources.csv",
+    "carta_rubra_claims": f"{REFERENCE}/carta-rubra-claims.csv",
+    "borroczyn_seam_sources": f"{REFERENCE}/borroczyn-seam-sources.csv",
     "places": "places.csv",
     "sources": "sources.csv",
     "attestations": "attestations.csv",
@@ -154,6 +187,7 @@ TABLES = {
 }
 PILOT_MANIFEST = f"{PILOT}/pilot-manifest.json"
 SOURCE_LEDGER_MANIFEST = f"{REFERENCE}/source-ledger-manifest.json"
+RESEARCH_PACKAGE_MANIFEST = f"{REFERENCE}/research-package-manifest.json"
 
 
 def _read(key: str, errors: list[str]) -> list[dict[str, str]]:
@@ -1084,6 +1118,328 @@ def validate_treaty_frontier_sources(errors: list[str]) -> None:
         errors.append(f"treaty-frontier-sources: frozen set is missing record types {sorted(missing)}")
 
 
+def validate_hiatus_timeline(errors: list[str]) -> None:
+    """KAN-349: machine-readable absence states stay below unearned review."""
+    classes = _read("hiatus_absence_classes", errors)
+    _check_unique(classes, "absence_class", "hiatus-absence-classes", errors)
+    class_names = {row["absence_class"] for row in classes}
+    if missing := HIATUS_ABSENCE_CLASSES - class_names:
+        errors.append(f"hiatus-absence-classes: missing required classes {sorted(missing)}")
+
+    for row in classes:
+        label = f"hiatus-absence-classes[{row['absence_class']}]"
+        if row["absence_class"] not in HIATUS_ABSENCE_CLASSES:
+            errors.append(f"{label}: absence_class is not recognised")
+        if row["evidential_weight"] not in {"none", "conditional", "contextual"}:
+            errors.append(f"{label}: evidential_weight is not recognised")
+        for field in ("requires_scope_review", "allowed_before_review"):
+            if row[field] not in {"yes", "no"}:
+                errors.append(f"{label}: {field} must be yes or no")
+        for field in ("definition", "notes"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+
+    witnesses = {
+        row["witness_id"]: row for row in _read("hiatus_witness_families", errors)
+    }
+    rows = _read("hiatus_timeline", errors)
+    _check_unique(rows, "state_id", "hiatus-timeline", errors)
+    for row in rows:
+        state_id = row["state_id"]
+        label = f"hiatus-timeline[{state_id}]"
+        if not state_id.startswith("hs-") or not SLUG.match(state_id):
+            errors.append(f"{label}: state_id must be an hs- slug")
+        witness = witnesses.get(row["witness_id"])
+        if witness is None:
+            errors.append(f"{label}: witness_id '{row['witness_id']}' does not resolve")
+        elif row["source_family"] != witness["witness_family"]:
+            errors.append(f"{label}: source_family does not match the witness ledger")
+        if row["date_precision"] not in {"exact_year", "year_range"}:
+            errors.append(f"{label}: date_precision must be exact_year or year_range")
+        else:
+            _check_period(row, label, row["date_precision"], errors)
+        if not row["locator"]:
+            errors.append(f"{label}: locator is required")
+        absence_class = row["absence_class"]
+        if absence_class == "source_silent":
+            errors.append(f"{label}: source_silent is not a Hiatus timeline class")
+        elif absence_class not in class_names:
+            errors.append(f"{label}: absence_class '{absence_class}' is not recognised")
+        if row["scope_reviewed"] not in {"yes", "no"}:
+            errors.append(f"{label}: scope_reviewed must be yes or no")
+        if row["review_status"] not in SOURCE_LEDGER_REVIEW_STATES:
+            errors.append(f"{label}: review_status '{row['review_status']}' is not recognised")
+        if row["confidence"] not in {"low", "medium", "high"}:
+            errors.append(f"{label}: confidence '{row['confidence']}' is not recognised")
+        if not row["notes"]:
+            errors.append(f"{label}: notes are required")
+
+        # A textual omission only becomes evidence after both scope and state
+        # have been reviewed. Other classes may record workflow blockers.
+        if absence_class in {"not_named", "named_elsewhere", "extra_muros"} and (
+            row["scope_reviewed"] != "yes" or row["review_status"] != "reviewed"
+        ):
+            errors.append(f"{label}: {absence_class} requires reviewed source scope")
+
+
+def validate_carta_rubra_package(errors: list[str]) -> None:
+    """KAN-354: separate witnesses, statistics, legal context, and claims."""
+    rows = _read("carta_rubra_sources", errors)
+    _check_unique(rows, "source_id", "carta-rubra-sources", errors)
+    by_id = {row["source_id"]: row for row in rows}
+    types: set[str] = set()
+    production_map_roles: set[str] = set()
+
+    for row in rows:
+        source_id = row["source_id"]
+        label = f"carta-rubra-sources[{source_id}]"
+        if not source_id.startswith("cr-") or not SLUG.match(source_id):
+            errors.append(f"{label}: source_id must be a cr- slug")
+        source_type = row["source_type"]
+        types.add(source_type)
+        if source_type not in RESEARCH_SOURCE_TYPES:
+            errors.append(f"{label}: source_type '{source_type}' is not recognised")
+        for field in (
+            "title",
+            "edition_state",
+            "creator",
+            "scale",
+            "repository",
+            "repository_object_id",
+            "citation",
+            "locator",
+            "rights_basis_url",
+            "notes",
+        ):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        if not row["issued_year"].isdigit() or not 1900 <= int(row["issued_year"] or 0) <= 1920:
+            errors.append(f"{label}: issued_year must be between 1900 and 1920")
+        _check_https(row["source_url"], label, "source_url", errors)
+        _check_https(row["rights_basis_url"], label, "rights_basis_url", errors)
+        if row["rights_status"] not in RESEARCH_RIGHTS:
+            errors.append(f"{label}: rights_status '{row['rights_status']}' is not recognised")
+        if row["resolution_status"] not in RESEARCH_RESOLUTION_STATES:
+            errors.append(f"{label}: resolution_status is not recognised")
+        role = row["production_role"]
+        if role not in RESEARCH_PRODUCTION_ROLES:
+            errors.append(f"{label}: production_role '{role}' is not recognised")
+        if row["review_status"] not in SOURCE_LEDGER_REVIEW_STATES:
+            errors.append(f"{label}: review_status '{row['review_status']}' is not recognised")
+        if role in {"production_primary", "production_fallback"}:
+            if source_type != "map_witness":
+                errors.append(f"{label}: a production map role requires source_type map_witness")
+            if row["rights_status"] not in OPEN_PRODUCTION_RIGHTS:
+                errors.append(f"{label}: production role requires production-wide reuse rights")
+            if row["resolution_status"] != "sufficient":
+                errors.append(f"{label}: production role requires sufficient resolution")
+            production_map_roles.add(role)
+
+    for row in rows:
+        if not row["derived_from"]:
+            continue
+        label = f"carta-rubra-sources[{row['source_id']}]"
+        parent = by_id.get(row["derived_from"])
+        if parent is None:
+            errors.append(f"{label}: derived_from '{row['derived_from']}' does not resolve")
+        elif parent["source_type"] != "statistical_table":
+            errors.append(f"{label}: derived_from must resolve to a statistical_table")
+
+    if missing := RESEARCH_SOURCE_TYPES - types:
+        errors.append(f"carta-rubra-sources: package is missing source types {sorted(missing)}")
+    required_roles = {"production_primary", "production_fallback"}
+    if missing := required_roles - production_map_roles:
+        errors.append(f"carta-rubra-sources: production map set is missing roles {sorted(missing)}")
+
+    claims = _read("carta_rubra_claims", errors)
+    _check_unique(claims, "claim_id", "carta-rubra-claims", errors)
+    for row in claims:
+        claim_id = row["claim_id"]
+        label = f"carta-rubra-claims[{claim_id}]"
+        if not claim_id.startswith("cc-") or not SLUG.match(claim_id):
+            errors.append(f"{label}: claim_id must be a cc- slug")
+        if row["source_id"] not in by_id:
+            errors.append(f"{label}: source_id '{row['source_id']}' does not resolve")
+        for field in (
+            "actor",
+            "institution",
+            "claim",
+            "intended_territorial_argument",
+            "locator",
+            "notes",
+        ):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        if row["importance"] not in {"high", "medium", "low"}:
+            errors.append(f"{label}: importance is not recognised")
+        if row["argument_support"] not in {"supported", "not_established", "not_applicable"}:
+            errors.append(f"{label}: argument_support is not recognised")
+        if row["review_status"] not in SOURCE_LEDGER_REVIEW_STATES:
+            errors.append(f"{label}: review_status '{row['review_status']}' is not recognised")
+        if row["importance"] == "high" and (
+            not row["locator"] or not row["review_status"]
+        ):
+            errors.append(f"{label}: high-importance claims require a locator and review status")
+
+
+def validate_borroczyn_package(errors: list[str]) -> None:
+    """KAN-357: a bounded seam and typed sources, without city-wide claims."""
+    rows = _read("borroczyn_seam_sources", errors)
+    _check_unique(rows, "source_id", "borroczyn-seam-sources", errors)
+    by_id = {row["source_id"]: row for row in rows}
+    types: set[str] = set()
+    for row in rows:
+        source_id = row["source_id"]
+        label = f"borroczyn-seam-sources[{source_id}]"
+        if not source_id.startswith("br-") or not SLUG.match(source_id):
+            errors.append(f"{label}: source_id must be a br- slug")
+        source_type = row["source_type"]
+        types.add(source_type)
+        if source_type not in BORROCZYN_SOURCE_TYPES:
+            errors.append(f"{label}: source_type '{source_type}' is not recognised")
+        for field in (
+            "title",
+            "edition_state",
+            "creator",
+            "scale",
+            "repository",
+            "repository_object_id",
+            "rights_basis_url",
+            "notes",
+        ):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        if not row["issued_year"].isdigit():
+            errors.append(f"{label}: issued_year must be a year")
+        _check_https(row["source_url"], label, "source_url", errors)
+        _check_https(row["rights_basis_url"], label, "rights_basis_url", errors)
+        if row["rights_status"] not in RESEARCH_RIGHTS:
+            errors.append(f"{label}: rights_status '{row['rights_status']}' is not recognised")
+        if row["resolution_status"] not in RESEARCH_RESOLUTION_STATES:
+            errors.append(f"{label}: resolution_status is not recognised")
+        role = row["production_role"]
+        if role not in RESEARCH_PRODUCTION_ROLES:
+            errors.append(f"{label}: production_role '{role}' is not recognised")
+        if row["review_status"] not in SOURCE_LEDGER_REVIEW_STATES:
+            errors.append(f"{label}: review_status '{row['review_status']}' is not recognised")
+        if role in {"production_primary", "production_fallback"}:
+            if row["rights_status"] not in OPEN_PRODUCTION_RIGHTS:
+                errors.append(f"{label}: production role requires production-wide reuse rights")
+            if row["resolution_status"] != "sufficient":
+                errors.append(f"{label}: production role requires sufficient resolution")
+
+    required_types = {"borroczyn_witness", "later_reference", "modern_reference"}
+    if missing := required_types - types:
+        errors.append(f"borroczyn-seam-sources: package is missing source types {sorted(missing)}")
+    if not any(
+        row["source_type"] == "borroczyn_witness" and row["resolution_status"] == "sufficient"
+        for row in rows
+    ):
+        errors.append("borroczyn-seam-sources: no Borroczyn witness has sufficient research resolution")
+
+    path = DATA / REFERENCE / "borroczyn-seam.geojson"
+    if not path.exists():
+        errors.append("missing Borroczyn seam GeoJSON")
+        return
+    try:
+        geojson = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        errors.append(f"borroczyn-seam: invalid GeoJSON: {exc}")
+        return
+    metadata = geojson.get("metadata", {})
+    if metadata.get("schemaVersion") != 1:
+        errors.append("borroczyn-seam: unsupported schemaVersion")
+    if not str(metadata.get("version", "")).startswith("borroczyn-seam-"):
+        errors.append("borroczyn-seam: version must start with borroczyn-seam-")
+    if metadata.get("completeCityCoverage") is not False:
+        errors.append("borroczyn-seam: complete-city coverage must remain explicitly false")
+    if metadata.get("crs") != "EPSG:4326":
+        errors.append("borroczyn-seam: CRS must be EPSG:4326")
+    if not ISO_DATE.match(str(metadata.get("selectedOn", ""))):
+        errors.append("borroczyn-seam: selectedOn must be an ISO date")
+    if not metadata.get("justification"):
+        errors.append("borroczyn-seam: justification is required")
+    for source_id in metadata.get("basisSourceIds", []):
+        if source_id not in by_id:
+            errors.append(f"borroczyn-seam: basis source '{source_id}' does not resolve")
+
+    features = geojson.get("features", [])
+    if geojson.get("type") != "FeatureCollection" or len(features) != 1:
+        errors.append("borroczyn-seam: expected one-feature FeatureCollection")
+        return
+    feature = features[0]
+    geometry = feature.get("geometry", {})
+    if geometry.get("type") != "Polygon":
+        errors.append("borroczyn-seam: geometry must be a Polygon")
+        return
+    rings = geometry.get("coordinates", [])
+    if len(rings) != 1 or len(rings[0]) < 4 or rings[0][0] != rings[0][-1]:
+        errors.append("borroczyn-seam: polygon must have one closed exterior ring")
+        return
+    lons = [point[0] for point in rings[0]]
+    lats = [point[1] for point in rings[0]]
+    if not all(25.9 <= lon <= 26.3 for lon in lons) or not all(44.3 <= lat <= 44.6 for lat in lats):
+        errors.append("borroczyn-seam: polygon falls outside the Bucharest review bounds")
+    if max(lons) - min(lons) > 0.1 or max(lats) - min(lats) > 0.1:
+        errors.append("borroczyn-seam: study area is not bounded tightly enough")
+
+
+def validate_research_package_manifest(errors: list[str]) -> None:
+    """Hash-freeze the KAN-349/354/357 research packages and boundary."""
+    path = DATA / RESEARCH_PACKAGE_MANIFEST
+    if not path.exists():
+        errors.append(f"missing research package manifest: {path.relative_to(DATA)}")
+        return
+    manifest = json.loads(path.read_text(encoding="utf-8"))
+    if manifest.get("schemaVersion") != 1:
+        errors.append("research-package-manifest: unsupported schemaVersion")
+    if not ISO_DATE.match(str(manifest.get("frozenOn", ""))):
+        errors.append("research-package-manifest: frozenOn must be an ISO date")
+
+    expected = {
+        "hiatus_absence_classes": ("KAN-349", "hiatus_absence_classes", "absence_class"),
+        "hiatus_timeline": ("KAN-349", "hiatus_timeline", "state_id"),
+        "carta_rubra_sources": ("KAN-354", "carta_rubra_sources", "source_id"),
+        "carta_rubra_claims": ("KAN-354", "carta_rubra_claims", "claim_id"),
+        "borroczyn_seam_sources": ("KAN-357", "borroczyn_seam_sources", "source_id"),
+    }
+    packages = manifest.get("packages", {})
+    for name, (ticket, table, id_field) in expected.items():
+        config = packages.get(name)
+        label = f"research-package-manifest[{name}]"
+        if not isinstance(config, dict):
+            errors.append(f"{label}: package entry is required")
+            continue
+        if config.get("ticket") != ticket:
+            errors.append(f"{label}: ticket must be {ticket}")
+        expected_path = TABLES[table]
+        if config.get("path") != expected_path:
+            errors.append(f"{label}: path must be {expected_path}")
+        rows = _read(table, errors)
+        if config.get("recordCount") != len(rows):
+            errors.append(f"{label}: recordCount does not match the table")
+        if sorted(config.get("recordIds", [])) != sorted(row[id_field] for row in rows):
+            errors.append(f"{label}: recordIds do not match the table")
+        source = DATA / expected_path
+        if source.exists() and config.get("sha256") != hashlib.sha256(source.read_bytes()).hexdigest():
+            errors.append(f"{label}: package changed since it was frozen")
+
+    geo_name = "borroczyn_seam"
+    config = packages.get(geo_name)
+    label = f"research-package-manifest[{geo_name}]"
+    expected_path = f"{REFERENCE}/borroczyn-seam.geojson"
+    if not isinstance(config, dict):
+        errors.append(f"{label}: package entry is required")
+    else:
+        if config.get("ticket") != "KAN-357":
+            errors.append(f"{label}: ticket must be KAN-357")
+        if config.get("path") != expected_path:
+            errors.append(f"{label}: path must be {expected_path}")
+        source = DATA / expected_path
+        if source.exists() and config.get("sha256") != hashlib.sha256(source.read_bytes()).hexdigest():
+            errors.append(f"{label}: package changed since it was frozen")
+
+
 def validate_source_ledger_manifest(errors: list[str]) -> None:
     """A changed minimum set requires an explicit, dated re-freeze."""
     path = DATA / SOURCE_LEDGER_MANIFEST
@@ -1141,8 +1497,12 @@ def validate_inputs() -> list[str]:
     validate_pilot(terms, places, sources, errors)
     validate_debt(trenches, errors)
     validate_hiatus_witness_families(errors)
+    validate_hiatus_timeline(errors)
     validate_treaty_frontier_sources(errors)
+    validate_carta_rubra_package(errors)
+    validate_borroczyn_package(errors)
     validate_source_ledger_manifest(errors)
+    validate_research_package_manifest(errors)
     return errors
 
 
@@ -1157,7 +1517,11 @@ def readiness_lines() -> list[str]:
     debt = _read("verification_debt", errors)
     gates = _read("trench_gates", errors)
     witness_families = _read("hiatus_witness_families", errors)
+    hiatus_states = _read("hiatus_timeline", errors)
     treaty_sources = _read("treaty_frontier_sources", errors)
+    carta_sources = _read("carta_rubra_sources", errors)
+    carta_claims = _read("carta_rubra_claims", errors)
+    borroczyn_sources = _read("borroczyn_seam_sources", errors)
 
     transcriptions = _read("transcriptions", errors)
     from_witness = sum(
@@ -1183,6 +1547,9 @@ def readiness_lines() -> list[str]:
         f"  gates: {passed} of {len(gates)} passed; {open_debt} open verification debts",
         f"  source ledgers: {len(witness_families)} hiatus witness families and "
         f"{len(treaty_sources)} treaty/frontier instruments frozen for review",
+        f"  research packages: {len(hiatus_states)} Hiatus states, "
+        f"{len(carta_sources)} Carta Rubra sources/{len(carta_claims)} claims, and "
+        f"{len(borroczyn_sources)} Borroczyn seam sources",
     ]
 
 

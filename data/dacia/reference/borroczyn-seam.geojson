@@ -1,0 +1,48 @@
+{
+  "type": "FeatureCollection",
+  "name": "Uranus-Antim bounded comparison seam",
+  "metadata": {
+    "schemaVersion": 1,
+    "studyAreaId": "br-seam-uranus-antim",
+    "version": "borroczyn-seam-0.1",
+    "selectedOn": "2026-08-09",
+    "crs": "EPSG:4326",
+    "completeCityCoverage": false,
+    "basisSourceIds": [
+      "br-borroczyn-1844-1846",
+      "br-borroczyn-1852-uauim",
+      "br-iga-1911",
+      "br-osm-current",
+      "br-uranus-uauim"
+    ],
+    "justification": "A compact research envelope spanning the former Uranus and Antim fabric, the Palace of Parliament site, and surviving eastern streets. It is large enough to compare erased, relocated, and surviving fabric across the 1844-1852, 1911, and modern witnesses while excluding any claim to complete-city coverage."
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "br-seam-uranus-antim",
+      "properties": {
+        "name": "Uranus-Antim seam",
+        "boundaryKind": "editorial_research_envelope",
+        "reviewStatus": "candidate",
+        "west": 26.075,
+        "south": 44.417,
+        "east": 26.102,
+        "north": 44.437,
+        "notes": "The rectangle is a versioned selection boundary, not historical source geometry, a cadastral boundary, or a claim about the former neighbourhood's full extent."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [26.075, 44.417],
+            [26.102, 44.417],
+            [26.102, 44.437],
+            [26.075, 44.437],
+            [26.075, 44.417]
+          ]
+        ]
+      }
+    }
+  ]
+}

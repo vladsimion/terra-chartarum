@@ -684,3 +684,89 @@ def test_treaty_minimum_ids_match_marked_rows(dataset):
 
     edit(dataset, "treaty_frontier_sources", mutate)
     refuses("minimumIds do not match rows marked minimum_set=yes")
+
+
+# --- research packages (KAN-349, KAN-354, KAN-357) -------------------------
+
+
+def test_hiatus_taxonomy_requires_every_absence_class(dataset):
+    edit(
+        dataset,
+        "hiatus_absence_classes",
+        lambda rows: [row for row in rows if row["absence_class"] != "not_named"],
+    )
+    refuses("missing required classes")
+
+
+def test_hiatus_timeline_cannot_assign_source_silent(dataset):
+    def mutate(rows):
+        find(rows, "state_id", "hs-charters")["absence_class"] = "source_silent"
+
+    edit(dataset, "hiatus_timeline", mutate)
+    refuses("source_silent is not a Hiatus timeline class")
+
+
+def test_hiatus_not_named_requires_reviewed_scope(dataset):
+    def mutate(rows):
+        find(rows, "state_id", "hs-charters")["absence_class"] = "not_named"
+
+    edit(dataset, "hiatus_timeline", mutate)
+    refuses("not_named requires reviewed source scope")
+
+
+def test_hiatus_state_must_resolve_to_witness(dataset):
+    def mutate(rows):
+        find(rows, "state_id", "hs-charters")["witness_id"] = "hw-missing"
+
+    edit(dataset, "hiatus_timeline", mutate)
+    refuses("witness_id 'hw-missing' does not resolve")
+
+
+def test_carta_map_derivation_must_resolve_to_statistics(dataset):
+    def mutate(rows):
+        find(rows, "source_id", "cr-map-kaba-1919")["derived_from"] = "cr-map-teleki-1920"
+
+    edit(dataset, "carta_rubra_sources", mutate)
+    refuses("derived_from must resolve to a statistical_table")
+
+
+def test_carta_production_map_requires_global_reuse_rights(dataset):
+    def mutate(rows):
+        find(rows, "source_id", "cr-map-teleki-1920")["production_role"] = "production_primary"
+
+    edit(dataset, "carta_rubra_sources", mutate)
+    refuses("production role requires production-wide reuse rights")
+
+
+def test_carta_claim_requires_an_actor(dataset):
+    def mutate(rows):
+        find(rows, "claim_id", "cc-teleki-density")["actor"] = ""
+
+    edit(dataset, "carta_rubra_claims", mutate)
+    refuses("actor is required")
+
+
+def test_teaching_copy_cannot_become_a_borroczyn_production_source(dataset):
+    def mutate(rows):
+        find(rows, "source_id", "br-borroczyn-1852-uauim")[
+            "production_role"
+        ] = "production_fallback"
+
+    edit(dataset, "borroczyn_seam_sources", mutate)
+    refuses("production role requires production-wide reuse rights")
+
+
+def test_borroczyn_seam_cannot_claim_complete_city_coverage(dataset):
+    path = dataset / "reference" / "borroczyn-seam.geojson"
+    geojson = json.loads(path.read_text(encoding="utf-8"))
+    geojson["metadata"]["completeCityCoverage"] = True
+    path.write_text(json.dumps(geojson, indent=2) + "\n", encoding="utf-8")
+    refuses("complete-city coverage must remain explicitly false")
+
+
+def test_research_package_is_hash_frozen(dataset):
+    def mutate(rows):
+        find(rows, "state_id", "hs-charters")["notes"] = "silently changed"
+
+    edit(dataset, "hiatus_timeline", mutate)
+    refuses("package changed since it was frozen")

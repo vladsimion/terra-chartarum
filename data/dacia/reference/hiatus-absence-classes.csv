@@ -1,0 +1,7 @@
+absence_class,definition,evidential_weight,requires_scope_review,allowed_before_review,notes
+not_surveyed,"The project has not inspected the defined witness or sample.",none,no,yes,"A workflow state, never evidence that a source is silent."
+not_asked,"The witness's purpose or declared scope does not address the historical question.",none,no,yes,"Use for an inapplicable question, not for a failed search."
+not_named,"A reviewed witness whose scope includes the question does not name the target.",conditional,yes,no,"The only class that can contribute to an argument from silence; it still needs a separately reviewed interpretation."
+named_elsewhere,"The target is named in another passage, sheet, recension, or source-level context but not at the focal locator.",contextual,yes,no,"Prevents a local omission from becoming a source-wide absence."
+extra_muros,"The target lies outside the geographic, institutional, chronological, or generic scope of the witness.",none,yes,no,"An out-of-scope omission has no evidential weight."
+survival_unknown,"Loss, incomplete survival, cataloguing, digitisation, or sampling prevents a source-level absence decision.",none,no,yes,"Keep non-survival distinct from textual silence."

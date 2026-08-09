@@ -268,3 +268,32 @@ posture, and review status. Rows marked `minimum_set: yes` must exactly match
 the IDs and SHA-256 values in `reference/source-ledger-manifest.json`, so a
 change requires a dated re-freeze rather than silently altering the research
 brief.
+
+## Research packages (KAN-349, KAN-354, KAN-357)
+
+`reference/hiatus-absence-classes.csv` defines six mutually distinct absence
+decisions. `reference/hiatus-timeline.csv` joins each dated state to a KAN-348
+`witness_id`, repeats `source_family` for direct filtering, and carries a
+locator, scope-review flag, review status, and confidence. `not_named`,
+`named_elsewhere`, and `extra_muros` require reviewed scope. `source_silent` is
+not a timeline value; it remains a separately gated CND attestation class.
+
+`reference/carta-rubra-sources.csv` types every row as `map_witness`,
+`statistical_table`, or `diplomatic_context`. Maps carry exact edition/state,
+creator, date, scale, repository object ID, citation/locator, rights basis,
+resolution, and production role. `derived_from` may resolve only to a
+statistical table. `reference/carta-rubra-claims.csv` keeps actor, institution,
+descriptive claim, intended territorial argument, support status, locator, and
+review status in separate fields.
+
+`reference/borroczyn-seam-sources.csv` separates a `borroczyn_witness`,
+`later_reference`, `modern_reference`, and contextual sources. A production
+role requires both a production-wide rights status and sufficient resolution.
+`reference/borroczyn-seam.geojson` contains one EPSG:4326 editorial research
+envelope, version and selection date, basis-source IDs, and an explicit
+`completeCityCoverage: false` assertion. Its geometry is not historical source
+geometry.
+
+All five tables and the seam GeoJSON are frozen by path, record IDs/count, and
+SHA-256 in `reference/research-package-manifest.json`. Any substantive change
+requires a dated re-freeze.

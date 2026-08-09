@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "frozenOn": "2026-08-09",
+  "packages": {
+    "hiatus_absence_classes": {
+      "ticket": "KAN-349",
+      "path": "reference/hiatus-absence-classes.csv",
+      "recordCount": 6,
+      "recordIds": [
+        "not_surveyed",
+        "not_asked",
+        "not_named",
+        "named_elsewhere",
+        "extra_muros",
+        "survival_unknown"
+      ],
+      "sha256": "3fe95ac53c2127da12acbeacfa34a3a98e94f340ee94f4916deaf2f7671bd850"
+    },
+    "hiatus_timeline": {
+      "ticket": "KAN-349",
+      "path": "reference/hiatus-timeline.csv",
+      "recordCount": 6,
+      "recordIds": [
+        "hs-charters",
+        "hs-chronicles",
+        "hs-papal-registers",
+        "hs-notarial",
+        "hs-fiscal",
+        "hs-late-maps"
+      ],
+      "sha256": "8422ebb3e665b69ad7e32103948718dc523570ebadd0fd1f0a9bce18d0c40630"
+    },
+    "carta_rubra_sources": {
+      "ticket": "KAN-354",
+      "path": "reference/carta-rubra-sources.csv",
+      "recordCount": 7,
+      "recordIds": [
+        "cr-map-war-office-1918",
+        "cr-map-kaba-1919",
+        "cr-map-teleki-1920",
+        "cr-map-demartonne-1920",
+        "cr-stat-kaba-report-1919",
+        "cr-stat-hungary-census-1910",
+        "cr-diplomatic-trianon-1920"
+      ],
+      "sha256": "ec874654d811a690cb2c3a3da141e5df24ee805823651185440179a17084cf40"
+    },
+    "carta_rubra_claims": {
+      "ticket": "KAN-354",
+      "path": "reference/carta-rubra-claims.csv",
+      "recordCount": 5,
+      "recordIds": [
+        "cc-war-office-portfolio",
+        "cc-kaba-composition",
+        "cc-teleki-density",
+        "cc-demartonne-method",
+        "cc-trianon-frontier"
+      ],
+      "sha256": "82d7857b1ead8193dabe18d07648f939799ee3cd3956bbe900d2089c05aa36a3"
+    },
+    "borroczyn_seam_sources": {
+      "ticket": "KAN-357",
+      "path": "reference/borroczyn-seam-sources.csv",
+      "recordCount": 7,
+      "recordIds": [
+        "br-borroczyn-1844-1846",
+        "br-borroczyn-1852-uauim",
+        "br-borroczyn-1852-inp",
+        "br-iga-1911",
+        "br-bucharest-1962-1978",
+        "br-osm-current",
+        "br-uranus-uauim"
+      ],
+      "sha256": "e1ce3be3457703821920c1d191cbaaa6e3966e7568f888258747ab8e2d9a09b8"
+    },
+    "borroczyn_seam": {
+      "ticket": "KAN-357",
+      "path": "reference/borroczyn-seam.geojson",
+      "sha256": "d7a8421aacdce83e22f874883c3d4b59fa6a49952b7dbd8a46e183c6b36b700c"
+    }
+  }
+}
