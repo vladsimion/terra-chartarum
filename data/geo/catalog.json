@@ -156,6 +156,32 @@
       "source": "Terra Chartarum (compiled) - HSE events KAN-308",
       "license": "CC BY 4.0",
       "attribution": "Terra Chartarum; UNESCO; Wubs-Mrozewicz; Henn; Lambert & Sicking"
+    },
+    {
+      "id": "dacia-attestations",
+      "file": "dacia-attestations.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": ["Point"],
+      "featureCount": 0,
+      "yearFrom": 150,
+      "yearTo": 1864,
+      "source": "Terra Chartarum (compiled) - Corpus Nominum Daciae 0.1, KAN-337",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; each source carries its own rights statement"
+    },
+    {
+      "id": "dacia-attestations-research",
+      "file": "dacia-attestations-research.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": ["Point"],
+      "featureCount": 45,
+      "yearFrom": 150,
+      "yearTo": 1864,
+      "source": "Terra Chartarum (compiled) - Corpus Nominum Daciae 0.1 research tier, KAN-337",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; each source carries its own rights statement"
     }
   ]
 }

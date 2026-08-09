@@ -937,6 +937,58 @@ def validate_pilot_manifest(rows, errors: list[str]) -> None:
             )
 
 
+RELEASE_MANIFEST = DATA_RELATIVE_MANIFEST = "release/cnd-0.1/manifest.json"
+PUBLIC_STATES = {"approved", "published"}
+
+
+def validate_release(ranks, errors: list[str]) -> None:
+    """KAN-337: the compiled release must match the tables it claims to compile.
+
+    Recording the hash of every input is what lets a bare python3 detect a table
+    edit that was never rebuilt, without re-reading the Parquet or the GeoJSON.
+    """
+    path = DATA / RELEASE_MANIFEST
+    if not path.exists():
+        errors.append(f"missing release manifest: {path.relative_to(REPO)}; run make dacia")
+        return
+    manifest = json.loads(path.read_text(encoding="utf-8"))
+
+    if manifest.get("schemaVersion") != 1:
+        errors.append("release: unsupported schemaVersion")
+    if manifest.get("kind") != "pilot_research_release":
+        errors.append("release: CND 0.1 must be versioned as a pilot/research release")
+    if not manifest.get("licence"):
+        errors.append("release: the manifest must summarise the licence")
+
+    for name, recorded in sorted(manifest.get("inputs", {}).items()):
+        source = REPO / name
+        if not source.exists():
+            errors.append(f"release: manifest records a missing input {name}")
+        elif hashlib.sha256(source.read_bytes()).hexdigest() != recorded:
+            errors.append(f"release: {name} changed since the last build; run make dacia")
+
+    for name, entry in sorted(manifest.get("outputs", {}).items()):
+        output = REPO / name
+        if not output.exists():
+            errors.append(f"release: manifest records a missing output {name}")
+            continue
+        payload = output.read_bytes()
+        if hashlib.sha256(payload).hexdigest() != entry.get("sha256"):
+            errors.append(f"release: {name} does not match its manifest hash; run make dacia")
+        if len(payload) != entry.get("bytes"):
+            errors.append(f"release: {name} does not match its manifest byte length")
+
+    # The public tier is a claim about review, so it is checked against the
+    # tables rather than trusted from the manifest.
+    attestations = _read("attestations", errors)
+    public = sum(1 for row in attestations if row["review_state"] in PUBLIC_STATES)
+    if manifest.get("publicRecords") != public:
+        errors.append(
+            f"release: manifest claims {manifest.get('publicRecords')} public records, "
+            f"the tables hold {public}"
+        )
+
+
 def validate_debt(trenches, errors: list[str]) -> None:
     """KAN-331: unresolved questions live in the register, not in the prose."""
     rows = _read("verification_debt", errors)
@@ -1140,6 +1192,7 @@ def validate_inputs() -> list[str]:
     validate_gates(trenches, campaigns_used, errors)
     validate_pilot(terms, places, sources, errors)
     validate_debt(trenches, errors)
+    validate_release(ranks, errors)
     validate_hiatus_witness_families(errors)
     validate_treaty_frontier_sources(errors)
     validate_source_ledger_manifest(errors)

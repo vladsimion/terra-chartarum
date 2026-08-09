@@ -4,7 +4,7 @@
 # out-of-band data pipelines that are not part of the Astro build - currently the
 # Venetian Maritime Network (VMN) GIS dataset compilation (KAN-145).
 
-.PHONY: vmn vmn-venv vmn-validate hanseatic hanseatic-validate hanseatic-test dacia-validate dacia-test
+.PHONY: vmn vmn-venv vmn-validate hanseatic hanseatic-validate hanseatic-test dacia dacia-validate dacia-test
 
 VMN_VENV := .venv
 VMN_PY := $(VMN_VENV)/bin/python
@@ -16,7 +16,7 @@ VMN_PY := $(VMN_VENV)/bin/python
 vmn-venv:
 	python3 -m venv $(VMN_VENV)
 	$(VMN_PY) -m pip install --quiet --upgrade pip
-	$(VMN_PY) -m pip install --quiet pyogrio numpy shapely
+	$(VMN_PY) -m pip install --quiet pyogrio numpy shapely pyarrow
 
 # VMN dataset build. Verifies the pinned Natural Earth 1:10m land/coastline
 # checksums, then compiles data/vmn sources -> public/geo/venetian-*.fgb
@@ -49,10 +49,17 @@ hanseatic-validate:
 hanseatic-test:
 	python3 -m pytest scripts/hanseatic -q
 
-# Dacia programme QA (KAN-329..333). Validates the Corpus Chartarum Daciae
-# reference tables, the CND place/source/attestation corpus and the frozen
-# Trench A pilot. Standard-library only, so it runs on a bare python3; there is
-# no compile step yet, so there is nothing to build first.
+# CND 0.1 compile (KAN-337). Writes the research release under
+# data/dacia/release/cnd-0.1 and the two Atlas tiers into public/geo. Needs
+# pyarrow from the venv for the Parquet twins; everything else in scripts/dacia
+# stays standard-library only, so validate and test still run on a bare python3.
+# Deliberately timestamp-free: identical inputs must produce identical bytes.
+dacia:
+	$(VMN_PY) scripts/dacia/build.py
+
+# Dacia programme QA (KAN-329..337). Validates the reference tables, the CND
+# corpus, the frozen Trench A pilot and the compiled release against the hashes
+# the manifest recorded, which is what catches a table edited but never rebuilt.
 dacia-validate:
 	python3 scripts/dacia/validate.py
 

@@ -1,0 +1,11 @@
+{
+  "_cnd": {
+    "kind": "pilot_research_release",
+    "licence": "CC BY 4.0 for the compiled records; each source carries its own rights_statement.",
+    "note": "Reviewed records only.",
+    "release": "cnd-0.1",
+    "tier": "public"
+  },
+  "features": [],
+  "type": "FeatureCollection"
+}

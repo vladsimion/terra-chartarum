@@ -77,6 +77,10 @@ export const GeoLayerSchema = z.object({
       fallback: z.number().default(1.2),
     })
     .optional(),
+  // Feature properties the layer declares as filterable (KAN-340). Declaring
+  // them on the layer rather than hard-coding them in the map island means a
+  // new corpus layer arrives with its own facets instead of a UI change.
+  facets: z.array(z.string()).default([]),
   // Seven-room cosmography (TC-102 / KAN-93). Optional here so existing layers
   // validate unchanged; retro-tagging lands in KAN-94.
   room: z.enum(ROOM_SLUGS).optional(),
@@ -507,6 +511,96 @@ const RAW: unknown[] = [
     graduate: {
       field: 'certainty',
       radius: { high: 7, medium: 5.5, low: 4 },
+      fallback: 4,
+    },
+    defaultOn: false,
+  },
+  {
+    id: 'dacia-attestations',
+    room: 'archive',
+    secondaryRooms: ['map'],
+    title: 'Dacia name attestations (reviewed)',
+    description:
+      'Where a source does or does not name a place in the Dacia corpus. This layer carries only records cleared by human review, and is empty until that review happens.',
+    kind: 'vector',
+    format: 'geojson',
+    url: '/geo/dacia-attestations.geojson',
+    yearFrom: 150,
+    yearTo: 1864,
+    source: 'Terra Chartarum (compiled) - Corpus Nominum Daciae 0.1, KAN-337',
+    license: 'CC BY 4.0',
+    attribution: 'Terra Chartarum; each source carries its own rights statement',
+    documentationLinks: [
+      {
+        label: 'Data dictionary',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/dacia/data-dictionary.md',
+      },
+      {
+        label: 'Programme',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/dacia/README.md',
+      },
+    ],
+    essaySlugs: ['dacia'],
+    geometry: 'circle',
+    color: '#9e3b2b',
+    perFeatureTime: true,
+    facets: [
+      'attestation_class',
+      'confidence',
+      'source_id',
+      'source_family',
+      'language',
+      'script',
+      'review_state',
+    ],
+    graduate: {
+      field: 'confidence',
+      radius: { direct: 7, high: 6.5, medium: 5.5, low: 4.5, editorial_reconstruction: 4 },
+      fallback: 4,
+    },
+    defaultOn: false,
+  },
+  {
+    // The research tier exists because CND 0.1 is a pilot release: it is the
+    // whole point of the pilot that the records can be seen and argued with
+    // before anyone has cleared them. Every feature carries its review_state,
+    // and this layer is never on by default.
+    id: 'dacia-attestations-research',
+    room: 'archive',
+    secondaryRooms: ['map'],
+    title: 'Dacia name attestations (research tier, unreviewed)',
+    description:
+      'The full CND 0.1 pilot: every compiled attestation including silences, none of it cleared by human review. Records here may not be cited as established evidence.',
+    kind: 'vector',
+    format: 'geojson',
+    url: '/geo/dacia-attestations-research.geojson',
+    yearFrom: 150,
+    yearTo: 1864,
+    source: 'Terra Chartarum (compiled) - Corpus Nominum Daciae 0.1 research tier, KAN-337',
+    license: 'CC BY 4.0',
+    attribution: 'Terra Chartarum; each source carries its own rights statement',
+    documentationLinks: [
+      {
+        label: 'Data dictionary',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/dacia/data-dictionary.md',
+      },
+    ],
+    essaySlugs: ['dacia'],
+    geometry: 'circle',
+    color: '#6f9e8a',
+    perFeatureTime: true,
+    facets: [
+      'attestation_class',
+      'confidence',
+      'source_id',
+      'source_family',
+      'language',
+      'script',
+      'review_state',
+    ],
+    graduate: {
+      field: 'confidence',
+      radius: { direct: 7, high: 6.5, medium: 5.5, low: 4.5, editorial_reconstruction: 4 },
       fallback: 4,
     },
     defaultOn: false,

@@ -70,6 +70,28 @@ export function withRegion(baseFilter: unknown | null, region: string): unknown 
 }
 
 /**
+ * Add declared facet selections to an existing feature filter (KAN-340).
+ *
+ * A field with no selected values places no constraint, which is what makes
+ * "show everything" the resting state rather than a special case. Selecting
+ * several values within one field widens that field (OR); selecting across
+ * fields narrows (AND). That is the behaviour a reader expects from a facet
+ * panel, and it is the only combination that lets you ask "every variant or
+ * alternative naming, in Greek or Latin" in one pass.
+ */
+export function withFacets(
+  baseFilter: unknown | null,
+  selections: Record<string, string[]>,
+): unknown | null {
+  const clauses = Object.entries(selections)
+    .filter(([, values]) => values.length > 0)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([field, values]) => ['in', ['get', field], ['literal', [...values].sort()]]);
+  if (clauses.length === 0) return baseFilter;
+  return baseFilter ? ['all', baseFilter, ...clauses] : ['all', ...clauses];
+}
+
+/**
  * One dashed sub-layer spec per `field` value. `line-dasharray` is not a
  * data-driven paint property in MapLibre, so a dashed-by-field line is split into
  * filtered sub-layers, each with a static dash (an empty pattern renders solid).

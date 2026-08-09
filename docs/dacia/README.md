@@ -12,9 +12,17 @@ data/dacia/pilot       Trench A inventory and the frozen 40-place pilot
   -> npm run dacia:validate  (also runs inside npm run build)
 ```
 
-There is no compile step yet. KAN-337 adds the deterministic CND 0.1 build and
-its release manifest; until then the tables are the artefact and the validator
-is the gate.
+`make dacia` compiles the tables into the CND 0.1 research release under
+`data/dacia/release/cnd-0.1` (CSV, Parquet, JSON-LD, manifest) and two Atlas
+tiers in `public/geo`. The build is deterministic - no timestamps, sorted keys,
+stable row order - so identical inputs produce identical bytes and the only
+thing that can move a hash is the data.
+
+**CND 0.1 is a pilot release.** The distinction is carried in the outputs rather
+than in a caveat: the **public** tier holds only records cleared by human review
+and is what the Atlas shows by default, and the **research** tier holds
+everything with `review_state` on every record. The public tier is currently
+empty, and it should be - nothing has been reviewed against a witness yet.
 
 The reference directory also holds two pre-digitisation research ledgers:
 [`hiatus-witness-families.csv`](../../data/dacia/reference/hiatus-witness-families.csv)
@@ -125,6 +133,15 @@ python3 scripts/dacia/review.py queue --verbose
 is not vendored - use the venv from `make vmn-venv`, or install it yourself.
 `review.py` is the adjudication workflow: it promotes a record only if the
 ordinary gate still passes afterwards, so an unearned promotion writes nothing.
+
+## In the Atlas
+
+Both tiers register as GeoLayers. A layer declares which feature properties are
+filterable in its `facets` field, and the map island builds the panel from the
+committed GeoJSON at build time - so a new corpus layer arrives with its own
+filters rather than requiring a change to the island. Selections widen within a
+field and narrow across fields, are announced for screen readers, and travel in
+a `facets` URL parameter that only restores values the layer actually declares.
 
 See [`data-dictionary.md`](./data-dictionary.md) for the schemas,
 [`definition-of-done.md`](./definition-of-done.md) for the gates, and

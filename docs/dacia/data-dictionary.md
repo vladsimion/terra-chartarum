@@ -240,6 +240,47 @@ its version, freeze date, count and SHA-256. Editing the pilot without recording
 a new version and hash fails the gate. See
 [`trench-a-inventory.md`](./trench-a-inventory.md).
 
+## `release/cnd-0.1/` (KAN-337)
+
+`make dacia` compiles every canonical table to UTF-8 CSV and a Parquet twin,
+plus a JSON-LD serialisation and a manifest. Both formats carry every column as
+a string: the CSV is canonical and the Parquet mirrors it, because typing the
+columns separately would let the two disagree about what an empty cell means.
+
+The manifest records the schema version, the release id and kind, record counts,
+attestations by review state, the source families, the SHA-256 of every **input**
+as well as every **output**, and the licence summary. Recording input hashes is
+what lets `npm run dacia:validate` detect a table edited but never rebuilt, on a
+bare python3, without re-reading the Parquet.
+
+### The two tiers
+
+| Asset                                            | Holds                                       |
+| ------------------------------------------------ | ------------------------------------------- |
+| `public/geo/dacia-attestations.geojson`          | `approved` and `published` records only     |
+| `public/geo/dacia-attestations-research.geojson` | everything, with `review_state` per feature |
+
+The public tier is what the Atlas shows by default and is **currently empty**.
+That is the correct state, not a bug: an unreviewed row cannot reach a normal
+public asset by being compiled.
+
+Each feature also carries `*_label` companions for its coded fields
+(`language_label`, `script_label`, `attestation_class_label`,
+`confidence_label`), read from `vocabularies.csv` at build time. The filter
+panel shows "Ancient Greek" rather than `grc` without the interface having to
+carry a second copy of the vocabulary.
+
+`valid_from` is the source's date and `valid_to` is the open-ended sentinel
+`9999`. The Atlas slider reveals _through_ a year, and an attestation does not
+stop being evidence once its source is finished being made; using the source's
+end year would have hidden every record at any cutoff past 1864.
+
+A silence keeps its point on the map, so the absence taxonomy can be styled and
+filtered rather than being invisible - which is the Hiatus argument made
+renderable. An attestation on an **unlocated** place has nowhere to go and is
+reported in the manifest under `unlocatedPlaces` instead of being given a
+guessed position.
+
 ## `reference/` governance tables (KAN-329, KAN-331)
 
 `programme-ids.csv` and `entity-prefixes.csv` freeze the identifiers; see

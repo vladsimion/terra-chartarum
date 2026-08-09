@@ -73,6 +73,18 @@ function validateGeoJSON(asset, bytes) {
       );
     });
   }
+  // A layer may be legitimately empty: the Dacia public tier publishes only
+  // records cleared by human review, and until that review happens the right
+  // answer is nought features rather than a layer that quietly shows unreviewed
+  // ones. There is no geometry to compare in that case, but the catalogue must
+  // still declare what the layer will hold once it fills.
+  if (data.features.length === 0) {
+    invariant(
+      Array.isArray(asset.geometry) && asset.geometry.length > 0,
+      `${asset.file}: an empty layer must still declare its geometry in the catalogue`,
+    );
+    return;
+  }
   invariant(
     JSON.stringify([...geometry].sort()) === JSON.stringify([...asset.geometry].sort()),
     `${asset.file}: geometry types ${[...geometry]} do not match catalogue ${asset.geometry}`,
