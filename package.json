@@ -36,7 +36,7 @@
     "provenance:write": "node scripts/generate-build-info.mjs",
     "production:verify": "node scripts/verify-production.mjs",
     "format": "prettier --write .",
-    "format:check": "prettier scripts/verify-production.mjs && exit 1",
+    "format:check": "prettier --check .",
     "create-essay": "node scripts/create-essay.mjs",
     "essay:release": "node scripts/release-essay.mjs",
     "embed:prune": "node scripts/prune-held-embeds.mjs",
