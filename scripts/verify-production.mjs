@@ -1,6 +1,7 @@
-const origin = (
-  process.env.PRODUCTION_ORIGIN ?? 'https://terra-chartarum.pages.dev'
-).replace(/\/$/, '');
+const origin = (process.env.PRODUCTION_ORIGIN ?? 'https://terra-chartarum.pages.dev').replace(
+  /\/$/,
+  '',
+);
 const expectedSha = process.env.EXPECTED_GIT_SHA ?? process.argv[2];
 const retries = Number(process.env.PRODUCTION_VERIFY_RETRIES ?? 12);
 const delayMs = Number(process.env.PRODUCTION_VERIFY_DELAY_MS ?? 15000);
@@ -28,9 +29,7 @@ async function verify() {
     json: true,
   });
   if (info.gitSha !== expectedSha) {
-    throw new Error(
-      `deployed SHA ${info.gitSha} does not match expected ${expectedSha}`,
-    );
+    throw new Error(`deployed SHA ${info.gitSha} does not match expected ${expectedSha}`);
   }
 
   const essay = await get('/essays/the-league-that-left-no-map/');
@@ -55,20 +54,14 @@ let lastError;
 for (let attempt = 1; attempt <= retries; attempt += 1) {
   try {
     const info = await verify();
-    console.log(
-      `Production verified: ${origin} serves ${info.gitSha} (built ${info.builtAt}).`,
-    );
+    console.log(`Production verified: ${origin} serves ${info.gitSha} (built ${info.builtAt}).`);
     process.exit(0);
   } catch (error) {
     lastError = error;
-    console.warn(
-      `Production verification attempt ${attempt}/${retries} failed: ${error.message}`,
-    );
+    console.warn(`Production verification attempt ${attempt}/${retries} failed: ${error.message}`);
     if (attempt < retries) await sleep(delayMs);
   }
 }
 
-console.error(
-  `Production verification failed: ${lastError?.message ?? 'unknown error'}`,
-);
+console.error(`Production verification failed: ${lastError?.message ?? 'unknown error'}`);
 process.exit(1);
