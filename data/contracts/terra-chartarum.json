@@ -1,0 +1,297 @@
+{
+  "schemaVersion": 1,
+  "tickets": ["KAN-376", "KAN-377", "KAN-378", "KAN-380"],
+  "identifiers": {
+    "canonicalReferencePattern": "^tc:[a-z0-9][a-z0-9-]*:[a-z][a-z0-9-]*:[A-Za-z0-9][A-Za-z0-9._:-]*$",
+    "canonicalReferenceTemplate": "tc:{authority}:{family}:{localId}",
+    "immutableAfterExternalPublication": true,
+    "displayNamesAreJoinKeys": false,
+    "families": [
+      {
+        "family": "essay",
+        "namespace": "essay",
+        "description": "Published or held editorial works"
+      },
+      { "family": "map", "namespace": "map", "description": "Map and collection-object records" },
+      {
+        "family": "cartographer",
+        "namespace": "cartographer",
+        "description": "People and corporate makers"
+      },
+      {
+        "family": "dataset",
+        "namespace": "dataset",
+        "description": "Versioned data products and internal authority tables"
+      },
+      {
+        "family": "place",
+        "namespace": "place",
+        "description": "Place referents, never mutable names"
+      },
+      {
+        "family": "port",
+        "namespace": "port",
+        "description": "Port authorities where port status is semantically load-bearing"
+      },
+      {
+        "family": "route",
+        "namespace": "route",
+        "description": "Routes and generalized corridors"
+      },
+      {
+        "family": "event",
+        "namespace": "event",
+        "description": "Dated events and evidence-bearing claims"
+      },
+      { "family": "layer", "namespace": "layer", "description": "Atlas layer registrations" },
+      {
+        "family": "source",
+        "namespace": "source",
+        "description": "Bibliographic works, witnesses and source authorities"
+      },
+      {
+        "family": "period",
+        "namespace": "period",
+        "description": "Named or modelled temporal phases"
+      },
+      {
+        "family": "project",
+        "namespace": "project",
+        "description": "Programmes, trenches, essays and delivery projects"
+      }
+    ],
+    "reserved": [
+      {
+        "reference": "tc:core:project:terra-chartarum",
+        "reason": "Programme root; never assign to a child project or content record"
+      }
+    ],
+    "deprecated": [],
+    "procedures": {
+      "rename": "Keep the canonical ID; change only the display label or slug alias.",
+      "merge": "Choose one surviving ID and reserve every merged ID as an alias pointing to it.",
+      "split": "Retain the old ID as a deprecated aggregate and mint new IDs for the separated referents.",
+      "retire": "Reserve the ID permanently and record a replacement or an explicit no-replacement reason.",
+      "redirect": "Public URL changes require a permanent redirect or machine-readable migration mapping before release."
+    },
+    "compatibility": [
+      {
+        "authority": "atlas",
+        "localConvention": "Existing essay slugs and map/cartographer/layer keys remain unchanged and become the localId component.",
+        "resolution": "compatible"
+      },
+      {
+        "authority": "vmn",
+        "localConvention": "Existing unprefixed port, route, territory and source keys remain stable within the VMN authority.",
+        "resolution": "qualified-by-authority"
+      },
+      {
+        "authority": "hse",
+        "localConvention": "Existing hse-* record IDs remain stable; place_id remains the referent join while id identifies a dated phase.",
+        "resolution": "qualified-by-authority"
+      },
+      {
+        "authority": "cnd",
+        "localConvention": "Existing plc/src/att/nmu/nue prefixes remain stable and become local IDs inside the CND authority.",
+        "resolution": "qualified-by-authority"
+      }
+    ]
+  },
+  "evidence": {
+    "tiers": [
+      {
+        "id": "editorial_unverified",
+        "rank": 0,
+        "definition": "Editorial assertion or unverified lead; never publishable as fact"
+      },
+      {
+        "id": "bibliographic",
+        "rank": 1,
+        "definition": "Identified source or dataset without a feature-level locator"
+      },
+      {
+        "id": "feature_locator",
+        "rank": 2,
+        "definition": "Source plus page, folio, sheet, feature or equivalent stable locator"
+      },
+      {
+        "id": "inspectable_primary",
+        "rank": 3,
+        "definition": "Directly inspectable primary witness with stable locator and rights state"
+      },
+      {
+        "id": "corroborated_primary",
+        "rank": 4,
+        "definition": "Two or more independent primary witnesses, or primary evidence corroborated by critical scholarship"
+      }
+    ],
+    "minimums": {
+      "publishableProseClaim": "feature_locator",
+      "datedEvent": "feature_locator",
+      "routeSegment": "feature_locator",
+      "boundaryPhase": "feature_locator",
+      "mapObjectMetadata": "feature_locator"
+    },
+    "confidence": ["direct", "high", "medium", "low", "editorial_reconstruction"],
+    "datePrecision": [
+      "exact_date",
+      "exact_year",
+      "year_range",
+      "circa",
+      "century",
+      "terminus_post_quem",
+      "terminus_ante_quem",
+      "disputed",
+      "undated"
+    ],
+    "geometryProvenance": [
+      "source_geometry",
+      "georeferenced_trace",
+      "scholarly_reconstruction",
+      "editorial_generalisation",
+      "modern_reference"
+    ],
+    "aliases": {
+      "georeferenced_source": "georeferenced_trace",
+      "editorial_reconstruction": "scholarly_reconstruction",
+      "display_generalisation": "editorial_generalisation",
+      "reconstructed": "editorial_reconstruction",
+      "year": "exact_year",
+      "open": "undated"
+    },
+    "rules": {
+      "featureLevelEvidenceRequiredWhenSourcesDiffer": true,
+      "datasetCitationMayReplaceFeatureEvidence": false,
+      "editorialReconstructionRequiresVisibleDisclosure": true,
+      "geometryRequiresProvenance": true
+    }
+  },
+  "publication": {
+    "states": [
+      "proposed",
+      "researching",
+      "verified",
+      "ready-for-build",
+      "in-build",
+      "qa",
+      "publishable",
+      "published",
+      "blocked",
+      "superseded"
+    ],
+    "transitions": {
+      "proposed": ["researching", "blocked", "superseded"],
+      "researching": ["verified", "blocked", "superseded"],
+      "verified": ["ready-for-build", "researching", "blocked", "superseded"],
+      "ready-for-build": ["in-build", "researching", "blocked", "superseded"],
+      "in-build": ["qa", "ready-for-build", "blocked", "superseded"],
+      "qa": ["publishable", "in-build", "blocked", "superseded"],
+      "publishable": ["published", "qa", "blocked", "superseded"],
+      "published": ["qa", "blocked", "superseded"],
+      "blocked": ["researching", "ready-for-build", "in-build", "qa", "superseded"],
+      "superseded": []
+    },
+    "rightsStates": [
+      "unknown",
+      "researching",
+      "restricted",
+      "cleared-with-conditions",
+      "cleared",
+      "not-publishable"
+    ],
+    "roles": {
+      "historicalVerification": "Confirms claims against identified evidence and locators",
+      "dataAcceptance": "Accepts schema, vocabulary, provenance and integrity results",
+      "rightsClearance": "Records the applicable licence or restriction and publication conditions",
+      "releaseApproval": "Confirms all applicable gates before publication"
+    },
+    "requirements": {
+      "humanReviewBeforePublishable": true,
+      "assistedMethods": ["ocr", "htr", "llm_assisted"],
+      "supersededRecordsKeepReplacementLinks": true,
+      "publishableRequiresRights": ["cleared-with-conditions", "cleared"]
+    },
+    "jiraMapping": {
+      "To Do": ["proposed", "researching", "verified", "ready-for-build"],
+      "In Progress": ["in-build", "qa", "blocked"],
+      "Done": ["publishable", "published", "superseded"]
+    }
+  },
+  "support": {
+    "browserMatrix": [
+      {
+        "project": "chromium",
+        "surface": "desktop",
+        "minimumTestVersion": "Chromium 149.0.7827.55",
+        "scope": "full suite"
+      },
+      {
+        "project": "firefox",
+        "surface": "desktop",
+        "minimumTestVersion": "Firefox 151.0",
+        "scope": "core flows"
+      },
+      {
+        "project": "webkit",
+        "surface": "desktop",
+        "minimumTestVersion": "WebKit 26.5",
+        "scope": "core flows"
+      },
+      {
+        "project": "mobile-chrome",
+        "surface": "Pixel 5 viewport",
+        "minimumTestVersion": "Chromium 149.0.7827.55",
+        "scope": "core flows"
+      },
+      {
+        "project": "mobile-safari",
+        "surface": "iPhone 13 viewport",
+        "minimumTestVersion": "WebKit 26.5",
+        "scope": "core flows"
+      }
+    ],
+    "budgets": {
+      "shared": {
+        "accessibilityScore": 0.95,
+        "bestPracticesScore": 0.9,
+        "seoScore": 0.9,
+        "largestContentfulPaintMs": 2500,
+        "cumulativeLayoutShift": 0.1
+      },
+      "content": {
+        "performanceScore": 0.9,
+        "totalBlockingTimeMs": 200,
+        "totalTransferBytes": 1250000,
+        "scriptTransferBytes": 200000
+      },
+      "atlas": {
+        "performanceScoreWarning": 0.8,
+        "totalBlockingTimeMs": 1000,
+        "totalTransferBytes": 1500000,
+        "scriptTransferBytes": 350000,
+        "exception": "MapLibre is an intentional above-fold WebGL dependency; only its aggregate performance score is a warning. Accessibility, LCP, CLS, TBT and transfer budgets remain hard failures."
+      }
+    },
+    "interactionGates": [
+      "keyboard",
+      "touch-pointer",
+      "responsive",
+      "reduced-motion",
+      "text-equivalent",
+      "non-colour-meaning",
+      "axe-wcag-a-aa"
+    ],
+    "deepZoomFallback": {
+      "initialSurface": "Rights-cleared static image with alt text and attribution",
+      "unsupportedBrowser": "Keep the static image and expose the source/download link",
+      "networkOrTileFailure": "Restore or retain the static image; never leave an empty viewer",
+      "lowResource": "Do not initialise until the reader requests zoom; reading and citation remain available without it"
+    },
+    "tooling": {
+      "browserFlows": "playwright.config.ts",
+      "accessibility": "@axe-core/playwright in e2e",
+      "lighthouse": "lighthouserc.json",
+      "ci": ".github/workflows/ci.yml"
+    }
+  }
+}

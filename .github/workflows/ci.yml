@@ -50,6 +50,9 @@ jobs:
       - name: Unit tests (Vitest)
         run: npm test
 
+      - name: Shared contracts and cross-registry integrity
+        run: npm run registries:validate
+
       - name: Geo release manifest and asset QA
         run: npm run geo:validate
 
