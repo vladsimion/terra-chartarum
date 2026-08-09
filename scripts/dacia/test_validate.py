@@ -613,3 +613,74 @@ def test_manifest_place_count_must_match(dataset):
     manifest["placeCount"] = 39
     path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     refuses("placeCount 39 != 40 pilot rows")
+
+
+# --- research source ledgers (KAN-348, KAN-351) -----------------------------
+
+
+def test_hiatus_candidate_cannot_claim_meaningful_silence(dataset):
+    def mutate(rows):
+        find(rows, "witness_id", "hw-charters")["silence_assessment"] = "meaningful_silence"
+
+    edit(dataset, "hiatus_witness_families", mutate)
+    refuses("meaningful_silence requires a reviewed witness")
+
+
+def test_hiatus_not_applicable_is_not_general_evidence(dataset):
+    def mutate(rows):
+        find(rows, "witness_id", "hw-fiscal")["applicability"] = "applicable"
+
+    edit(dataset, "hiatus_witness_families", mutate)
+    refuses("not_applicable silence cannot claim general applicability")
+
+
+def test_hiatus_family_needs_a_survival_limit(dataset):
+    def mutate(rows):
+        find(rows, "witness_id", "hw-chronicles")["survival_limitations"] = ""
+
+    edit(dataset, "hiatus_witness_families", mutate)
+    refuses("survival_limitations is required")
+
+
+def test_treaty_ambiguity_must_record_alternatives(dataset):
+    def mutate(rows):
+        find(rows, "source_id", "tf-paris-1856")["alternatives"] = ""
+
+    edit(dataset, "treaty_frontier_sources", mutate)
+    refuses("ambiguous interpretation requires alternatives")
+
+
+def test_treaty_source_cannot_claim_unreviewed_authoritative_geometry(dataset):
+    def mutate(rows):
+        find(rows, "source_id", "tf-trianon-1920")[
+            "geometry_status"
+        ] = "authoritative_modern_gis"
+
+    edit(dataset, "treaty_frontier_sources", mutate)
+    refuses("is not an approved pre-digitisation state")
+
+
+def test_treaty_source_types_cannot_be_conflated(dataset):
+    def mutate(rows):
+        find(rows, "source_id", "tf-armistice-1944")[
+            "record_type"
+        ] = "final_treaty_or_armistice"
+
+    edit(dataset, "treaty_frontier_sources", mutate)
+    refuses("record_type 'final_treaty_or_armistice' is not recognised")
+
+
+def test_hiatus_minimum_set_is_hash_frozen(dataset):
+    def mutate(rows):
+        find(rows, "witness_id", "hw-charters")["historical_question"] = "silently changed"
+
+    edit(dataset, "hiatus_witness_families", mutate)
+    refuses("ledger changed since the minimum set was frozen")
+
+
+def test_treaty_minimum_ids_match_marked_rows(dataset):
+    def mutate(rows):
+        find(rows, "source_id", "tf-bucharest-1913")["minimum_set"] = "no"
+
+    edit(dataset, "treaty_frontier_sources", mutate)
+    refuses("minimumIds do not match rows marked minimum_set=yes")
