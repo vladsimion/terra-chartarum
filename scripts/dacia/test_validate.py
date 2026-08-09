@@ -105,7 +105,7 @@ def test_place_name_cannot_stand_in_for_an_id(dataset):
 
 def test_reserved_prefix_whose_table_exists_must_be_promoted(dataset):
     def mutate(rows):
-        find(rows, "prefix", "nmu")["authority_table"] = "data/dacia/places.csv"
+        find(rows, "prefix", "obj")["authority_table"] = "data/dacia/places.csv"
 
     edit(dataset, "entity_prefixes", mutate)
     refuses("promote the prefix to live")
@@ -409,7 +409,7 @@ def test_migrating_place_must_be_in_the_pilot(dataset):
 
 def test_planned_migration_whose_target_exists_is_stale(dataset):
     def mutate(rows):
-        find(rows, "datum_id", "inv-src-szathmari")["target_id"] = "src-ptolemy-geographia"
+        find(rows, "datum_id", "inv-src-secret")["target_id"] = "src-ptolemy-geographia"
 
     edit(dataset, "inventory", mutate)
     refuses("already exists; mark the migration done")
@@ -429,6 +429,182 @@ def test_retired_datum_must_record_a_reason(dataset):
 
     edit(dataset, "inventory", mutate)
     refuses("retire requires a recorded reason")
+
+
+# --- name uses and referent migration (KAN-336) ------------------------------
+
+
+def test_every_fate_class_has_a_worked_example(dataset):
+    """The fixtures the ticket asks for are the committed rows themselves."""
+    _, uses = read(dataset, "name_uses")
+    covered = {row["fate_class"] for row in uses}
+    assert {"translatio", "restitutio", "inventio", "applicatio", "commercium"} <= covered
+
+
+def test_continuity_edge_must_cite_evidence(dataset):
+    def mutate(rows):
+        find(rows, "edge_id", "nue-dacia-danube-north-south")["edge_kind"] = "continuity"
+
+    edit(dataset, "name_use_edges", mutate)
+    refuses("a continuity edge must cite an attestation")
+
+
+def test_a_shared_string_cannot_become_continuity(dataset):
+    """Roman Dacia and Scandinavian Dacia share a word and nothing else."""
+
+    def mutate(rows):
+        find(rows, "edge_id", "nue-dacia-province-scandinavia")["edge_kind"] = "continuity"
+
+    edit(dataset, "name_use_edges", mutate)
+    refuses("a lexical match alone cannot create one")
+
+
+def test_revival_must_name_its_instrument(dataset):
+    def mutate(rows):
+        find(rows, "edge_id", "nue-napoca-roman-restored")["evidence_note"] = ""
+
+    edit(dataset, "name_use_edges", mutate)
+    refuses("must name the instrument that reinstated the name")
+
+
+def test_edge_must_resolve_to_a_use(dataset):
+    def mutate(rows):
+        rows[0]["to_name_use"] = "nmu-does-not-exist"
+
+    edit(dataset, "name_use_edges", mutate)
+    refuses("does not resolve")
+
+
+def test_edge_cannot_join_a_use_to_itself(dataset):
+    def mutate(rows):
+        rows[0]["to_name_use"] = rows[0]["from_name_use"]
+
+    edit(dataset, "name_use_edges", mutate)
+    refuses("cannot join a use to itself")
+
+
+def test_shared_lexical_form_must_be_adjudicated(dataset):
+    """A use that shares a string with another may not float unlinked."""
+    edit(
+        dataset,
+        "name_use_edges",
+        lambda rows: [r for r in rows if r["edge_id"] != "nue-dacia-province-marque"],
+    )
+    refuses("is joined to none of them")
+
+
+def test_settlement_referent_must_resolve_to_a_place(dataset):
+    def mutate(rows):
+        find(rows, "name_use_id", "nmu-napoca-roman")["referent_place_id"] = ""
+
+    edit(dataset, "name_uses", mutate)
+    refuses("a settlement referent must resolve to a place")
+
+
+def test_use_needs_a_source_or_an_institution(dataset):
+    def mutate(rows):
+        row = find(rows, "name_uses" and "name_use_id", "nmu-dacia-aureliana")
+        row["institution"] = ""
+
+    edit(dataset, "name_uses", mutate)
+    refuses("needs either a source or an institution")
+
+
+def test_undated_use_cannot_carry_a_period(dataset):
+    def mutate(rows):
+        find(rows, "name_use_id", "nmu-dacia-reception")["period_from"] = "1918"
+
+    edit(dataset, "name_uses", mutate)
+    refuses("an undated use cannot carry a period")
+
+
+def test_terminus_post_quem_keeps_its_upper_bound_open(dataset):
+    def mutate(rows):
+        find(rows, "name_use_id", "nmu-napoca-restored")["period_to"] = "2026"
+
+    edit(dataset, "name_uses", mutate)
+    refuses("terminus_post_quem needs an open upper bound")
+
+
+# --- compiled authorities and raw capture (KAN-334, KAN-335) -----------------
+
+
+def test_unlocated_place_cannot_carry_coordinates(dataset):
+    """Publishing one candidate site would turn an open question into a point."""
+
+    def mutate(rows):
+        row = find(rows, "place_id", "plc-vicina")
+        row["ref_lon"] = "28.5"
+        row["ref_lat"] = "45.0"
+
+    edit(dataset, "places", mutate)
+    refuses("an unlocated place cannot carry ref_lon")
+
+
+def test_located_place_must_carry_coordinates(dataset):
+    def mutate(rows):
+        find(rows, "place_id", "plc-apulum")["ref_lon"] = ""
+
+    edit(dataset, "places", mutate)
+    refuses("ref_lon is required")
+
+
+def test_unlocated_place_must_record_why(dataset):
+    def mutate(rows):
+        find(rows, "place_id", "plc-vicina")["note"] = ""
+
+    edit(dataset, "places", mutate)
+    refuses("an unlocated place must record why")
+
+
+def test_pilot_and_authority_must_not_drift(dataset):
+    def mutate(rows):
+        find(rows, "place_id", "plc-apulum")["region"] = "banat"
+
+    edit(dataset, "pilot_places", mutate)
+    refuses("disagrees with places.csv")
+
+
+def test_source_families_must_be_varied(dataset):
+    def mutate(rows):
+        for row in rows:
+            row["source_family"] = "itinerary"
+
+    edit(dataset, "sources", mutate)
+    refuses("at least 4 source families")
+
+
+def test_reviewed_source_requires_an_object_identifier(dataset):
+    def mutate(rows):
+        row = find(rows, "source_id", "src-hereford-mappa")
+        row["review_state"] = "reviewed"
+        row["normalization_method"] = "manual"
+        row["reviewer"] = "V. Simion"
+        row["review_date"] = "2026-08-09"
+
+    edit(dataset, "sources", mutate)
+    refuses("a reviewed source requires repository_object_id")
+
+
+def test_reading_requires_a_transcription(dataset):
+    edit(dataset, "transcriptions", lambda rows: [r for r in rows if r["attestation_id"] != "att-0002"])
+    refuses("requires a transcription recording how it was captured")
+
+
+def test_transcription_must_resolve_to_an_attestation(dataset):
+    def mutate(rows):
+        rows[0]["attestation_id"] = "att-9999"
+
+    edit(dataset, "transcriptions", mutate)
+    refuses("does not resolve to an attestation")
+
+
+def test_migrated_cell_count_must_match_its_state(dataset):
+    def mutate(rows):
+        find(rows, "datum_id", "inv-att-apulum")["migration_state"] = "done"
+
+    edit(dataset, "inventory", mutate)
+    refuses("cells migrated is 'partial'")
 
 
 def test_manifest_place_count_must_match(dataset):

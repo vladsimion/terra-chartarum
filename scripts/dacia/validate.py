@@ -94,6 +94,7 @@ REQUIRED_PILOT_AXES = {
     "name_variation",
 }
 PILOT_SIZE = 40
+MIN_SOURCE_FAMILIES = 4
 
 # Degrees, EPSG:4326. Wide enough for the whole Dacia cycle and narrow enough
 # that a transposed longitude/latitude pair falls outside it.
@@ -115,6 +116,9 @@ TABLES = {
     "places": "places.csv",
     "sources": "sources.csv",
     "attestations": "attestations.csv",
+    "transcriptions": "transcriptions.csv",
+    "name_uses": "name-uses.csv",
+    "name_use_edges": "name-use-edges.csv",
     "inventory": f"{PILOT}/trench-a-inventory.csv",
     "pilot_places": f"{PILOT}/pilot-places.csv",
 }
@@ -385,27 +389,40 @@ def validate_places(terms, ranks, errors: list[str]) -> set[str]:
         _check_vocab(row["place_type"], "place_type", terms, label, "place_type", errors)
         _check_vocab(row["region"], "region", terms, label, "region", errors)
         _check_vocab(
-            row["ref_geometry_provenance"],
-            "geometry_provenance",
-            terms,
-            label,
-            "ref_geometry_provenance",
-            errors,
+            row["location_status"], "location_status", terms, label, "location_status", errors
         )
         _validate_review(row, label, terms, ranks, errors)
 
-        for field, (low, high) in (("ref_lon", LON_RANGE), ("ref_lat", LAT_RANGE)):
-            raw = row[field]
-            if not raw:
-                errors.append(f"{label}: {field} is required")
-                continue
-            try:
-                value = float(raw)
-            except ValueError:
-                errors.append(f"{label}: {field} '{raw}' is not a number")
-                continue
-            if not low <= value <= high:
-                errors.append(f"{label}: {field} {value} falls outside the Dacia bounding box")
+        # A place whose site is unsettled in the literature carries no coordinates
+        # at all. Publishing one candidate as the reference location would turn an
+        # open question into a point on a map.
+        if row["location_status"] == "unlocated":
+            for field in ("ref_lon", "ref_lat", "ref_geometry_provenance"):
+                if row[field]:
+                    errors.append(f"{label}: an unlocated place cannot carry {field}")
+            if not row["note"]:
+                errors.append(f"{label}: an unlocated place must record why")
+        else:
+            _check_vocab(
+                row["ref_geometry_provenance"],
+                "geometry_provenance",
+                terms,
+                label,
+                "ref_geometry_provenance",
+                errors,
+            )
+            for field, (low, high) in (("ref_lon", LON_RANGE), ("ref_lat", LAT_RANGE)):
+                raw = row[field]
+                if not raw:
+                    errors.append(f"{label}: {field} is required")
+                    continue
+                try:
+                    value = float(raw)
+                except ValueError:
+                    errors.append(f"{label}: {field} '{raw}' is not a number")
+                    continue
+                if not low <= value <= high:
+                    errors.append(f"{label}: {field} {value} falls outside the Dacia bounding box")
 
         external = [row["pleiades_id"], row["whg_id"]]
         verified = row["external_verified"]
@@ -419,16 +436,21 @@ def validate_places(terms, ranks, errors: list[str]) -> set[str]:
     return ids
 
 
-def validate_sources(terms, ranks, errors: list[str]) -> set[str]:
-    """KAN-332: source authority, including the scope that makes silence readable."""
+def validate_sources(terms, ranks, errors: list[str]) -> dict[str, str]:
+    """KAN-332: source authority, including the scope that makes silence readable.
+
+    Returns each source's review state, because whether a silence may be
+    published depends on whether that source's scope has been read.
+    """
     rows = _read("sources", errors)
     _check_unique(rows, "source_id", "sources", errors)
-    ids: set[str] = set()
+    ids: dict[str, str] = {}
+    families: set[str] = set()
 
     for row in rows:
         source_id = row["source_id"]
         label = f"sources[{source_id}]"
-        ids.add(source_id)
+        ids[source_id] = row["review_state"]
         if not source_id.startswith("src-") or not SLUG.match(source_id):
             errors.append(f"{label}: source_id must be a src- slug")
         for field in ("title", "creator", "witness", "repository", "citation"):
@@ -442,7 +464,16 @@ def validate_sources(terms, ranks, errors: list[str]) -> set[str]:
         _check_vocab(
             row["rights_statement"], "rights_statement", terms, label, "rights_statement", errors
         )
+        _check_vocab(row["source_family"], "source_family", terms, label, "source_family", errors)
+        families.add(row["source_family"])
         _validate_review(row, label, terms, ranks, errors)
+
+        # A repository that cannot state an object identifier has not really been
+        # checked, so the bar bites at review rather than at compilation.
+        if ranks.get(row["review_state"], 0) >= ranks.get("reviewed", 2):
+            for field in ("edition_state", "repository_object_id"):
+                if not row[field]:
+                    errors.append(f"{label}: a reviewed source requires {field}")
 
         precision = row["date_precision"]
         bounds = []
@@ -466,6 +497,13 @@ def validate_sources(terms, ranks, errors: list[str]) -> set[str]:
                 errors.append(f"{label}: year_range requires two distinct years")
         if precision == "disputed" and not row["note"]:
             errors.append(f"{label}: a disputed date requires a recorded editorial decision")
+
+    # KAN-334: the pilot argues across evidence regimes, so it cannot rest on one
+    # kind of witness however many of them there are.
+    if rows and len(families) < MIN_SOURCE_FAMILIES:
+        errors.append(
+            f"sources: the pilot needs at least {MIN_SOURCE_FAMILIES} source families, found {len(families)}"
+        )
 
     return ids
 
@@ -496,11 +534,33 @@ def _validate_review(row, label, terms, ranks, errors) -> None:
                 errors.append(f"{label}: {field} is still pending at review_state {state}")
 
 
-def validate_attestations(terms, ranks, places, sources, errors: list[str]) -> None:
-    """KAN-332: claims resolve to authorities, and silences stay silent."""
+def validate_attestations(terms, ranks, places, source_states, errors: list[str]) -> None:
+    """KAN-332/335: claims resolve to authorities, and silences stay silent."""
     rows = _read("attestations", errors)
     _check_unique(rows, "attestation_id", "attestations", errors)
     seen_claims: set[tuple[str, str, str]] = set()
+    sources = set(source_states)
+    reviewed_rank = ranks.get("reviewed", 2)
+
+    # Raw capture lives in its own table so normalisation can never overwrite
+    # what the witness actually carried (KAN-335).
+    captures: dict[str, list[dict[str, str]]] = {}
+    for row in _read("transcriptions", errors):
+        label = f"transcriptions[{row['transcription_id']}]"
+        if not row["transcription_id"].startswith("tr-"):
+            errors.append(f"{label}: transcription_id must be a tr- slug")
+        if not row["verbatim"]:
+            errors.append(f"{label}: verbatim is required")
+        if not row["capture_source"]:
+            errors.append(f"{label}: capture_source is required")
+        if not ISO_DATE.match(row["captured_on"] or ""):
+            errors.append(f"{label}: captured_on must be an ISO date")
+        _check_vocab(row["capture_method"], "capture_method", terms, label, "capture_method", errors)
+        captures.setdefault(row["attestation_id"], []).append(row)
+
+    for attestation_id in captures:
+        if attestation_id not in {r["attestation_id"] for r in rows}:
+            errors.append(f"transcriptions: '{attestation_id}' does not resolve to an attestation")
 
     for row in rows:
         attestation_id = row["attestation_id"]
@@ -545,14 +605,164 @@ def validate_attestations(terms, ranks, places, sources, errors: list[str]) -> N
             if klass in SILENT_CLASSES:
                 errors.append(f"{label}: a silence cannot carry source coordinates")
 
-        if state_rank >= ranks.get("reviewed", 2):
+        if row["name_original"] and not captures.get(attestation_id):
+            errors.append(f"{label}: a reading requires a transcription recording how it was captured")
+
+        if state_rank >= reviewed_rank:
+            # `whole_work` is the documented maximum precision for an indivisible
+            # witness, so it passes only when it says why nothing finer exists.
             if row["locator_type"] == "none" or row["locator"] in {"", PENDING}:
                 errors.append(f"{label}: a reviewed attestation requires a real locator")
+            elif row["locator_type"] == "whole_work" and len(row["locator"]) < 10:
+                errors.append(
+                    f"{label}: whole_work must record why the witness has no finer locator"
+                )
+            # A silence is only meaningful once somebody has read the source's
+            # scope, which is what reviewing the source record means.
+            if row["attestation_class"] == "source_silent":
+                if ranks.get(source_states.get(row["source_id"], "raw"), 0) < reviewed_rank:
+                    errors.append(
+                        f"{label}: source_silent needs its source's scope reviewed first"
+                    )
+            if row["name_original"] and not any(
+                c["capture_method"] in {"from_witness", "from_edition"}
+                for c in captures.get(attestation_id, [])
+            ):
+                errors.append(
+                    f"{label}: a reviewed reading must be captured from the witness or an edition"
+                )
+
+        if ranks.get(row["review_state"], 0) >= ranks.get("approved", 3):
+            if not ISO_DATE.match(row["last_verified"] or ""):
+                errors.append(f"{label}: an approved attestation requires an ISO last_verified")
 
         claim = (row["place_id"], row["source_id"], row["name_normalized"])
         if claim in seen_claims:
             errors.append(f"{label}: duplicate claim for {claim[0]} in {claim[1]}")
         seen_claims.add(claim)
+
+
+def _check_period(row, label, precision, errors) -> None:
+    """Shared bound rules for a dated span, keyed off its declared precision."""
+    lower, upper = row["period_from"], row["period_to"]
+    if precision == "undated":
+        if lower or upper:
+            errors.append(f"{label}: an undated use cannot carry a period")
+        return
+    if precision == "terminus_post_quem":
+        if not lower or upper:
+            errors.append(f"{label}: terminus_post_quem needs an open upper bound")
+        return
+    if precision == "terminus_ante_quem":
+        if lower or not upper:
+            errors.append(f"{label}: terminus_ante_quem needs an open lower bound")
+        return
+    if not lower.lstrip("-").isdigit() or not upper.lstrip("-").isdigit():
+        errors.append(f"{label}: {precision} requires both period_from and period_to")
+        return
+    if int(lower) > int(upper):
+        errors.append(f"{label}: period_from {lower} is later than period_to {upper}")
+    if precision in {"exact_year", "circa"} and lower != upper:
+        errors.append(f"{label}: {precision} requires a single year")
+    if precision == "year_range" and lower == upper:
+        errors.append(f"{label}: year_range requires two distinct years")
+
+
+def validate_name_uses(terms, ranks, places, sources, attestations, errors: list[str]) -> None:
+    """KAN-336: what a name meant, when, and what may be joined to what.
+
+    The point of the extension is that a shared string is not a relationship.
+    Referential links are rows in their own table, and the one kind that asserts
+    an unbroken line has to produce evidence for it.
+    """
+    rows = _read("name_uses", errors)
+    _check_unique(rows, "name_use_id", "name-uses", errors)
+    uses: dict[str, str] = {}
+
+    for row in rows:
+        use_id = row["name_use_id"]
+        label = f"name-uses[{use_id}]"
+        uses[use_id] = row["lexical_form"]
+        if not use_id.startswith("nmu-") or not SLUG.match(use_id):
+            errors.append(f"{label}: name_use_id must be an nmu- slug")
+        if not row["lexical_form"]:
+            errors.append(f"{label}: lexical_form is required")
+        if not row["referent_label"]:
+            errors.append(f"{label}: referent_label is required")
+        # A use is attested by a witness or exercised by an institution; with
+        # neither, nobody actually used the name.
+        if not row["source_id"] and not row["institution"]:
+            errors.append(f"{label}: a use needs either a source or an institution")
+        if row["source_id"] and row["source_id"] not in sources:
+            errors.append(f"{label}: source_id '{row['source_id']}' does not resolve")
+        _check_vocab(row["referent_kind"], "referent_kind", terms, label, "referent_kind", errors)
+        _check_vocab(row["fate_class"], "fate_class", terms, label, "fate_class", errors)
+        _check_vocab(row["confidence"], "confidence", terms, label, "confidence", errors)
+        _check_vocab(row["locator_type"], "locator_type", terms, label, "locator_type", errors)
+        _check_vocab(
+            row["date_precision"], "date_precision", terms, label, "date_precision", errors
+        )
+        _check_period(row, label, row["date_precision"], errors)
+        _validate_review(row, label, terms, ranks, errors)
+
+        if row["referent_place_id"]:
+            if row["referent_place_id"] not in places:
+                errors.append(f"{label}: referent_place_id does not resolve")
+        elif row["referent_kind"] == "settlement":
+            errors.append(f"{label}: a settlement referent must resolve to a place")
+
+    edges = _read("name_use_edges", errors)
+    _check_unique(edges, "edge_id", "name-use-edges", errors)
+    seen_pairs: set[tuple[str, str]] = set()
+    linked: set[str] = set()
+
+    for row in edges:
+        label = f"name-use-edges[{row['edge_id']}]"
+        source_use, target_use = row["from_name_use"], row["to_name_use"]
+        if not row["edge_id"].startswith("nue-") or not SLUG.match(row["edge_id"]):
+            errors.append(f"{label}: edge_id must be an nue- slug")
+        for field, value in (("from_name_use", source_use), ("to_name_use", target_use)):
+            if value not in uses:
+                errors.append(f"{label}: {field} '{value}' does not resolve")
+        if source_use == target_use:
+            errors.append(f"{label}: an edge cannot join a use to itself")
+        pair = (source_use, target_use)
+        if pair in seen_pairs or pair[::-1] in seen_pairs:
+            errors.append(f"{label}: duplicate edge between {source_use} and {target_use}")
+        seen_pairs.add(pair)
+        linked.update(pair)
+
+        _check_vocab(row["edge_kind"], "edge_kind", terms, label, "edge_kind", errors)
+        _check_vocab(row["confidence"], "confidence", terms, label, "confidence", errors)
+        _validate_review(row, label, terms, ranks, errors)
+
+        evidence = row["evidence_attestation_id"]
+        if evidence and evidence not in attestations:
+            errors.append(f"{label}: evidence_attestation_id '{evidence}' does not resolve")
+        # The rule the whole extension exists for: an unbroken line has to be
+        # evidenced, never inferred from the fact that the string matches.
+        if row["edge_kind"] == "continuity" and not evidence:
+            errors.append(
+                f"{label}: a continuity edge must cite an attestation; "
+                "a lexical match alone cannot create one"
+            )
+        if row["edge_kind"] == "revival" and not row["evidence_note"]:
+            errors.append(f"{label}: a revival must name the instrument that reinstated the name")
+
+    # A use that shares its string with another must be adjudicated rather than
+    # left floating for a reader to join up by eye.
+    by_form: dict[str, list[str]] = {}
+    for use_id, form in uses.items():
+        by_form.setdefault(form.casefold(), []).append(use_id)
+    for form, group in sorted(by_form.items()):
+        if len(group) < 2:
+            continue
+        for use_id in sorted(group):
+            if use_id not in linked:
+                errors.append(
+                    f"name-use-edges: '{use_id}' shares the form '{form}' with another use "
+                    "and is joined to none of them"
+                )
 
 
 def validate_pilot(terms, places, sources, errors: list[str]) -> None:
@@ -569,6 +779,10 @@ def validate_pilot(terms, places, sources, errors: list[str]) -> None:
     if ranks_seen != list(range(1, len(rows) + 1)):
         errors.append("pilot-places: pilot_rank must run from one without gaps")
 
+    # The pilot and the place authority describe the same referents, so they must
+    # not drift apart: an edit to one that is not made in the other is a defect.
+    authority = {row["place_id"]: row for row in _read("places", errors)}
+
     for row in rows:
         label = f"pilot-places[{row['place_id']}]"
         pilot_ids.add(row["place_id"])
@@ -576,6 +790,14 @@ def validate_pilot(terms, places, sources, errors: list[str]) -> None:
             errors.append(f"{label}: place_id must be a plc- slug")
         if not row["rationale"]:
             errors.append(f"{label}: rationale is required")
+        compiled = authority.get(row["place_id"])
+        if compiled is not None:
+            for field in ("reference_name", "place_type", "region"):
+                if compiled[field] != row[field]:
+                    errors.append(
+                        f"{label}: {field} '{row[field]}' disagrees with places.csv "
+                        f"'{compiled[field]}'"
+                    )
         _check_vocab(row["region"], "region", terms, label, "region", errors)
         _check_vocab(row["place_type"], "place_type", terms, label, "place_type", errors)
         for axis in _pipe_set(row["selection_axis"]):
@@ -606,6 +828,24 @@ def validate_pilot(terms, places, sources, errors: list[str]) -> None:
             errors.append(f"{label}: jira_key '{row['jira_key']}' is not a KAN key")
         if row["cell_count"] and not row["cell_count"].isdigit():
             errors.append(f"{label}: cell_count '{row['cell_count']}' is not a number")
+
+        # Migration progress is counted, not asserted: the state has to agree with
+        # how many cells actually made it across.
+        if row["datum_kind"] == "attestation_set":
+            if not row["migrated_cells"].isdigit() or not row["cell_count"].isdigit():
+                errors.append(f"{label}: an attestation set needs cell_count and migrated_cells")
+            else:
+                done, total = int(row["migrated_cells"]), int(row["cell_count"])
+                if done > total:
+                    errors.append(f"{label}: migrated_cells {done} exceeds cell_count {total}")
+                expected = "done" if done == total else "partial" if done else "planned"
+                if row["migration_state"] != expected:
+                    errors.append(
+                        f"{label}: {done} of {total} cells migrated is '{expected}', "
+                        f"not '{row['migration_state']}'"
+                    )
+        elif row["migrated_cells"]:
+            errors.append(f"{label}: only an attestation set counts migrated_cells")
 
         if disposition != "migrate":
             if row["migration_state"]:
@@ -692,6 +932,8 @@ def validate_inputs() -> list[str]:
     places = validate_places(terms, ranks, errors)
     sources = validate_sources(terms, ranks, errors)
     validate_attestations(terms, ranks, places, sources, errors)
+    attestation_ids = {row["attestation_id"] for row in _read("attestations", errors)}
+    validate_name_uses(terms, ranks, places, sources, attestation_ids, errors)
     validate_examples(terms, errors, places, sources)
     validate_gates(trenches, campaigns_used, errors)
     validate_pilot(terms, places, sources, errors)
@@ -710,15 +952,25 @@ def readiness_lines() -> list[str]:
     debt = _read("verification_debt", errors)
     gates = _read("trench_gates", errors)
 
+    transcriptions = _read("transcriptions", errors)
+    from_witness = sum(
+        1 for row in transcriptions if row["capture_method"] in {"from_witness", "from_edition"}
+    )
     silences = sum(1 for row in attestations if row["attestation_class"] in SILENT_CLASSES)
     migrated = sum(1 for row in inventory if row["migration_state"] == "done")
     outstanding = sum(1 for row in inventory if row["migration_state"] in {"planned", "partial"})
     open_debt = sum(1 for row in debt if row["status"] == "open")
     passed = sum(1 for row in gates if row["status"] == "passed")
+    uses = _read("name_uses", errors)
+    edges = _read("name_use_edges", errors)
+    denied = sum(1 for row in edges if row["edge_kind"] == "homonym_only")
 
     return [
         f"  corpus: {len(places)} places, {len(sources)} sources, "
         f"{len(attestations)} attestations ({silences} recorded silences)",
+        f"  capture: {len(transcriptions)} transcriptions, {from_witness} from a witness or edition",
+        f"  names: {len(uses)} name uses across {len({r['lexical_form'] for r in uses})} forms; "
+        f"{len(edges)} edges, {denied} of them explicit non-relationships",
         f"  pilot: {len(pilot)} places frozen; {migrated} Trench A data migrated, "
         f"{outstanding} outstanding",
         f"  gates: {passed} of {len(gates)} passed; {open_debt} open verification debts",

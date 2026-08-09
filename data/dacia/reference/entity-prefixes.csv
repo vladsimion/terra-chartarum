@@ -2,6 +2,7 @@ prefix,entity,authority_table,owner_id,externally_stable_from,state,note
 plc,place,data/dacia/places.csv,cnd,cnd-0.1,live,one row per referent; never per name
 src,source,data/dacia/sources.csv,cnd,cnd-0.1,live,one row per witness or series
 att,attestation,data/dacia/attestations.csv,cnd,cnd-1.0,live,place × source claim; internal until the v1.0 freeze
-nmu,name_use,data/dacia/name-uses.csv,cnd,cnd-1.0,reserved,referent migration extension (KAN-336)
+nmu,name_use,data/dacia/name-uses.csv,cnd,cnd-1.0,live,referent migration extension (KAN-336)
+nue,name_use_edge,data/dacia/name-use-edges.csv,cnd,cnd-1.0,live,explicit referential links; never inferred from a shared string
 obj,collection_object,data/dacia/objects.csv,ccd-g,ccd-g-release,reserved,physically inspected sheets (KAN-361)
 frn,frontier_segment,data/dacia/frontiers.csv,ccd-gis,ccd-gis-release,reserved,time-attributed treaty geometry (KAN-352)
