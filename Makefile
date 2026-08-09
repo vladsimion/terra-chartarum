@@ -4,7 +4,7 @@
 # out-of-band data pipelines that are not part of the Astro build - currently the
 # Venetian Maritime Network (VMN) GIS dataset compilation (KAN-145).
 
-.PHONY: vmn vmn-venv vmn-validate hanseatic hanseatic-validate hanseatic-test
+.PHONY: vmn vmn-venv vmn-validate hanseatic hanseatic-validate hanseatic-test dacia-validate dacia-test
 
 VMN_VENV := .venv
 VMN_PY := $(VMN_VENV)/bin/python
@@ -48,3 +48,15 @@ hanseatic-validate:
 # venv). Also runs in CI, which installs it itself.
 hanseatic-test:
 	python3 -m pytest scripts/hanseatic -q
+
+# Dacia programme QA (KAN-329..333). Validates the Corpus Chartarum Daciae
+# reference tables, the CND place/source/attestation corpus and the frozen
+# Trench A pilot. Standard-library only, so it runs on a bare python3; there is
+# no compile step yet, so there is nothing to build first.
+dacia-validate:
+	python3 scripts/dacia/validate.py
+
+# KAN-332 schema-rule tests. pytest is the only test-time dependency and is not
+# vendored; use the venv from `make vmn-venv` or install it yourself.
+dacia-test:
+	python3 -m pytest scripts/dacia -q

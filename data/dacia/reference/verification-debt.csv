@@ -1,0 +1,5 @@
+debt_id,kind,subject_id,statement,raised_in,blocks,resolution_path,status
+vd-honterus-orientation,verification,ccd-a,"The orientation of the 1532 Honterus Chorographia resists verification and is marked uncertain rather than asserted.",public/embed/dacia/index.html,ccd-a:research,"Consult the surviving impression once located.",open
+vd-honterus-impression,verification,ccd-a,"The single known print is recorded as 'likely Budapest'; the holding institution is not confirmed.",public/embed/dacia/index.html,ccd-a:research,"Confirm the repository and shelfmark before any survival_unknown attestation is resolved.",open
+vd-drobeta-ptolemy,verification,ccd-a,"Drobeta cannot securely be matched to an entry in Ptolemy's catalogue of forty-four poleis.",public/embed/dacia/index.html,ccd-a:data,"Record as source_silent at low confidence unless an edition settles the identification.",open
+vd-vicina-site,verification,ccd-a,"The exact site of Vicina is unsettled in the literature.",public/embed/dacia/index.html,ccd-a:data,"Carry as scholarly_reconstruction with competing candidates rather than one point.",open

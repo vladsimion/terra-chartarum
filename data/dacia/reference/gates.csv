@@ -1,0 +1,7 @@
+gate_id,order,label,question,evidence_kind,blocks_release
+research,1,Research,"Is the argument carried by identified witnesses rather than by assertion?",source ledger with locators,yes
+rights,2,Rights,"May every reproduced image and dataset actually be published?",rights statement per witness,yes
+data,3,Data,"Does the trench read shared corpus data that validates and rebuilds deterministically?",passing validator run,yes
+interaction,4,Interaction,"Does every visual state resolve to a record with source, locator and confidence?",state-to-record map,yes
+editorial,5,Editorial,"Has the prose been read against the evidence it claims, by a named editor?",editorial sign-off note,yes
+release,6,Release,"Do the site-wide publication checks pass with the trench in place?",CI run on the release commit,no

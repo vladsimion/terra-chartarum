@@ -1,0 +1,5 @@
+campaign,label,entry_criteria,entry_evidence,exit_criteria,exit_evidence
+i,Campaign I - foundation and the proving slice,"Programme IDs, vocabularies and the Definition of Done are frozen.",KAN-329|KAN-330|KAN-331,"CND 0.1 releases from a frozen pilot and one trench consumes it in production.",KAN-337|KAN-347
+ii,Campaign II - absence and the frontier system,"CND 0.1 is released and the Atlas projection renders it.",KAN-337|KAN-340,"Hiatus and Carta Rubra are published on shared corpus and frontier data.",KAN-350|KAN-356
+iii,Campaign III - the object and the seam,"The treaty-frontier layer is published and the acquisition register is live.",KAN-353|KAN-363,"CND v1.0 is citable and the object-led trenches are released.",KAN-366|KAN-359|KAN-362
+iv,Campaign IV - reception and closeout,"CND v1.0 is published and the absence and migration models are in production.",KAN-366|KAN-347|KAN-350,"Every trench is discoverable from the programme index and cycle checks pass.",KAN-370|KAN-371

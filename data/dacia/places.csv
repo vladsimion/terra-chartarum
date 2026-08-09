@@ -1,0 +1,6 @@
+place_id,reference_name,place_type,region,ref_lon,ref_lat,ref_geometry_provenance,pleiades_id,whg_id,external_verified,review_state,normalization_method,reviewer,review_date,note
+plc-sarmizegetusa-regia,Sarmizegetusa Regia,archaeological_site,transylvania,23.31,45.62,editorial_reconstruction,,,no,normalized,llm_assisted,,,"The Dacian royal seat in the Orăștie Mountains. Distinct referent from the Roman colonia forty kilometres away."
+plc-ulpia-traiana-sarmizegetusa,Colonia Ulpia Traiana Sarmizegetusa,archaeological_site,transylvania,22.78,45.51,editorial_reconstruction,,,no,normalized,llm_assisted,,,"The Roman colonia in Hațeg country. Trench A sinks its Sarmizegetusa test pit here."
+plc-apulum,Apulum,settlement,transylvania,23.57,46.07,editorial_reconstruction,,,no,normalized,llm_assisted,,,"Modern Alba Iulia. One hill above the Mureș carrying five successive names."
+plc-napoca,Napoca,settlement,transylvania,23.6,46.77,editorial_reconstruction,,,no,normalized,llm_assisted,,,"Modern Cluj-Napoca. The Roman name was re-attached by decree in 1974."
+plc-drobeta,Drobeta,crossing,oltenia,22.66,44.63,editorial_reconstruction,,,no,normalized,llm_assisted,,,"Modern Drobeta-Turnu Severin at the Danube crossing of Trajan's bridge."
