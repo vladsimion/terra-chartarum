@@ -1,0 +1,46 @@
+attestation_id,place_id,source_id,attestation_class,name_original,script,language,name_transliterated,name_normalized,locator_type,locator,source_lon,source_lat,confidence,review_state,normalization_method,reviewer,review_date,last_verified,note
+att-0001,plc-sarmizegetusa-regia,src-ptolemy-geographia,variant,pending,grek,grc,Zarmizegethousa,Sarmizegetusa Regia,none,pending,,,medium,raw,llm_assisted,,,,"The royal seat, basileion of Decebalus. Greek original outstanding: Trench A prints only a Latin transliteration."
+att-0002,plc-ulpia-traiana-sarmizegetusa,src-tabula-peutingeriana,variant,Sarmategte,latn,la,,Sarmizegetusa,none,pending,,,medium,raw,llm_assisted,,,,"A road station on the Tibiscum line - the colonia, not Regia."
+att-0003,plc-ulpia-traiana-sarmizegetusa,src-hereford-mappa,source_silent,,,,,,none,pending,,,medium,raw,llm_assisted,,,,In coverage and still unnamed: the region has dissolved into Gothia and Scythia.
+att-0004,plc-ulpia-traiana-sarmizegetusa,src-vesconte-portolan,extra_muros,,,,,,none,pending,,,high,raw,llm_assisted,,,,A portolan's scope is the coastline; an inland ruin lies outside it.
+att-0005,plc-ulpia-traiana-sarmizegetusa,src-honterus-chorographia,survival_unknown,,,,,,none,pending,,,low,raw,llm_assisted,,,,The village existed; whether the single impression marks it cannot be checked. See vd-honterus-impression.
+att-0006,plc-sarmizegetusa-regia,src-ortelius-parergon,reconstructed,Zarmizegethusa regia,latn,la,,Sarmizegetusa Regia,none,pending,,,medium,raw,llm_assisted,,,,An antiquarian restores the royal seat to a modern sheet from the ancient authors.
+att-0007,plc-ulpia-traiana-sarmizegetusa,src-cantacuzino-wallachia,extra_muros,,,,,,none,pending,,,high,raw,llm_assisted,,,,The map covers Wallachia; Hateg country is outside its scope.
+att-0008,plc-ulpia-traiana-sarmizegetusa,src-cantemir-moldavia,extra_muros,,,,,,none,pending,,,high,raw,llm_assisted,,,,The map covers Moldavia only.
+att-0009,plc-ulpia-traiana-sarmizegetusa,src-iosephina-survey,alternative,Varhely,latn,hu,,Varhely,none,pending,,,medium,raw,llm_assisted,,,,The Hungarian name - castle place - standing over the colonia's ruins.
+att-0010,plc-ulpia-traiana-sarmizegetusa,src-russian-staff-1835,extra_muros,,,,,,none,pending,,,high,raw,llm_assisted,,,,The Russian sheets stop at the mountains.
+att-0011,plc-ulpia-traiana-sarmizegetusa,src-szathmari-charta,extra_muros,,,,,,none,pending,,,high,raw,llm_assisted,,,,The Charta covers the Principalities; Hateg country lies outside them.
+att-0012,plc-apulum,src-ptolemy-geographia,variant,pending,grek,grc,Apoulon,Apulum,none,pending,,,medium,raw,llm_assisted,,,,A Dacian name in Greek dress. Greek original outstanding.
+att-0013,plc-apulum,src-tabula-peutingeriana,variant,Apula,latn,la,,Apulum,none,pending,,,medium,raw,llm_assisted,,,,The vulgar spelling of a road-book hand.
+att-0014,plc-apulum,src-hereford-mappa,source_silent,,,,,,none,pending,,,medium,raw,llm_assisted,,,,The map covers the region and names no town of this country.
+att-0015,plc-apulum,src-vesconte-portolan,extra_muros,,,,,,none,pending,,,high,raw,llm_assisted,,,,Far inland of a coastal chart's scope.
+att-0016,plc-apulum,src-honterus-chorographia,alternative,Weissenburg,latn,de,,Weissenburg,none,pending,,,medium,raw,llm_assisted,,,,The Saxon name; the Slavic Balgrad lies beneath it.
+att-0017,plc-apulum,src-ortelius-parergon,reconstructed,Apulum,latn,la,,Apulum,none,pending,,,medium,raw,llm_assisted,,,,The legion town restored to the sheet.
+att-0018,plc-apulum,src-cantacuzino-wallachia,extra_muros,,,,,,none,pending,,,high,raw,llm_assisted,,,,Transylvania is not on this map.
+att-0019,plc-apulum,src-cantemir-moldavia,extra_muros,,,,,,none,pending,,,high,raw,llm_assisted,,,,The map covers Moldavia only.
+att-0020,plc-apulum,src-iosephina-survey,exact,Karlsburg,latn,de,,Karlsburg,none,pending,,,medium,raw,llm_assisted,,,,The citadel cut for Charles VI renames the town.
+att-0021,plc-apulum,src-russian-staff-1835,extra_muros,,,,,,none,pending,,,high,raw,llm_assisted,,,,Beyond the Russian survey.
+att-0022,plc-apulum,src-szathmari-charta,extra_muros,,,,,,none,pending,,,high,raw,llm_assisted,,,,Transylvania lies outside the Charta.
+att-0023,plc-napoca,src-ptolemy-geographia,variant,pending,grek,grc,Napouka,Napoca,none,pending,,,medium,raw,llm_assisted,,,,A Dacian name in Greek transliteration. Greek original outstanding.
+att-0024,plc-napoca,src-tabula-peutingeriana,exact,Napoca,latn,la,,Napoca,none,pending,,,medium,raw,llm_assisted,,,,A station on the road to Porolissum.
+att-0025,plc-napoca,src-hereford-mappa,source_silent,,,,,,none,pending,,,medium,raw,llm_assisted,,,,The map has stopped looking at this country.
+att-0026,plc-napoca,src-vesconte-portolan,extra_muros,,,,,,none,pending,,,high,raw,llm_assisted,,,,No rhumb line reaches the Somes.
+att-0027,plc-napoca,src-honterus-chorographia,alternative,Clausenburg,latn,de,,Klausenburg,none,pending,,,medium,raw,llm_assisted,,,,"The Saxon town, drawn by a man who knew it."
+att-0028,plc-napoca,src-ortelius-parergon,reconstructed,Napoca,latn,la,,Napoca,none,pending,,,medium,raw,llm_assisted,,,,Restored from Ptolemy and the itineraries.
+att-0029,plc-napoca,src-cantacuzino-wallachia,extra_muros,,,,,,none,pending,,,high,raw,llm_assisted,,,,Wallachia only.
+att-0030,plc-napoca,src-cantemir-moldavia,extra_muros,,,,,,none,pending,,,high,raw,llm_assisted,,,,Moldavia only.
+att-0031,plc-napoca,src-iosephina-survey,alternative,Klausenburg,latn,de,,Klausenburg,none,pending,,,medium,raw,llm_assisted,,,,"German official name. Materially different from Napoca, not a variant of it."
+att-0032,plc-napoca,src-iosephina-survey,alternative,Kolozsvar,latn,hu,,Kolozsvar,none,pending,,,medium,raw,llm_assisted,,,,Hungarian name printed beside the German on the same sheet.
+att-0033,plc-napoca,src-russian-staff-1835,extra_muros,,,,,,none,pending,,,high,raw,llm_assisted,,,,Beyond the Russian survey.
+att-0034,plc-napoca,src-szathmari-charta,extra_muros,,,,,,none,pending,,,high,raw,llm_assisted,,,,North of the Charta.
+att-0035,plc-drobeta,src-ptolemy-geographia,source_silent,,,,,,none,pending,,,low,raw,llm_assisted,,,,The catalogue survives complete and no entry matches securely. See vd-drobeta-ptolemy.
+att-0036,plc-drobeta,src-tabula-peutingeriana,variant,Drubetis,latn,la,,Drobeta,none,pending,,,medium,raw,llm_assisted,,,,First station north of the river on the Lederata road.
+att-0037,plc-drobeta,src-hereford-mappa,source_silent,,,,,,none,pending,,,medium,raw,llm_assisted,,,,The crossing survives only in the authors.
+att-0038,plc-drobeta,src-vesconte-portolan,extra_muros,,,,,,none,pending,,,high,raw,llm_assisted,,,,Far upstream of any pilot's chart.
+att-0039,plc-drobeta,src-honterus-chorographia,extra_muros,,,,,,none,pending,,,high,raw,llm_assisted,,,,Oltenia lies outside the Transylvanian survey.
+att-0040,plc-drobeta,src-ortelius-parergon,reconstructed,Drubetis,latn,la,,Drobeta,none,pending,,,medium,raw,llm_assisted,,,,Restored to the sheet with Trajan's bridge drawn across the Danube as Pons Traiani.
+att-0041,plc-drobeta,src-cantacuzino-wallachia,alternative,Severin,latn,ro,,Severin,none,pending,,,medium,raw,llm_assisted,,,,The Tower of Severin remembered as a ruin; the Banat of Severin attested.
+att-0042,plc-drobeta,src-cantemir-moldavia,extra_muros,,,,,,none,pending,,,high,raw,llm_assisted,,,,The map covers Moldavia only.
+att-0043,plc-drobeta,src-iosephina-survey,extra_muros,,,,,,none,pending,,,high,raw,llm_assisted,,,,Beyond the Carpathian ring.
+att-0044,plc-drobeta,src-russian-staff-1835,exact,Turnu Severin,latn,ro,,Turnu Severin,none,pending,,,low,raw,llm_assisted,,,,The survey straddles the town's founding in 1833.
+att-0045,plc-drobeta,src-szathmari-charta,variant,Turnu-Severinu,latn,ro,,Turnu Severin,none,pending,,,medium,raw,llm_assisted,,,,A town barely thirty years old when printed.

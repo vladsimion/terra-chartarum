@@ -1,0 +1,101 @@
+{
+  "attestationsByReviewState": {
+    "raw": 45
+  },
+  "counts": {
+    "attestations": 45,
+    "name-use-edges": 7,
+    "name-uses": 9,
+    "places": 40,
+    "sources": 11,
+    "transcriptions": 20
+  },
+  "inputs": {
+    "data/dacia/attestations.csv": "e69992a88a174cdc22d19c9fe0a6ddd86bf218c327ab042a9b373d37448ee294",
+    "data/dacia/name-use-edges.csv": "9e21d9af5cff1ae293cccee879f724d186140818294ac4d7b2a6d898694b9164",
+    "data/dacia/name-uses.csv": "926ae962f072da7bbdcef240cc93281f0910a927830d5e160e1d422d367d119a",
+    "data/dacia/places.csv": "fe874b423a6a592f92a14006a99ac0b92c5158e91d8c4e04af8ade7df6e120c0",
+    "data/dacia/sources.csv": "f237c1176da9c1797b9bc3edfd8a675fd905cdf7d7281938e51ab38fd9c4f2a0",
+    "data/dacia/transcriptions.csv": "011f1710b6c76d395a44bb0e7f43cb410dbfeb47b463437e5e27e0cbb0c17f4a"
+  },
+  "kind": "pilot_research_release",
+  "licence": "CC BY 4.0 for the compiled records; each source carries its own rights_statement.",
+  "outputs": {
+    "data/dacia/release/cnd-0.1/attestations.csv": {
+      "bytes": 7835,
+      "sha256": "ff46d87a5a803fbe02171103a88012c0de7fe2c4a692c9462a2c6c4febeb55e1"
+    },
+    "data/dacia/release/cnd-0.1/attestations.parquet": {
+      "bytes": 5528,
+      "sha256": "a690b3bc870b2c40336a861d4ccdee324052ed618aec33cd120b3ff0b8785bdb"
+    },
+    "data/dacia/release/cnd-0.1/cnd.jsonld": {
+      "bytes": 87426,
+      "sha256": "67722065753a372174e506652da94700875f364cdbd6f35f5851fc45ed91b329"
+    },
+    "data/dacia/release/cnd-0.1/name-use-edges.csv": {
+      "bytes": 2106,
+      "sha256": "1ae988d9327197e7ed5ad5a8acab694674301f3db978c0b885705d9df34a81f7"
+    },
+    "data/dacia/release/cnd-0.1/name-use-edges.parquet": {
+      "bytes": 3102,
+      "sha256": "32abe2ebec1c956c8c41621a21b0fa51f8e6ecc10b92065db16ada29e1c06548"
+    },
+    "data/dacia/release/cnd-0.1/name-uses.csv": {
+      "bytes": 2615,
+      "sha256": "bb3e9ff38eeed347445f73a89d4aa168442773c6ab6ea69d3af4b6950f88890e"
+    },
+    "data/dacia/release/cnd-0.1/name-uses.parquet": {
+      "bytes": 4540,
+      "sha256": "c9377d08edb978a85b457bf39ebc3737d4c2518929847976ab5b42c8db9cf490"
+    },
+    "data/dacia/release/cnd-0.1/places.csv": {
+      "bytes": 7690,
+      "sha256": "de1895b4d2b64f27917d2770704d749123a69ba20a6334143a3843a5ef75e81b"
+    },
+    "data/dacia/release/cnd-0.1/places.parquet": {
+      "bytes": 5583,
+      "sha256": "d0c2993fff3421f7b2f3704f1bf1f0cbf71c48e2307b294d29da675ce55b1f1c"
+    },
+    "data/dacia/release/cnd-0.1/sources.csv": {
+      "bytes": 4856,
+      "sha256": "ff0bb4535ee0d3d00acc76d2de2e4d519d5d47a0eb52e5c0cfc73e40f8835212"
+    },
+    "data/dacia/release/cnd-0.1/sources.parquet": {
+      "bytes": 6849,
+      "sha256": "c677d5203a8e05f2bb9c8be9f56b56720af0e5b3d04ba80aaab94b95f611b05e"
+    },
+    "data/dacia/release/cnd-0.1/transcriptions.csv": {
+      "bytes": 3698,
+      "sha256": "ffcd2c9d7c62bf5249166eea08d9bc47b96b8d3375dcfaf180242ea6e37347fb"
+    },
+    "data/dacia/release/cnd-0.1/transcriptions.parquet": {
+      "bytes": 1826,
+      "sha256": "9f95d55033f26eeedffc5bfdf59f87813ed190bdc49ec9b7c5ff6db1c3746d7a"
+    },
+    "public/geo/dacia-attestations-research.geojson": {
+      "bytes": 45228,
+      "sha256": "681fca5d919856389c50154fa4a35c93fe660eebbd6ce1074e0c4e45fe65ac17"
+    },
+    "public/geo/dacia-attestations.geojson": {
+      "bytes": 292,
+      "sha256": "2aa1fa13a8681b3c13104fc2649b49112dd2c4f77cc09920da6092223e722980"
+    }
+  },
+  "publicRecords": 0,
+  "release": "cnd-0.1",
+  "schemaVersion": 1,
+  "sourceFamilies": [
+    "antiquarian_reconstruction",
+    "coordinate_catalogue",
+    "itinerary",
+    "mappa_mundi",
+    "military_survey",
+    "national_survey",
+    "portolan",
+    "regional_print"
+  ],
+  "unlocatedPlaces": [
+    "plc-vicina"
+  ]
+}
