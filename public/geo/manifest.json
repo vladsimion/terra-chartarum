@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "geo-7614e9383efcb2cc",
+  "release": "geo-7be18e9dbc78928e",
   "generatedBy": "scripts/geo-release.mjs",
   "assets": [
     {
@@ -265,10 +265,10 @@
       "source": "Terra Chartarum (compiled) - Corpus Nominum Daciae 0.1 research tier, KAN-337",
       "license": "CC BY 4.0",
       "attribution": "Terra Chartarum; each source carries its own rights statement",
-      "bytes": 45228,
-      "sha256": "681fca5d919856389c50154fa4a35c93fe660eebbd6ce1074e0c4e45fe65ac17",
-      "version": "681fca5d9198",
-      "url": "/geo/dacia-attestations-research.geojson?v=681fca5d9198"
+      "bytes": 54935,
+      "sha256": "cf74abaa73b1e89c468919242b4117ddcd721de1309a6bbddea3079df584c863",
+      "version": "cf74abaa73b1",
+      "url": "/geo/dacia-attestations-research.geojson?v=cf74abaa73b1"
     }
   ]
 }

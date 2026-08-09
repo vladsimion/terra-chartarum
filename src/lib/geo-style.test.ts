@@ -5,6 +5,7 @@ import {
   temporalFilter,
   withTemporal,
   withRegion,
+  withFacets,
   dashSubLayers,
 } from './geo-style';
 
@@ -90,6 +91,42 @@ describe('withRegion', () => {
 
   it('leaves the existing filter unchanged when all regions are selected', () => {
     expect(withRegion(temporalFilter(1400), '')).toEqual(temporalFilter(1400));
+  });
+});
+
+describe('withFacets (KAN-340 corpus facets)', () => {
+  it('places no constraint when nothing is selected', () => {
+    expect(withFacets(temporalFilter(1400), {})).toEqual(temporalFilter(1400));
+    expect(withFacets(temporalFilter(1400), { attestation_class: [] })).toEqual(
+      temporalFilter(1400),
+    );
+  });
+
+  it('widens within a field and narrows across fields', () => {
+    expect(
+      withFacets(null, {
+        attestation_class: ['variant', 'alternative'],
+        language: ['la'],
+      }),
+    ).toEqual([
+      'all',
+      ['in', ['get', 'attestation_class'], ['literal', ['alternative', 'variant']]],
+      ['in', ['get', 'language'], ['literal', ['la']]],
+    ]);
+  });
+
+  it('combines with an existing temporal filter', () => {
+    expect(withFacets(temporalFilter(1400), { confidence: ['high'] })).toEqual([
+      'all',
+      temporalFilter(1400),
+      ['in', ['get', 'confidence'], ['literal', ['high']]],
+    ]);
+  });
+
+  it('is order-independent so the same selection yields the same filter', () => {
+    const a = withFacets(null, { language: ['la', 'de'], confidence: ['low', 'high'] });
+    const b = withFacets(null, { confidence: ['high', 'low'], language: ['de', 'la'] });
+    expect(a).toEqual(b);
   });
 });
 

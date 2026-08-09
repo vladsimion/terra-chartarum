@@ -10,7 +10,7 @@
  * time-slider filters both corpus pins and geo layers by temporal extent. Degrades
  * to a grouped list where WebGL is unavailable.
  */
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { getCorpusCore, corpusYearRange } from '../../lib/corpus';
@@ -64,6 +64,77 @@ const layerMeta = layers.map((l) => ({
   essayLinks: l.essayLinks.filter((link) => isEssayReleased(link.slug)),
   available: existsSync(join(publicDir, l.url.replace(/^\//, ''))),
 }));
+
+// Facet options (KAN-340). A layer declares which properties are filterable; the
+// values are read out of the committed GeoJSON here, at build time, so the panel
+// needs no client fetch and a new corpus layer arrives with its own facets
+// instead of requiring a change to this island.
+const readableTerm = (value: string) =>
+  value.replace(/_/g, ' ').replace(/^./, (c) => c.toUpperCase());
+const FACET_LABELS: Record<string, string> = {
+  attestation_class: 'What the source does',
+  confidence: 'Confidence',
+  source_id: 'Source',
+  source_family: 'Kind of source',
+  language: 'Language',
+  script: 'Script',
+  review_state: 'Review state',
+};
+// Where a facet's raw value is an identifier, the readable label lives on a
+// companion property of the same feature.
+const FACET_LABEL_FROM: Record<string, string> = {
+  source_id: 'source_title',
+  language: 'language_label',
+  script: 'script_label',
+  attestation_class: 'attestation_class_label',
+  confidence: 'confidence_label',
+};
+
+type FacetValue = { value: string; label: string; count: number };
+type Facet = { field: string; label: string; values: FacetValue[] };
+
+const layerFacets: Record<string, Facet[]> = Object.fromEntries(
+  layerMeta
+    .filter((l) => l.facets.length > 0 && l.available && l.format === 'geojson')
+    .map((l) => {
+      let features: { properties?: Record<string, unknown> }[] = [];
+      try {
+        const raw = readFileSync(join(publicDir, l.url.replace(/^\//, '')), 'utf8');
+        features = (JSON.parse(raw) as { features?: typeof features }).features ?? [];
+      } catch {
+        features = []; // asset unreadable - the layer simply offers no facets
+      }
+      const facets = l.facets
+        .map((field) => {
+          const counts = new Map<string, number>();
+          const labels = new Map<string, string>();
+          for (const feature of features) {
+            const value = String(feature.properties?.[field] ?? '').trim();
+            if (!value) continue;
+            counts.set(value, (counts.get(value) ?? 0) + 1);
+            const from = FACET_LABEL_FROM[field];
+            const label = from ? String(feature.properties?.[from] ?? '').trim() : '';
+            if (label) labels.set(value, label);
+          }
+          return {
+            field,
+            label: FACET_LABELS[field] ?? readableTerm(field),
+            values: [...counts.entries()]
+              .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+              .map(([value, count]) => ({
+                value,
+                label: labels.get(value) ?? readableTerm(value),
+                count,
+              })),
+          };
+        })
+        // A facet with a single value cannot narrow anything, so offering it
+        // would be a control that does nothing.
+        .filter((facet) => facet.values.length > 1);
+      return [l.id, facets] as const;
+    })
+    .filter(([, facets]) => facets.length > 0),
+);
 
 // Toponym concordance (KAN-75): a separate, toggleable pin set of places carrying
 // the ancient / medieval / variant names by which the corpus calls them, with the
@@ -124,6 +195,7 @@ const payload = {
     })),
     available: l.available,
     defaultOn: l.defaultOn && l.available,
+    facets: layerFacets[l.id] ?? [],
   })),
   vmnLinks: getVmnAtlasLinks().map(({ beatId, targetType, targetId, year, layerIds }) => ({
     beatId,
@@ -277,6 +349,36 @@ const payload = {
                 ))}
               </p>
             )}
+            {/* Facet panel (KAN-340). Hidden until the layer is on, because a
+                filter for something you cannot see is only clutter. */}
+            {(layerFacets[l.id] ?? []).length > 0 && (
+              <div class="am-facets" data-facets-for={l.id} hidden>
+                <div class="am-facets-head">
+                  <p class="am-facets-kicker">Filter this layer</p>
+                  <button type="button" class="am-facets-clear" data-facets-clear={l.id}>
+                    Clear filters
+                  </button>
+                </div>
+                {(layerFacets[l.id] ?? []).map((facet) => (
+                  <fieldset class="am-facet">
+                    <legend>{facet.label}</legend>
+                    {facet.values.map((v) => (
+                      <label class="am-facet-value">
+                        <input
+                          type="checkbox"
+                          data-facet-layer={l.id}
+                          data-facet-field={facet.field}
+                          value={v.value}
+                        />
+                        <span>{v.label}</span>
+                        <span class="am-facet-count">{v.count}</span>
+                      </label>
+                    ))}
+                  </fieldset>
+                ))}
+                <output class="am-facets-status" data-facets-status={l.id} aria-live="polite" />
+              </div>
+            )}
           </div>
         ))}
       </fieldset>
@@ -320,6 +422,7 @@ const payload = {
     lineWidthExpression,
     withTemporal,
     withRegion,
+    withFacets,
     dashSubLayers,
     type GraduateHint,
     type DashHint,
@@ -376,6 +479,7 @@ const payload = {
     essayLinks: { href: string; label: string }[];
     available: boolean;
     defaultOn: boolean;
+    facets: { field: string; label: string; values: { value: string; label: string }[] }[];
   };
 
   type Coverage = { id: string; title: string; ring: [number, number][] };
@@ -464,6 +568,20 @@ const payload = {
     const layerToggles = Array.from(
       root.querySelectorAll<HTMLInputElement>('.am-layer input[data-layer]'),
     );
+    const facetBoxes = Array.from(
+      root.querySelectorAll<HTMLInputElement>('input[data-facet-layer]'),
+    );
+
+    // Facet selections (KAN-340), per layer and field. An absent or empty set
+    // means "no constraint", so the resting state is everything visible.
+    const facetSelections = new Map<string, Map<string, Set<string>>>();
+    const selectionsFor = (layerId: string) => {
+      const chosen: Record<string, string[]> = {};
+      for (const [field, values] of facetSelections.get(layerId) ?? []) {
+        if (values.size > 0) chosen[field] = [...values];
+      }
+      return chosen;
+    };
 
     const fmt = (y: number) => (y < 0 ? `${Math.abs(y)} BC` : `AD ${y}`);
 
@@ -572,6 +690,53 @@ const payload = {
       history.replaceState(history.state, '', `${url.pathname}${url.search}${url.hash}`);
     };
 
+    // Facet state travels in one `facets` parameter, so a filtered view is
+    // shareable on the same contract as the rest of the atlas:
+    //   facets=layer:field=a,b;field2=c|layer2:field=d
+    const encodeFacets = () => {
+      const groups: string[] = [];
+      for (const layerId of [...facetSelections.keys()].sort()) {
+        const chosen = selectionsFor(layerId);
+        const fields = Object.keys(chosen).sort();
+        if (fields.length === 0) continue;
+        groups.push(
+          `${layerId}:${fields.map((f) => `${f}=${[...chosen[f]].sort().join(',')}`).join(';')}`,
+        );
+      }
+      return groups.join('|');
+    };
+
+    const updateFacetUrlState = () => {
+      const url = new URL(location.href);
+      const encoded = encodeFacets();
+      if (encoded) url.searchParams.set('facets', encoded);
+      else url.searchParams.delete('facets');
+      history.replaceState(history.state, '', `${url.pathname}${url.search}${url.hash}`);
+    };
+
+    const decodeFacets = (raw: string) => {
+      for (const group of raw.split('|').filter(Boolean)) {
+        const [layerId, fieldsPart] = group.split(':');
+        const layer = geoLayers.find((l) => l.id === layerId);
+        if (!layer || !fieldsPart) continue;
+        const byField = new Map<string, Set<string>>();
+        for (const pair of fieldsPart.split(';').filter(Boolean)) {
+          const [field, valuesPart] = pair.split('=');
+          const declared = layer.facets.find((f) => f.field === field);
+          if (!declared || !valuesPart) continue;
+          // Only values the layer actually declares are restored, so a hand-
+          // edited link cannot filter on a field that does not exist.
+          const values = new Set(
+            valuesPart
+              .split(',')
+              .filter((v) => declared.values.some((candidate) => candidate.value === v)),
+          );
+          if (values.size > 0) byField.set(field, values);
+        }
+        if (byField.size > 0) facetSelections.set(layerId, byField);
+      }
+    };
+
     const showContext = (context: AtlasContext, persist = true) => {
       contextTitle.textContent = context.title;
       contextSummary.textContent = context.summary;
@@ -631,6 +796,16 @@ const payload = {
     if (requestedEssay && essayDetails.some((essay) => essay.slug === requestedEssay)) {
       essaySel.value = requestedEssay;
     }
+    // Restore facet selections and tick the boxes that produced them, so the
+    // panel and the map agree on arrival rather than only after a click.
+    const sharedFacets = new URL(location.href).searchParams.get('facets');
+    if (sharedFacets) {
+      decodeFacets(sharedFacets);
+      for (const box of facetBoxes) {
+        const values = facetSelections.get(box.dataset.facetLayer!)?.get(box.dataset.facetField!);
+        if (values?.has(box.value)) box.checked = true;
+      }
+    }
     const announceTime = () => {
       const year = Number(yearIn.value);
       updateUrlState(essaySel.value || undefined, year);
@@ -672,9 +847,13 @@ const payload = {
         toponyms: topoCheck?.checked ?? false,
       });
       const url = new URL(shareUrl);
+      // Re-apply after the share builder, which knows only its own contract.
+      const encodedFacets = encodeFacets();
+      if (encodedFacets) url.searchParams.set('facets', encodedFacets);
+      else url.searchParams.delete('facets');
       history.replaceState(history.state, '', `${url.pathname}${url.search}${url.hash}`);
       try {
-        await navigator.clipboard.writeText(shareUrl);
+        await navigator.clipboard.writeText(url.toString());
         shareStatus.textContent = 'View link copied.';
       } catch {
         shareStatus.textContent = 'Copy the link from the address bar.';
@@ -802,6 +981,144 @@ const payload = {
         },
         persist,
       );
+    };
+
+    // Corpus attestations (KAN-340). Every visual state has to resolve to a
+    // record: the panel names the place, what this particular source calls it,
+    // the class of claim, its confidence, its locator and its review state. A
+    // silence is a claim too, and says so rather than showing an empty name.
+    const SILENCE_WORDING: Record<string, string> = {
+      extra_muros: 'Outside this source’s scope',
+      source_silent: 'In scope, and unnamed',
+      not_applicable: 'The question does not arise',
+      survival_unknown: 'The witness cannot be consulted',
+      mapped_unlabelled: 'Drawn, but not named',
+    };
+
+    const daciaHeadline = (properties: Record<string, unknown>) => {
+      const klass = String(properties.attestation_class ?? '');
+      const silence = SILENCE_WORDING[klass];
+      if (silence) return silence;
+      const original = String(properties.name_original ?? '').trim();
+      if (!original || original === 'pending') return 'Reading not yet transcribed';
+      return original;
+    };
+
+    const daciaLocator = (properties: Record<string, unknown>) => {
+      const type = String(properties.locator_type ?? '');
+      const locator = String(properties.locator ?? '');
+      if (!type || type === 'none' || !locator || locator === 'pending') return 'no locator yet';
+      return `${readable(type)} ${locator}`;
+    };
+
+    const daciaPopupHtml = (properties: Record<string, unknown>) => {
+      const place = escapeHtml(properties.place_name);
+      const headline = escapeHtml(daciaHeadline(properties));
+      const klass = escapeHtml(readable(String(properties.attestation_class ?? '')));
+      const language = String(properties.language ?? '').trim();
+      const script = String(properties.script ?? '').trim();
+      const tongue = [language, script]
+        .filter(Boolean)
+        .map((v) => escapeHtml(readable(v)))
+        .join(' · ');
+      const review = String(properties.review_state ?? '');
+      const unreviewed = review !== 'approved' && review !== 'published';
+      return (
+        `<div class="am-pop am-cnd-pop">` +
+        `<span class="am-pop-year">${escapeHtml(properties.source_date)}</span>` +
+        `<strong class="am-pop-title">${headline}</strong>` +
+        `<span class="am-pop-names">${place}</span>` +
+        `<span class="am-pop-meta">${klass}${tongue ? ` · ${tongue}` : ''}</span>` +
+        `<span class="am-pop-meta">${escapeHtml(properties.source_title)} · ` +
+        `${escapeHtml(readable(String(properties.source_family ?? '')))}</span>` +
+        `<span class="am-pop-meta">${escapeHtml(
+          readable(String(properties.confidence ?? '')),
+        )} confidence · ${escapeHtml(daciaLocator(properties))}</span>` +
+        (unreviewed
+          ? `<span class="am-pop-blurb am-pop-warn">Unreviewed research record (${escapeHtml(
+              review,
+            )}). Not citable as established evidence.</span>`
+          : '') +
+        `</div>`
+      );
+    };
+
+    const showDaciaContext = (
+      layerId: string,
+      properties: Record<string, unknown>,
+      persist = true,
+    ) => {
+      const layer = geoLayers.find((candidate) => candidate.id === layerId);
+      const essayLink = reverseEssayLink(layerId);
+      const review = String(properties.review_state ?? '');
+      const unreviewed = review !== 'approved' && review !== 'published';
+      showContext(
+        {
+          id: `feature:${String(properties.id ?? '')}`,
+          title: `${daciaHeadline(properties)} - ${String(properties.place_name ?? '')}`,
+          summary: unreviewed
+            ? `Unreviewed research record. ${readable(review)} in the corpus, and not citable as established evidence.`
+            : `${readable(String(properties.attestation_class ?? ''))} in ${String(properties.source_title ?? '')}.`,
+          meta:
+            `${readable(String(properties.attestation_class ?? ''))} · ` +
+            `${readable(String(properties.confidence ?? ''))} confidence · ` +
+            `${String(properties.source_title ?? '')} (${String(properties.source_date ?? '')}) · ` +
+            `${daciaLocator(properties)} · ${String(properties.region ?? '')}`,
+          href: essayLink?.href ?? '/essays/dacia/',
+          linkLabel: essayLink?.label ? `${essayLink.label} →` : 'Read: Terra Sigillata →',
+          essaySlug: 'dacia',
+          year: Number(yearIn.value),
+          documents: layer?.documentationLinks ?? [],
+        },
+        persist,
+      );
+    };
+
+    const bindDaciaInteractions = (layerId: string, renderLayerId: string) => {
+      if (!map || !PopupCtor) return;
+      let popup: MLPopup | null = null;
+      let pinned = false;
+      const show = (event: MapLayerMouseEvent, isPinned: boolean) => {
+        const feature = event.features?.[0];
+        if (!feature || feature.geometry.type !== 'Point' || !map || !PopupCtor) return;
+        popup?.remove();
+        pinned = isPinned;
+        popup = new PopupCtor({ closeButton: isPinned, closeOnClick: false, offset: 12 })
+          .setLngLat((feature.geometry as GeoJSON.Point).coordinates as [number, number])
+          .setHTML(daciaPopupHtml((feature.properties ?? {}) as Record<string, unknown>))
+          .addTo(map);
+        popup.on('close', () => {
+          pinned = false;
+        });
+      };
+      const enter = (event: MapLayerMouseEvent) => {
+        if (map) map.getCanvas().style.cursor = 'pointer';
+        if (!pinned) show(event, false);
+      };
+      const leave = () => {
+        if (map) map.getCanvas().style.cursor = '';
+        if (!pinned) popup?.remove();
+      };
+      const click = (event: MapLayerMouseEvent) => show(event, true);
+      const select = (event: MapLayerMouseEvent) => {
+        const feature = event.features?.[0];
+        if (feature) {
+          showDaciaContext(layerId, (feature.properties ?? {}) as Record<string, unknown>);
+        }
+      };
+      map.on('mouseenter', renderLayerId, enter);
+      map.on('mouseleave', renderLayerId, leave);
+      map.on('click', renderLayerId, click);
+      map.on('click', renderLayerId, select);
+      layerCleanups.set(layerId, () => {
+        map?.off('mouseenter', renderLayerId, enter);
+        map?.off('mouseleave', renderLayerId, leave);
+        map?.off('click', renderLayerId, click);
+        map?.off('click', renderLayerId, select);
+        popup?.remove();
+        popup = null;
+        pinned = false;
+      });
     };
 
     const bindHanseInteractions = (renderLayerId: string) => {
@@ -1066,6 +1383,9 @@ const payload = {
       if (l.id === 'hanseatic-places' && built[0]) {
         bindHanseInteractions(built[0].layer.id as string);
       }
+      if (l.id.startsWith('dacia-attestations') && built[0]) {
+        bindDaciaInteractions(l.id, built[0].layer.id as string);
+      }
       syncLayerTime(Number(yearIn.value));
     };
 
@@ -1143,11 +1463,14 @@ const payload = {
         for (const p of ps) {
           if (!map.getLayer(p.id)) continue;
           map.setLayoutProperty(p.id, 'visibility', envelopeVisible ? 'visible' : 'none');
-          if (l.perFeatureTime) {
-            const temporal = withTemporal(p.baseFilter, cutoff);
-            const filtered =
+          // Recomputed whenever the layer can be narrowed at all, so clearing a
+          // facet restores the unfiltered layer instead of leaving a stale one.
+          if (l.perFeatureTime || l.facets.length > 0) {
+            const temporal = l.perFeatureTime ? withTemporal(p.baseFilter, cutoff) : p.baseFilter;
+            const regional =
               l.id === 'venetian-ports' ? withRegion(temporal, regionSel.value) : temporal;
-            map.setFilter(p.id, filtered as FilterSpecification);
+            const filtered = withFacets(regional, selectionsFor(l.id));
+            map.setFilter(p.id, (filtered ?? null) as FilterSpecification);
           }
         }
       }
@@ -1513,6 +1836,7 @@ const payload = {
           const l = geoLayers.find((x) => x.id === id);
           if (l) await addGeoLayer(l);
         }
+        syncFacetPanel(id);
       }
       if (
         sharedState.region &&
@@ -1602,6 +1926,69 @@ const payload = {
     window.addEventListener('hashchange', focusFromHash);
     focusFromHash();
 
+    // Facet panels follow their layer: visible only while it is drawn. The
+    // status is refreshed with the panel so a selection restored from a shared
+    // link reads correctly the moment its layer is switched on.
+    const syncFacetPanel = (layerId: string) => {
+      const panel = root.querySelector<HTMLElement>(`[data-facets-for="${layerId}"]`);
+      if (!panel) return;
+      panel.hidden = !activeLayers.has(layerId);
+      const status = root.querySelector<HTMLElement>(`[data-facets-status="${layerId}"]`);
+      if (status && !panel.hidden) status.textContent = describeFacets(layerId);
+    };
+
+    const describeFacets = (layerId: string) => {
+      const chosen = selectionsFor(layerId);
+      const fields = Object.keys(chosen);
+      if (fields.length === 0) return 'No filters: showing every record in this layer.';
+      const parts = fields.map((field) => {
+        const facet = geoLayers
+          .find((l) => l.id === layerId)
+          ?.facets.find((f) => f.field === field);
+        // Sorted, not click-ordered: the announcement should read the same for
+        // the same selection however it was arrived at.
+        const labels = chosen[field]
+          .map((value) => facet?.values.find((v) => v.value === value)?.label ?? readable(value))
+          .sort((a, b) => a.localeCompare(b));
+        return `${facet?.label ?? readable(field)}: ${labels.join(', ')}`;
+      });
+      return `Filtered by ${parts.join('; ')}.`;
+    };
+
+    const applyFacets = (layerId: string) => {
+      const status = root.querySelector<HTMLElement>(`[data-facets-status="${layerId}"]`);
+      if (status) status.textContent = describeFacets(layerId);
+      updateFacetUrlState();
+      syncLayerTime(Number(yearIn.value));
+    };
+
+    for (const box of facetBoxes) {
+      box.addEventListener('change', () => {
+        const layerId = box.dataset.facetLayer!;
+        const field = box.dataset.facetField!;
+        const byField = facetSelections.get(layerId) ?? new Map<string, Set<string>>();
+        const values = byField.get(field) ?? new Set<string>();
+        if (box.checked) values.add(box.value);
+        else values.delete(box.value);
+        byField.set(field, values);
+        facetSelections.set(layerId, byField);
+        applyFacets(layerId);
+      });
+    }
+
+    for (const button of Array.from(
+      root.querySelectorAll<HTMLButtonElement>('[data-facets-clear]'),
+    )) {
+      button.addEventListener('click', () => {
+        const layerId = button.dataset.facetsClear!;
+        facetSelections.delete(layerId);
+        for (const box of facetBoxes) {
+          if (box.dataset.facetLayer === layerId) box.checked = false;
+        }
+        applyFacets(layerId);
+      });
+    }
+
     for (const cb of layerToggles) {
       cb.addEventListener('change', () => {
         const l = geoLayers.find((x) => x.id === cb.dataset.layer);
@@ -1614,6 +2001,8 @@ const payload = {
           activeLayers.delete(l.id);
           removeGeoLayer(l.id);
         }
+        syncFacetPanel(l.id);
+        updateFacetUrlState();
       });
     }
 
@@ -2082,6 +2471,88 @@ const payload = {
   }
   .am-layer-essays a:hover {
     text-decoration: underline;
+  }
+
+  /* Facet panel (KAN-340) */
+  .am-facets {
+    margin: 0.4rem 0 0.2rem 1.55rem;
+    padding: 0.55rem 0.7rem;
+    border-left: 2px solid color-mix(in srgb, var(--gold) 40%, transparent);
+    background: color-mix(in srgb, var(--ink) 4%, transparent);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .am-facets[hidden] {
+    display: none;
+  }
+  .am-facets-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+  .am-facets-kicker {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .am-facets-clear {
+    border: 0;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--ink-muted);
+    text-decoration: underline;
+  }
+  .am-facets-clear:hover {
+    color: var(--gold);
+  }
+  .am-facet {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.15rem 0.75rem;
+  }
+  .am-facet legend {
+    padding: 0;
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.04em;
+    color: var(--ink-muted);
+  }
+  .am-facet-value {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    font-size: 0.74rem;
+    cursor: pointer;
+  }
+  .am-facet-value input {
+    accent-color: var(--gold);
+  }
+  .am-facet-count {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--ink-muted);
+  }
+  .am-facets-status {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--ink-muted);
+  }
+  /* An unreviewed record says so in the popup rather than looking like evidence. */
+  .am-pop-warn {
+    color: var(--minium, #9e3b2b);
   }
 
   .am-list {

@@ -264,6 +264,17 @@ The public tier is what the Atlas shows by default and is **currently empty**.
 That is the correct state, not a bug: an unreviewed row cannot reach a normal
 public asset by being compiled.
 
+Each feature also carries `*_label` companions for its coded fields
+(`language_label`, `script_label`, `attestation_class_label`,
+`confidence_label`), read from `vocabularies.csv` at build time. The filter
+panel shows "Ancient Greek" rather than `grc` without the interface having to
+carry a second copy of the vocabulary.
+
+`valid_from` is the source's date and `valid_to` is the open-ended sentinel
+`9999`. The Atlas slider reveals _through_ a year, and an attestation does not
+stop being evidence once its source is finished being made; using the source's
+end year would have hidden every record at any cutoff past 1864.
+
 A silence keeps its point on the map, so the absence taxonomy can be styled and
 filtered rather than being invisible - which is the Hiatus argument made
 renderable. An attestation on an **unlocated** place has nowhere to go and is
