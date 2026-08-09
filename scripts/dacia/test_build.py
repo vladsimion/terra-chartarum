@@ -87,6 +87,17 @@ def test_unlocated_places_are_reported_not_positioned():
     assert all(f["properties"]["place_id"] != "plc-vicina" for f in research["features"])
 
 
+def test_attestations_stay_visible_once_their_source_has_spoken():
+    """The slider reveals *through* a year; an attestation does not expire."""
+    outputs = build.build_outputs()
+    research = json.loads(outputs[build.GEO_DIR / "dacia-attestations-research.geojson"])
+    assert research["features"], "expected the research tier to hold features"
+    for feature in research["features"]:
+        properties = feature["properties"]
+        assert properties["valid_to"] == build.OPEN_ENDED
+        assert properties["valid_from"] <= properties["source_year_from"]
+
+
 def test_every_feature_carries_its_review_state_and_provenance():
     outputs = build.build_outputs()
     research = json.loads(outputs[build.GEO_DIR / "dacia-attestations-research.geojson"])
