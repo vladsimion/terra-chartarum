@@ -41,6 +41,9 @@ LICENCE = "CC BY 4.0 for the compiled records; each source carries its own right
 # A row reaches the public tier only once a person has cleared it.
 PUBLIC_STATES = {"approved", "published"}
 
+# The Atlas time model's open-ended sentinel (VMN-2 decision D2).
+OPEN_ENDED = 9999
+
 TABLES = ["places", "sources", "attestations", "transcriptions", "name-uses", "name-use-edges"]
 KEY_COLUMN = {
     "places": "place_id",
@@ -113,6 +116,22 @@ def coordinate(value: str) -> float:
     return round(float(value), 6)
 
 
+def vocabulary_labels() -> dict[tuple[str, str], str]:
+    """Human labels for controlled terms, owned by the vocabulary rather than the UI.
+
+    Codes like `grc` and `latn` are unreadable in a filter panel, and the place
+    that already knows what they mean is `vocabularies.csv`. Emitting the label
+    beside the code keeps one answer to "what is this term called".
+    """
+    path = DATA / "reference" / "vocabularies.csv"
+    with path.open(encoding="utf-8", newline="") as handle:
+        return {
+            (row["vocabulary"], row["term"]): row["label"]
+            for row in csv.DictReader(handle)
+            if row.get("status") == "approved"
+        }
+
+
 def build_features(places, sources, attestations, public_only: bool) -> list[dict]:
     """Project attestations onto their place's reference location.
 
@@ -123,6 +142,7 @@ def build_features(places, sources, attestations, public_only: bool) -> list[dic
     """
     by_place = {row["place_id"]: row for row in places}
     by_source = {row["source_id"]: row for row in sources}
+    labels = vocabulary_labels()
     features = []
 
     for row in attestations:
@@ -158,14 +178,30 @@ def build_features(places, sources, attestations, public_only: bool) -> list[dic
                 "name_original": row["name_original"],
                 "name_normalized": row["name_normalized"],
                 "script": row["script"],
+                "script_label": labels.get(("script", row["script"]), row["script"]),
                 "language": row["language"],
+                "language_label": labels.get(("language", row["language"]), row["language"]),
+                "attestation_class_label": labels.get(
+                    ("attestation_class", row["attestation_class"]), row["attestation_class"]
+                ),
+                "confidence_label": labels.get(
+                    ("confidence", row["confidence"]), row["confidence"]
+                ),
                 "confidence": row["confidence"],
                 "review_state": row["review_state"],
                 "locator_type": row["locator_type"],
                 "locator": row["locator"],
                 "trench": "ccd-a",
-                "valid_from": int(source["year_from"]) if source["year_from"] else None,
-                "valid_to": int(source["year_to"]) if source["year_to"] else None,
+                "source_year_from": int(source["year_from"]) if source["year_from"] else None,
+                "source_year_to": int(source["year_to"]) if source["year_to"] else None,
+                # The Atlas slider reveals *through* a year, and an attestation
+                # does not stop being evidence once its source is finished being
+                # made. It appears at the source's date and stays, so `valid_to`
+                # takes the open-ended sentinel rather than the source's end
+                # year - which would otherwise hide every record at any cutoff
+                # past 1864.
+                "valid_from": int(source["year_from"]) if source["year_from"] else 0,
+                "valid_to": OPEN_ENDED,
             },
         })
     return sorted(features, key=lambda f: f["id"])

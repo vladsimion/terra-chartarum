@@ -134,6 +134,15 @@ is not vendored - use the venv from `make vmn-venv`, or install it yourself.
 `review.py` is the adjudication workflow: it promotes a record only if the
 ordinary gate still passes afterwards, so an unearned promotion writes nothing.
 
+## In the Atlas
+
+Both tiers register as GeoLayers. A layer declares which feature properties are
+filterable in its `facets` field, and the map island builds the panel from the
+committed GeoJSON at build time - so a new corpus layer arrives with its own
+filters rather than requiring a change to the island. Selections widen within a
+field and narrow across fields, are announced for screen readers, and travel in
+a `facets` URL parameter that only restores values the layer actually declares.
+
 See [`data-dictionary.md`](./data-dictionary.md) for the schemas,
 [`definition-of-done.md`](./definition-of-done.md) for the gates, and
 [`trench-a-inventory.md`](./trench-a-inventory.md) for the migration and the
