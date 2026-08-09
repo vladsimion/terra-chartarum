@@ -96,6 +96,7 @@ npm run format:check   # Prettier
 npm run lint           # ESLint
 npm run check          # astro check (types + content schema)
 npm run test           # Vitest unit tests
+npm run registries:validate # shared contracts + cross-registry foreign keys
 npm run build          # production build must succeed
 npm run test:e2e       # Playwright e2e + axe accessibility
 npm run lighthouse     # Lighthouse CI against ./dist (run npm run build first)
@@ -112,6 +113,12 @@ to confirm the fix in CI rather than locally.
 `npm run lighthouse` needs a Chrome binary. It falls back to Playwright's
 chromium when no system Chrome is installed, so run `npx playwright install
 chromium` if it cannot find one.
+
+New registries and cross-registry joins must be declared in
+`data/contracts/registry-sources.json`. New interactions must declare whether
+the content or Atlas performance profile applies and meet the browser,
+accessibility, input and fallback contract in
+`docs/terra-chartarum/support-and-performance.md`.
 
 ## Self-review checklist
 
