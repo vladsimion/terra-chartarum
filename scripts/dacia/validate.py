@@ -42,6 +42,34 @@ DISPOSITIONS = {"migrate", "link", "preserve_local", "retire"}
 MIGRATION_STATES = {"done", "partial", "planned"}
 GATE_STATUSES = {"pending", "partial", "passed", "waived"}
 TABLE_STATES = {"live", "planned", "reserved"}
+SOURCE_LEDGER_REVIEW_STATES = {"candidate", "source_checked", "reviewed"}
+HIATUS_SILENCE_ASSESSMENTS = {"not_assessed", "not_applicable", "meaningful_silence"}
+HIATUS_APPLICABILITY = {"applicable", "place_names_only", "not_applicable"}
+SOURCE_LEDGER_RIGHTS = {
+    "licensed_access",
+    "no_known_restrictions",
+    "permission_required",
+    "public_domain_text",
+    "rights_review_required",
+    "un_reuse_review_required",
+    "us_government_work",
+}
+TREATY_RECORD_TYPES = {
+    "proposal_map",
+    "negotiated_line",
+    "final_instrument",
+    "implementation_instrument",
+    "arbitration_award",
+    "armistice",
+    "later_reconstruction",
+}
+TREATY_INTERPRETATION_STATES = {"uncontested", "ambiguous", "disputed"}
+TREATY_GEOMETRY_STATES = {
+    "no_geometry",
+    "commission_geometry_required",
+    "map_not_georeferenced",
+    "annex_map_unacquired",
+}
 
 # An attestation either records a name or records a silence. The two halves of
 # the taxonomy carry mutually exclusive fields, which is what stops a silence
@@ -113,6 +141,8 @@ TABLES = {
     "trench_gates": f"{REFERENCE}/trench-gates.csv",
     "campaigns": f"{REFERENCE}/campaigns.csv",
     "verification_debt": f"{REFERENCE}/verification-debt.csv",
+    "hiatus_witness_families": f"{REFERENCE}/hiatus-witness-families.csv",
+    "treaty_frontier_sources": f"{REFERENCE}/treaty-frontier-sources.csv",
     "places": "places.csv",
     "sources": "sources.csv",
     "attestations": "attestations.csv",
@@ -123,6 +153,7 @@ TABLES = {
     "pilot_places": f"{PILOT}/pilot-places.csv",
 }
 PILOT_MANIFEST = f"{PILOT}/pilot-manifest.json"
+SOURCE_LEDGER_MANIFEST = f"{REFERENCE}/source-ledger-manifest.json"
 
 
 def _read(key: str, errors: list[str]) -> list[dict[str, str]]:
@@ -160,6 +191,11 @@ def _check_vocab(value, vocabulary, terms, label, field, errors, *, allow_empty=
 def _check_path(value, label, field, errors) -> None:
     if value and not (REPO / value).exists():
         errors.append(f"{label}: {field} points at a missing path '{value}'")
+
+
+def _check_https(value, label, field, errors) -> None:
+    if not value.startswith("https://"):
+        errors.append(f"{label}: {field} must be an https URL")
 
 
 def validate_vocabularies(errors: list[str]) -> tuple[dict[str, set[str]], dict[str, int]]:
@@ -976,6 +1012,172 @@ def validate_debt(trenches, errors: list[str]) -> None:
                 errors.append(f"{label}: blocks '{blocked}' is not a trench:gate pair")
 
 
+def validate_hiatus_witness_families(errors: list[str]) -> None:
+    """KAN-348: freeze candidate families without manufacturing an absence claim."""
+    rows = _read("hiatus_witness_families", errors)
+    _check_unique(rows, "witness_id", "hiatus-witness-families", errors)
+    families: set[str] = set()
+
+    for row in rows:
+        witness_id = row["witness_id"]
+        label = f"hiatus-witness-families[{witness_id}]"
+        families.add(row["witness_family"])
+        if not witness_id.startswith("hw-") or not SLUG.match(witness_id):
+            errors.append(f"{label}: witness_id must be an hw- slug")
+        for field in (
+            "witness_family",
+            "historical_question",
+            "coverage_scope",
+            "survival_limitations",
+            "candidate_title",
+            "repository",
+            "citation",
+            "notes",
+        ):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        try:
+            start, end = int(row["period_from"]), int(row["period_to"])
+            if start > end:
+                errors.append(f"{label}: period_from {start} is later than period_to {end}")
+        except ValueError:
+            errors.append(f"{label}: period_from and period_to must be years")
+        _check_https(row["source_url"], label, "source_url", errors)
+        if row["rights_status"] not in SOURCE_LEDGER_RIGHTS:
+            errors.append(f"{label}: rights_status '{row['rights_status']}' is not recognised")
+        if row["silence_assessment"] not in HIATUS_SILENCE_ASSESSMENTS:
+            errors.append(
+                f"{label}: silence_assessment '{row['silence_assessment']}' is not recognised"
+            )
+        if row["applicability"] not in HIATUS_APPLICABILITY:
+            errors.append(f"{label}: applicability '{row['applicability']}' is not recognised")
+        if row["review_status"] not in SOURCE_LEDGER_REVIEW_STATES:
+            errors.append(f"{label}: review_status '{row['review_status']}' is not recognised")
+        if row["minimum_set"] not in {"yes", "no"}:
+            errors.append(f"{label}: minimum_set must be yes or no")
+
+        # Survival, scope, and silence are independent questions. A candidate
+        # cannot become silent merely because a catalogue search found nothing.
+        if (
+            row["silence_assessment"] == "meaningful_silence"
+            and row["review_status"] != "reviewed"
+        ):
+            errors.append(f"{label}: meaningful_silence requires a reviewed witness")
+        if (
+            row["silence_assessment"] == "not_applicable"
+            and row["applicability"] == "applicable"
+        ):
+            errors.append(f"{label}: not_applicable silence cannot claim general applicability")
+
+    if len(families) != len(rows):
+        errors.append("hiatus-witness-families: each frozen row must represent a distinct family")
+    if len(rows) < 5:
+        errors.append("hiatus-witness-families: the frozen minimum needs at least five families")
+
+
+def validate_treaty_frontier_sources(errors: list[str]) -> None:
+    """KAN-351: legal sources are typed and frozen before geometry is drawn."""
+    rows = _read("treaty_frontier_sources", errors)
+    _check_unique(rows, "source_id", "treaty-frontier-sources", errors)
+    years: list[int] = []
+    types: set[str] = set()
+
+    for row in rows:
+        source_id = row["source_id"]
+        label = f"treaty-frontier-sources[{source_id}]"
+        if not source_id.startswith("tf-") or not SLUG.match(source_id):
+            errors.append(f"{label}: source_id must be a tf- slug")
+        if not row["event_id"].startswith("evt-") or not SLUG.match(row["event_id"]):
+            errors.append(f"{label}: event_id must be an evt- slug")
+        for field in (
+            "title",
+            "legal_context",
+            "territorial_scope",
+            "citation",
+            "locator",
+            "repository",
+            "notes",
+        ):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        if row["date_precision"] != "exact_day" or not ISO_DATE.match(row["signed_on"]):
+            errors.append(f"{label}: the selected instrument needs an exact ISO signed_on date")
+        else:
+            years.append(int(row["signed_on"][:4]))
+        record_type = row["record_type"]
+        types.add(record_type)
+        if record_type not in TREATY_RECORD_TYPES:
+            errors.append(f"{label}: record_type '{record_type}' is not recognised")
+        _check_https(row["source_url"], label, "source_url", errors)
+        if row["rights_status"] not in SOURCE_LEDGER_RIGHTS:
+            errors.append(f"{label}: rights_status '{row['rights_status']}' is not recognised")
+        interpretation = row["interpretation_status"]
+        if interpretation not in TREATY_INTERPRETATION_STATES:
+            errors.append(f"{label}: interpretation_status '{interpretation}' is not recognised")
+        if interpretation in {"ambiguous", "disputed"} and not row["alternatives"]:
+            errors.append(f"{label}: {interpretation} interpretation requires alternatives")
+        if interpretation == "uncontested" and row["alternatives"]:
+            errors.append(f"{label}: an uncontested interpretation cannot carry alternatives")
+        if row["confidence"] not in {"low", "medium", "high"}:
+            errors.append(f"{label}: confidence '{row['confidence']}' is not recognised")
+        if row["geometry_status"] not in TREATY_GEOMETRY_STATES:
+            errors.append(
+                f"{label}: geometry_status '{row['geometry_status']}' is not an approved pre-digitisation state"
+            )
+        if row["minimum_set"] not in {"yes", "no"}:
+            errors.append(f"{label}: minimum_set must be yes or no")
+        if row["review_status"] not in SOURCE_LEDGER_REVIEW_STATES:
+            errors.append(f"{label}: review_status '{row['review_status']}' is not recognised")
+
+    if years and (min(years) > 1829 or max(years) < 1947):
+        errors.append("treaty-frontier-sources: the frozen set must span 1829 through 1947")
+    required_types = {"final_instrument", "arbitration_award", "armistice"}
+    if missing := required_types - types:
+        errors.append(f"treaty-frontier-sources: frozen set is missing record types {sorted(missing)}")
+
+
+def validate_source_ledger_manifest(errors: list[str]) -> None:
+    """A changed minimum set requires an explicit, dated re-freeze."""
+    path = DATA / SOURCE_LEDGER_MANIFEST
+    if not path.exists():
+        errors.append(f"missing source ledger manifest: {path.relative_to(DATA)}")
+        return
+    manifest = json.loads(path.read_text(encoding="utf-8"))
+    if manifest.get("schemaVersion") != 1:
+        errors.append("source-ledger-manifest: unsupported schemaVersion")
+    if not ISO_DATE.match(str(manifest.get("frozenOn", ""))):
+        errors.append("source-ledger-manifest: frozenOn must be an ISO date")
+
+    expected = {
+        "hiatus_witness_families": ("KAN-348", "hiatus_witness_families", "witness_id"),
+        "treaty_frontier_sources": ("KAN-351", "treaty_frontier_sources", "source_id"),
+    }
+    ledgers = manifest.get("ledgers", {})
+    for name, (ticket, table, id_field) in expected.items():
+        config = ledgers.get(name)
+        label = f"source-ledger-manifest[{name}]"
+        if not isinstance(config, dict):
+            errors.append(f"{label}: ledger entry is required")
+            continue
+        if config.get("ticket") != ticket:
+            errors.append(f"{label}: ticket must be {ticket}")
+        expected_path = TABLES[table]
+        if config.get("path") != expected_path:
+            errors.append(f"{label}: path must be {expected_path}")
+        rows = _read(table, errors)
+        if config.get("rowCount") != len(rows):
+            errors.append(f"{label}: rowCount {config.get('rowCount')} != {len(rows)} rows")
+        minimum = sorted(row[id_field] for row in rows if row["minimum_set"] == "yes")
+        recorded = sorted(config.get("minimumIds", []))
+        if minimum != recorded:
+            errors.append(f"{label}: minimumIds do not match rows marked minimum_set=yes")
+        source = DATA / expected_path
+        if source.exists():
+            actual = hashlib.sha256(source.read_bytes()).hexdigest()
+            if config.get("sha256") != actual:
+                errors.append(f"{label}: ledger changed since the minimum set was frozen")
+
+
 def validate_inputs() -> list[str]:
     """Run every check and return the accumulated errors."""
     errors: list[str] = []
@@ -991,6 +1193,9 @@ def validate_inputs() -> list[str]:
     validate_pilot(terms, places, sources, errors)
     validate_debt(trenches, errors)
     validate_release(ranks, errors)
+    validate_hiatus_witness_families(errors)
+    validate_treaty_frontier_sources(errors)
+    validate_source_ledger_manifest(errors)
     return errors
 
 
@@ -1004,6 +1209,8 @@ def readiness_lines() -> list[str]:
     inventory = _read("inventory", errors)
     debt = _read("verification_debt", errors)
     gates = _read("trench_gates", errors)
+    witness_families = _read("hiatus_witness_families", errors)
+    treaty_sources = _read("treaty_frontier_sources", errors)
 
     transcriptions = _read("transcriptions", errors)
     from_witness = sum(
@@ -1027,6 +1234,8 @@ def readiness_lines() -> list[str]:
         f"  pilot: {len(pilot)} places frozen; {migrated} Trench A data migrated, "
         f"{outstanding} outstanding",
         f"  gates: {passed} of {len(gates)} passed; {open_debt} open verification debts",
+        f"  source ledgers: {len(witness_families)} hiatus witness families and "
+        f"{len(treaty_sources)} treaty/frontier instruments frozen for review",
     ]
 
 

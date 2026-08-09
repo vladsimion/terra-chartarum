@@ -29,6 +29,7 @@ npm run format:check   # Prettier
 npm run lint           # ESLint
 npm run check          # astro check (types + content schema)
 npm run test           # Vitest unit tests
+npm run registries:validate # shared contracts + cross-registry foreign keys
 npm run build          # production build must succeed
 npm run test:e2e       # Playwright e2e + axe accessibility
 ```

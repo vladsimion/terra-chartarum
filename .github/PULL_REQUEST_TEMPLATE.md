@@ -26,6 +26,7 @@ All must pass locally and in CI before review (see `CONTRIBUTING.md`).
 - [ ] `npm run lint`
 - [ ] `npm run check` (types + content schema)
 - [ ] `npm run test`
+- [ ] `npm run registries:validate`
 - [ ] `npm run build`
 - [ ] `npm run test:e2e` (Playwright + axe)
 
@@ -39,9 +40,17 @@ All must pass locally and in CI before review (see `CONTRIBUTING.md`).
 
 ## Performance
 
-- [ ] Lighthouse ≥ 90 (all categories) on the routes this PR touches.
+- [ ] Declared route profile: `content` / `atlas` / not applicable.
+- [ ] The applicable Lighthouse and transfer budgets in the support contract pass.
 - [ ] Images are sized/optimised; no oversized assets committed.
 - [ ] No unnecessary client JS shipped (islands stay server-rendered by default).
+
+## Interaction support
+
+- [ ] Applicable input gates declared: keyboard / touch-pointer / not applicable.
+- [ ] Responsive and reduced-motion behavior verified, or not applicable.
+- [ ] Text/static fallback identified for WebGL, IIIF, tile or network failure, or not applicable.
+- [ ] Supported Playwright projects for this interaction are green.
 
 ## Metadata & integration
 

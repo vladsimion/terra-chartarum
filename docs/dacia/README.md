@@ -24,6 +24,16 @@ and is what the Atlas shows by default, and the **research** tier holds
 everything with `review_state` on every record. The public tier is currently
 empty, and it should be - nothing has been reviewed against a witness yet.
 
+The reference directory also holds two pre-digitisation research ledgers:
+[`hiatus-witness-families.csv`](../../data/dacia/reference/hiatus-witness-families.csv)
+for KAN-348 and
+[`treaty-frontier-sources.csv`](../../data/dacia/reference/treaty-frontier-sources.csv)
+for KAN-351. Their minimum sets are hash-frozen together in
+[`source-ledger-manifest.json`](../../data/dacia/reference/source-ledger-manifest.json).
+See the [witness audit](./hiatus-witness-audit.md) and
+[frontier source ledger](./treaty-frontier-source-ledger.md) for the review and
+rights boundaries.
+
 ## The trench roster
 
 | ID      | Trench                                   | Epic    | Campaign |

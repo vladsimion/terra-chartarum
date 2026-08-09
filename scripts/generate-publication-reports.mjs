@@ -72,6 +72,33 @@ function completenessMarkdown(report) {
         `| [${record.title}](${SITE}/collection/${record.id}/) | ${record.sourceEssayLive ? 'live' : 'held'} | ${record.percent}% | ${record.missing.length ? record.missing.join(', ') : '-'} |`,
     )
     .join('\n');
+  const auditFields = report.objectAudit.fields
+    .map(
+      (field) =>
+        `| ${field.label} | ${field.recorded} | ${field.notApplicable} | ${field.notYetVerified} | ${field.unknown} |`,
+    )
+    .join('\n');
+  const queue = report.enrichmentQueue
+    .map((group) => {
+      const rows = group.records.length
+        ? group.records
+            .map(
+              (record) =>
+                `| \`${record.canonicalId}\` | [${record.title}](${SITE}/collection/${record.id}/) | ${record.auditPercent}% | ${record.gaps.length ? record.gaps.join(', ') : '-'} |`,
+            )
+            .join('\n')
+        : '| - | - | - | - |';
+      return `### ${group.label}\n\nOwner: **${group.owner}**. Queue limit: **${group.limit}**.\n\n| Canonical map reference | Object | Recorded | Audit gaps |\n| --- | --- | ---: | --- |\n${rows}`;
+    })
+    .join('\n\n');
+  const auditedRecords = report.records
+    .map((record) => {
+      const gaps = Object.entries(record.audit)
+        .filter(([, status]) => status !== 'recorded' && status !== 'not_applicable')
+        .map(([criterion, status]) => `${criterion}:${status}`);
+      return `| \`${record.canonicalId}\` | ${record.enrichmentTrack} | ${record.auditPercent}% | ${gaps.length ? gaps.join(', ') : '-'} |`;
+    })
+    .join('\n');
 
   return `# Generated collection completeness report
 
@@ -84,6 +111,28 @@ Overall metadata coverage: **${report.present}/${report.possible} fields (${repo
 | Field | Complete | Coverage |
 | --- | ---: | ---: |
 ${fields}
+
+## Volume VII object-standard audit
+
+Every current collection record is classified against the KAN-390 audit fields. A missing value is recorded as \`not_yet_verified\`, \`unknown\` or \`not_applicable\`; it is never treated as silently complete. Existing local map IDs remain stable under KAN-376, so the canonical cross-programme form is \`tc:atlas:map:<local-id>\` rather than a retrospective rename.
+
+| Audit field | Recorded | Not applicable | Not yet verified | Unknown |
+| --- | ---: | ---: | ---: | ---: |
+${auditFields}
+
+Dealer/auction descriptions retained only as discovery or provenance evidence: **${report.objectAudit.discoveryEvidenceOnly.length}**. ${report.objectAudit.discoveryEvidenceOnly.length ? report.objectAudit.discoveryEvidenceOnly.map((id) => `\`${id}\``).join(', ') : 'No current record declares dealer/auction text in its provenance fields.'}
+
+## Bounded enrichment queue
+
+The queue is ranked by active programme value and then by lowest object-standard coverage. Dacia/In Manibus remains owned by KAN-360/KAN-361 and is listed here without creating a parallel enrichment stream.
+
+${queue}
+
+## Per-record object audit
+
+| Canonical map reference | Priority track | Recorded | Classified gaps |
+| --- | --- | ---: | --- |
+${auditedRecords}
 
 ## Records
 
