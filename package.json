@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "npm run editorial:validate && npm run typography:validate && npm run epic:validate && npm run release:validate && npm run hanseatic:validate && npm run hanseatic:release:validate && astro build && npm run reports:check && npm run embed:prune && npm run indexing:validate && npm run geo:interop:validate",
+    "build": "npm run editorial:validate && npm run typography:validate && npm run epic:validate && npm run release:validate && npm run hanseatic:validate && npm run hanseatic:release:validate && npm run dacia:validate && astro build && npm run reports:check && npm run embed:prune && npm run indexing:validate && npm run geo:interop:validate",
     "preview": "astro preview",
     "check": "astro check",
     "lint": "eslint .",
@@ -30,6 +30,8 @@
     "hanseatic:validate": "python3 scripts/hanseatic/validate.py",
     "hanseatic:release:validate": "node scripts/validate-hanseatic-release.mjs",
     "hanseatic:test": "python3 -m pytest scripts/hanseatic -q",
+    "dacia:validate": "python3 scripts/dacia/validate.py",
+    "dacia:test": "python3 -m pytest scripts/dacia -q",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "create-essay": "node scripts/create-essay.mjs",

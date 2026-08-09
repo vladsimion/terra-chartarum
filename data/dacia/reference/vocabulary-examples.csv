@@ -1,0 +1,37 @@
+example_id,vocabulary,term,grounding,place_id,source_id,reading,why_this_term,contrast_with
+ex-att-exact,attestation_class,exact,trench_a,plc-apulum,src-iosephina-survey,Karlsburg,"The reference form for the Habsburg period is exactly what the sheet prints.",variant
+ex-att-variant,attestation_class,variant,trench_a,plc-drobeta,src-tabula-peutingeriana,Drubetis,"The same name as Drobeta through a road-book hand's spelling, not a different name.",alternative
+ex-att-variant-script,attestation_class,variant,trench_a,plc-sarmizegetusa-regia,src-ptolemy-geographia,Zarmizegethousa,"A Dacian name in Greek dress: script and inflection differ, the name does not.",alternative
+ex-att-alternative,attestation_class,alternative,trench_a,plc-napoca,src-iosephina-survey,Klausenburg,"A materially different name for the referent, not a variant of Napoca.",variant
+ex-att-textual-only,attestation_class,textual_only,illustrative,,,,"An index or gazetteer names the place while the plate itself does not carry it.",mapped_unlabelled
+ex-att-mapped-unlabelled,attestation_class,mapped_unlabelled,illustrative,,,,"A settlement sign stands at the right position with no name beside it.",textual_only
+ex-att-extra-muros,attestation_class,extra_muros,trench_a,plc-ulpia-traiana-sarmizegetusa,src-cantacuzino-wallachia,,"The map covers Wallachia; Hațeg country is outside its declared scope.",source_silent
+ex-att-extra-muros-scope,attestation_class,extra_muros,trench_a,plc-ulpia-traiana-sarmizegetusa,src-vesconte-portolan,,"A portolan's scope is the coastline; inland silence is scope, not omission.",source_silent
+ex-att-source-silent,attestation_class,source_silent,trench_a,plc-ulpia-traiana-sarmizegetusa,src-hereford-mappa,,"The mappa mundi covers the region and still does not name it.",extra_muros
+ex-att-source-silent-unid,attestation_class,source_silent,trench_a,plc-drobeta,src-ptolemy-geographia,,"The catalogue survives complete and no entry can securely be matched.",survival_unknown
+ex-att-not-applicable,attestation_class,not_applicable,illustrative,,,,"A town founded in 1833 cannot be absent from a 1716 map; the question does not arise.",source_silent
+ex-att-survival-unknown,attestation_class,survival_unknown,trench_a,plc-ulpia-traiana-sarmizegetusa,src-honterus-chorographia,,"One impression is known and cannot be consulted; the question stays open.",source_silent
+ex-att-reconstructed,attestation_class,reconstructed,trench_a,plc-apulum,src-ortelius-parergon,Apulum,"An antiquarian restores the legion town to a modern sheet from the authors.",exact
+ex-conf-direct,confidence,direct,illustrative,,,,"The editor read the form off the witness and recorded folio or sheet.",high
+ex-conf-high,confidence,high,illustrative,,,,"A scholarly edition reports the reading and cites the witness.",direct
+ex-conf-medium,confidence,medium,trench_a,plc-apulum,src-tabula-peutingeriana,Apula,"Reported by the trench, but the chain to the witness is not yet closed.",high
+ex-conf-low,confidence,low,trench_a,plc-drobeta,src-russian-staff-1835,Turnu Severin,"The survey straddles the town's founding, so the reading's date is contested.",medium
+ex-conf-editorial,confidence,editorial_reconstruction,illustrative,,,,"The project asserts the identification; no source states it.",low
+ex-geom-source,geometry_provenance,source_geometry,trench_a,plc-napoca,src-ptolemy-geographia,49° · 46°50',"The position comes from the source's own graticule.",georeferenced_source
+ex-geom-georef,geometry_provenance,georeferenced_source,illustrative,,,,"Modern coordinates derived by georeferencing the plate, with a stated error.",source_geometry
+ex-geom-scholarly,geometry_provenance,scholarly_reconstruction,illustrative,,,,"Published scholarship locates the site; the source gives no position.",editorial_reconstruction
+ex-geom-editorial,geometry_provenance,editorial_reconstruction,illustrative,,,,"The project places the referent on argument alone.",scholarly_reconstruction
+ex-geom-display,geometry_provenance,display_generalisation,illustrative,,,,"A label is nudged so two adjacent points stay legible.",source_geometry
+ex-date-exact,date_precision,exact_year,trench_a,,src-vesconte-portolan,1311,"The chart carries its own date.",circa
+ex-date-circa,date_precision,circa,trench_a,,src-ptolemy-geographia,c. A.D. 150,"The conventional date carried by the scholarship.",exact_year
+ex-date-range,date_precision,year_range,trench_a,,src-iosephina-survey,1769–1773,"Both ends of the survey campaign are attested.",circa
+ex-date-disputed,date_precision,disputed,trench_a,,src-tabula-peutingeriana,content c. 350 · copy c. 1200,"Content date and witness date are both defended; the decision is recorded.",year_range
+ex-date-century,date_precision,century,illustrative,,,,"A witness datable only to its century.",circa
+ex-date-tpq,date_precision,terminus_post_quem,illustrative,,,,"Not earlier than a dated event named on the sheet.",terminus_ante_quem
+ex-date-taq,date_precision,terminus_ante_quem,illustrative,,,,"Not later than the death of its named engraver.",terminus_post_quem
+ex-date-undated,date_precision,undated,illustrative,,,,"No date can responsibly be assigned.",century
+ex-rev-raw,review_state,raw,illustrative,,,,"Transcribed but not yet regularised against the vocabularies.",normalized
+ex-rev-normalized,review_state,normalized,illustrative,,,,"Fields are valid vocabulary terms; no human has checked the reading.",reviewed
+ex-rev-reviewed,review_state,reviewed,illustrative,,,,"A named editor checked the record against its locator.",approved
+ex-rev-approved,review_state,approved,illustrative,,,,"Evidence, rights and vocabulary all hold; publishable.",published
+ex-rev-published,review_state,published,illustrative,,,,"Released under a corpus version and cited by a trench.",approved

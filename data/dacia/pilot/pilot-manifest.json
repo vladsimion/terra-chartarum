@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "pilotVersion": "cnd-pilot-1.0",
+  "frozenOn": "2026-08-09",
+  "frozenBy": "KAN-333",
+  "placeCount": 40,
+  "source": "data/dacia/pilot/pilot-places.csv",
+  "sha256": "cccad27e95a9b599848bc425609388f7e802f85ac6bd4ea9e97782311d5dbba8",
+  "note": "Frozen before bulk transcription begins. Changing the pilot means a new pilotVersion and a new hash, recorded here rather than edited in place."
+}
