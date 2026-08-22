@@ -1,0 +1,791 @@
+{
+  "_ccd": {
+    "layer": "dacia-josephinian-sheets",
+    "licence": "CC BY 4.0 for the compiled records; each source carries its own rights_statement.",
+    "note": "Reconstructed sheet footprints over the corpus, linking to the repository. No scan is redistributed.",
+    "ticket": "KAN-343"
+  },
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              22.5,
+              45.45
+            ],
+            [
+              22.8,
+              45.45
+            ],
+            [
+              22.8,
+              45.6
+            ],
+            [
+              22.5,
+              45.6
+            ],
+            [
+              22.5,
+              45.45
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "js-c02-s02",
+      "properties": {
+        "archive_sheet_id": "pending",
+        "citation": "Josephinische Landesaufnahme, Siebenbürgen, 1769-1773, 1:28,800",
+        "confidence": "low",
+        "covers": 1,
+        "covers_place_ids": "plc-ulpia-traiana-sarmizegetusa",
+        "footprint_provenance": "editorial_reconstruction",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "js-c02-s02",
+        "name": "C02-S02",
+        "note": "Hațeg country and the colonia's ruins at Grădiște.",
+        "repository": "Österreichisches Staatsarchiv, Kriegsarchiv, Vienna",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "scale": "1:28800",
+        "scan_redistributed": "no",
+        "source_url": "https://mapire.eu/en/map/firstsurvey-transylvania/",
+        "survey": "Josephinische Landesaufnahme (Siebenbürgen)",
+        "valid_from": 1769,
+        "valid_to": 9999
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              22.5,
+              45.9
+            ],
+            [
+              22.8,
+              45.9
+            ],
+            [
+              22.8,
+              46.05
+            ],
+            [
+              22.5,
+              46.05
+            ],
+            [
+              22.5,
+              45.9
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "js-c02-s05",
+      "properties": {
+        "archive_sheet_id": "pending",
+        "citation": "Josephinische Landesaufnahme, Siebenbürgen, 1769-1773, 1:28,800",
+        "confidence": "low",
+        "covers": 1,
+        "covers_place_ids": "plc-micia",
+        "footprint_provenance": "editorial_reconstruction",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "js-c02-s05",
+        "name": "C02-S05",
+        "note": "The Mureș at Vețel, where the Roman customs station stood.",
+        "repository": "Österreichisches Staatsarchiv, Kriegsarchiv, Vienna",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "scale": "1:28800",
+        "scan_redistributed": "no",
+        "source_url": "https://mapire.eu/en/map/firstsurvey-transylvania/",
+        "survey": "Josephinische Landesaufnahme (Siebenbürgen)",
+        "valid_from": 1769,
+        "valid_to": 9999
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              22.8,
+              45.75
+            ],
+            [
+              23.1,
+              45.75
+            ],
+            [
+              23.1,
+              45.9
+            ],
+            [
+              22.8,
+              45.9
+            ],
+            [
+              22.8,
+              45.75
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "js-c03-s04",
+      "properties": {
+        "archive_sheet_id": "pending",
+        "citation": "Josephinische Landesaufnahme, Siebenbürgen, 1769-1773, 1:28,800",
+        "confidence": "low",
+        "covers": 1,
+        "covers_place_ids": "plc-hunedoara",
+        "footprint_provenance": "editorial_reconstruction",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "js-c03-s04",
+        "name": "C03-S04",
+        "note": "The Cerna valley and the Hunyadi castle.",
+        "repository": "Österreichisches Staatsarchiv, Kriegsarchiv, Vienna",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "scale": "1:28800",
+        "scan_redistributed": "no",
+        "source_url": "https://mapire.eu/en/map/firstsurvey-transylvania/",
+        "survey": "Josephinische Landesaufnahme (Siebenbürgen)",
+        "valid_from": 1769,
+        "valid_to": 9999
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              22.8,
+              46.8
+            ],
+            [
+              23.1,
+              46.8
+            ],
+            [
+              23.1,
+              46.95
+            ],
+            [
+              22.8,
+              46.95
+            ],
+            [
+              22.8,
+              46.8
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "js-c03-s11",
+      "properties": {
+        "archive_sheet_id": "pending",
+        "citation": "Josephinische Landesaufnahme, Siebenbürgen, 1769-1773, 1:28,800",
+        "confidence": "low",
+        "covers": 1,
+        "covers_place_ids": "plc-bologa",
+        "footprint_provenance": "editorial_reconstruction",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "js-c03-s11",
+        "name": "C03-S11",
+        "note": "The Criș approach and the fort at Bologa.",
+        "repository": "Österreichisches Staatsarchiv, Kriegsarchiv, Vienna",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "scale": "1:28800",
+        "scan_redistributed": "no",
+        "source_url": "https://mapire.eu/en/map/firstsurvey-transylvania/",
+        "survey": "Josephinische Landesaufnahme (Siebenbürgen)",
+        "valid_from": 1769,
+        "valid_to": 9999
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              23.1,
+              45.6
+            ],
+            [
+              23.4,
+              45.6
+            ],
+            [
+              23.4,
+              45.75
+            ],
+            [
+              23.1,
+              45.75
+            ],
+            [
+              23.1,
+              45.6
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "js-c04-s03",
+      "properties": {
+        "archive_sheet_id": "pending",
+        "citation": "Josephinische Landesaufnahme, Siebenbürgen, 1769-1773, 1:28,800",
+        "confidence": "low",
+        "covers": 1,
+        "covers_place_ids": "plc-sarmizegetusa-regia",
+        "footprint_provenance": "editorial_reconstruction",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "js-c04-s03",
+        "name": "C04-S03",
+        "note": "The Orăștie Mountains and the Dacian royal seat.",
+        "repository": "Österreichisches Staatsarchiv, Kriegsarchiv, Vienna",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "scale": "1:28800",
+        "scan_redistributed": "no",
+        "source_url": "https://mapire.eu/en/map/firstsurvey-transylvania/",
+        "survey": "Josephinische Landesaufnahme (Siebenbürgen)",
+        "valid_from": 1769,
+        "valid_to": 9999
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              23.1,
+              46.05
+            ],
+            [
+              23.4,
+              46.05
+            ],
+            [
+              23.4,
+              46.2
+            ],
+            [
+              23.1,
+              46.2
+            ],
+            [
+              23.1,
+              46.05
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "js-c04-s06",
+      "properties": {
+        "archive_sheet_id": "pending",
+        "citation": "Josephinische Landesaufnahme, Siebenbürgen, 1769-1773, 1:28,800",
+        "confidence": "low",
+        "covers": 1,
+        "covers_place_ids": "plc-ampelum",
+        "footprint_provenance": "editorial_reconstruction",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "js-c04-s06",
+        "name": "C04-S06",
+        "note": "The gold-mining district around Zlatna.",
+        "repository": "Österreichisches Staatsarchiv, Kriegsarchiv, Vienna",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "scale": "1:28800",
+        "scan_redistributed": "no",
+        "source_url": "https://mapire.eu/en/map/firstsurvey-transylvania/",
+        "survey": "Josephinische Landesaufnahme (Siebenbürgen)",
+        "valid_from": 1769,
+        "valid_to": 9999
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              23.1,
+              47.1
+            ],
+            [
+              23.4,
+              47.1
+            ],
+            [
+              23.4,
+              47.25
+            ],
+            [
+              23.1,
+              47.25
+            ],
+            [
+              23.1,
+              47.1
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "js-c04-s13",
+      "properties": {
+        "archive_sheet_id": "pending",
+        "citation": "Josephinische Landesaufnahme, Siebenbürgen, 1769-1773, 1:28,800",
+        "confidence": "low",
+        "covers": 1,
+        "covers_place_ids": "plc-porolissum",
+        "footprint_provenance": "editorial_reconstruction",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "js-c04-s13",
+        "name": "C04-S13",
+        "note": "The Meseș ridge and the northern frontier command.",
+        "repository": "Österreichisches Staatsarchiv, Kriegsarchiv, Vienna",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "scale": "1:28800",
+        "scan_redistributed": "no",
+        "source_url": "https://mapire.eu/en/map/firstsurvey-transylvania/",
+        "survey": "Josephinische Landesaufnahme (Siebenbürgen)",
+        "valid_from": 1769,
+        "valid_to": 9999
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              23.4,
+              46.05
+            ],
+            [
+              23.7,
+              46.05
+            ],
+            [
+              23.7,
+              46.2
+            ],
+            [
+              23.4,
+              46.2
+            ],
+            [
+              23.4,
+              46.05
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "js-c05-s06",
+      "properties": {
+        "archive_sheet_id": "pending",
+        "citation": "Josephinische Landesaufnahme, Siebenbürgen, 1769-1773, 1:28,800",
+        "confidence": "low",
+        "covers": 1,
+        "covers_place_ids": "plc-apulum",
+        "footprint_provenance": "editorial_reconstruction",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "js-c05-s06",
+        "name": "C05-S06",
+        "note": "Karlsburg and the Mureș confluence.",
+        "repository": "Österreichisches Staatsarchiv, Kriegsarchiv, Vienna",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "scale": "1:28800",
+        "scan_redistributed": "no",
+        "source_url": "https://mapire.eu/en/map/firstsurvey-transylvania/",
+        "survey": "Josephinische Landesaufnahme (Siebenbürgen)",
+        "valid_from": 1769,
+        "valid_to": 9999
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              23.4,
+              46.65
+            ],
+            [
+              23.7,
+              46.65
+            ],
+            [
+              23.7,
+              46.8
+            ],
+            [
+              23.4,
+              46.8
+            ],
+            [
+              23.4,
+              46.65
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "js-c05-s10",
+      "properties": {
+        "archive_sheet_id": "pending",
+        "citation": "Josephinische Landesaufnahme, Siebenbürgen, 1769-1773, 1:28,800",
+        "confidence": "low",
+        "covers": 1,
+        "covers_place_ids": "plc-napoca",
+        "footprint_provenance": "editorial_reconstruction",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "js-c05-s10",
+        "name": "C05-S10",
+        "note": "Klausenburg and the Someșul Mic.",
+        "repository": "Österreichisches Staatsarchiv, Kriegsarchiv, Vienna",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "scale": "1:28800",
+        "scan_redistributed": "no",
+        "source_url": "https://mapire.eu/en/map/firstsurvey-transylvania/",
+        "survey": "Josephinische Landesaufnahme (Siebenbürgen)",
+        "valid_from": 1769,
+        "valid_to": 9999
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              23.7,
+              46.5
+            ],
+            [
+              24.0,
+              46.5
+            ],
+            [
+              24.0,
+              46.65
+            ],
+            [
+              23.7,
+              46.65
+            ],
+            [
+              23.7,
+              46.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "js-c06-s09",
+      "properties": {
+        "archive_sheet_id": "pending",
+        "citation": "Josephinische Landesaufnahme, Siebenbürgen, 1769-1773, 1:28,800",
+        "confidence": "low",
+        "covers": 1,
+        "covers_place_ids": "plc-potaissa",
+        "footprint_provenance": "editorial_reconstruction",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "js-c06-s09",
+        "name": "C06-S09",
+        "note": "Thorenburg and the Arieș.",
+        "repository": "Österreichisches Staatsarchiv, Kriegsarchiv, Vienna",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "scale": "1:28800",
+        "scan_redistributed": "no",
+        "source_url": "https://mapire.eu/en/map/firstsurvey-transylvania/",
+        "survey": "Josephinische Landesaufnahme (Siebenbürgen)",
+        "valid_from": 1769,
+        "valid_to": 9999
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              24.0,
+              45.75
+            ],
+            [
+              24.3,
+              45.75
+            ],
+            [
+              24.3,
+              45.9
+            ],
+            [
+              24.0,
+              45.9
+            ],
+            [
+              24.0,
+              45.75
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "js-c07-s04",
+      "properties": {
+        "archive_sheet_id": "pending",
+        "citation": "Josephinische Landesaufnahme, Siebenbürgen, 1769-1773, 1:28,800",
+        "confidence": "low",
+        "covers": 1,
+        "covers_place_ids": "plc-sibiu",
+        "footprint_provenance": "editorial_reconstruction",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "js-c07-s04",
+        "name": "C07-S04",
+        "note": "Hermannstadt and the Cibin basin.",
+        "repository": "Österreichisches Staatsarchiv, Kriegsarchiv, Vienna",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "scale": "1:28800",
+        "scan_redistributed": "no",
+        "source_url": "https://mapire.eu/en/map/firstsurvey-transylvania/",
+        "survey": "Josephinische Landesaufnahme (Siebenbürgen)",
+        "valid_from": 1769,
+        "valid_to": 9999
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              24.3,
+              46.05
+            ],
+            [
+              24.6,
+              46.05
+            ],
+            [
+              24.6,
+              46.2
+            ],
+            [
+              24.3,
+              46.2
+            ],
+            [
+              24.3,
+              46.05
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "js-c08-s06",
+      "properties": {
+        "archive_sheet_id": "pending",
+        "citation": "Josephinische Landesaufnahme, Siebenbürgen, 1769-1773, 1:28,800",
+        "confidence": "low",
+        "covers": 1,
+        "covers_place_ids": "plc-medias",
+        "footprint_provenance": "editorial_reconstruction",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "js-c08-s06",
+        "name": "C08-S06",
+        "note": "Mediasch and the Târnava Mare.",
+        "repository": "Österreichisches Staatsarchiv, Kriegsarchiv, Vienna",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "scale": "1:28800",
+        "scan_redistributed": "no",
+        "source_url": "https://mapire.eu/en/map/firstsurvey-transylvania/",
+        "survey": "Josephinische Landesaufnahme (Siebenbürgen)",
+        "valid_from": 1769,
+        "valid_to": 9999
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              24.3,
+              47.1
+            ],
+            [
+              24.6,
+              47.1
+            ],
+            [
+              24.6,
+              47.25
+            ],
+            [
+              24.3,
+              47.25
+            ],
+            [
+              24.3,
+              47.1
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "js-c08-s13",
+      "properties": {
+        "archive_sheet_id": "pending",
+        "citation": "Josephinische Landesaufnahme, Siebenbürgen, 1769-1773, 1:28,800",
+        "confidence": "low",
+        "covers": 1,
+        "covers_place_ids": "plc-bistrita",
+        "footprint_provenance": "editorial_reconstruction",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "js-c08-s13",
+        "name": "C08-S13",
+        "note": "Bistritz and the northern Saxon districts.",
+        "repository": "Österreichisches Staatsarchiv, Kriegsarchiv, Vienna",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "scale": "1:28800",
+        "scan_redistributed": "no",
+        "source_url": "https://mapire.eu/en/map/firstsurvey-transylvania/",
+        "survey": "Josephinische Landesaufnahme (Siebenbürgen)",
+        "valid_from": 1769,
+        "valid_to": 9999
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              24.6,
+              46.2
+            ],
+            [
+              24.9,
+              46.2
+            ],
+            [
+              24.9,
+              46.35
+            ],
+            [
+              24.6,
+              46.35
+            ],
+            [
+              24.6,
+              46.2
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "js-c09-s07",
+      "properties": {
+        "archive_sheet_id": "pending",
+        "citation": "Josephinische Landesaufnahme, Siebenbürgen, 1769-1773, 1:28,800",
+        "confidence": "low",
+        "covers": 1,
+        "covers_place_ids": "plc-sighisoara",
+        "footprint_provenance": "editorial_reconstruction",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "js-c09-s07",
+        "name": "C09-S07",
+        "note": "Schässburg on the Târnava Mare.",
+        "repository": "Österreichisches Staatsarchiv, Kriegsarchiv, Vienna",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "scale": "1:28800",
+        "scan_redistributed": "no",
+        "source_url": "https://mapire.eu/en/map/firstsurvey-transylvania/",
+        "survey": "Josephinische Landesaufnahme (Siebenbürgen)",
+        "valid_from": 1769,
+        "valid_to": 9999
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              25.5,
+              45.6
+            ],
+            [
+              25.8,
+              45.6
+            ],
+            [
+              25.8,
+              45.75
+            ],
+            [
+              25.5,
+              45.75
+            ],
+            [
+              25.5,
+              45.6
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "js-c12-s03",
+      "properties": {
+        "archive_sheet_id": "pending",
+        "citation": "Josephinische Landesaufnahme, Siebenbürgen, 1769-1773, 1:28,800",
+        "confidence": "low",
+        "covers": 1,
+        "covers_place_ids": "plc-brasov",
+        "footprint_provenance": "editorial_reconstruction",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "js-c12-s03",
+        "name": "C12-S03",
+        "note": "Kronstadt and the Bârsa depression.",
+        "repository": "Österreichisches Staatsarchiv, Kriegsarchiv, Vienna",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "scale": "1:28800",
+        "scan_redistributed": "no",
+        "source_url": "https://mapire.eu/en/map/firstsurvey-transylvania/",
+        "survey": "Josephinische Landesaufnahme (Siebenbürgen)",
+        "valid_from": 1769,
+        "valid_to": 9999
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

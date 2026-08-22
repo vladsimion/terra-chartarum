@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "geo-39d2a2bf5188bdd4",
+  "release": "geo-1ca5dcb4a7446143",
   "generatedBy": "scripts/geo-release.mjs",
   "assets": [
     {
@@ -269,6 +269,82 @@
       "sha256": "1429cd60cf29f0e2745276ea3b09b54e3d46c314bcd18056aea06b3d5ada04d4",
       "version": "1429cd60cf29",
       "url": "/geo/dacia-attestations-research.geojson?v=1429cd60cf29"
+    },
+    {
+      "id": "dacia-roman-sites",
+      "file": "dacia-roman-sites.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": [
+        "Point"
+      ],
+      "featureCount": 14,
+      "yearFrom": 106,
+      "yearTo": 271,
+      "source": "Terra Chartarum (compiled) - Roman Dacia baseline, KAN-341",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; positions from the Corpus Nominum Daciae; identifications after the Barrington Atlas and TIR L-34/L-35",
+      "bytes": 14358,
+      "sha256": "f40a3ec3f723f00be16d6f7c1fb51cb312fb39fd02c7d01ea2794c9c8a7f4cff",
+      "version": "f40a3ec3f723",
+      "url": "/geo/dacia-roman-sites.geojson?v=f40a3ec3f723"
+    },
+    {
+      "id": "dacia-roman-network",
+      "file": "dacia-roman-network.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": [
+        "LineString"
+      ],
+      "featureCount": 9,
+      "yearFrom": 106,
+      "yearTo": 271,
+      "source": "Terra Chartarum (compiled) - Roman Dacia baseline, KAN-341",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; roads joined from corpus stations, frontier corridors drawn editorially",
+      "bytes": 11757,
+      "sha256": "32b114b6942c16db841969e5e224dbec10dc67c5787bc784aad5278fc9a49616",
+      "version": "32b114b6942c",
+      "url": "/geo/dacia-roman-network.geojson?v=32b114b6942c"
+    },
+    {
+      "id": "dacia-principalities",
+      "file": "dacia-principalities.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": [
+        "Polygon"
+      ],
+      "featureCount": 12,
+      "yearFrom": 1526,
+      "yearTo": 1859,
+      "source": "Terra Chartarum (compiled) - principality phases 1526-1859, KAN-342",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; territorial phases after Hertslet, The Map of Europe by Treaty",
+      "bytes": 22828,
+      "sha256": "cf2a3919ee81a2c0a09b93397505828cf5b60f0376896a89b0558362870704dd",
+      "version": "cf2a3919ee81",
+      "url": "/geo/dacia-principalities.geojson?v=cf2a3919ee81"
+    },
+    {
+      "id": "dacia-josephinian-sheets",
+      "file": "dacia-josephinian-sheets.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": [
+        "Polygon"
+      ],
+      "featureCount": 15,
+      "yearFrom": 1769,
+      "yearTo": 1773,
+      "source": "Terra Chartarum (compiled) - Josephinian sheet index, KAN-343",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; sheets held by the Kriegsarchiv, Vienna; no scan redistributed",
+      "bytes": 21697,
+      "sha256": "84285f399879242e663d41f859e9fb0fea50c768e5579831a436584e075f8184",
+      "version": "84285f399879",
+      "url": "/geo/dacia-josephinian-sheets.geojson?v=84285f399879"
     }
   ]
 }

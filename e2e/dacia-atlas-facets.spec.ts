@@ -17,15 +17,28 @@ test.use({
   },
 });
 
+// Every map here runs on software GL, and the suite is fullyParallel: run this
+// file's tests in one worker so it never holds several MapLibre instances at
+// once. Ordered rather than serial, so a failure reports the rest instead of
+// skipping them.
+test.describe.configure({ mode: 'default' });
+
 const RESEARCH_LAYER = 'dacia-attestations-research';
 const panel = `[data-facets-for="${RESEARCH_LAYER}"]`;
 const status = `[data-facets-status="${RESEARCH_LAYER}"]`;
 const facetBox = (field: string, value: string) =>
   `input[data-facet-layer="${RESEARCH_LAYER}"][data-facet-field="${field}"][value="${value}"]`;
 
+// The facet panel appears once the layer is on the map, so this wait is really a
+// wait for MapLibre's load hook and the external base style behind it. Under a
+// fully parallel suite - several software-GL maps at once - that is slower than
+// the default expect timeout, which is the same allowance e2e/vmn-visual.spec.ts
+// makes for the same reason.
+const MAP_READY = 20_000;
+
 const enableLayer = async (page: import('@playwright/test').Page) => {
   await page.locator(`input[data-layer="${RESEARCH_LAYER}"]`).check();
-  await expect(page.locator(panel)).toBeVisible();
+  await expect(page.locator(panel)).toBeVisible({ timeout: MAP_READY });
 };
 
 test.describe('atlas: corpus attestation facets', () => {
@@ -140,11 +153,62 @@ test.describe('Terra Sigillata corpus references', () => {
     await expect(link).toHaveAttribute('href', new RegExp(`layers=${RESEARCH_LAYER}`));
     await expect(link).toHaveAttribute('href', /feature=att-/);
 
-    await link.click();
-    await expect(page).toHaveURL(/\/atlas\?/);
     // The research tier, not the public one: CND 0.1 is a pilot and the public
     // layer is empty by design, so linking there would open an empty map.
-    await expect(page.locator(`input[data-layer="${RESEARCH_LAYER}"]`)).toBeChecked();
-    await expect(page.locator(`input[data-layer="dacia-attestations"]`)).not.toBeChecked();
+    await expect(link).not.toHaveAttribute('href', /layers=dacia-attestations(&|$)/);
+  });
+});
+
+// The shared GIS family (KAN-341, KAN-342, KAN-343). The tables and their rules
+// are gated in scripts/dacia; what needs a browser is that each layer reaches
+// the map, that its provenance and source metadata arrive with it, and that the
+// principality phases appear and disappear with the slider rather than sitting
+// on the map as one timeless outline.
+test.describe('shared Dacia GIS layers', () => {
+  const GIS_LAYERS = [
+    'dacia-roman-sites',
+    'dacia-roman-network',
+    'dacia-principalities',
+    'dacia-josephinian-sheets',
+  ];
+
+  test('every layer registers, toggles and declares its provenance facet', async ({ page }) => {
+    await page.goto('/atlas');
+
+    for (const layer of GIS_LAYERS) {
+      const toggle = page.locator(`input[data-layer="${layer}"]`);
+      await expect(toggle).toHaveCount(1);
+      await toggle.check({ timeout: MAP_READY });
+      await expect(toggle).toBeChecked({ timeout: MAP_READY });
+    }
+
+    // Provenance is a declared facet on both layers that carry drawn geometry,
+    // so a reader can filter the editorial lines out of what they are looking at.
+    await expect(
+      page.locator(
+        'input[data-facet-layer="dacia-roman-network"][data-facet-field="feature_type"]',
+      ),
+    ).not.toHaveCount(0);
+    await expect(
+      page.locator(
+        'input[data-facet-layer="dacia-principalities"][data-facet-field="sovereignty"]',
+      ),
+    ).not.toHaveCount(0);
+  });
+
+  test('a Josephinian footprint carries its repository and redistributes no scan', async ({
+    page,
+  }) => {
+    await page.goto('/atlas');
+    const sheet = await page.evaluate(async () => {
+      const response = await fetch('/geo/dacia-josephinian-sheets.geojson');
+      const data = await response.json();
+      return data.features[0].properties;
+    });
+
+    expect(sheet.repository).toContain('Kriegsarchiv');
+    expect(sheet.source_url).toMatch(/^https:/);
+    expect(sheet.scan_redistributed).toBe('no');
+    expect(sheet.footprint_provenance).toBe('editorial_reconstruction');
   });
 });

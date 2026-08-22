@@ -182,6 +182,58 @@
       "source": "Terra Chartarum (compiled) - Corpus Nominum Daciae 0.1 research tier, KAN-337",
       "license": "CC BY 4.0",
       "attribution": "Terra Chartarum; each source carries its own rights statement"
+    },
+    {
+      "id": "dacia-roman-sites",
+      "file": "dacia-roman-sites.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": ["Point"],
+      "featureCount": 14,
+      "yearFrom": 106,
+      "yearTo": 271,
+      "source": "Terra Chartarum (compiled) - Roman Dacia baseline, KAN-341",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; positions from the Corpus Nominum Daciae; identifications after the Barrington Atlas and TIR L-34/L-35"
+    },
+    {
+      "id": "dacia-roman-network",
+      "file": "dacia-roman-network.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": ["LineString"],
+      "featureCount": 9,
+      "yearFrom": 106,
+      "yearTo": 271,
+      "source": "Terra Chartarum (compiled) - Roman Dacia baseline, KAN-341",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; roads joined from corpus stations, frontier corridors drawn editorially"
+    },
+    {
+      "id": "dacia-principalities",
+      "file": "dacia-principalities.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": ["Polygon"],
+      "featureCount": 12,
+      "yearFrom": 1526,
+      "yearTo": 1859,
+      "source": "Terra Chartarum (compiled) - principality phases 1526-1859, KAN-342",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; territorial phases after Hertslet, The Map of Europe by Treaty"
+    },
+    {
+      "id": "dacia-josephinian-sheets",
+      "file": "dacia-josephinian-sheets.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": ["Polygon"],
+      "featureCount": 15,
+      "yearFrom": 1769,
+      "yearTo": 1773,
+      "source": "Terra Chartarum (compiled) - Josephinian sheet index, KAN-343",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; sheets held by the Kriegsarchiv, Vienna; no scan redistributed"
     }
   ]
 }

@@ -81,6 +81,22 @@
       "bytes": 292,
       "sha256": "2aa1fa13a8681b3c13104fc2649b49112dd2c4f77cc09920da6092223e722980"
     },
+    "public/geo/dacia-josephinian-sheets.geojson": {
+      "bytes": 21697,
+      "sha256": "84285f399879242e663d41f859e9fb0fea50c768e5579831a436584e075f8184"
+    },
+    "public/geo/dacia-principalities.geojson": {
+      "bytes": 22828,
+      "sha256": "cf2a3919ee81a2c0a09b93397505828cf5b60f0376896a89b0558362870704dd"
+    },
+    "public/geo/dacia-roman-network.geojson": {
+      "bytes": 11757,
+      "sha256": "32b114b6942c16db841969e5e224dbec10dc67c5787bc784aad5278fc9a49616"
+    },
+    "public/geo/dacia-roman-sites.geojson": {
+      "bytes": 14358,
+      "sha256": "f40a3ec3f723f00be16d6f7c1fb51cb312fb39fd02c7d01ea2794c9c8a7f4cff"
+    },
     "src/data/dacia/generated/trench-a.json": {
       "bytes": 7728,
       "sha256": "bc016628185af0c66a5429da88e7e3fd969fa3ccb18e863830503e7a9de4fcca"

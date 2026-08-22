@@ -1,0 +1,431 @@
+{
+  "_ccd": {
+    "layer": "dacia-roman-sites",
+    "licence": "CC BY 4.0 for the compiled records; each source carries its own rights_statement.",
+    "note": "Site positions are the corpus's own reference locations, carrying the corpus's provenance; none is an excavated centroid.",
+    "ticket": "KAN-341"
+  },
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          23.23,
+          46.12
+        ],
+        "type": "Point"
+      },
+      "id": "rd-site-ampelum",
+      "properties": {
+        "citation": "Talbert (ed.), Barrington Atlas of the Greek and Roman World (2000), map 21",
+        "confidence": "medium",
+        "feature_type": "site",
+        "geometry_provenance": "modern_reference",
+        "id": "rd-site-ampelum",
+        "latin_name": "Ampelvm",
+        "name": "Ampelum",
+        "note": "Seat of the procurator aurariarum, the gold-mining administration.",
+        "place_id": "plc-ampelum",
+        "place_name": "Ampelum",
+        "region": "transylvania",
+        "repository": "Princeton University Press",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "source_url": "https://pleiades.stoa.org/places/207356",
+        "valid_from": 106,
+        "valid_to": 271
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          23.57,
+          46.07
+        ],
+        "type": "Point"
+      },
+      "id": "rd-site-apulum",
+      "properties": {
+        "citation": "Talbert (ed.), Barrington Atlas of the Greek and Roman World (2000), map 21",
+        "confidence": "medium",
+        "feature_type": "site",
+        "geometry_provenance": "modern_reference",
+        "id": "rd-site-apulum",
+        "latin_name": "Apulum",
+        "name": "Apulum",
+        "note": "Legionary fortress of XIII Gemina and the province's administrative centre. The point is the modern settlement's reference location carried from the CND place record, not an excavated centroid.",
+        "place_id": "plc-apulum",
+        "place_name": "Apulum",
+        "region": "transylvania",
+        "repository": "Princeton University Press",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "source_url": "https://pleiades.stoa.org/places/207371",
+        "valid_from": 106,
+        "valid_to": 271
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          21.55,
+          45.02
+        ],
+        "type": "Point"
+      },
+      "id": "rd-site-arcidava",
+      "properties": {
+        "citation": "Talbert (ed.), Barrington Atlas of the Greek and Roman World (2000), map 21",
+        "confidence": "low",
+        "feature_type": "site",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "rd-site-arcidava",
+        "latin_name": "Arcidava",
+        "name": "Arcidava",
+        "note": "First station on the Lederata road, at Vărădia.",
+        "place_id": "plc-arcidava",
+        "place_name": "Arcidava",
+        "region": "banat",
+        "repository": "Princeton University Press",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "source_url": "https://pleiades.stoa.org/places/207362",
+        "valid_from": 106,
+        "valid_to": 271
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          22.9,
+          46.9
+        ],
+        "type": "Point"
+      },
+      "id": "rd-site-bologa",
+      "properties": {
+        "citation": "Talbert (ed.), Barrington Atlas of the Greek and Roman World (2000), map 21",
+        "confidence": "low",
+        "feature_type": "site",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "rd-site-bologa",
+        "latin_name": "Resculvm",
+        "name": "Resculum",
+        "note": "Fort at Bologa guarding the Criș approach. The ancient name attached to this fort is not settled, which is why the confidence is low.",
+        "place_id": "plc-bologa",
+        "place_name": "Bologa",
+        "region": "transylvania",
+        "repository": "Princeton University Press",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "source_url": "https://pleiades.stoa.org/places/207506",
+        "valid_from": 106,
+        "valid_to": 271
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          22.4,
+          44.72
+        ],
+        "type": "Point"
+      },
+      "id": "rd-site-dierna",
+      "properties": {
+        "citation": "Talbert (ed.), Barrington Atlas of the Greek and Roman World (2000), map 21",
+        "confidence": "medium",
+        "feature_type": "site",
+        "geometry_provenance": "modern_reference",
+        "id": "rd-site-dierna",
+        "latin_name": "Dierna",
+        "name": "Dierna",
+        "note": "Danube crossing at Orșova; the modern town sits over it.",
+        "place_id": "plc-dierna",
+        "place_name": "Dierna",
+        "region": "banat",
+        "repository": "Princeton University Press",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "source_url": "https://pleiades.stoa.org/places/207380",
+        "valid_from": 106,
+        "valid_to": 271
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          22.66,
+          44.63
+        ],
+        "type": "Point"
+      },
+      "id": "rd-site-drobeta",
+      "properties": {
+        "citation": "Talbert (ed.), Barrington Atlas of the Greek and Roman World (2000), map 21",
+        "confidence": "high",
+        "feature_type": "site",
+        "geometry_provenance": "modern_reference",
+        "id": "rd-site-drobeta",
+        "latin_name": "Drobeta",
+        "name": "Drobeta",
+        "note": "The bridgehead of Trajan's bridge, and the one site here whose position is fixed by standing remains.",
+        "place_id": "plc-drobeta",
+        "place_name": "Drobeta",
+        "region": "oltenia",
+        "repository": "Princeton University Press",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "source_url": "https://pleiades.stoa.org/places/207382",
+        "valid_from": 106,
+        "valid_to": 271
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          22.75,
+          45.9
+        ],
+        "type": "Point"
+      },
+      "id": "rd-site-micia",
+      "properties": {
+        "citation": "Talbert (ed.), Barrington Atlas of the Greek and Roman World (2000), map 21",
+        "confidence": "medium",
+        "feature_type": "site",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "rd-site-micia",
+        "latin_name": "Micia",
+        "name": "Micia",
+        "note": "Auxiliary fort and customs station on the Mureș.",
+        "place_id": "plc-micia",
+        "place_name": "Micia",
+        "region": "transylvania",
+        "repository": "Princeton University Press",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "source_url": "https://pleiades.stoa.org/places/207429",
+        "valid_from": 106,
+        "valid_to": 271
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          23.6,
+          46.77
+        ],
+        "type": "Point"
+      },
+      "id": "rd-site-napoca",
+      "properties": {
+        "citation": "Talbert (ed.), Barrington Atlas of the Greek and Roman World (2000), map 21",
+        "confidence": "medium",
+        "feature_type": "site",
+        "geometry_provenance": "modern_reference",
+        "id": "rd-site-napoca",
+        "latin_name": "Napoca",
+        "name": "Napoca",
+        "note": "Municipium and later colonia on the road north. Point carried from the CND place record.",
+        "place_id": "plc-napoca",
+        "place_name": "Napoca",
+        "region": "transylvania",
+        "repository": "Princeton University Press",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "source_url": "https://pleiades.stoa.org/places/207457",
+        "valid_from": 106,
+        "valid_to": 271
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          23.15,
+          47.18
+        ],
+        "type": "Point"
+      },
+      "id": "rd-site-porolissum",
+      "properties": {
+        "citation": "Talbert (ed.), Barrington Atlas of the Greek and Roman World (2000), map 21",
+        "confidence": "medium",
+        "feature_type": "site",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "rd-site-porolissum",
+        "latin_name": "Porolissum",
+        "name": "Porolissum",
+        "note": "The northern frontier command. The CND record carries an editorial reconstruction of the site position, and that provenance is carried through rather than upgraded here.",
+        "place_id": "plc-porolissum",
+        "place_name": "Porolissum",
+        "region": "transylvania",
+        "repository": "Princeton University Press",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "source_url": "https://pleiades.stoa.org/places/207487",
+        "valid_from": 106,
+        "valid_to": 271
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          23.79,
+          46.57
+        ],
+        "type": "Point"
+      },
+      "id": "rd-site-potaissa",
+      "properties": {
+        "citation": "Talbert (ed.), Barrington Atlas of the Greek and Roman World (2000), map 21",
+        "confidence": "medium",
+        "feature_type": "site",
+        "geometry_provenance": "modern_reference",
+        "id": "rd-site-potaissa",
+        "latin_name": "Potaissa",
+        "name": "Potaissa",
+        "note": "Legionary fortress of V Macedonica from c. 168. Point carried from the CND place record.",
+        "place_id": "plc-potaissa",
+        "place_name": "Potaissa",
+        "region": "transylvania",
+        "repository": "Princeton University Press",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "source_url": "https://pleiades.stoa.org/places/207489",
+        "valid_from": 106,
+        "valid_to": 271
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          24.42,
+          44.3
+        ],
+        "type": "Point"
+      },
+      "id": "rd-site-romula",
+      "properties": {
+        "citation": "Tabula Imperii Romani L-35: Romula, Durostorum, Tomis (1969)",
+        "confidence": "medium",
+        "feature_type": "site",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "rd-site-romula",
+        "latin_name": "Romvla",
+        "name": "Romula",
+        "note": "Principal town of the Olt corridor, behind the limes Alutanus.",
+        "place_id": "plc-romula",
+        "place_name": "Romula",
+        "region": "oltenia",
+        "repository": "Academia Republicii Socialiste România",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "source_url": "https://pleiades.stoa.org/places/207516",
+        "valid_from": 106,
+        "valid_to": 271
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          24.48,
+          43.77
+        ],
+        "type": "Point"
+      },
+      "id": "rd-site-sucidava",
+      "properties": {
+        "citation": "Tabula Imperii Romani L-35: Romula, Durostorum, Tomis (1969)",
+        "confidence": "medium",
+        "feature_type": "site",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "rd-site-sucidava",
+        "latin_name": "Svcidava",
+        "name": "Sucidava",
+        "note": "Danube crossing at the mouth of the Olt, and the last Roman position held here into the sixth century.",
+        "place_id": "plc-sucidava",
+        "place_name": "Sucidava",
+        "region": "oltenia",
+        "repository": "Academia Republicii Socialiste România",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "source_url": "https://pleiades.stoa.org/places/207550",
+        "valid_from": 106,
+        "valid_to": 271
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          22.2,
+          45.45
+        ],
+        "type": "Point"
+      },
+      "id": "rd-site-tibiscum",
+      "properties": {
+        "citation": "Talbert (ed.), Barrington Atlas of the Greek and Roman World (2000), map 21",
+        "confidence": "medium",
+        "feature_type": "site",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "rd-site-tibiscum",
+        "latin_name": "Tibiscvm",
+        "name": "Tibiscum",
+        "note": "Road junction where the Lederata and Dierna approaches meet.",
+        "place_id": "plc-tibiscum",
+        "place_name": "Tibiscum",
+        "region": "banat",
+        "repository": "Princeton University Press",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "source_url": "https://pleiades.stoa.org/places/207561",
+        "valid_from": 106,
+        "valid_to": 271
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          22.78,
+          45.51
+        ],
+        "type": "Point"
+      },
+      "id": "rd-site-ulpia-traiana",
+      "properties": {
+        "citation": "Talbert (ed.), Barrington Atlas of the Greek and Roman World (2000), map 21",
+        "confidence": "medium",
+        "feature_type": "site",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "rd-site-ulpia-traiana",
+        "latin_name": "Colonia Vlpia Traiana Sarmizegetvsa",
+        "name": "Colonia Ulpia Traiana Sarmizegetusa",
+        "note": "The provincial capital, forty kilometres from the Dacian royal seat whose name it took.",
+        "place_id": "plc-ulpia-traiana-sarmizegetusa",
+        "place_name": "Colonia Ulpia Traiana Sarmizegetusa",
+        "region": "transylvania",
+        "repository": "Princeton University Press",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "source_url": "https://pleiades.stoa.org/places/207580",
+        "valid_from": 106,
+        "valid_to": 271
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

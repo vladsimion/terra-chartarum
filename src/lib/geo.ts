@@ -605,6 +605,137 @@ const RAW: unknown[] = [
     },
     defaultOn: false,
   },
+  {
+    // The Roman baseline ships as two layers because the Atlas takes one render
+    // hint per layer, not because it is two datasets: both are compiled from
+    // data/dacia/gis/roman-dacia.csv (KAN-341).
+    id: 'dacia-roman-sites',
+    room: 'map',
+    secondaryRooms: ['archive'],
+    title: 'Roman Dacia · principal sites',
+    description:
+      "Legionary fortresses, road stations and mining centres of the province. Every point is the corpus's own reference location for that place, carrying the corpus's provenance: none is an excavated centroid.",
+    kind: 'vector',
+    format: 'geojson',
+    url: '/geo/dacia-roman-sites.geojson',
+    yearFrom: 106,
+    yearTo: 271,
+    source: 'Terra Chartarum (compiled) - Roman Dacia baseline, KAN-341',
+    license: 'CC BY 4.0',
+    attribution:
+      'Terra Chartarum; positions from the Corpus Nominum Daciae; identifications after the Barrington Atlas and TIR L-34/L-35',
+    documentationLinks: [
+      {
+        label: 'Shared GIS layers',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/dacia/shared-gis-layers.md',
+      },
+    ],
+    essaySlugs: ['dacia'],
+    geometry: 'circle',
+    color: '#c08a3e',
+    perFeatureTime: true,
+    facets: ['feature_type', 'confidence', 'geometry_provenance', 'region', 'review_status'],
+    graduate: {
+      field: 'confidence',
+      radius: { direct: 7, high: 6.5, medium: 5.5, low: 4.5, editorial_reconstruction: 4 },
+      fallback: 4,
+    },
+    defaultOn: false,
+  },
+  {
+    id: 'dacia-roman-network',
+    room: 'road',
+    secondaryRooms: ['border', 'map'],
+    title: 'Roman Dacia · roads and frontier corridors',
+    description:
+      'The province drawn as a network: roads are lines through attested stations, and the limes are corridors this project drew. Nothing here is digitised from a survey, and the dashes say which is which.',
+    kind: 'vector',
+    format: 'geojson',
+    url: '/geo/dacia-roman-network.geojson',
+    yearFrom: 106,
+    yearTo: 271,
+    source: 'Terra Chartarum (compiled) - Roman Dacia baseline, KAN-341',
+    license: 'CC BY 4.0',
+    attribution:
+      'Terra Chartarum; roads joined from corpus stations, frontier corridors drawn editorially',
+    documentationLinks: [
+      {
+        label: 'Shared GIS layers',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/dacia/shared-gis-layers.md',
+      },
+    ],
+    essaySlugs: ['dacia'],
+    geometry: 'line',
+    color: '#c08a3e',
+    perFeatureTime: true,
+    facets: ['feature_type', 'confidence', 'geometry_provenance', 'review_status'],
+    dash: {
+      field: 'feature_type',
+      patterns: { road: [], limes: [3, 2] },
+    },
+    width: {
+      field: 'feature_type',
+      widths: { road: 1.8, limes: 2.4 },
+      fallback: 1.2,
+    },
+    defaultOn: false,
+  },
+  {
+    id: 'dacia-principalities',
+    room: 'border',
+    secondaryRooms: ['map'],
+    title: 'Principalities and provinces, 1526-1859',
+    description:
+      'Wallachia, Moldavia and Transylvania as dated phases rather than as one timeless outline, so that Habsburg Oltenia, Bukovina and Russian Bessarabia appear when they existed and not before. The rings are editorial envelopes, not delimitations.',
+    kind: 'vector',
+    format: 'geojson',
+    url: '/geo/dacia-principalities.geojson',
+    yearFrom: 1526,
+    yearTo: 1859,
+    source: 'Terra Chartarum (compiled) - principality phases 1526-1859, KAN-342',
+    license: 'CC BY 4.0',
+    attribution: 'Terra Chartarum; territorial phases after Hertslet, The Map of Europe by Treaty',
+    documentationLinks: [
+      {
+        label: 'Shared GIS layers',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/dacia/shared-gis-layers.md',
+      },
+    ],
+    essaySlugs: ['dacia'],
+    geometry: 'fill',
+    color: '#7b6ba8',
+    perFeatureTime: true,
+    facets: ['polity_id', 'sovereignty', 'suzerain', 'confidence', 'review_status'],
+    defaultOn: false,
+  },
+  {
+    id: 'dacia-josephinian-sheets',
+    room: 'archive',
+    secondaryRooms: ['map'],
+    title: 'Josephinian survey · sheet index',
+    description:
+      'Where the First Military Survey of Transylvania, 1769-1773, covers the corpus. Each footprint links to the repository that holds the sheet; no scan is served from here, and the footprints are reconstructed rather than taken from the archive index.',
+    kind: 'vector',
+    format: 'geojson',
+    url: '/geo/dacia-josephinian-sheets.geojson',
+    yearFrom: 1769,
+    yearTo: 1773,
+    source: 'Terra Chartarum (compiled) - Josephinian sheet index, KAN-343',
+    license: 'CC BY 4.0',
+    attribution: 'Terra Chartarum; sheets held by the Kriegsarchiv, Vienna; no scan redistributed',
+    documentationLinks: [
+      {
+        label: 'Shared GIS layers',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/dacia/shared-gis-layers.md',
+      },
+    ],
+    essaySlugs: ['dacia'],
+    geometry: 'fill',
+    color: '#4f7f8b',
+    perFeatureTime: true,
+    facets: ['confidence', 'footprint_provenance', 'review_status'],
+    defaultOn: false,
+  },
 ];
 
 export const GEO_LAYERS: GeoLayer[] = RAW.map((l) => GeoLayerSchema.parse(l));

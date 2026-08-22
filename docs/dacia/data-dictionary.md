@@ -296,6 +296,28 @@ guessed position.
 `verification-debt.csv` carry the Definition of Done; see
 [`definition-of-done.md`](./definition-of-done.md).
 
+## `gis/` shared layers (KAN-341, KAN-342, KAN-343)
+
+Three packages that compile to four Atlas layers: `roman-dacia`,
+`principalities` and `josephinian-sheets`. Attributes live in CSV and drawn
+geometry in a sibling GeoJSON, joined by id.
+
+The column that carries the argument is `geometry_provenance` (and
+`footprint_provenance` on a sheet). Nothing in this family is digitised from a
+source sheet, so the validator refuses any row claiming `source_geometry` or
+`georeferenced_source`, and each drawn GeoJSON must carry `surveyedGeometry:
+false` with a recorded justification. A Roman site authors no coordinates at all
+
+- it names a `place_id` and inherits the corpus's own location and provenance -
+  and a road authors none either, being an ordered list of those same places.
+
+A principality phase must begin in the year of the instrument that opened it,
+and two phases of one polity may not overlap. A Josephinian sheet's
+`covers_place_ids` is recomputed from its footprint at build time rather than
+trusted, may not redistribute a scan, and may keep `archive_sheet_id: pending`
+only while it is still unreviewed. See
+[`shared-gis-layers.md`](./shared-gis-layers.md).
+
 ## Research source ledgers (KAN-348, KAN-351)
 
 `reference/hiatus-witness-families.csv` is one row per candidate evidence
