@@ -80,6 +80,10 @@
     "public/geo/dacia-attestations.geojson": {
       "bytes": 292,
       "sha256": "2aa1fa13a8681b3c13104fc2649b49112dd2c4f77cc09920da6092223e722980"
+    },
+    "src/data/dacia/generated/trench-a.json": {
+      "bytes": 7728,
+      "sha256": "bc016628185af0c66a5429da88e7e3fd969fa3ccb18e863830503e7a9de4fcca"
     }
   },
   "publicRecords": 0,

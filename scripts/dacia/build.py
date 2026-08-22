@@ -32,6 +32,7 @@ REPO = Path(__file__).resolve().parents[2]
 DATA = REPO / "data" / "dacia"
 RELEASE_DIR = DATA / "release" / "cnd-0.1"
 GEO_DIR = REPO / "public" / "geo"
+GENERATED_DIR = REPO / "src" / "data" / "dacia" / "generated"
 
 SCHEMA_VERSION = 1
 RELEASE_VERSION = "cnd-0.1"
@@ -45,6 +46,17 @@ PUBLIC_STATES = {"approved", "published"}
 OPEN_ENDED = 9999
 
 TABLES = ["places", "sources", "attestations", "transcriptions", "name-uses", "name-use-edges"]
+INVENTORY = DATA / "pilot" / "trench-a-inventory.csv"
+
+# Silences keep their point on the map, so the essay counts them separately
+# from readings rather than reporting one undifferentiated total.
+SILENT_CLASSES = {
+    "extra_muros",
+    "source_silent",
+    "not_applicable",
+    "survival_unknown",
+    "mapped_unlabelled",
+}
 KEY_COLUMN = {
     "places": "place_id",
     "sources": "source_id",
@@ -226,6 +238,102 @@ def feature_collection(features: list[dict], tier: str) -> dict:
     }
 
 
+def read_inventory() -> list[dict[str, str]]:
+    with INVENTORY.open(encoding="utf-8", newline="") as handle:
+        return [{k: (v or "").strip() for k, v in row.items()} for row in csv.DictReader(handle)]
+
+
+def trench_a_bridge(tables: dict[str, list[dict[str, str]]]) -> dict:
+    """The Trench A exhibition's own index into the corpus it migrated to (KAN-339).
+
+    Terra Sigillata is a native essay whose stelae and test pits were the corpus
+    before there was one. Rather than let the essay hard-code CND identifiers -
+    which would be a second copy of the migration, drifting from the first - the
+    bridge is compiled here from the inventory that recorded the migration, and
+    the essay reads only this file.
+
+    Rhetorical strata are carried too. A reader looking for the thirteenth stela
+    should find it named as local and non-canonical, not silently missing.
+    """
+    by_source = {row["source_id"]: row for row in tables["sources"]}
+    by_place = {row["place_id"]: row for row in tables["places"]}
+    attestations = tables["attestations"]
+
+    stelae, pits, local = [], [], []
+    for row in read_inventory():
+        ref = row["trench_a_ref"]
+        if row["disposition"] == "preserve_local":
+            local.append({
+                "ref": ref,
+                "label": row["label"],
+                "reason": row["note"],
+            })
+            continue
+        if row["datum_kind"] == "source" and ref.startswith("STONES[") and row["target_id"]:
+            source = by_source.get(row["target_id"])
+            if source is None:
+                continue
+            rows = [a for a in attestations if a["source_id"] == source["source_id"]]
+            stelae.append({
+                "stela": ref[len("STONES["):-1],
+                "sourceId": source["source_id"],
+                "shortTitle": source["short_title"],
+                "title": source["title"],
+                "sourceFamily": source["source_family"],
+                "dateLabel": source["date_label"],
+                "repository": source["repository"],
+                "reviewState": source["review_state"],
+                "attestations": len(rows),
+                "silences": sum(1 for a in rows if a["attestation_class"] in SILENT_CLASSES),
+            })
+        elif row["datum_kind"] == "attestation_set" and ref.startswith("PITS["):
+            place_ids = [p for p in row["target_id"].split("|") if p]
+            rows = [a for a in attestations if a["place_id"] in place_ids]
+            pits.append({
+                "pit": ref[len("PITS["):ref.index("]")],
+                "places": [
+                    {
+                        "placeId": place_id,
+                        "referenceName": by_place[place_id]["reference_name"],
+                        "placeType": by_place[place_id]["place_type"],
+                        "region": by_place[place_id]["region"],
+                        "locationStatus": by_place[place_id]["location_status"],
+                        # Carried so the site's own toponym concordance can be
+                        # checked against the corpus rather than trusted: the
+                        # conflation KAN-339 retired was two referents sharing
+                        # one pin, and only a coordinate comparison catches that.
+                        "lon": coordinate(by_place[place_id]["ref_lon"])
+                        if by_place[place_id]["ref_lon"]
+                        else None,
+                        "lat": coordinate(by_place[place_id]["ref_lat"])
+                        if by_place[place_id]["ref_lat"]
+                        else None,
+                    }
+                    for place_id in place_ids
+                    if place_id in by_place
+                ],
+                "attestations": len(rows),
+                "silences": sum(1 for a in rows if a["attestation_class"] in SILENT_CLASSES),
+                "cells": int(row["cell_count"]) if row["cell_count"].isdigit() else 0,
+                "localCells": int(row["local_cells"]) if row["local_cells"].isdigit() else 0,
+                # The feature the Atlas opens on: the pit's earliest record, which
+                # is stable because attestation ids are assigned in one order.
+                "feature": min((a["attestation_id"] for a in rows), default=""),
+            })
+
+    return {
+        "schemaVersion": SCHEMA_VERSION,
+        "generatedBy": "scripts/dacia/build.py",
+        "release": RELEASE_VERSION,
+        "kind": RELEASE_KIND,
+        "publicLayer": "dacia-attestations",
+        "researchLayer": "dacia-attestations-research",
+        "stelae": sorted(stelae, key=lambda s: s["stela"]),
+        "pits": sorted(pits, key=lambda p: p["pit"]),
+        "local": sorted(local, key=lambda l: l["ref"]),
+    }
+
+
 def build_outputs() -> dict[Path, bytes]:
     tables = {name: read_table(name) for name in TABLES}
     fieldnames = {
@@ -257,6 +365,7 @@ def build_outputs() -> dict[Path, bytes]:
     outputs[GEO_DIR / "dacia-attestations-research.geojson"] = canonical_json(
         feature_collection(research, "research")
     )
+    outputs[GENERATED_DIR / "trench-a.json"] = canonical_json(trench_a_bridge(tables))
     return outputs
 
 

@@ -1,0 +1,273 @@
+{
+  "generatedBy": "scripts/dacia/build.py",
+  "kind": "pilot_research_release",
+  "local": [
+    {
+      "label": "Museum hall grouping",
+      "reason": "Exhibition structure.",
+      "ref": "HALLS"
+    },
+    {
+      "label": "Stratum depths",
+      "reason": "One year to one millimetre; a rhetorical scale, not a measurement.",
+      "ref": "STONES[].depth"
+    },
+    {
+      "label": "Six Readings scores",
+      "reason": "Epigraphic readings offered to be argued with; not corpus evidence.",
+      "ref": "STONES[].reads"
+    },
+    {
+      "label": "Five Seals scores",
+      "reason": "Interpretive scoring by the trench's own instrument; not corpus evidence.",
+      "ref": "STONES[].seals"
+    },
+    {
+      "label": "Authored SVG vignettes",
+      "reason": "Authored reconstructions rather than reproductions; why the rights gate passes.",
+      "ref": "STONES[].vig"
+    },
+    {
+      "label": "The Present Survey 2026",
+      "reason": "A rhetorical stratum standing for continuous digital feeds, not a discrete witness.",
+      "ref": "STONES[satellite]"
+    }
+  ],
+  "pits": [
+    {
+      "attestations": 12,
+      "cells": 13,
+      "feature": "att-0012",
+      "localCells": 1,
+      "pit": "apulum",
+      "places": [
+        {
+          "lat": 46.07,
+          "locationStatus": "located",
+          "lon": 23.57,
+          "placeId": "plc-apulum",
+          "placeType": "settlement",
+          "referenceName": "Apulum",
+          "region": "transylvania"
+        }
+      ],
+      "silences": 6
+    },
+    {
+      "attestations": 12,
+      "cells": 13,
+      "feature": "att-0035",
+      "localCells": 1,
+      "pit": "drobeta",
+      "places": [
+        {
+          "lat": 44.63,
+          "locationStatus": "located",
+          "lon": 22.66,
+          "placeId": "plc-drobeta",
+          "placeType": "crossing",
+          "referenceName": "Drobeta",
+          "region": "oltenia"
+        }
+      ],
+      "silences": 6
+    },
+    {
+      "attestations": 13,
+      "cells": 13,
+      "feature": "att-0023",
+      "localCells": 1,
+      "pit": "napoca",
+      "places": [
+        {
+          "lat": 46.77,
+          "locationStatus": "located",
+          "lon": 23.6,
+          "placeId": "plc-napoca",
+          "placeType": "settlement",
+          "referenceName": "Napoca",
+          "region": "transylvania"
+        }
+      ],
+      "silences": 6
+    },
+    {
+      "attestations": 12,
+      "cells": 13,
+      "feature": "att-0001",
+      "localCells": 1,
+      "pit": "sarmizegetusa",
+      "places": [
+        {
+          "lat": 45.62,
+          "locationStatus": "located",
+          "lon": 23.31,
+          "placeId": "plc-sarmizegetusa-regia",
+          "placeType": "archaeological_site",
+          "referenceName": "Sarmizegetusa Regia",
+          "region": "transylvania"
+        },
+        {
+          "lat": 45.51,
+          "locationStatus": "located",
+          "lon": 22.78,
+          "placeId": "plc-ulpia-traiana-sarmizegetusa",
+          "placeType": "archaeological_site",
+          "referenceName": "Colonia Ulpia Traiana Sarmizegetusa",
+          "region": "transylvania"
+        }
+      ],
+      "silences": 7
+    }
+  ],
+  "publicLayer": "dacia-attestations",
+  "release": "cnd-0.1",
+  "researchLayer": "dacia-attestations-research",
+  "schemaVersion": 1,
+  "stelae": [
+    {
+      "attestations": 4,
+      "dateLabel": "1700",
+      "repository": "BnF Paris",
+      "reviewState": "normalized",
+      "shortTitle": "Cantacuzino",
+      "silences": 3,
+      "sourceFamily": "regional_print",
+      "sourceId": "src-cantacuzino-wallachia",
+      "stela": "cantacuzino",
+      "title": "Map of Wallachia"
+    },
+    {
+      "attestations": 4,
+      "dateLabel": "1716",
+      "repository": "Widely reproduced",
+      "reviewState": "normalized",
+      "shortTitle": "Cantemir",
+      "silences": 4,
+      "sourceFamily": "regional_print",
+      "sourceId": "src-cantemir-moldavia",
+      "stela": "cantemir",
+      "title": "Descriptio Moldaviae - map"
+    },
+    {
+      "attestations": 4,
+      "dateLabel": "c. A.D. 1300",
+      "repository": "Hereford Cathedral",
+      "reviewState": "normalized",
+      "shortTitle": "Herefordia",
+      "silences": 4,
+      "sourceFamily": "mappa_mundi",
+      "sourceId": "src-hereford-mappa",
+      "stela": "hereford",
+      "title": "Hereford Mappa Mundi"
+    },
+    {
+      "attestations": 4,
+      "dateLabel": "1532",
+      "repository": "Repository unconfirmed - recorded as likely Budapest",
+      "reviewState": "normalized",
+      "shortTitle": "Honterus",
+      "silences": 2,
+      "sourceFamily": "regional_print",
+      "sourceId": "src-honterus-chorographia",
+      "stela": "honterus",
+      "title": "Chorographia Transylvaniae"
+    },
+    {
+      "attestations": 5,
+      "dateLabel": "1769–1773",
+      "repository": "Kriegsarchiv Vienna",
+      "reviewState": "normalized",
+      "shortTitle": "Iosephina",
+      "silences": 1,
+      "sourceFamily": "military_survey",
+      "sourceId": "src-iosephina-survey",
+      "stela": "josephine",
+      "title": "Josephinische Landesaufnahme"
+    },
+    {
+      "attestations": 4,
+      "dateLabel": "1595",
+      "repository": "Widely held",
+      "reviewState": "normalized",
+      "shortTitle": "Ortelius",
+      "silences": 0,
+      "sourceFamily": "antiquarian_reconstruction",
+      "sourceId": "src-ortelius-parergon",
+      "stela": "ortelius",
+      "title": "Dacia - Parergon"
+    },
+    {
+      "attestations": 4,
+      "dateLabel": "content c. A.D. 350",
+      "repository": "ÖNB Vienna Cod. 324",
+      "reviewState": "normalized",
+      "shortTitle": "Peutingeriana",
+      "silences": 0,
+      "sourceFamily": "itinerary",
+      "sourceId": "src-tabula-peutingeriana",
+      "stela": "peutinger",
+      "title": "Tabula Peutingeriana segm. VII–VIII"
+    },
+    {
+      "attestations": 4,
+      "dateLabel": "c. A.D. 150",
+      "repository": "Bologna 1477 editio princeps",
+      "reviewState": "normalized",
+      "shortTitle": "Ptolemaeus",
+      "silences": 1,
+      "sourceFamily": "coordinate_catalogue",
+      "sourceId": "src-ptolemy-geographia",
+      "stela": "ptolemy",
+      "title": "Geographia III.8 - Dacia"
+    },
+    {
+      "attestations": 4,
+      "dateLabel": "1835",
+      "repository": "Staff archives and major collections",
+      "reviewState": "normalized",
+      "shortTitle": "Russia 1835",
+      "silences": 3,
+      "sourceFamily": "military_survey",
+      "sourceId": "src-russian-staff-1835",
+      "stela": "russia",
+      "title": "Russian General Staff map"
+    },
+    {
+      "attestations": 4,
+      "dateLabel": "1916-1959",
+      "repository": "Military archives; the series is georeferenced sheet by sheet by geo-spatial.org",
+      "reviewState": "normalized",
+      "shortTitle": "Secret Century",
+      "silences": 0,
+      "sourceFamily": "military_survey",
+      "sourceId": "src-secret-century",
+      "stela": "secret",
+      "title": "Planurile directoare de tragere and their classified successors"
+    },
+    {
+      "attestations": 4,
+      "dateLabel": "1864",
+      "repository": "National collections; widely reproduced",
+      "reviewState": "normalized",
+      "shortTitle": "Szathmári",
+      "silences": 3,
+      "sourceFamily": "national_survey",
+      "sourceId": "src-szathmari-charta",
+      "stela": "szathmari",
+      "title": "Charta României Meridionale"
+    },
+    {
+      "attestations": 4,
+      "dateLabel": "1311",
+      "repository": "Florence",
+      "reviewState": "normalized",
+      "shortTitle": "Vesconte",
+      "silences": 4,
+      "sourceFamily": "portolan",
+      "sourceId": "src-vesconte-portolan",
+      "stela": "vesconte",
+      "title": "Portolan chart"
+    }
+  ]
+}

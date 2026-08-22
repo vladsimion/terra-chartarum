@@ -947,6 +947,16 @@ def validate_pilot(terms, places, sources, errors: list[str]) -> None:
             if row["datum_kind"] == "attestation_set":
                 if not table:
                     errors.append(f"{label}: a completed migration must name its target table")
+                # The set's target is the places its cells attest, named as a
+                # pipe list so the Trench A -> CND bridge is a row rather than
+                # something a consumer infers from capture strings (KAN-339).
+                if not target:
+                    errors.append(f"{label}: a completed set must name the places it attests")
+                for place_id in _pipe_set(target):
+                    if place_id not in places:
+                        errors.append(f"{label}: place '{place_id}' does not resolve")
+                    elif place_id not in pilot_ids:
+                        errors.append(f"{label}: place '{place_id}' is absent from the frozen pilot")
             elif not target:
                 errors.append(f"{label}: a completed migration must name its target")
             elif known is not None and target not in known:

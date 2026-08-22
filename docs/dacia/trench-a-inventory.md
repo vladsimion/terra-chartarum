@@ -62,10 +62,15 @@ and the Wallachian and portolan silences belong to
 `plc-ulpia-traiana-sarmizegetusa`. This is the case that motivates the rule
 that a place record is one referent and never one name.
 
-**The toponym concordance inherits the same conflation.** The
-`sarmizegetusa` entry in `src/lib/toponyms.ts` carries Regia's coordinates while
+**The toponym concordance inherited the same conflation.** The
+`sarmizegetusa` entry in `src/lib/toponyms.ts` carried Regia's coordinates while
 listing both `Sarmizegetusa Regia` and `Ulpia Traiana Sarmizegetusa` as ancient
-names of one place. It is marked `retire`, superseded by the two CND records.
+names of one place - which put the colonia's pin on the wrong mountain. KAN-339
+retired it for two entries, `sarmizegetusa-regia` and
+`ulpia-traiana-sarmizegetusa`, each carrying a `cndPlaceId` back to its corpus
+record. That identifier is deliberately not an authority match: it is the
+project citing its own corpus, and the Linked Places export must not dress that
+up as external reconciliation.
 The `napoca` entry is sound and is marked `link` - it stays as the Atlas overlay
 source and gains a corpus reference.
 
@@ -136,3 +141,38 @@ freeze fails the gate until a new version and hash are recorded.
 This is what "frozen before bulk transcription begins" has to mean in practice:
 not that the list can never change, but that changing it is an event with a
 version number rather than a diff nobody notices.
+
+## Reading the corpus back (KAN-339)
+
+Terra Sigillata is a native essay, and its stones and pits were the corpus
+before there was one. Now that they have migrated, the essay reads them back
+rather than restating them: `scripts/dacia/build.py` compiles
+[`src/data/dacia/generated/trench-a.json`](../../src/data/dacia/generated/trench-a.json)
+from the migration inventory, and `<CorpusRef>` renders one line per stone and
+per pit from it.
+
+Nothing in the essay names a CND identifier by hand. That is the point: a second
+hand-maintained copy of the migration would drift from the first, and the
+drift would be invisible - the essay would go on citing a record that had been
+renamed or a count that had changed. Adding an attestation now changes what the
+essay says about that pit on the next `make dacia`, and a stone whose source has
+not migrated renders nothing rather than a stale claim.
+
+Three details are decisions rather than defaults:
+
+- **The links point at the research tier.** CND 0.1 is a pilot and its public
+  layer is empty by design, so a link to the reviewed layer would open an empty
+  map. The essay links where the records actually are, to the layer that says on
+  its face that they are not yet evidence.
+- **Silences are counted as records.** "12 records, 6 of them silences" is the
+  honest tally for a pit whose argument is largely about what the sheets decline
+  to name; reporting six would describe a different corpus.
+- **The bridge carries the local data too.** A reader looking for the thirteenth
+  stela finds it named as local and non-canonical, with its reason, rather than
+  finding it silently absent.
+
+The pit-to-place link is a row, not an inference: each attestation set names the
+places it attests in the inventory's `target_id`, and the validator resolves
+them against the place authority and the frozen pilot. Deriving it from
+transcription capture strings would have worked until the first silence, which
+has no transcription to derive from.

@@ -110,3 +110,41 @@ test.describe('atlas: corpus attestation facets', () => {
     expect(results.violations).toEqual([]);
   });
 });
+
+// Trench A -> corpus links (KAN-339). Terra Sigillata's stones and test pits
+// became CND records; what needs a browser is that the essay's references to
+// them are live links into the Atlas rather than decoration, and that following
+// one arrives with the corpus layer already on.
+test.describe('Terra Sigillata corpus references', () => {
+  test('every migrated stone and pit carries a corpus reference', async ({ page }) => {
+    await page.goto('/essays/dacia/');
+
+    // Twelve stelae migrated; the thirteenth is rhetorical and stays local.
+    // Four test pits. A count that drifts means the bridge and the essay have
+    // stopped agreeing about what migrated.
+    await expect(page.locator('.corpus-ref')).toHaveCount(16);
+    await expect(page.locator('.corpus-ref', { hasText: 'src-secret-century' })).toHaveCount(1);
+    await expect(page.locator('.corpus-ref', { hasText: 'plc-napoca' })).toHaveCount(1);
+
+    // The pit that conflated two places names both of them.
+    const split = page.locator('.corpus-ref', { hasText: 'plc-sarmizegetusa-regia' });
+    await expect(split).toContainText('plc-ulpia-traiana-sarmizegetusa');
+  });
+
+  test('a pit reference opens the Atlas with the corpus layer already on', async ({ page }) => {
+    await page.goto('/essays/dacia/');
+
+    const link = page
+      .locator('.corpus-ref', { hasText: 'plc-napoca' })
+      .getByRole('link', { name: /Atlas/ });
+    await expect(link).toHaveAttribute('href', new RegExp(`layers=${RESEARCH_LAYER}`));
+    await expect(link).toHaveAttribute('href', /feature=att-/);
+
+    await link.click();
+    await expect(page).toHaveURL(/\/atlas\?/);
+    // The research tier, not the public one: CND 0.1 is a pilot and the public
+    // layer is empty by design, so linking there would open an empty map.
+    await expect(page.locator(`input[data-layer="${RESEARCH_LAYER}"]`)).toBeChecked();
+    await expect(page.locator(`input[data-layer="dacia-attestations"]`)).not.toBeChecked();
+  });
+});

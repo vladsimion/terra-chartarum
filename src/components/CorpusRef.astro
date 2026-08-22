@@ -1,0 +1,99 @@
+---
+// Corpus reference (KAN-339).
+//
+// The line that ties a Terra Sigillata stone or test pit to the record it
+// became in the Corpus Nominum Daciae. Everything shown is read from the
+// generated Trench A bridge (lib/trench-a.ts), so counts move with the corpus
+// and a stone whose source has not migrated renders nothing at all rather than
+// an assertion nobody maintains.
+//
+// It is prose furniture, not an instrument: no script, no state, nothing that
+// can interfere with the essay's IntersectionObserver work.
+import {
+  CND_RELEASE,
+  atlasUrl,
+  getTrenchAPit,
+  getTrenchAStela,
+  type TrenchAPit,
+  type TrenchAStela,
+} from '../lib/trench-a';
+
+interface Props {
+  /** Exhibition id of the stone, e.g. `ptolemy`. */
+  stela?: string;
+  /** Exhibition id of the test pit, e.g. `napoca`. */
+  pit?: string;
+}
+
+const { stela, pit } = Astro.props;
+const stone: TrenchAStela | undefined = stela ? getTrenchAStela(stela) : undefined;
+const bore: TrenchAPit | undefined = pit ? getTrenchAPit(pit) : undefined;
+
+/** "11 records, 6 of them silences" - a silence is a record here, and says so. */
+function tally(total: number, silences: number): string {
+  const records = `${total} record${total === 1 ? '' : 's'}`;
+  if (silences === 0) return records;
+  return `${records}, ${silences} of them ${silences === 1 ? 'a silence' : 'silences'}`;
+}
+---
+
+{
+  stone && (
+    <p class="corpus-ref">
+      <span class="corpus-ref-label">Corpus</span>
+      <span>
+        <code>{stone.sourceId}</code> in {CND_RELEASE} · {tally(stone.attestations, stone.silences)}
+        · <a href={atlasUrl()}>on the Atlas</a>
+      </span>
+    </p>
+  )
+}
+
+{
+  bore && (
+    <p class="corpus-ref">
+      <span class="corpus-ref-label">Corpus</span>
+      <span>
+        {bore.places.map((place, index) => (
+          <>
+            {index > 0 && ' and '}
+            <code>{place.placeId}</code>
+          </>
+        ))}{' '}
+        in {CND_RELEASE} · {tally(bore.attestations, bore.silences)} ·{' '}
+        <a href={atlasUrl(bore.feature)}>open this pit on the Atlas</a>
+      </span>
+    </p>
+  )
+}
+
+<style>
+  /* Set as a marginal note rather than a call to action: this is where the
+     evidence went, offered to the reader who wants to check it. */
+  .corpus-ref {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+    align-items: baseline;
+    margin: 0.75rem 0 1.25rem;
+    padding: 0.5rem 0 0;
+    border-top: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    opacity: 0.82;
+  }
+
+  .corpus-ref-label {
+    flex: none;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.75;
+  }
+
+  .corpus-ref code {
+    font-size: 0.85em;
+    word-break: break-word;
+  }
+</style>
