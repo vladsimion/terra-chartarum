@@ -20,17 +20,35 @@ stays where it is.
 
 The exhibition turns out to carry a source authority already: each of the
 thirteen stelae records creator, date, witness, repository and survival inline.
-Ten migrate directly into `sources.csv`. Szathmári and the Secret Century are
-recorded as `planned` - the Secret Century needs a series record with member
-witnesses rather than a single sheet. The thirteenth, "The Present Survey",
-stays local: it is a rhetorical stratum standing for continuous digital feeds,
-not a discrete witness.
+Twelve are now in `sources.csv`. The thirteenth, "The Present Survey", stays
+local: it is a rhetorical stratum standing for continuous digital feeds, not a
+discrete witness.
+
+The Secret Century was the last of the twelve to migrate (KAN-338), and it
+migrated as **one series record**, not as a sheet. `planurile directoare de
+tragere` is some 2,118 sheets at 1:20,000 continued under two later projections;
+the dictionary already allows a row per witness _or series_, and the sheet a
+reading came from belongs in the attestation's `locator`, where `locator_type:
+sheet` says which kind of locator is owed. Modelling the series as a source and
+its sheets as locators keeps one scope statement - which is what makes a silence
+readable - instead of scattering it across two thousand rows nobody will write.
 
 The four Sondaje test pits hold 52 name cells between them, thirteen per pit -
 one per stratum. These are attestation-shaped already: each cell is a place, a
-source, a reading or a silence, a language set and an editorial note. They
-migrate as `partial`, since twenty representative cells are seeded now and the
-rest transcribe under KAN-335.
+source, a reading or a silence, a language set and an editorial note. All four
+sets are now `done`: twelve cells each migrated, and the thirteenth declared
+local.
+
+### Cells that never migrate
+
+Stratum 0 of every pit is the Present Survey, and it is not a witness. Counting
+it as outstanding work would leave all four sets permanently `partial` and hide
+the real remainder, so the inventory carries a `local_cells` column and a set is
+finished when every cell is either migrated or declared local. The validator
+enforces the arithmetic - `migrated_cells + local_cells == cell_count` for
+`done` - and refuses a local cell that gives no reason, which is what keeps the
+column from becoming a way to close a migration by declaring the awkward cells
+out of scope.
 
 ### What the inventory found
 
@@ -53,7 +71,11 @@ source and gains a corpus reference.
 
 **No locator survives anywhere.** Every stela names a repository; none names a
 page, folio or sheet. This is why Trench A's research gate is `partial` and why
-all seeded attestations sit at `locator_type: none` and `review_state: raw`.
+the seeded attestations sit at `review_state: raw` with a pending locator. The
+Secret Century rows are the one place where the _kind_ of locator is known
+without the value - a series is cited by sheet - so they carry
+`locator_type: sheet` with `locator: pending`, which is legal only while the row
+stays raw.
 
 **Nothing is reproduced.** All thirteen plates are authored SVG; the file
 contains no `<img>` tag and no third-party image URL. That is why the rights

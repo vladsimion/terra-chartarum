@@ -906,16 +906,27 @@ def validate_pilot(terms, places, sources, errors: list[str]) -> None:
                 errors.append(f"{label}: an attestation set needs cell_count and migrated_cells")
             else:
                 done, total = int(row["migrated_cells"]), int(row["cell_count"])
-                if done > total:
-                    errors.append(f"{label}: migrated_cells {done} exceeds cell_count {total}")
-                expected = "done" if done == total else "partial" if done else "planned"
+                # KAN-338: a cell that is rhetorical rather than evidential never
+                # migrates, and a set is finished once every cell is either across
+                # or declared local. Counting those cells as outstanding would
+                # leave the set permanently partial and hide the real remainder.
+                local = int(row["local_cells"]) if row["local_cells"].isdigit() else 0
+                if row["local_cells"] and not row["local_cells"].isdigit():
+                    errors.append(f"{label}: local_cells '{row['local_cells']}' is not a number")
+                if local and not row["note"]:
+                    errors.append(f"{label}: cells kept local require a recorded reason")
+                if done + local > total:
+                    errors.append(
+                        f"{label}: {done} migrated and {local} local exceed cell_count {total}"
+                    )
+                expected = "done" if done + local == total else "partial" if done else "planned"
                 if row["migration_state"] != expected:
                     errors.append(
-                        f"{label}: {done} of {total} cells migrated is '{expected}', "
-                        f"not '{row['migration_state']}'"
+                        f"{label}: {done} of {total} cells migrated ({local} local) is "
+                        f"'{expected}', not '{row['migration_state']}'"
                     )
-        elif row["migrated_cells"]:
-            errors.append(f"{label}: only an attestation set counts migrated_cells")
+        elif row["migrated_cells"] or row["local_cells"]:
+            errors.append(f"{label}: only an attestation set counts cells")
 
         if disposition != "migrate":
             if row["migration_state"]:
@@ -929,7 +940,14 @@ def validate_pilot(terms, places, sources, errors: list[str]) -> None:
         target, table = row["target_id"], row["target_table"]
         known = resolvers.get(table)
         if state == "done":
-            if not target:
+            # An attestation set migrates as counted rows in a named table rather
+            # than as one record, so its completion is the cell count above and
+            # the table it landed in; demanding a single target_id would mean
+            # picking one of its places arbitrarily (KAN-338).
+            if row["datum_kind"] == "attestation_set":
+                if not table:
+                    errors.append(f"{label}: a completed migration must name its target table")
+            elif not target:
                 errors.append(f"{label}: a completed migration must name its target")
             elif known is not None and target not in known:
                 errors.append(f"{label}: target '{target}' does not resolve in {table}")

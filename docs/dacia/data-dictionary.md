@@ -235,6 +235,14 @@ cuts both ways: a `done` target must resolve in its authority table, and a
 attestation set additionally counts `migrated_cells` against `cell_count`, and
 the state has to agree with the count rather than be asserted beside it.
 
+`local_cells` (KAN-338) counts the cells of a set that are rhetorical rather
+than evidential and so will never migrate - stratum 0 of every test pit is the
+Present Survey, which stands for continuous digital feeds and is not a witness.
+A set is `done` when `migrated_cells + local_cells == cell_count`, and a local
+cell without a recorded reason fails, so declaring a cell local is a stated
+editorial judgement rather than a way to close a migration quietly. Only an
+attestation set may count cells at all.
+
 `pilot-places.csv` is the frozen 40-place pilot; `pilot-manifest.json` records
 its version, freeze date, count and SHA-256. Editing the pilot without recording
 a new version and hash fails the gate. See

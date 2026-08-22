@@ -409,7 +409,9 @@ def test_migrating_place_must_be_in_the_pilot(dataset):
 
 def test_planned_migration_whose_target_exists_is_stale(dataset):
     def mutate(rows):
-        find(rows, "datum_id", "inv-src-secret")["target_id"] = "src-ptolemy-geographia"
+        row = find(rows, "datum_id", "inv-src-secret")
+        row["migration_state"] = "planned"
+        row["target_id"] = "src-ptolemy-geographia"
 
     edit(dataset, "inventory", mutate)
     refuses("already exists; mark the migration done")
@@ -600,11 +602,49 @@ def test_transcription_must_resolve_to_an_attestation(dataset):
 
 
 def test_migrated_cell_count_must_match_its_state(dataset):
+    """A set with cells neither migrated nor declared local is not finished."""
+
     def mutate(rows):
-        find(rows, "datum_id", "inv-att-apulum")["migration_state"] = "done"
+        find(rows, "datum_id", "inv-att-apulum")["migrated_cells"] = "11"
 
     edit(dataset, "inventory", mutate)
-    refuses("cells migrated is 'partial'")
+    refuses("cells migrated (1 local) is 'partial'")
+
+
+def test_cells_kept_local_complete_a_migration(dataset):
+    """KAN-338: the Present Survey stratum is rhetorical and never migrates, so a
+    set is finished once every cell is either across or declared local."""
+    assert validate_inputs() == []
+
+    def mutate(rows):
+        find(rows, "datum_id", "inv-att-apulum")["local_cells"] = ""
+
+    edit(dataset, "inventory", mutate)
+    refuses("cells migrated (0 local) is 'partial'")
+
+
+def test_local_cells_require_a_recorded_reason(dataset):
+    def mutate(rows):
+        find(rows, "datum_id", "inv-att-drobeta")["note"] = ""
+
+    edit(dataset, "inventory", mutate)
+    refuses("cells kept local require a recorded reason")
+
+
+def test_cells_cannot_be_counted_twice(dataset):
+    def mutate(rows):
+        find(rows, "datum_id", "inv-att-napoca")["local_cells"] = "2"
+
+    edit(dataset, "inventory", mutate)
+    refuses("12 migrated and 2 local exceed cell_count 13")
+
+
+def test_only_an_attestation_set_counts_cells(dataset):
+    def mutate(rows):
+        find(rows, "datum_id", "inv-src-ptolemy")["local_cells"] = "1"
+
+    edit(dataset, "inventory", mutate)
+    refuses("only an attestation set counts cells")
 
 
 def test_manifest_place_count_must_match(dataset):

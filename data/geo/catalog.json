@@ -165,7 +165,7 @@
       "geometry": ["Point"],
       "featureCount": 0,
       "yearFrom": 150,
-      "yearTo": 1864,
+      "yearTo": 1959,
       "source": "Terra Chartarum (compiled) - Corpus Nominum Daciae 0.1, KAN-337",
       "license": "CC BY 4.0",
       "attribution": "Terra Chartarum; each source carries its own rights statement"
@@ -176,9 +176,9 @@
       "format": "geojson",
       "crs": "EPSG:4326",
       "geometry": ["Point"],
-      "featureCount": 45,
+      "featureCount": 49,
       "yearFrom": 150,
-      "yearTo": 1864,
+      "yearTo": 1959,
       "source": "Terra Chartarum (compiled) - Corpus Nominum Daciae 0.1 research tier, KAN-337",
       "license": "CC BY 4.0",
       "attribution": "Terra Chartarum; each source carries its own rights statement"

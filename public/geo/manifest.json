@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "geo-7be18e9dbc78928e",
+  "release": "geo-39d2a2bf5188bdd4",
   "generatedBy": "scripts/geo-release.mjs",
   "assets": [
     {
@@ -242,7 +242,7 @@
       ],
       "featureCount": 0,
       "yearFrom": 150,
-      "yearTo": 1864,
+      "yearTo": 1959,
       "source": "Terra Chartarum (compiled) - Corpus Nominum Daciae 0.1, KAN-337",
       "license": "CC BY 4.0",
       "attribution": "Terra Chartarum; each source carries its own rights statement",
@@ -259,16 +259,16 @@
       "geometry": [
         "Point"
       ],
-      "featureCount": 45,
+      "featureCount": 49,
       "yearFrom": 150,
-      "yearTo": 1864,
+      "yearTo": 1959,
       "source": "Terra Chartarum (compiled) - Corpus Nominum Daciae 0.1 research tier, KAN-337",
       "license": "CC BY 4.0",
       "attribution": "Terra Chartarum; each source carries its own rights statement",
-      "bytes": 54935,
-      "sha256": "cf74abaa73b1e89c468919242b4117ddcd721de1309a6bbddea3079df584c863",
-      "version": "cf74abaa73b1",
-      "url": "/geo/dacia-attestations-research.geojson?v=cf74abaa73b1"
+      "bytes": 59900,
+      "sha256": "1429cd60cf29f0e2745276ea3b09b54e3d46c314bcd18056aea06b3d5ada04d4",
+      "version": "1429cd60cf29",
+      "url": "/geo/dacia-attestations-research.geojson?v=1429cd60cf29"
     }
   ]
 }

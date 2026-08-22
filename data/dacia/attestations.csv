@@ -44,3 +44,7 @@ att-0042,plc-drobeta,src-cantemir-moldavia,extra_muros,,,,,,none,pending,,,high,
 att-0043,plc-drobeta,src-iosephina-survey,extra_muros,,,,,,none,pending,,,high,raw,llm_assisted,,,,Beyond the Carpathian ring.
 att-0044,plc-drobeta,src-russian-staff-1835,exact,Turnu Severin,latn,ro,,Turnu Severin,none,pending,,,low,raw,llm_assisted,,,,The survey straddles the town's founding in 1833.
 att-0045,plc-drobeta,src-szathmari-charta,variant,Turnu-Severinu,latn,ro,,Turnu Severin,none,pending,,,medium,raw,llm_assisted,,,,A town barely thirty years old when printed.
+att-0046,plc-ulpia-traiana-sarmizegetusa,src-secret-century,variant,Sarmizegetusa,latn,ro,,Sarmizegetusa,sheet,pending,,,medium,raw,llm_assisted,,,,The classified sheets carry the colonia's village under the ancient name; Gradistea (Varhely) was formally renamed Sarmizegetusa in 1941.
+att-0047,plc-apulum,src-secret-century,alternative,Alba Iulia,latn,ro,,Alba Iulia,sheet,pending,,,medium,raw,llm_assisted,,,,"Standardised Romanian form on the artillery sheets, materially different from Apulum rather than a variant of it."
+att-0048,plc-napoca,src-secret-century,alternative,Cluj,latn,ro,,Cluj,sheet,pending,,,medium,raw,llm_assisted,,,,Plain Cluj on the classified sheets: the Roman name is not re-attached until the 1974 decree.
+att-0049,plc-drobeta,src-secret-century,alternative,Turnu Severin,latn,ro,,Turnu Severin,sheet,pending,,,medium,raw,llm_assisted,,,,"A county seat on the artillery sheets, before the 1972 hyphenation stitched the Roman name back on."
