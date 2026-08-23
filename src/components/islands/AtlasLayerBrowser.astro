@@ -1,0 +1,251 @@
+---
+/**
+ * Scalable layer browser (ATLAS-1204 / KAN-400, with KAN-403 search).
+ *
+ * Replaces the flat unbounded `Historical GIS layers` fieldset. The same
+ * canonical layer is reachable through three lenses - Themes, Collections and
+ * Rooms - and is one layer object in all three: switching lens changes what you
+ * are looking through, never what is drawn.
+ *
+ * Rows are deliberately compact. Everything a row used to carry inline - source,
+ * licence, documentation, essay links, facet controls - now lives in the
+ * inspector (KAN-402), because a catalogue row's job is discovery and
+ * activation, and a list where every row is a dossier stops being a list at
+ * around thirty entries.
+ *
+ * Map Context is rendered outside the historical taxonomy entirely. Present-day
+ * boundaries are not weak historical evidence; they are a different kind of
+ * thing, and the UI says so rather than filing them next to a treaty frontier.
+ */
+import { formatYear } from '../../lib/registry';
+import type { AtlasCatalogue, AtlasLens, CatalogueLayer } from '../../lib/atlas-catalogue';
+
+interface Props {
+  catalogue: AtlasCatalogue;
+  /** Canonical layer ID to public Handbook route, where one exists. */
+  documentationRoutes: Record<string, string>;
+}
+
+const { catalogue, documentationRoutes } = Astro.props;
+
+const byId = new Map(catalogue.layers.map((row) => [row.id, row]));
+const contextLayers = catalogue.layers.filter((row) => row.role === 'context');
+const physical = contextLayers.filter((row) => row.subcategory === 'physical-geography');
+const modern = contextLayers.filter((row) => row.subcategory !== 'physical-geography');
+
+const LENSES: { id: AtlasLens; label: string; hint: string }[] = [
+  { id: 'themes', label: 'Themes', hint: 'What kind of claim a layer makes' },
+  { id: 'collections', label: 'Collections', hint: 'Curated arguments across several layers' },
+  { id: 'rooms', label: 'Rooms', hint: 'The seven-room cosmography' },
+];
+
+// Themes exclude the context group: it is rendered separately above.
+const themeGroups = catalogue.groups.themes.filter((group) => group.layerIds.length > 0);
+const historicalThemes = themeGroups.filter((group) =>
+  group.layerIds.some((id) => byId.get(id)?.role !== 'context'),
+);
+
+const span = (row: CatalogueLayer) => `${formatYear(row.yearFrom)}-${formatYear(row.yearTo)}`;
+---
+
+<section class="alb" data-layer-browser>
+  <h3 class="alb-title">Layers</h3>
+
+  {/* Map context: physical framing and modern reference, never historical evidence. */}
+  <fieldset class="alb-context">
+    <legend>Map context</legend>
+    <p class="alb-context-note">Framing geography. These layers make no claim about the past.</p>
+    {
+      physical.length > 0 && (
+        <div class="alb-context-group">
+          <p class="alb-subhead">Physical geography</p>
+          {physical.map((row) => (
+            <label class="am-layer alb-row" data-row={row.id} data-search={row.searchText}>
+              <input type="checkbox" data-layer={row.id} checked={row.defaultOn} />
+              <span class="alb-row-title">{row.title}</span>
+            </label>
+          ))}
+        </div>
+      )
+    }
+    {
+      modern.length > 0 && (
+        <div class="alb-context-group">
+          <p class="alb-subhead">Modern reference</p>
+          <p class="alb-anachronism">
+            Present-day geometry, shown over historical material as a reading grid. It is an
+            anachronism, not evidence.
+          </p>
+          {modern.map((row) => (
+            <div class="alb-row-wrap">
+              <label class="am-layer alb-row" data-row={row.id} data-search={row.searchText}>
+                <input type="checkbox" data-layer={row.id} checked={row.defaultOn} />
+                <span class="alb-row-title">{row.title}</span>
+                <span class="alb-row-meta">{span(row)}</span>
+              </label>
+              <button
+                type="button"
+                class="alb-info"
+                data-inspect={row.id}
+                aria-label={`About ${row.title}`}
+              >
+                i
+              </button>
+            </div>
+          ))}
+        </div>
+      )
+    }
+  </fieldset>
+
+  {/* Search and year relevance (KAN-403). Neither ever changes what is drawn. */}
+  <div class="alb-find">
+    <label class="alb-search">
+      <span>Find a layer</span>
+      <input
+        type="search"
+        data-layer-search
+        placeholder="frontier, hansa, toponym..."
+        autocomplete="off"
+      />
+    </label>
+    <label class="alb-relevance">
+      <input type="checkbox" data-year-relevance />
+      <span>Only layers relevant to the selected year</span>
+    </label>
+    <p class="alb-found" data-layer-found aria-live="polite"></p>
+  </div>
+
+  <div class="alb-lenses" role="tablist" aria-label="Browse layers by">
+    {
+      LENSES.map((lens, index) => (
+        <button
+          type="button"
+          role="tab"
+          class="alb-lens"
+          data-lens={lens.id}
+          aria-selected={index === 0 ? 'true' : 'false'}
+          title={lens.hint}
+        >
+          {lens.label}
+        </button>
+      ))
+    }
+  </div>
+
+  {
+    LENSES.map((lens, lensIndex) => (
+      <div class="alb-panel" data-lens-panel={lens.id} hidden={lensIndex !== 0}>
+        {lens.id === 'collections'
+          ? catalogue.collections.map((collection) => (
+              <section class="alb-group alb-collection" data-group={collection.id}>
+                <h4>
+                  <button
+                    type="button"
+                    class="alb-group-toggle"
+                    data-group-toggle={collection.id}
+                    aria-expanded="false"
+                  >
+                    <span class="alb-group-name">{collection.title}</span>
+                    <span class="alb-group-count" data-group-count={collection.id}>
+                      {collection.availableLayerIds.length}
+                    </span>
+                  </button>
+                </h4>
+                <p class="alb-collection-summary">{collection.summary}</p>
+                <p class="alb-collection-meta">
+                  {formatYear(collection.yearFrom)}-{formatYear(collection.yearTo)}
+                  <span aria-hidden="true"> · </span>
+                  {collection.layerIds.length} layers
+                </p>
+                <button
+                  type="button"
+                  class="alb-activate"
+                  data-activate-collection={collection.id}
+                  data-defaults={collection.defaultLayerIds.join(',')}
+                >
+                  Activate defaults
+                </button>
+                <div class="alb-group-body" data-group-body={collection.id} hidden>
+                  {collection.layerIds.map((id) => {
+                    const row = byId.get(id)!;
+                    return (
+                      <div class="alb-row-wrap" data-row-wrap={row.id}>
+                        <label
+                          class="am-layer alb-row"
+                          data-row={row.id}
+                          data-search={row.searchText}
+                        >
+                          <input type="checkbox" data-layer={row.id} />
+                          <span class="alb-row-title">{row.title}</span>
+                          <span class="alb-row-meta">{span(row)}</span>
+                        </label>
+                        <button
+                          type="button"
+                          class="alb-info"
+                          data-inspect={row.id}
+                          aria-label={`About ${row.title}`}
+                        >
+                          i
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            ))
+          : (lens.id === 'themes' ? historicalThemes : catalogue.groups.rooms).map((group) => (
+              <section class="alb-group" data-group={group.id}>
+                <h4>
+                  <button
+                    type="button"
+                    class="alb-group-toggle"
+                    data-group-toggle={group.id}
+                    aria-expanded="false"
+                  >
+                    <span class="alb-group-name">{group.title}</span>
+                    <span class="alb-group-count" data-group-count={group.id}>
+                      {group.layerIds.length}
+                    </span>
+                  </button>
+                </h4>
+                <div class="alb-group-body" data-group-body={group.id} hidden>
+                  {group.layerIds.map((id) => {
+                    const row = byId.get(id)!;
+                    return (
+                      <div class="alb-row-wrap" data-row-wrap={row.id}>
+                        <label
+                          class="am-layer alb-row"
+                          data-row={row.id}
+                          data-search={row.searchText}
+                        >
+                          <input type="checkbox" data-layer={row.id} />
+                          <span class="alb-row-title">{row.title}</span>
+                          <span class="alb-row-meta">{span(row)}</span>
+                          {documentationRoutes[row.id] && (
+                            <span class="alb-row-doc" aria-hidden="true">
+                              ✓
+                            </span>
+                          )}
+                        </label>
+                        <button
+                          type="button"
+                          class="alb-info"
+                          data-inspect={row.id}
+                          aria-label={`About ${row.title}`}
+                        >
+                          i
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            ))}
+        <p class="alb-empty" data-lens-empty={lens.id} hidden>
+          No layers match. Clear the search or the year filter to see the catalogue again.
+        </p>
+      </div>
+    ))
+  }
+</section>

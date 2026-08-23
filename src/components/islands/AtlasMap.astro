@@ -20,6 +20,10 @@ import { coveragePolygons } from '../../lib/coverage';
 import { getToponyms, toponymAuthorityLinks, toponymNames } from '../../lib/toponyms';
 import { getEssays, formatYear } from '../../lib/registry';
 import { getVmnAtlasLinks } from '../../lib/vmn-atlas-links';
+import { auditCatalogueAvailability, projectCatalogue } from '../../lib/atlas-catalogue';
+import { loadHandbook } from '../../lib/handbook-content';
+import AtlasLayerBrowser from './AtlasLayerBrowser.astro';
+import AtlasActiveLayers from './AtlasActiveLayers.astro';
 
 // Only the atlas-critical projection ships to the client - rich catalogue
 // metadata (provenance, bibliography, imagery) stays server-side (KAN-66).
@@ -64,6 +68,32 @@ const layerMeta = layers.map((l) => ({
   essayLinks: l.essayLinks.filter((link) => isEssayReleased(link.slug)),
   available: existsSync(join(publicDir, l.url.replace(/^\//, ''))),
 }));
+
+// The scalable catalogue (KAN-399), and the release gate that replaces the old
+// `pending` row (KAN-404).
+//
+// Editorial lifecycle and runtime availability are separate facts. A layer whose
+// scholarship is published or under review and whose asset is absent is a
+// release defect, and the build says so by name instead of shipping a disabled
+// checkbox that quietly means "we never finished this". Planned and
+// in-preparation layers may legitimately have no binary; the projection keeps
+// them out of the live browser entirely rather than listing them as broken.
+const catalogue = projectCatalogue({
+  availableLayerIds: layerMeta.filter((l) => l.available).map((l) => l.id),
+  releasedEssaySlugs: Object.keys(essayMeta),
+  documentationRoutes: (await loadHandbook()).routes,
+});
+const availabilityDefects = auditCatalogueAvailability(catalogue);
+if (availabilityDefects.length > 0) {
+  throw new Error(
+    `Atlas release gate failed:\n  ${availabilityDefects.join('\n  ')}\n` +
+      'Compile the asset, or move the layer to lifecycle in-preparation.',
+  );
+}
+const documentationRoutes = (await loadHandbook()).routes;
+// Facets and documentation now belong to the inspector (KAN-402), so the
+// browser needs only the layers it will actually list.
+const browsable = layerMeta.filter((l) => catalogue.layers.some((row) => row.id === l.id));
 
 // Facet options (KAN-340). A layer declares which properties are filterable; the
 // values are read out of the committed GeoJSON here, at build time, so the panel
@@ -290,68 +320,94 @@ const payload = {
       <p class="am-context-meta"></p>
       <a class="am-context-link" href="/essays/" hidden>Enter the essay →</a>
       <ul class="am-context-docs" hidden></ul>
-    </aside>
-  </div>
 
-  {
-    layerMeta.length > 0 && (
-      <fieldset class="am-layers">
-        <legend>Historical GIS layers</legend>
-        <p class="am-layers-note">
-          Regime A (serverless) vector layers. Available assets render live and obey the
-          time-slider; layers awaiting a sourced dataset are marked pending.
-        </p>
-        {layerMeta.map((l) => (
-          <div class="am-layer-row">
-            <label
-              class:list={['am-layer', { 'is-pending': !l.available }]}
-              title={`${l.description} - ${l.source} (${l.license})`}
-            >
-              <input
-                type="checkbox"
-                data-layer={l.id}
-                checked={l.defaultOn && l.available}
-                disabled={!l.available}
-              />
-              <span>{l.title}</span>
-              <span class="am-layer-meta">
-                {l.format} · {formatYear(l.yearFrom)}–{formatYear(l.yearTo)}
-                {!l.available && ' · pending'}
-              </span>
-            </label>
-            {/* Reverse deep link (VMN-28): jump from a layer back to the essay it illustrates. */}
-            {l.essayLinks.length > 0 ? (
-              <p class="am-layer-essays">
-                {l.essayLinks.map((link) => (
-                  <a href={`/essays/${link.slug}/#${link.sectionId}`}>
-                    Read passage: {link.label} →
+      {
+        /* Universal layer inspector (KAN-402). Every dossier is rendered here at
+          build time and revealed on demand, so the apparatus costs nothing in
+          the client payload and is still present without JavaScript. Focusing a
+          layer never activates it. */
+      }
+      <div class="am-inspector" data-inspector>
+        {
+          browsable.map((l) => (
+            <div class="am-dossier" data-dossier-for={l.id} hidden>
+              <h4 class="am-dossier-title">{l.title}</h4>
+              <p class="am-dossier-summary">{l.description}</p>
+              <dl class="am-dossier-facts">
+                <div>
+                  <dt>Kind</dt>
+                  <dd>
+                    {l.role}
+                    {l.category && ` · ${l.category.replace(/-/g, ' ')}`}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Period</dt>
+                  <dd>
+                    {formatYear(l.yearFrom)}-{formatYear(l.yearTo)}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Source</dt>
+                  <dd>{l.source}</dd>
+                </div>
+                <div>
+                  <dt>Licence</dt>
+                  <dd>{l.license}</dd>
+                </div>
+                <div>
+                  <dt>Attribution</dt>
+                  <dd>{l.attribution}</dd>
+                </div>
+                {l.lifecycle !== 'published' && (
+                  <div>
+                    <dt>Status</dt>
+                    <dd>{l.lifecycle}</dd>
+                  </div>
+                )}
+              </dl>
+              <p class="am-dossier-links">
+                {documentationRoutes[l.id] && (
+                  <a class="am-dossier-handbook" href={documentationRoutes[l.id]}>
+                    Read the layer record →
                   </a>
+                )}
+                {l.essayLinks.map((link) => (
+                  <a href={`/essays/${link.slug}/#${link.sectionId}`}>Passage: {link.label} →</a>
                 ))}
-              </p>
-            ) : (
-              (l.essaySlugs ?? []).length > 0 && (
-                <p class="am-layer-essays">
-                  {(l.essaySlugs ?? [])
+                {l.essayLinks.length === 0 &&
+                  (l.essaySlugs ?? [])
                     .filter((slug) => essayMeta[slug])
                     .map((slug) => (
-                      <a href={`/essays/${slug}/`}>Read: {essayMeta[slug]?.title} →</a>
+                      <a href={`/essays/${slug}/`}>Essay: {essayMeta[slug]?.title} →</a>
                     ))}
-                </p>
-              )
-            )}
-            {l.documentationLinks.length > 0 && (
-              <p class="am-layer-docs">
-                {l.documentationLinks.map((doc, index) => (
-                  <>
-                    {index > 0 && <span aria-hidden="true"> · </span>}
-                    <a href={doc.href}>{doc.label}</a>
-                  </>
-                ))}
               </p>
-            )}
-            {/* Facet panel (KAN-340). Hidden until the layer is on, because a
-                filter for something you cannot see is only clutter. */}
-            {(layerFacets[l.id] ?? []).length > 0 && (
+              {l.documentationLinks.length > 0 && (
+                <details class="am-dossier-technical">
+                  <summary>Advanced and technical</summary>
+                  <ul>
+                    {l.documentationLinks.map((doc) => (
+                      <li>
+                        <a href={doc.href}>{doc.label}</a>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              )}
+            </div>
+          ))
+        }
+
+        {
+          /* Facet controls (KAN-340), relocated out of the catalogue rows. A panel
+            shows only when its layer is both active and inspected; selections
+            live in the client's facet map, so focusing another layer hides these
+            controls without resetting anything. */
+        }
+        {
+          browsable
+            .filter((l) => (layerFacets[l.id] ?? []).length > 0)
+            .map((l) => (
               <div class="am-facets" data-facets-for={l.id} hidden>
                 <div class="am-facets-head">
                   <p class="am-facets-kicker">Filter this layer</p>
@@ -378,12 +434,19 @@ const payload = {
                 ))}
                 <output class="am-facets-status" data-facets-status={l.id} aria-live="polite" />
               </div>
-            )}
-          </div>
-        ))}
-      </fieldset>
+            ))
+        }
+      </div>
+    </aside>
+  </div>
+
+  {
+    catalogue.layers.length > 0 && (
+      <AtlasLayerBrowser catalogue={catalogue} documentationRoutes={documentationRoutes} />
     )
   }
+
+  <AtlasActiveLayers />
 
   <!-- Progressive-enhancement fallback: full corpus as a grouped list. -->
   <ol class="am-list">

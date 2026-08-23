@@ -1,0 +1,30 @@
+---
+/**
+ * Active Layers panel (ATLAS-1205 / KAN-401).
+ *
+ * Discovery and composition are different tasks. Once several layers are on, a
+ * reader should not have to remember which accordion, Room or collection each
+ * one came from in order to take it off again.
+ *
+ * The panel owns no state. It renders from the canonical active-layer set and
+ * writes back through the same checkboxes the browser uses, so the browser, the
+ * panel and MapLibre cannot disagree about what is drawn.
+ *
+ * A layer that falls outside the selected year stays in the composition and is
+ * marked, never silently dropped: the year moved, the reader's intent did not.
+ */
+---
+
+<section class="aal" data-active-layers hidden>
+  <div class="aal-head">
+    <h3>
+      Active layers
+      <span class="aal-count" data-active-count>0</span>
+    </h3>
+    <button type="button" class="aal-clear" data-active-clear>Clear all</button>
+  </div>
+  <ul class="aal-list" data-active-list></ul>
+  <p class="aal-note" data-active-note hidden>
+    A layer outside the selected year keeps its place here. Move the year or remove it.
+  </p>
+</section>
