@@ -1075,6 +1075,113 @@ const RAW: unknown[] = [
     },
     defaultOn: false,
   },
+  {
+    // KAN-423. The pilot ships as two layers because the Atlas takes one render
+    // hint per layer, not because it is two datasets: both are compiled from the
+    // same projection by scripts/antarctica/build.py, and the essay reads that
+    // same projection. `in-review` is the plain fact - not one record here has
+    // been read against its source, so nothing is on by default and nothing may
+    // be cited as established.
+    id: 'antarctica-pilot-tracks',
+    role: 'historical',
+    category: 'networks-circulation',
+    subcategory: 'voyage-tracks',
+    tags: [
+      'antarctica',
+      'terra incognita',
+      'terra australis',
+      'cook',
+      'endurance',
+      'shackleton',
+      'drift',
+      'polar',
+      'southern ocean',
+      'pilot',
+      'unreviewed',
+    ],
+    sortWeight: 600,
+    lifecycle: 'in-review',
+    room: 'theatre',
+    secondaryRooms: ['map'],
+    title: 'Antarctic knowledge pilot: tracks and extents (unreviewed)',
+    description:
+      'The ANT-4 vertical slice as lines and outlines: a schematic Terra Australis envelope, a sampled Cook track, and the planned crossing and drift of Endurance. Every line declares where it came from, and three of the four are Terra Chartarum linework rather than a source geometry.',
+    kind: 'vector',
+    format: 'geojson',
+    url: '/geo/antarctica-pilot-tracks.geojson',
+    yearFrom: 1531,
+    yearTo: 1915,
+    source: 'Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-423',
+    license: 'CC BY 4.0',
+    attribution:
+      'Terra Chartarum; each source and map object carries its own rights status; no object is cleared for reproduction',
+    essaySlugs: [],
+    geometry: 'line',
+    color: '#7d93ad',
+    perFeatureTime: true,
+    facets: ['evidenceClass', 'geometryProvenance', 'confidence', 'reviewState', 'act'],
+    dash: {
+      field: 'geometryProvenance',
+      patterns: {
+        transcribed_from_coordinates: [],
+        derived_from_log: [],
+        digitised_from_map: [],
+        editorial_interpolation: [1, 2],
+        editorial_generalisation: [4, 2],
+      },
+    },
+    defaultOn: false,
+  },
+  {
+    // The dated half of the same slice. Graduated by confidence rather than by
+    // importance: a reader should be able to see at a glance that the 1820
+    // sighting and the Endurance positions are not the same kind of record.
+    id: 'antarctica-pilot-observations',
+    role: 'historical',
+    category: 'places-settlements',
+    subcategory: 'observations-and-fixes',
+    tags: [
+      'antarctica',
+      'terra incognita',
+      'observations',
+      'sightings',
+      'navigation',
+      'fixes',
+      'bellingshausen',
+      'cook',
+      'worsley',
+      'polar',
+      'pilot',
+      'unreviewed',
+    ],
+    sortWeight: 601,
+    lifecycle: 'in-review',
+    room: 'theatre',
+    secondaryRooms: ['map'],
+    title: 'Antarctic knowledge pilot: observations and fixes (unreviewed)',
+    description:
+      'Dated positions from the same pilot slice: a farthest south, a disputed sighting, and two Endurance positions. A sighting is filed as a report rather than an observation wherever what was seen is still argued over.',
+    kind: 'vector',
+    format: 'geojson',
+    url: '/geo/antarctica-pilot-observations.geojson',
+    yearFrom: 1774,
+    yearTo: 1915,
+    source: 'Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-423',
+    license: 'CC BY 4.0',
+    attribution:
+      'Terra Chartarum; positions recorded from the general literature and not yet checked against an edition',
+    essaySlugs: [],
+    geometry: 'circle',
+    color: '#c9a227',
+    perFeatureTime: true,
+    facets: ['evidenceClass', 'geometryProvenance', 'confidence', 'reviewState', 'act'],
+    graduate: {
+      field: 'confidence',
+      radius: { high: 7, medium: 6, low: 4.5, contested: 4.5, unresolved: 4 },
+      fallback: 4,
+    },
+    defaultOn: false,
+  },
 ];
 
 export const GEO_LAYERS: GeoLayer[] = RAW.map((l) => GeoLayerSchema.parse(l));

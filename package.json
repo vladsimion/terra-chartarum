@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "npm run registries:validate && npm run editorial:validate && npm run typography:validate && npm run epic:validate && npm run release:validate && npm run hanseatic:validate && npm run hanseatic:release:validate && npm run dacia:validate && npm run crusades:validate && npm run provenance:write && astro build && npm run reports:check && npm run embed:prune && npm run indexing:validate && npm run geo:interop:validate && npm run handbook:validate",
+    "build": "npm run registries:validate && npm run editorial:validate && npm run typography:validate && npm run epic:validate && npm run release:validate && npm run hanseatic:validate && npm run hanseatic:release:validate && npm run dacia:validate && npm run crusades:validate && npm run antarctica:validate && npm run provenance:write && astro build && npm run reports:check && npm run embed:prune && npm run indexing:validate && npm run geo:interop:validate && npm run handbook:validate",
     "preview": "astro preview",
     "check": "astro check",
     "lint": "eslint .",
@@ -35,6 +35,9 @@
     "dacia:test": "python3 -m pytest scripts/dacia -q",
     "crusades:validate": "python3 scripts/crusades/validate.py",
     "crusades:test": "python3 -m pytest scripts/crusades -q",
+    "antarctica:build": "make antarctica",
+    "antarctica:validate": "python3 scripts/antarctica/validate.py",
+    "antarctica:test": "python3 -m pytest scripts/antarctica -q",
     "provenance:write": "node scripts/generate-build-info.mjs",
     "production:verify": "node scripts/verify-production.mjs",
     "format": "prettier --write .",

@@ -1,0 +1,459 @@
+{
+  "expeditions": [
+    {
+      "act": "act_v",
+      "commander": "Fabian Gottlieb von Bellingshausen",
+      "displayName": "Russian Antarctic expedition",
+      "id": "ant-exp-bellingshausen",
+      "reviewState": "raw",
+      "vessels": [
+        "Vostok",
+        "Mirny"
+      ],
+      "yearFrom": 1819,
+      "yearTo": 1821
+    },
+    {
+      "act": "act_iv",
+      "commander": "James Cook",
+      "displayName": "Cook's second voyage",
+      "id": "ant-exp-cook-second",
+      "reviewState": "raw",
+      "vessels": [
+        "Resolution",
+        "Adventure"
+      ],
+      "yearFrom": 1772,
+      "yearTo": 1775
+    },
+    {
+      "act": "act_viii",
+      "commander": "Ernest Shackleton",
+      "displayName": "Imperial Trans-Antarctic Expedition",
+      "id": "ant-exp-ite",
+      "reviewState": "raw",
+      "vessels": [
+        "Endurance",
+        "Aurora"
+      ],
+      "yearFrom": 1914,
+      "yearTo": 1917
+    },
+    {
+      "act": "act_v",
+      "commander": "James Clark Ross",
+      "displayName": "Ross Antarctic expedition",
+      "id": "ant-exp-ross",
+      "reviewState": "raw",
+      "vessels": [
+        "Erebus",
+        "Terror"
+      ],
+      "yearFrom": 1839,
+      "yearTo": 1843
+    },
+    {
+      "act": "act_v",
+      "commander": "Charles Wilkes",
+      "displayName": "United States Exploring Expedition",
+      "id": "ant-exp-wilkes",
+      "reviewState": "raw",
+      "vessels": [
+        "Vincennes",
+        "Porpoise",
+        "Peacock",
+        "Flying Fish"
+      ],
+      "yearFrom": 1838,
+      "yearTo": 1842
+    }
+  ],
+  "layerIds": [
+    "antarctica-pilot-tracks",
+    "antarctica-pilot-observations"
+  ],
+  "records": [
+    {
+      "act": "act_iv",
+      "confidence": "medium",
+      "evidenceClass": "direct_observation",
+      "expeditionId": "ant-exp-cook-second",
+      "featureType": "observed_limit",
+      "geometry": {
+        "coordinates": [
+          -106.9,
+          -71.17
+        ],
+        "type": "Point"
+      },
+      "geometryProvenance": "transcribed_from_coordinates",
+      "id": "ant-ftr-cook-southern-limit",
+      "kind": "feature",
+      "laterStatus": "confirmed",
+      "notes": "The furthest south of the second voyage, commonly given as 71 degrees 10 minutes south, 106 degrees 54 minutes west. Recorded from the general literature and not yet checked against Beaglehole, which is why it stays raw.",
+      "reviewState": "raw",
+      "sourceId": "ant-src-beaglehole-journals-ii",
+      "sourceLocator": "pending",
+      "title": "Southern limit reached by Resolution, 30 January 1774",
+      "validFrom": 1774,
+      "validTo": 1774
+    },
+    {
+      "act": "act_iii",
+      "confidence": "unresolved",
+      "evidenceClass": "inherited_cartography",
+      "expeditionId": null,
+      "featureType": "cartographic_treatment",
+      "geometry": null,
+      "geometryProvenance": "not_spatial",
+      "historicName": "Terre Antartiche",
+      "id": "ant-ftr-coronelli-southern-region",
+      "kind": "feature",
+      "laterStatus": "unresolved",
+      "notes": "A non-spatial evidence record. The plate has not been seen, so the record exists to hold the question rather than to answer it, and carries no geometry precisely because inventing one would be the error Act III is about.",
+      "reviewState": "raw",
+      "sourceId": "ant-src-coronelli-epitome-1693",
+      "sourceLocator": "pending",
+      "title": "Coronelli's southern polar region, as treated in 1693",
+      "validFrom": 1688,
+      "validTo": 1701
+    },
+    {
+      "act": "act_vii",
+      "confidence": "high",
+      "evidenceClass": "scholarly_reconstruction",
+      "expeditionId": null,
+      "featureType": "synthesis_record",
+      "geometry": null,
+      "geometryProvenance": "not_spatial",
+      "id": "ant-ftr-ross-1910-synthesis",
+      "kind": "feature",
+      "laterStatus": "modified",
+      "notes": "The one pilot record whose identity is established from a catalogue record read directly, which is why it is the only row at normalized. Its later_status is modified rather than confirmed because the sheet is itself a reissue of an 1874 compilation.",
+      "reviewState": "normalized",
+      "sourceId": "ant-src-rmg-ice-chart-1910",
+      "sourceLocator": "RMG catalogue record for G288:1/2(2)",
+      "title": "Cumulative southern ice chart, 1910 issue",
+      "validFrom": 1772,
+      "validTo": 1909
+    },
+    {
+      "act": "act_i",
+      "confidence": "low",
+      "evidenceClass": "conjectured",
+      "expeditionId": null,
+      "featureType": "conjectured_landmass",
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              -180.0,
+              -60.0
+            ],
+            [
+              -90.0,
+              -60.0
+            ],
+            [
+              0.0,
+              -60.0
+            ],
+            [
+              90.0,
+              -60.0
+            ],
+            [
+              180.0,
+              -60.0
+            ],
+            [
+              180.0,
+              -90.0
+            ],
+            [
+              -180.0,
+              -90.0
+            ],
+            [
+              -180.0,
+              -60.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "geometryProvenance": "editorial_generalisation",
+      "historicName": "Terra Australis Incognita",
+      "id": "ant-ftr-terra-australis-conjectured",
+      "kind": "feature",
+      "laterStatus": "disproved",
+      "notes": "A latitude envelope standing for the region within which the conjectured continent was drawn. It is deliberately not a coastline: no map in the register has been examined, so there is nothing to digitise, and drawing a plausible outline would manufacture the very false precision the essay is about.",
+      "reviewState": "raw",
+      "sourceId": "ant-src-hiatt-terra-incognita",
+      "sourceLocator": "pending",
+      "title": "Terra Australis, schematic envelope (not a digitised coastline)",
+      "validFrom": 1531,
+      "validTo": 1775
+    },
+    {
+      "act": "act_vi",
+      "claimDate": "1840",
+      "claimant": "Charles Wilkes",
+      "confidence": "unresolved",
+      "currentScholarlyStatus": "unresolved",
+      "evidenceClass": "direct_observation",
+      "geometry": null,
+      "geometryProvenance": "not_spatial",
+      "historicName": "Wilkes Land, as charted in 1840",
+      "id": "ant-ghost-wilkes-segment",
+      "kind": "ghost",
+      "laterEvidence": "Later vessels sailed across positions charted as land.",
+      "laterStatus": "disproved",
+      "notes": "Deliberately carries no geometry. Which segment, at what position, on which sheet is unknown (ant-gap-wilkes-sheets), and drawing a line for a disproof we cannot locate would repeat the original error in our own voice. current_scholarly_status stays unresolved because much of Wilkes's coast was correct.",
+      "reviewState": "raw",
+      "sourceId": "ant-src-wilkes-narrative-1844",
+      "sourceLocator": "pending",
+      "title": "Coast charted by Wilkes and later sailed through (segment to be identified)",
+      "validFrom": 1840,
+      "validTo": 9999,
+      "whatWasReported": "Continuous southern coast observed and charted over an extended run of longitude.",
+      "whyPlausible": "A long coast seen repeatedly over many days from a squadron of ships, in conditions where distant ice and distant land are hard to tell apart."
+    },
+    {
+      "act": "act_v",
+      "confidence": "contested",
+      "datePrecision": "day",
+      "evidenceClass": "reported_not_observed",
+      "expeditionId": "ant-exp-bellingshausen",
+      "geometry": {
+        "coordinates": [
+          -2.23,
+          -69.35
+        ],
+        "type": "Point"
+      },
+      "geometryProvenance": "transcribed_from_coordinates",
+      "id": "ant-obs-1820-sighting",
+      "kind": "observation",
+      "laterStatus": "unresolved",
+      "notes": "Filed as reported_not_observed rather than direct_observation on purpose: what was seen, and whether it counts as a sighting of the mainland, is the disputed question the terminology table exists to keep open. The position is approximate and taken from the general literature.",
+      "observationKind": "sighting",
+      "observedDate": "1820-01-27",
+      "observer": "Fabian Gottlieb von Bellingshausen",
+      "reviewState": "raw",
+      "sourceId": "ant-src-debenham-bellingshausen",
+      "sourceLocator": "pending",
+      "title": "Reported sighting of an ice front, Vostok and Mirny",
+      "validFrom": 1820,
+      "validTo": 1820
+    },
+    {
+      "act": "act_iv",
+      "confidence": "medium",
+      "datePrecision": "day",
+      "evidenceClass": "instrumental_fix",
+      "expeditionId": "ant-exp-cook-second",
+      "geometry": {
+        "coordinates": [
+          -106.9,
+          -71.17
+        ],
+        "type": "Point"
+      },
+      "geometryProvenance": "transcribed_from_coordinates",
+      "id": "ant-obs-cook-farthest-south",
+      "kind": "observation",
+      "laterStatus": "confirmed",
+      "notes": "Recorded from the general literature. The figure is stable across accounts but has not been read in the edition, so it stays raw.",
+      "observationKind": "position",
+      "observedDate": "1774-01-30",
+      "observer": "James Cook",
+      "reviewState": "raw",
+      "sourceId": "ant-src-beaglehole-journals-ii",
+      "sourceLocator": "pending",
+      "title": "Farthest south, Resolution",
+      "validFrom": 1774,
+      "validTo": 1774
+    },
+    {
+      "act": "act_viii",
+      "confidence": "low",
+      "datePrecision": "day",
+      "evidenceClass": "dead_reckoning",
+      "expeditionId": "ant-exp-ite",
+      "geometry": {
+        "coordinates": [
+          -31.5,
+          -76.57
+        ],
+        "type": "Point"
+      },
+      "geometryProvenance": "editorial_interpolation",
+      "id": "ant-obs-endurance-beset",
+      "kind": "observation",
+      "laterStatus": "unresolved",
+      "notes": "Approximate, recorded from the general literature and unverified. Whether the position was fixed or reckoned is unknown until the navigational records are found.",
+      "observationKind": "position",
+      "observedDate": "1915-01-19",
+      "observer": "Frank Arthur Worsley",
+      "reviewState": "raw",
+      "sourceId": "ant-src-shackleton-south-1919",
+      "sourceLocator": "pending",
+      "title": "Endurance beset in the pack",
+      "validFrom": 1915,
+      "validTo": 1915
+    },
+    {
+      "act": "act_viii",
+      "confidence": "low",
+      "datePrecision": "day",
+      "evidenceClass": "instrumental_fix",
+      "expeditionId": "ant-exp-ite",
+      "geometry": {
+        "coordinates": [
+          -52.4417,
+          -68.6583
+        ],
+        "type": "Point"
+      },
+      "geometryProvenance": "transcribed_from_coordinates",
+      "id": "ant-obs-endurance-fix",
+      "kind": "observation",
+      "laterStatus": "unresolved",
+      "notes": "The figure usually given as 68 degrees 39 minutes 30 seconds south, 52 degrees 26 minutes 30 seconds west. It is recorded at the precision the literature reports and at low confidence, because the whole point of the Coda is that this coordinate is a calculated result with an error nobody here has yet established.",
+      "observationKind": "reported_sinking_position",
+      "observedDate": "1915-11-21",
+      "observer": "Frank Arthur Worsley",
+      "reviewState": "raw",
+      "sourceId": "ant-src-worsley-endurance-1931",
+      "sourceLocator": "pending",
+      "title": "Position recorded for the loss of Endurance",
+      "validFrom": 1915,
+      "validTo": 1915
+    },
+    {
+      "act": "act_iv",
+      "confidence": "low",
+      "dateFrom": "1773-01-17",
+      "dateTo": "1774-01-30",
+      "evidenceClass": "direct_observation",
+      "expeditionId": "ant-exp-cook-second",
+      "geometry": {
+        "coordinates": [
+          [
+            39.6,
+            -60.0
+          ],
+          [
+            0.0,
+            -66.5
+          ],
+          [
+            -60.0,
+            -68.0
+          ],
+          [
+            -106.9,
+            -71.17
+          ]
+        ],
+        "type": "LineString"
+      },
+      "geometryProvenance": "editorial_generalisation",
+      "id": "ant-trk-cook-resolution",
+      "kind": "track",
+      "notes": "Four points standing for a two-year track. It is a sample that proves the schema carries a line, not a route anyone may measure. The real track is compiled at ANT-5 from the journals.",
+      "reviewState": "raw",
+      "sourceId": "ant-src-beaglehole-journals-ii",
+      "sourceLocator": "pending",
+      "title": "Resolution in the high southern latitudes, 1773-1774 (sample)",
+      "trackKind": "voyage",
+      "validFrom": 1773,
+      "validTo": 1774,
+      "vessel": "Resolution"
+    },
+    {
+      "act": "act_viii",
+      "confidence": "low",
+      "dateFrom": "1915-01-19",
+      "dateTo": "1915-11-21",
+      "evidenceClass": "dead_reckoning",
+      "expeditionId": "ant-exp-ite",
+      "geometry": {
+        "coordinates": [
+          [
+            -31.5,
+            -76.57
+          ],
+          [
+            -52.44,
+            -68.66
+          ]
+        ],
+        "type": "LineString"
+      },
+      "geometryProvenance": "editorial_interpolation",
+      "id": "ant-trk-endurance-drift",
+      "kind": "track",
+      "notes": "Two endpoints joined by a straight line, which the drift certainly was not. Present only to prove the schema can hold a drift distinct from a planned route; ANT-9 replaces it with dated positions.",
+      "reviewState": "raw",
+      "sourceId": "ant-src-worsley-endurance-1931",
+      "sourceLocator": "pending",
+      "title": "Endurance in the ice, besetment to loss (two-point sample)",
+      "trackKind": "drift",
+      "validFrom": 1915,
+      "validTo": 1915,
+      "vessel": "Endurance"
+    },
+    {
+      "act": "act_viii",
+      "confidence": "low",
+      "dateFrom": "1914-08-08",
+      "evidenceClass": "editorial_interpolation",
+      "expeditionId": "ant-exp-ite",
+      "geometry": {
+        "coordinates": [
+          [
+            -36.5,
+            -54.3
+          ],
+          [
+            -30.0,
+            -70.0
+          ],
+          [
+            -20.0,
+            -78.0
+          ],
+          [
+            0.0,
+            -90.0
+          ],
+          [
+            170.0,
+            -78.0
+          ],
+          [
+            166.7,
+            -77.85
+          ]
+        ],
+        "type": "LineString"
+      },
+      "geometryProvenance": "editorial_generalisation",
+      "id": "ant-trk-endurance-plan",
+      "kind": "track",
+      "notes": "A planned route is an intention, not an observation, and this drawing of it is ours. It is filed as editorial_interpolation so that no part of the pipeline can mistake it for evidence, which is the distinction Act VIII turns on.",
+      "reviewState": "raw",
+      "sourceId": "ant-src-shackleton-south-1919",
+      "sourceLocator": "pending",
+      "title": "Planned trans-Antarctic crossing, as announced",
+      "trackKind": "planned_route",
+      "validFrom": 1914,
+      "validTo": 1914,
+      "vessel": "Endurance"
+    }
+  ],
+  "release": "ant-pilot-0.1",
+  "schemaVersion": 1
+}

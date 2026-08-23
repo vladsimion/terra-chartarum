@@ -247,6 +247,32 @@
       "source": "Terra Chartarum (compiled) - treaty frontier phases 1829-1947, KAN-352",
       "license": "CC BY 4.0",
       "attribution": "Terra Chartarum; instruments after Hertslet and the KAN-351 source ledger; all linework editorial"
+    },
+    {
+      "id": "antarctica-pilot-tracks",
+      "file": "antarctica-pilot-tracks.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": ["LineString", "Polygon"],
+      "featureCount": 4,
+      "yearFrom": 1531,
+      "yearTo": 1915,
+      "source": "Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-423",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; each source and map object carries its own rights status; no object is cleared for reproduction"
+    },
+    {
+      "id": "antarctica-pilot-observations",
+      "file": "antarctica-pilot-observations.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": ["Point"],
+      "featureCount": 5,
+      "yearFrom": 1774,
+      "yearTo": 1915,
+      "source": "Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-423",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; positions recorded from the general literature and not yet checked against an edition"
     }
   ]
 }

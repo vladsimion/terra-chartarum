@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "geo-015d45320b25c121",
+  "release": "geo-8e3e7fa433445f2d",
   "generatedBy": "scripts/geo-release.mjs",
   "assets": [
     {
@@ -364,6 +364,45 @@
       "sha256": "3442e0999d7bf597c4c0dd224b9ac618303010c8214fd21cc0493c7e2c8b54f2",
       "version": "3442e0999d7b",
       "url": "/geo/dacia-treaty-frontiers.geojson?v=3442e0999d7b"
+    },
+    {
+      "id": "antarctica-pilot-tracks",
+      "file": "antarctica-pilot-tracks.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": [
+        "LineString",
+        "Polygon"
+      ],
+      "featureCount": 4,
+      "yearFrom": 1531,
+      "yearTo": 1915,
+      "source": "Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-423",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; each source and map object carries its own rights status; no object is cleared for reproduction",
+      "bytes": 5567,
+      "sha256": "1ce8006a9b51473a258781235606935ffc4a19279c3d555c24a564fbe579885f",
+      "version": "1ce8006a9b51",
+      "url": "/geo/antarctica-pilot-tracks.geojson?v=1ce8006a9b51"
+    },
+    {
+      "id": "antarctica-pilot-observations",
+      "file": "antarctica-pilot-observations.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": [
+        "Point"
+      ],
+      "featureCount": 5,
+      "yearFrom": 1774,
+      "yearTo": 1915,
+      "source": "Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-423",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; positions recorded from the general literature and not yet checked against an edition",
+      "bytes": 5640,
+      "sha256": "33aab7c98154dc83d118cb2d2d7d0f77d26b6d3820ff76f223e8ddacea311dc8",
+      "version": "33aab7c98154",
+      "url": "/geo/antarctica-pilot-observations.geojson?v=33aab7c98154"
     }
   ]
 }

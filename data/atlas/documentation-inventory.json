@@ -326,7 +326,7 @@
   ],
   "layerCoverage": {
     "requiredPublicFunctions": ["layer-explanation", "sources-evidence"],
-    "note": "Assessed against what a published historical or evidential layer owes a reader: an explanation of the claim and a record of the evidence behind it. Context layers take a minimal-context exemption. \"partial\" means some public function is documented and at least one required one is not.",
+    "note": "Assessed against what a published historical or evidential layer owes a reader: an explanation of the claim and a record of the evidence behind it. Context layers take a minimal-context exemption. \"partial\" means some public function is documented and at least one required one is not. Layers registered after the cutover are recorded as covered on arrival: the release gate refuses a published or in-review layer without a public record, so there is no state in which one of them could be outstanding.",
     "layers": [
       {
         "layerId": "ne-coastline",
@@ -392,7 +392,7 @@
         "layerId": "hanseatic-routes",
         "coverage": "partial",
         "missing": ["sources-evidence", "layer-explanation"],
-        "note": "As hanseatic-places. Additionally the evidence_type width scale (documented route / repeated connection / generalized reconstruction) is the layer’s central epistemic claim and is only explained inside the technical dictionary."
+        "note": "As hanseatic-places. Additionally the evidence_type width scale (documented route / repeated connection / generalized reconstruction) is the layer\u2019s central epistemic claim and is only explained inside the technical dictionary."
       },
       {
         "layerId": "hanseatic-events",
@@ -441,6 +441,18 @@
         "coverage": "covered",
         "missing": [],
         "note": "The only fully covered layer: a dedicated source ledger with instruments, interpretation, confidence, geometry rule and rights posture, plus the shared family method. KAN-413 gold standard."
+      },
+      {
+        "layerId": "antarctica-pilot-tracks",
+        "coverage": "covered",
+        "missing": [],
+        "note": "Born after the KAN-418 cutover rather than migrated through it: the layer shipped with a public Handbook record already in place, so it has no legacy documentationLinks to classify and nothing to migrate. Covered by /atlas/layers/antarctica-pilot-tracks/ and the shared Antarctic data fields."
+      },
+      {
+        "layerId": "antarctica-pilot-observations",
+        "coverage": "covered",
+        "missing": [],
+        "note": "Born after the KAN-418 cutover rather than migrated through it: the layer shipped with a public Handbook record already in place, so it has no legacy documentationLinks to classify and nothing to migrate. Covered by /atlas/layers/antarctica-pilot-observations/ and the shared Antarctic data fields."
       }
     ]
   },
