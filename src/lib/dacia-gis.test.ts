@@ -35,6 +35,7 @@ describe('shared Dacia GIS layers (KAN-341, KAN-342, KAN-343)', () => {
       'dacia-roman-network',
       'dacia-principalities',
       'dacia-josephinian-sheets',
+      'dacia-treaty-frontiers',
     ]) {
       for (const feature of layer(id)) {
         expect(feature.properties.geometry_provenance).not.toBe('source_geometry');
@@ -101,6 +102,45 @@ describe('shared Dacia GIS layers (KAN-341, KAN-342, KAN-343)', () => {
     for (const limes of limites) {
       expect(Number(limes.properties.stations)).toBe(0);
       expect(limes.properties.geometry_provenance).toBe('editorial_reconstruction');
+    }
+  });
+
+  it('shows a treaty frontier only while it held', () => {
+    const frontiers = layer('dacia-treaty-frontiers');
+
+    // The Second Vienna Award line existed between 1940 and 1944 and at no
+    // other time; the Trianon frontier it displaced is absent while it held.
+    expect(at(frontiers, 1930)).not.toContain('tf-seg-northern-transylvania-1940');
+    expect(at(frontiers, 1942)).toContain('tf-seg-northern-transylvania-1940');
+    expect(at(frontiers, 1942)).not.toContain('tf-seg-transylvania-1920');
+    expect(at(frontiers, 1930)).toContain('tf-seg-transylvania-1920');
+
+    // The 1947 restoration is open-ended: it is the frontier still in force.
+    expect(at(frontiers, 2000)).toContain('tf-seg-transylvania-1947');
+
+    // No line is timeless.
+    for (const feature of frontiers) {
+      expect(Number(feature.properties.valid_from)).toBeGreaterThanOrEqual(1829);
+    }
+  });
+
+  it('keeps competing lines apart instead of averaging them', () => {
+    const frontiers = layer('dacia-treaty-frontiers');
+    const contested = frontiers.filter((feature) => feature.properties.has_alternative);
+
+    // Two claims on the same moment, each naming the other, and typed
+    // differently: one is an instrument and one is an argument.
+    expect(contested.length).toBe(2);
+    const types = new Set(contested.map((feature) => feature.properties.line_type));
+    expect(types).toEqual(new Set(['treaty_line', 'proposal']));
+
+    for (const feature of contested) {
+      const other = frontiers.find((entry) => entry.id === feature.properties.alternative_of);
+      expect(other).toBeDefined();
+      expect(other!.properties.phase_id).toBe(feature.properties.phase_id);
+      expect(other!.properties.alternative_of).toBe(feature.id);
+      // The two lines are genuinely different geometry, not one line twice.
+      expect(JSON.stringify(other!.geometry)).not.toBe(JSON.stringify(feature.geometry));
     }
   });
 

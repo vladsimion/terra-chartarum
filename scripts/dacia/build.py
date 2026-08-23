@@ -56,6 +56,7 @@ ROMAN_SITES = "dacia-roman-sites"
 ROMAN_NETWORK = "dacia-roman-network"
 PRINCIPALITIES = "dacia-principalities"
 JOSEPHINIAN = "dacia-josephinian-sheets"
+TREATY_FRONTIERS = "dacia-treaty-frontiers"
 
 # Silences keep their point on the map, so the essay counts them separately
 # from readings rather than reporting one undifferentiated total.
@@ -530,6 +531,67 @@ def josephinian_features(places: list[dict[str, str]]) -> list[dict]:
     return sorted(features, key=lambda f: f["id"])
 
 
+def treaty_frontier_features() -> list[dict]:
+    """Frontier phases, each attributed to the instrument that made it (KAN-352).
+
+    A competing line for the same moment is its own feature carrying
+    `alternative_of`, never a compromise between two lines. Averaging them would
+    produce a frontier nobody proposed and erase the disagreement, which is the
+    thing this layer exists to show.
+    """
+    geometry = read_gis_geometry("treaty-frontier")
+    ledgers = {
+        "treaty_frontier_sources": {
+            row["source_id"]: row
+            for row in _read_reference("treaty-frontier-sources")
+        },
+        "carta_rubra_sources": {
+            row["source_id"]: row for row in _read_reference("carta-rubra-sources")
+        },
+    }
+
+    features = []
+    for row in read_gis("treaty-frontier"):
+        shape = geometry.get(row["segment_id"])
+        if shape is None:
+            continue
+        source = ledgers.get(row["source_ledger"], {}).get(row["source_id"], {})
+        features.append({
+            "type": "Feature",
+            "id": row["segment_id"],
+            "geometry": shape,
+            "properties": {
+                "id": row["segment_id"],
+                "phase_id": row["phase_id"],
+                "name": row["name"],
+                "line_type": row["line_type"],
+                "source_id": row["source_id"],
+                "source_ledger": row["source_ledger"],
+                "source_title": source.get("title", ""),
+                "signed_on": source.get("signed_on", source.get("issued_year", "")),
+                "legal_context": row["legal_context"],
+                "territorial_scope": row["territorial_scope"],
+                "geometry_provenance": row["geometry_provenance"],
+                "confidence": row["confidence"],
+                # A retained competitor names what it competes with, so a reader
+                # meeting two lines in one year is told they are two claims.
+                "alternative_of": row["alternative_of"],
+                "has_alternative": bool(row["alternative_of"]),
+                "interpretation_status": row["interpretation_status"],
+                "review_status": row["review_status"],
+                "note": row["notes"],
+                "valid_from": int(row["valid_from"]),
+                "valid_to": int(row["valid_to"]) if row["valid_to"] else OPEN_ENDED,
+            },
+        })
+    return sorted(features, key=lambda f: f["id"])
+
+
+def _read_reference(name: str) -> list[dict[str, str]]:
+    with (REFERENCE / f"{name}.csv").open(encoding="utf-8", newline="") as handle:
+        return [{k: (v or "").strip() for k, v in row.items()} for row in csv.DictReader(handle)]
+
+
 def gis_collection(features: list[dict], layer: str, ticket: str, note: str) -> dict:
     return {
         "type": "FeatureCollection",
@@ -652,6 +714,12 @@ def build_outputs() -> dict[Path, bytes]:
         principality_features(), PRINCIPALITIES, "KAN-342",
         "Phases, not one timeless polygon. Every ring is an editorial envelope for temporal "
         "filtering and none is traced from a modern national boundary.",
+    ))
+    outputs[GEO_DIR / f"{TREATY_FRONTIERS}.geojson"] = canonical_json(gis_collection(
+        treaty_frontier_features(), TREATY_FRONTIERS, "KAN-352",
+        "Frontier phases attributed to the instruments that made them. No instrument in the "
+        "ledger has usable delimitation geometry, so every line is declared editorial; "
+        "competing lines for one moment are retained side by side and never averaged.",
     ))
     outputs[GEO_DIR / f"{JOSEPHINIAN}.geojson"] = canonical_json(gis_collection(
         josephinian_features(tables["places"]), JOSEPHINIAN, "KAN-343",

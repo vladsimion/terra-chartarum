@@ -1,0 +1,491 @@
+{
+  "_ccd": {
+    "layer": "dacia-treaty-frontiers",
+    "licence": "CC BY 4.0 for the compiled records; each source carries its own rights_statement.",
+    "note": "Frontier phases attributed to the instruments that made them. No instrument in the ledger has usable delimitation geometry, so every line is declared editorial; competing lines for one moment are retained side by side and never averaged.",
+    "ticket": "KAN-352"
+  },
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            26.6,
+            44.05
+          ],
+          [
+            27.2,
+            43.8
+          ],
+          [
+            27.85,
+            43.55
+          ],
+          [
+            28.18,
+            43.4
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "tf-seg-cadrilater-1913",
+      "properties": {
+        "alternative_of": "",
+        "confidence": "low",
+        "geometry_provenance": "editorial_reconstruction",
+        "has_alternative": false,
+        "id": "tf-seg-cadrilater-1913",
+        "interpretation_status": "uncontested",
+        "legal_context": "Settlement after the Second Balkan War",
+        "line_type": "treaty_line",
+        "name": "Southern Dobrudja frontier after Bucharest",
+        "note": "Held until the 1940 Treaty of Craiova returned the Cadrilater to Bulgaria; that instrument is not in the ledger and the phase therefore ends where the ledger's evidence does.",
+        "phase_id": "tfp-1913-bucharest",
+        "review_status": "candidate",
+        "signed_on": "1913-08-10",
+        "source_id": "tf-bucharest-1913",
+        "source_ledger": "treaty_frontier_sources",
+        "source_title": "Treaty of Bucharest",
+        "territorial_scope": "The Turtucaia-Balchik line, carrying the Cadrilater to Romania",
+        "valid_from": 1913,
+        "valid_to": 1940
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            22.55,
+            44.62
+          ],
+          [
+            23.6,
+            43.98
+          ],
+          [
+            24.55,
+            43.75
+          ],
+          [
+            25.95,
+            43.72
+          ],
+          [
+            26.95,
+            44.05
+          ],
+          [
+            27.9,
+            44.02
+          ],
+          [
+            28.2,
+            44.6
+          ],
+          [
+            28.72,
+            45.22
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "tf-seg-danube-1829",
+      "properties": {
+        "alternative_of": "",
+        "confidence": "low",
+        "geometry_provenance": "editorial_reconstruction",
+        "has_alternative": false,
+        "id": "tf-seg-danube-1829",
+        "interpretation_status": "uncontested",
+        "legal_context": "Russo-Ottoman peace settlement confirming the position of the Danubian Principalities",
+        "line_type": "treaty_line",
+        "name": "Lower Danube frontier after Adrianople",
+        "note": "Drawn along the river's general course at provincial scale. The instrument is a text; no delimitation map has been identified, so this line carries none of the river's actual meanders.",
+        "phase_id": "tfp-1829-adrianople",
+        "review_status": "candidate",
+        "signed_on": "1829-09-14",
+        "source_id": "tf-adrianople-1829",
+        "source_ledger": "treaty_frontier_sources",
+        "source_title": "Treaty of Adrianople",
+        "territorial_scope": "The Danube from the Iron Gates to the delta as the southern limit of Wallachia",
+        "valid_from": 1829,
+        "valid_to": 1855
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            22.55,
+            44.62
+          ],
+          [
+            23.6,
+            43.98
+          ],
+          [
+            24.55,
+            43.75
+          ],
+          [
+            25.95,
+            43.72
+          ],
+          [
+            26.95,
+            44.05
+          ],
+          [
+            27.9,
+            44.02
+          ],
+          [
+            28.2,
+            44.6
+          ],
+          [
+            28.75,
+            45.32
+          ],
+          [
+            29.6,
+            45.55
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "tf-seg-danube-1856",
+      "properties": {
+        "alternative_of": "",
+        "confidence": "low",
+        "geometry_provenance": "editorial_reconstruction",
+        "has_alternative": false,
+        "id": "tf-seg-danube-1856",
+        "interpretation_status": "uncontested",
+        "legal_context": "General settlement after the Crimean War; a European commission was charged with delimitation",
+        "line_type": "treaty_line",
+        "name": "Danube and Bessarabian frontier after Paris",
+        "note": "The ledger records that commission geometry is required and has not been obtained. This is the schematic line the settlement implies, not the commission's.",
+        "phase_id": "tfp-1856-paris",
+        "review_status": "candidate",
+        "signed_on": "1856-03-30",
+        "source_id": "tf-paris-1856",
+        "source_ledger": "treaty_frontier_sources",
+        "source_title": "General Treaty of Paris",
+        "territorial_scope": "Southern Bessarabia returned to Moldavia and the Danube mouths placed under commission",
+        "valid_from": 1856,
+        "valid_to": 1877
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            27.28,
+            44.1
+          ],
+          [
+            27.8,
+            44.02
+          ],
+          [
+            28.2,
+            43.92
+          ],
+          [
+            28.58,
+            43.78
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "tf-seg-dobrudja-1878",
+      "properties": {
+        "alternative_of": "",
+        "confidence": "low",
+        "geometry_provenance": "editorial_reconstruction",
+        "has_alternative": false,
+        "id": "tf-seg-dobrudja-1878",
+        "interpretation_status": "ambiguous",
+        "legal_context": "Independence recognised; southern Bessarabia to Russia and northern Dobrudja to Romania",
+        "line_type": "treaty_line",
+        "name": "Dobrudja frontier after Berlin",
+        "note": "The Berlin map exists but is not georeferenced. The Silistra sector was contested in the delimitation itself, which is why the interpretation is recorded as ambiguous rather than settled.",
+        "phase_id": "tfp-1878-berlin",
+        "review_status": "candidate",
+        "signed_on": "1878-07-13",
+        "source_id": "tf-berlin-1878",
+        "source_ledger": "treaty_frontier_sources",
+        "source_title": "Treaty of Berlin",
+        "territorial_scope": "The line from the Danube near Silistra east to the Black Sea",
+        "valid_from": 1878,
+        "valid_to": 1913
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            22.88,
+            47.95
+          ],
+          [
+            23.1,
+            47.35
+          ],
+          [
+            23.55,
+            46.95
+          ],
+          [
+            23.95,
+            46.7
+          ],
+          [
+            24.6,
+            46.55
+          ],
+          [
+            25.3,
+            46.35
+          ],
+          [
+            25.6,
+            46.1
+          ],
+          [
+            26.1,
+            46.3
+          ],
+          [
+            26.35,
+            46.85
+          ],
+          [
+            26.1,
+            47.45
+          ],
+          [
+            25.3,
+            47.75
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "tf-seg-northern-transylvania-1940",
+      "properties": {
+        "alternative_of": "",
+        "confidence": "low",
+        "geometry_provenance": "editorial_reconstruction",
+        "has_alternative": false,
+        "id": "tf-seg-northern-transylvania-1940",
+        "interpretation_status": "disputed",
+        "legal_context": "Axis arbitration transferring northern Transylvania to Hungary",
+        "line_type": "treaty_line",
+        "name": "Second Vienna Award line",
+        "note": "The award's annex map has not been acquired, and the line's course through the Szekely Land is the part this reconstruction is least confident about. Drawn to show that the award cut across the province rather than along it.",
+        "phase_id": "tfp-1940-vienna",
+        "review_status": "candidate",
+        "signed_on": "1940-08-30",
+        "source_id": "tf-vienna-1940",
+        "source_ledger": "treaty_frontier_sources",
+        "source_title": "Second Vienna Award",
+        "territorial_scope": "From the western frontier east and south around Cluj, then north-east through the Szekely counties",
+        "valid_from": 1940,
+        "valid_to": 1944
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            22.88,
+            47.95
+          ],
+          [
+            22.4,
+            47.55
+          ],
+          [
+            21.95,
+            47.05
+          ],
+          [
+            21.6,
+            46.45
+          ],
+          [
+            20.95,
+            46.15
+          ],
+          [
+            20.8,
+            45.75
+          ],
+          [
+            21.1,
+            45.25
+          ],
+          [
+            21.4,
+            44.82
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "tf-seg-transylvania-1920",
+      "properties": {
+        "alternative_of": "tf-seg-transylvania-1920-demartonne",
+        "confidence": "low",
+        "geometry_provenance": "editorial_reconstruction",
+        "has_alternative": true,
+        "id": "tf-seg-transylvania-1920",
+        "interpretation_status": "disputed",
+        "legal_context": "Peace settlement with Hungary",
+        "line_type": "treaty_line",
+        "name": "Hungarian-Romanian frontier after Trianon",
+        "note": "The frontier the treaty fixed, drawn schematically. Its interpretation is recorded as disputed because the settlement itself was contested, not because the line's position is unclear. The de Martonne proposal for the same zone is retained beside it and the two are never averaged.",
+        "phase_id": "tfp-1920-trianon",
+        "review_status": "candidate",
+        "signed_on": "1920-06-04",
+        "source_id": "tf-trianon-1920",
+        "source_ledger": "treaty_frontier_sources",
+        "source_title": "Treaty of Trianon",
+        "territorial_scope": "From the Tisza plain south to the Danube at Bazias",
+        "valid_from": 1920,
+        "valid_to": 1940
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            23.2,
+            47.9
+          ],
+          [
+            22.85,
+            47.5
+          ],
+          [
+            22.45,
+            47.0
+          ],
+          [
+            22.1,
+            46.45
+          ],
+          [
+            21.55,
+            46.1
+          ],
+          [
+            21.35,
+            45.7
+          ],
+          [
+            21.5,
+            45.25
+          ],
+          [
+            21.7,
+            44.85
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "tf-seg-transylvania-1920-demartonne",
+      "properties": {
+        "alternative_of": "tf-seg-transylvania-1920",
+        "confidence": "low",
+        "geometry_provenance": "editorial_reconstruction",
+        "has_alternative": true,
+        "id": "tf-seg-transylvania-1920-demartonne",
+        "interpretation_status": "ambiguous",
+        "legal_context": "Expert ethnographic cartography prepared for the peace conference",
+        "line_type": "proposal",
+        "name": "De Martonne ethnographic proposal for the same frontier",
+        "note": "Retained as a competing line for the same moment rather than averaged with the treaty line. The two are different kinds of claim - one an instrument, one an argument - and reconciling them into a single frontier would erase the disagreement the trench exists to show.",
+        "phase_id": "tfp-1920-trianon",
+        "review_status": "candidate",
+        "signed_on": "1920",
+        "source_id": "cr-map-demartonne-1920",
+        "source_ledger": "carta_rubra_sources",
+        "source_title": "Essai de carte ethnographique des pays roumains",
+        "territorial_scope": "A proposed line through the same contested zone",
+        "valid_from": 1920,
+        "valid_to": 1920
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            22.88,
+            47.95
+          ],
+          [
+            22.4,
+            47.55
+          ],
+          [
+            21.95,
+            47.05
+          ],
+          [
+            21.6,
+            46.45
+          ],
+          [
+            20.95,
+            46.15
+          ],
+          [
+            20.8,
+            45.75
+          ],
+          [
+            21.1,
+            45.25
+          ],
+          [
+            21.4,
+            44.82
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "tf-seg-transylvania-1947",
+      "properties": {
+        "alternative_of": "",
+        "confidence": "low",
+        "geometry_provenance": "editorial_reconstruction",
+        "has_alternative": false,
+        "id": "tf-seg-transylvania-1947",
+        "interpretation_status": "uncontested",
+        "legal_context": "Post-war settlement annulling the Vienna Award",
+        "line_type": "treaty_line",
+        "name": "Trianon frontier restored at Paris",
+        "note": "The same course as the 1920 line, recorded as its own phase because a frontier restored by instrument is a separate legal fact from the frontier it restores. Open-ended: this is the frontier still in force.",
+        "phase_id": "tfp-1947-paris",
+        "review_status": "candidate",
+        "signed_on": "1947-02-10",
+        "source_id": "tf-paris-1947",
+        "source_ledger": "treaty_frontier_sources",
+        "source_title": "Treaty of Peace with Romania",
+        "territorial_scope": "The 1920 frontier restored; southern Dobrudja stays Bulgarian",
+        "valid_from": 1947,
+        "valid_to": 9999
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

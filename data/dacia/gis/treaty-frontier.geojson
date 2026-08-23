@@ -1,0 +1,353 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            26.6,
+            44.05
+          ],
+          [
+            27.2,
+            43.8
+          ],
+          [
+            27.85,
+            43.55
+          ],
+          [
+            28.18,
+            43.4
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "tf-seg-cadrilater-1913",
+      "properties": {
+        "vertices": "editorial"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            22.55,
+            44.62
+          ],
+          [
+            23.6,
+            43.98
+          ],
+          [
+            24.55,
+            43.75
+          ],
+          [
+            25.95,
+            43.72
+          ],
+          [
+            26.95,
+            44.05
+          ],
+          [
+            27.9,
+            44.02
+          ],
+          [
+            28.2,
+            44.6
+          ],
+          [
+            28.72,
+            45.22
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "tf-seg-danube-1829",
+      "properties": {
+        "vertices": "editorial"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            22.55,
+            44.62
+          ],
+          [
+            23.6,
+            43.98
+          ],
+          [
+            24.55,
+            43.75
+          ],
+          [
+            25.95,
+            43.72
+          ],
+          [
+            26.95,
+            44.05
+          ],
+          [
+            27.9,
+            44.02
+          ],
+          [
+            28.2,
+            44.6
+          ],
+          [
+            28.75,
+            45.32
+          ],
+          [
+            29.6,
+            45.55
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "tf-seg-danube-1856",
+      "properties": {
+        "vertices": "editorial"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            27.28,
+            44.1
+          ],
+          [
+            27.8,
+            44.02
+          ],
+          [
+            28.2,
+            43.92
+          ],
+          [
+            28.58,
+            43.78
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "tf-seg-dobrudja-1878",
+      "properties": {
+        "vertices": "editorial"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            22.88,
+            47.95
+          ],
+          [
+            23.1,
+            47.35
+          ],
+          [
+            23.55,
+            46.95
+          ],
+          [
+            23.95,
+            46.7
+          ],
+          [
+            24.6,
+            46.55
+          ],
+          [
+            25.3,
+            46.35
+          ],
+          [
+            25.6,
+            46.1
+          ],
+          [
+            26.1,
+            46.3
+          ],
+          [
+            26.35,
+            46.85
+          ],
+          [
+            26.1,
+            47.45
+          ],
+          [
+            25.3,
+            47.75
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "tf-seg-northern-transylvania-1940",
+      "properties": {
+        "vertices": "editorial"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            22.88,
+            47.95
+          ],
+          [
+            22.4,
+            47.55
+          ],
+          [
+            21.95,
+            47.05
+          ],
+          [
+            21.6,
+            46.45
+          ],
+          [
+            20.95,
+            46.15
+          ],
+          [
+            20.8,
+            45.75
+          ],
+          [
+            21.1,
+            45.25
+          ],
+          [
+            21.4,
+            44.82
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "tf-seg-transylvania-1920",
+      "properties": {
+        "vertices": "editorial"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            23.2,
+            47.9
+          ],
+          [
+            22.85,
+            47.5
+          ],
+          [
+            22.45,
+            47.0
+          ],
+          [
+            22.1,
+            46.45
+          ],
+          [
+            21.55,
+            46.1
+          ],
+          [
+            21.35,
+            45.7
+          ],
+          [
+            21.5,
+            45.25
+          ],
+          [
+            21.7,
+            44.85
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "tf-seg-transylvania-1920-demartonne",
+      "properties": {
+        "vertices": "editorial"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            22.88,
+            47.95
+          ],
+          [
+            22.4,
+            47.55
+          ],
+          [
+            21.95,
+            47.05
+          ],
+          [
+            21.6,
+            46.45
+          ],
+          [
+            20.95,
+            46.15
+          ],
+          [
+            20.8,
+            45.75
+          ],
+          [
+            21.1,
+            45.25
+          ],
+          [
+            21.4,
+            44.82
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "tf-seg-transylvania-1947",
+      "properties": {
+        "vertices": "editorial"
+      },
+      "type": "Feature"
+    }
+  ],
+  "metadata": {
+    "compiledOn": "2026-08-23",
+    "crs": "EPSG:4326",
+    "derivedFromModernBorders": false,
+    "geometryProvenance": "editorial_reconstruction",
+    "justification": "The KAN-351 ledger records the geometry position of every instrument here: no_geometry, commission_geometry_required, map_not_georeferenced or annex_map_unacquired. Not one of the eight has delimitation linework this project can use, and tracing a modern boundary in its place would launder a 1947 line into an 1829 claim. These corridors are therefore drawn, declared editorial, given low confidence, and attributed to the phase they belong to, so the Atlas can show what each settlement moved without implying anyone has measured it. Competing lines for one moment are kept as separate features and never averaged.",
+    "schemaVersion": 1,
+    "surveyedGeometry": false,
+    "ticket": "KAN-352",
+    "version": "treaty-frontier-1.0"
+  },
+  "name": "treaty-frontier",
+  "type": "FeatureCollection"
+}

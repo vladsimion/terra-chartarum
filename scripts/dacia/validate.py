@@ -94,6 +94,47 @@ TREATY_RECORD_TYPES = {
     "later_reconstruction",
 }
 TREATY_INTERPRETATION_STATES = {"uncontested", "ambiguous", "disputed"}
+# KAN-352: a proposal, the line an instrument actually fixed, and a later
+# reconstruction are three different kinds of claim and are never one column.
+# KAN-363: acquisition is a separate axis from scholarly validity and from
+# rights. A map does not become better evidence because it was bought, or worse
+# because it was declined, so the three never collapse into one column.
+# KAN-367. The classes are the argument: what a map is evidence *of* depends on
+# which of these it belongs to, and reception is never evidence about antiquity.
+RECEPTION_CLASSES = {
+    "ancient_evidence",
+    "scholarly_reconstruction",
+    "historical_reception",
+    "contemporary_derivative",
+}
+RECEPTION_ROLES = {"authoritative_evidence", "contextual_evidence", "reference_artefact"}
+# Reception and derivative material documents its own moment. It may be shown,
+# discussed and taken seriously - and it may never be cited as testimony about
+# the antiquity it depicts.
+RECEPTION_NEVER_AUTHORITATIVE = {"historical_reception", "contemporary_derivative"}
+RECEPTION_SELECTION = {"selected", "class_only", "rejected"}
+# KAN-368. `resembles` is the visual counterpart of Nomen Errans' homonym_only:
+# it asserts that two things look alike and that nothing follows from it.
+RECEPTION_RELATIONSHIPS = {"derives_from", "resembles", "responds_to", "no_relationship"}
+RECEPTION_CLAIM_KINDS = {"continuity", "origin", "extent", "descent"}
+REQUIRED_RUBRIC_RULES = {"rr-1", "rr-2", "rr-3", "rr-4", "rr-5"}
+ACQUISITION_STATES = {"not_sought", "watching", "recommended", "acquired", "declined"}
+VERIFICATION_STATES = {"unverified", "partially_verified", "verified"}
+SCHOLARLY_VALIDITY = {"established", "contested", "unassessed"}
+REQUIRED_ACQUISITION_FAMILIES = {
+    "ptolemaic",
+    "mercator_hondius",
+    "sanson",
+    "zatta",
+    "homann",
+    "schwantz_oltenia",
+}
+# The identifying fields a recommendation rests on. A dossier that still says
+# `pending` in any of them has not identified the thing it recommends buying.
+ACQUISITION_IDENTITY = ("plate_number", "edition_state", "publisher", "comparable_records")
+FRONTIER_LINE_TYPES = {"proposal", "treaty_line", "reconstruction"}
+FRONTIER_LEDGERS = {"treaty_frontier_sources", "carta_rubra_sources"}
+FRONTIER_FROM = 1829
 NOMEN_ERRANS_WITNESS_TYPES = {"map_witness", "object_witness", "text_witness"}
 ROMAN_FEATURE_TYPES = {"site", "road", "limes"}
 PRINCIPALITY_SOVEREIGNTY = {
@@ -194,6 +235,10 @@ TABLES = {
     "carta_rubra_sources": f"{REFERENCE}/carta-rubra-sources.csv",
     "carta_rubra_claims": f"{REFERENCE}/carta-rubra-claims.csv",
     "nomen_errans_witnesses": f"{REFERENCE}/nomen-errans-witnesses.csv",
+    "acquisition_dossiers": f"{REFERENCE}/acquisition-dossiers.csv",
+    "reception_corpus": f"{REFERENCE}/reception-corpus.csv",
+    "reception_rubric": f"{REFERENCE}/reception-review-rubric.csv",
+    "reception_claims": f"{REFERENCE}/reception-claims.csv",
     "borroczyn_seam_sources": f"{REFERENCE}/borroczyn-seam-sources.csv",
     "places": "places.csv",
     "sources": "sources.csv",
@@ -206,6 +251,7 @@ TABLES = {
     "roman_dacia": f"{GIS}/roman-dacia.csv",
     "principalities": f"{GIS}/principalities.csv",
     "josephinian_sheets": f"{GIS}/josephinian-sheets.csv",
+    "treaty_frontier": f"{GIS}/treaty-frontier.csv",
 }
 PILOT_MANIFEST = f"{PILOT}/pilot-manifest.json"
 SOURCE_LEDGER_MANIFEST = f"{REFERENCE}/source-ledger-manifest.json"
@@ -1159,6 +1205,242 @@ def validate_hiatus_witness_families(errors: list[str]) -> None:
         errors.append("hiatus-witness-families: the frozen minimum needs at least five families")
 
 
+def validate_reception_claims(terms, errors: list[str]) -> None:
+    """KAN-368: how a claim is made, and what it may not inherit by looking alike.
+
+    The corpus classifies items; this records what each one asserts and how it
+    stands to the material it invokes. The rule the table exists for is that a
+    contemporary derivative cannot acquire authority from resembling a scholarly
+    map - the visual counterpart of the homonym_only edge in Nomen Errans.
+    """
+    items = {row["item_id"]: row for row in _read("reception_corpus", errors)}
+    rows = _read("reception_claims", errors)
+    _check_unique(rows, "claim_id", "reception-claims", errors)
+    claimed: set[str] = set()
+
+    for row in rows:
+        claim_id = row["claim_id"]
+        label = f"reception-claims[{claim_id}]"
+        if not claim_id.startswith("rcl-") or not SLUG.match(claim_id):
+            errors.append(f"{label}: claim_id must be an rcl- slug")
+        item = items.get(row["item_id"])
+        if item is None:
+            errors.append(f"{label}: item_id '{row['item_id']}' does not resolve")
+        else:
+            claimed.add(row["item_id"])
+        target = items.get(row["relates_to"])
+        if row["relates_to"] and target is None:
+            errors.append(f"{label}: relates_to '{row['relates_to']}' does not resolve")
+        if row["relates_to"] == row["item_id"]:
+            errors.append(f"{label}: a claim cannot relate an item to itself")
+
+        for field in ("claim", "asserted_about", "evidence_note", "uncertainty", "notes"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        if row["claim_kind"] not in RECEPTION_CLAIM_KINDS:
+            errors.append(f"{label}: claim_kind '{row['claim_kind']}' is not recognised")
+        kind = row["relationship_kind"]
+        if kind not in RECEPTION_RELATIONSHIPS:
+            errors.append(f"{label}: relationship_kind '{kind}' is not recognised")
+        if row["interpretation_status"] not in TREATY_INTERPRETATION_STATES:
+            errors.append(f"{label}: interpretation_status is not recognised")
+        _check_vocab(row["confidence"], "confidence", terms, label, "confidence", errors)
+        if row["review_status"] not in SOURCE_LEDGER_REVIEW_STATES:
+            errors.append(f"{label}: review_status '{row['review_status']}' is not recognised")
+
+        if item is None:
+            continue
+
+        # The rule this table is for. A derivative may look exactly like a
+        # scholarly map and inherit nothing from it, so the only relationships
+        # it may assert are ones that claim no descent.
+        if item["source_class"] == "contemporary_derivative" and kind == "derives_from":
+            errors.append(
+                f"{label}: a contemporary derivative cannot claim descent from a historical "
+                "source on the strength of resembling one; use resembles or responds_to"
+            )
+        # A derivation is a claim about transmission and needs its evidence, in
+        # the same way a continuity edge in Nomen Errans does.
+        if kind == "derives_from":
+            if target is not None and target["selection_state"] == "class_only":
+                errors.append(
+                    f"{label}: nothing has been selected from '{row['relates_to']}', so no "
+                    "derivation from it can be evidenced"
+                )
+            if item["selection_state"] == "class_only":
+                errors.append(
+                    f"{label}: a class from which nothing is selected cannot be said to derive "
+                    "from anything in particular"
+                )
+        # Uncertainty travels as text, so a reader who cannot use colour still
+        # gets the contested reading rather than a hue.
+        if row["interpretation_status"] == "disputed" and len(row["uncertainty"]) < 40:
+            errors.append(
+                f"{label}: a disputed claim must state its uncertainty in words, not leave it "
+                "to a colour"
+            )
+
+    for item_id, item in sorted(items.items()):
+        # An item with no claim recorded is decoration: the essay would show it
+        # without being able to say what it asserts.
+        if item_id not in claimed:
+            errors.append(f"reception-claims: '{item_id}' is in the corpus with no claim recorded")
+
+
+def validate_reception_corpus(terms, sources, errors: list[str]) -> None:
+    """KAN-367: the reception corpus, and the rubric that keeps it from arguing.
+
+    Dacia Rediviva is about how antiquity has been used, which means its corpus
+    is full of material that is compelling and is not evidence. The rules that
+    keep those apart are data here rather than editorial intention, so they
+    cannot be forgotten in a later interaction.
+    """
+    rubric = _read("reception_rubric", errors)
+    _check_unique(rubric, "rule_id", "reception-review-rubric", errors)
+    for row in rubric:
+        label = f"reception-review-rubric[{row['rule_id']}]"
+        for field in ("rule", "rationale"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        if row["enforced_by"] not in {"validator", "editorial"}:
+            errors.append(f"{label}: enforced_by must be validator or editorial")
+        if row["binding"] != "yes":
+            errors.append(f"{label}: a rubric rule that does not bind is not a rule")
+    if missing := REQUIRED_RUBRIC_RULES - {row["rule_id"] for row in rubric}:
+        errors.append(f"reception-review-rubric: missing required rules {sorted(missing)}")
+
+    rows = _read("reception_corpus", errors)
+    _check_unique(rows, "item_id", "reception-corpus", errors)
+    classes: set[str] = set()
+
+    for row in rows:
+        item_id = row["item_id"]
+        label = f"reception-corpus[{item_id}]"
+        if not item_id.startswith("rec-") or not SLUG.match(item_id):
+            errors.append(f"{label}: item_id must be a rec- slug")
+        source_class = row["source_class"]
+        classes.add(source_class)
+        if source_class not in RECEPTION_CLASSES:
+            errors.append(f"{label}: source_class '{source_class}' is not recognised")
+        role = row["evidence_role"]
+        if role not in RECEPTION_ROLES:
+            errors.append(f"{label}: evidence_role '{role}' is not recognised")
+        for field in ("title", "historical_context", "notes"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        _check_vocab(
+            row["date_precision"], "date_precision", terms, label, "date_precision", errors
+        )
+        _check_vocab(
+            row["rights_status"], "rights_statement", terms, label, "rights_status", errors
+        )
+        _check_https(row["source_url"], label, "source_url", errors)
+        _check_https(row["rights_basis_url"], label, "rights_basis_url", errors)
+        if row["review_status"] not in SOURCE_LEDGER_REVIEW_STATES:
+            errors.append(f"{label}: review_status '{row['review_status']}' is not recognised")
+        if row["selection_state"] not in RECEPTION_SELECTION:
+            errors.append(f"{label}: selection_state is not recognised")
+        if not row["issued_year"].lstrip("-").isdigit():
+            errors.append(f"{label}: issued_year must be a year")
+        if row["corpus_source_id"] and row["corpus_source_id"] not in sources:
+            errors.append(f"{label}: corpus_source_id does not resolve in sources.csv")
+
+        # rr-2: reception documents its own moment, and never antiquity.
+        if source_class in RECEPTION_NEVER_AUTHORITATIVE and role == "authoritative_evidence":
+            errors.append(
+                f"{label}: {source_class} is evidence about its own moment, not about the "
+                "antiquity it depicts, so it cannot be authoritative_evidence (rubric rr-2)"
+            )
+        # rr-3: apparent detail is not provenance.
+        unidentified = row["creator"] in {"", PENDING} or row["provenance"] in {"", PENDING}
+        if unidentified and role != "reference_artefact":
+            errors.append(
+                f"{label}: an item with no identified creator or provenance may only be a "
+                "reference_artefact (rubric rr-3)"
+            )
+        # rr-5: a class is a finding; an unselected item is not a source.
+        if row["selection_state"] == "class_only" and role != "reference_artefact":
+            errors.append(
+                f"{label}: nothing has been selected from this class, so it cannot carry "
+                f"the role '{role}' (rubric rr-5)"
+            )
+        if row["selection_state"] == "selected" and row["citation"] in {"", PENDING}:
+            errors.append(f"{label}: a selected item must carry its citation")
+
+    # The essay argues across all four registers; dropping one would turn the
+    # comparison into a claim about whichever remained.
+    for missing in sorted(RECEPTION_CLASSES - classes):
+        errors.append(f"reception-corpus: no item represents the '{missing}' class")
+
+
+def validate_acquisition_dossiers(terms, errors: list[str]) -> None:
+    """KAN-363: research dossiers that cannot recommend what they have not identified."""
+    rows = _read("acquisition_dossiers", errors)
+    _check_unique(rows, "dossier_id", "acquisition-dossiers", errors)
+    families: set[str] = set()
+
+    for row in rows:
+        dossier_id = row["dossier_id"]
+        label = f"acquisition-dossiers[{dossier_id}]"
+        if not dossier_id.startswith("acq-") or not SLUG.match(dossier_id):
+            errors.append(f"{label}: dossier_id must be an acq- slug")
+        families.add(row["family"])
+        for field in ("family", "title", "creator", "atlas_context", "notes"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        _check_https(row["source_url"], label, "source_url", errors)
+        _check_vocab(
+            row["date_precision"], "date_precision", terms, label, "date_precision", errors
+        )
+        _check_vocab(
+            row["rights_status"], "rights_statement", terms, label, "rights_status", errors
+        )
+        if row["review_status"] not in SOURCE_LEDGER_REVIEW_STATES:
+            errors.append(f"{label}: review_status '{row['review_status']}' is not recognised")
+        if row["verification_state"] not in VERIFICATION_STATES:
+            errors.append(f"{label}: verification_state is not recognised")
+        if row["acquisition_status"] not in ACQUISITION_STATES:
+            errors.append(f"{label}: acquisition_status is not recognised")
+        # Validity is assessed on the map, never inferred from whether it was
+        # bought: it is required on every row whatever the acquisition state.
+        if row["scholarly_validity"] not in SCHOLARLY_VALIDITY:
+            errors.append(f"{label}: scholarly_validity is not recognised")
+        if not row["issued_year"].lstrip("-").isdigit():
+            errors.append(f"{label}: issued_year must be a year")
+
+        unidentified = [f for f in ACQUISITION_IDENTITY if row[f] in {"", PENDING}]
+        if row["acquisition_status"] == "recommended":
+            if unidentified:
+                errors.append(
+                    f"{label}: a recommendation must identify what it recommends; "
+                    f"still pending: {', '.join(unidentified)}"
+                )
+            if row["verification_state"] != "verified":
+                errors.append(f"{label}: a recommendation requires a verified dossier")
+        # An unverified dossier that has nonetheless filled everything in is the
+        # dangerous case: it looks identified and nobody has checked it.
+        if row["verification_state"] == "verified" and unidentified:
+            errors.append(
+                f"{label}: a verified dossier cannot leave {', '.join(unidentified)} pending"
+            )
+
+        # The Ptolemaic rule, which is the reason this table has a family column:
+        # Tabula Europae numbering is not stable across editions, so a plate
+        # number without the edition it belongs to is not a citation.
+        if row["family"] == "ptolemaic" and row["plate_number"] not in {"", PENDING}:
+            if row["edition_state"] in {"", PENDING}:
+                errors.append(
+                    f"{label}: a Tabula Europae number means nothing without the edition it "
+                    "is numbered in; name the edition or leave the plate pending"
+                )
+
+    for missing in sorted(REQUIRED_ACQUISITION_FAMILIES - families):
+        errors.append(
+            f"acquisition-dossiers: the programme's priority families require a "
+            f"'{missing}' dossier, purchasable or not"
+        )
+
+
 def validate_treaty_frontier_sources(errors: list[str]) -> None:
     """KAN-351: legal sources are typed and frozen before geometry is drawn."""
     rows = _read("treaty_frontier_sources", errors)
@@ -1525,6 +1807,369 @@ def _load_gis_geojson(name: str, version_prefix: str, errors: list[str]) -> dict
     if not metadata.get("justification"):
         errors.append(f"{name}: drawn geometry requires a recorded justification")
     return payload
+
+
+def validate_reception_claims(terms, errors: list[str]) -> None:
+    """KAN-368: how a claim is made, and what it may not inherit by looking alike.
+
+    The corpus classifies items; this records what each one asserts and how it
+    stands to the material it invokes. The rule the table exists for is that a
+    contemporary derivative cannot acquire authority from resembling a scholarly
+    map - the visual counterpart of the homonym_only edge in Nomen Errans.
+    """
+    items = {row["item_id"]: row for row in _read("reception_corpus", errors)}
+    rows = _read("reception_claims", errors)
+    _check_unique(rows, "claim_id", "reception-claims", errors)
+    claimed: set[str] = set()
+
+    for row in rows:
+        claim_id = row["claim_id"]
+        label = f"reception-claims[{claim_id}]"
+        if not claim_id.startswith("rcl-") or not SLUG.match(claim_id):
+            errors.append(f"{label}: claim_id must be an rcl- slug")
+        item = items.get(row["item_id"])
+        if item is None:
+            errors.append(f"{label}: item_id '{row['item_id']}' does not resolve")
+        else:
+            claimed.add(row["item_id"])
+        target = items.get(row["relates_to"])
+        if row["relates_to"] and target is None:
+            errors.append(f"{label}: relates_to '{row['relates_to']}' does not resolve")
+        if row["relates_to"] == row["item_id"]:
+            errors.append(f"{label}: a claim cannot relate an item to itself")
+
+        for field in ("claim", "asserted_about", "evidence_note", "uncertainty", "notes"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        if row["claim_kind"] not in RECEPTION_CLAIM_KINDS:
+            errors.append(f"{label}: claim_kind '{row['claim_kind']}' is not recognised")
+        kind = row["relationship_kind"]
+        if kind not in RECEPTION_RELATIONSHIPS:
+            errors.append(f"{label}: relationship_kind '{kind}' is not recognised")
+        if row["interpretation_status"] not in TREATY_INTERPRETATION_STATES:
+            errors.append(f"{label}: interpretation_status is not recognised")
+        _check_vocab(row["confidence"], "confidence", terms, label, "confidence", errors)
+        if row["review_status"] not in SOURCE_LEDGER_REVIEW_STATES:
+            errors.append(f"{label}: review_status '{row['review_status']}' is not recognised")
+
+        if item is None:
+            continue
+
+        # The rule this table is for. A derivative may look exactly like a
+        # scholarly map and inherit nothing from it, so the only relationships
+        # it may assert are ones that claim no descent.
+        if item["source_class"] == "contemporary_derivative" and kind == "derives_from":
+            errors.append(
+                f"{label}: a contemporary derivative cannot claim descent from a historical "
+                "source on the strength of resembling one; use resembles or responds_to"
+            )
+        # A derivation is a claim about transmission and needs its evidence, in
+        # the same way a continuity edge in Nomen Errans does.
+        if kind == "derives_from":
+            if target is not None and target["selection_state"] == "class_only":
+                errors.append(
+                    f"{label}: nothing has been selected from '{row['relates_to']}', so no "
+                    "derivation from it can be evidenced"
+                )
+            if item["selection_state"] == "class_only":
+                errors.append(
+                    f"{label}: a class from which nothing is selected cannot be said to derive "
+                    "from anything in particular"
+                )
+        # Uncertainty travels as text, so a reader who cannot use colour still
+        # gets the contested reading rather than a hue.
+        if row["interpretation_status"] == "disputed" and len(row["uncertainty"]) < 40:
+            errors.append(
+                f"{label}: a disputed claim must state its uncertainty in words, not leave it "
+                "to a colour"
+            )
+
+    for item_id, item in sorted(items.items()):
+        # An item with no claim recorded is decoration: the essay would show it
+        # without being able to say what it asserts.
+        if item_id not in claimed:
+            errors.append(f"reception-claims: '{item_id}' is in the corpus with no claim recorded")
+
+
+def validate_reception_corpus(terms, sources, errors: list[str]) -> None:
+    """KAN-367: the reception corpus, and the rubric that keeps it from arguing.
+
+    Dacia Rediviva is about how antiquity has been used, which means its corpus
+    is full of material that is compelling and is not evidence. The rules that
+    keep those apart are data here rather than editorial intention, so they
+    cannot be forgotten in a later interaction.
+    """
+    rubric = _read("reception_rubric", errors)
+    _check_unique(rubric, "rule_id", "reception-review-rubric", errors)
+    for row in rubric:
+        label = f"reception-review-rubric[{row['rule_id']}]"
+        for field in ("rule", "rationale"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        if row["enforced_by"] not in {"validator", "editorial"}:
+            errors.append(f"{label}: enforced_by must be validator or editorial")
+        if row["binding"] != "yes":
+            errors.append(f"{label}: a rubric rule that does not bind is not a rule")
+    if missing := REQUIRED_RUBRIC_RULES - {row["rule_id"] for row in rubric}:
+        errors.append(f"reception-review-rubric: missing required rules {sorted(missing)}")
+
+    rows = _read("reception_corpus", errors)
+    _check_unique(rows, "item_id", "reception-corpus", errors)
+    classes: set[str] = set()
+
+    for row in rows:
+        item_id = row["item_id"]
+        label = f"reception-corpus[{item_id}]"
+        if not item_id.startswith("rec-") or not SLUG.match(item_id):
+            errors.append(f"{label}: item_id must be a rec- slug")
+        source_class = row["source_class"]
+        classes.add(source_class)
+        if source_class not in RECEPTION_CLASSES:
+            errors.append(f"{label}: source_class '{source_class}' is not recognised")
+        role = row["evidence_role"]
+        if role not in RECEPTION_ROLES:
+            errors.append(f"{label}: evidence_role '{role}' is not recognised")
+        for field in ("title", "historical_context", "notes"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        _check_vocab(
+            row["date_precision"], "date_precision", terms, label, "date_precision", errors
+        )
+        _check_vocab(
+            row["rights_status"], "rights_statement", terms, label, "rights_status", errors
+        )
+        _check_https(row["source_url"], label, "source_url", errors)
+        _check_https(row["rights_basis_url"], label, "rights_basis_url", errors)
+        if row["review_status"] not in SOURCE_LEDGER_REVIEW_STATES:
+            errors.append(f"{label}: review_status '{row['review_status']}' is not recognised")
+        if row["selection_state"] not in RECEPTION_SELECTION:
+            errors.append(f"{label}: selection_state is not recognised")
+        if not row["issued_year"].lstrip("-").isdigit():
+            errors.append(f"{label}: issued_year must be a year")
+        if row["corpus_source_id"] and row["corpus_source_id"] not in sources:
+            errors.append(f"{label}: corpus_source_id does not resolve in sources.csv")
+
+        # rr-2: reception documents its own moment, and never antiquity.
+        if source_class in RECEPTION_NEVER_AUTHORITATIVE and role == "authoritative_evidence":
+            errors.append(
+                f"{label}: {source_class} is evidence about its own moment, not about the "
+                "antiquity it depicts, so it cannot be authoritative_evidence (rubric rr-2)"
+            )
+        # rr-3: apparent detail is not provenance.
+        unidentified = row["creator"] in {"", PENDING} or row["provenance"] in {"", PENDING}
+        if unidentified and role != "reference_artefact":
+            errors.append(
+                f"{label}: an item with no identified creator or provenance may only be a "
+                "reference_artefact (rubric rr-3)"
+            )
+        # rr-5: a class is a finding; an unselected item is not a source.
+        if row["selection_state"] == "class_only" and role != "reference_artefact":
+            errors.append(
+                f"{label}: nothing has been selected from this class, so it cannot carry "
+                f"the role '{role}' (rubric rr-5)"
+            )
+        if row["selection_state"] == "selected" and row["citation"] in {"", PENDING}:
+            errors.append(f"{label}: a selected item must carry its citation")
+
+    # The essay argues across all four registers; dropping one would turn the
+    # comparison into a claim about whichever remained.
+    for missing in sorted(RECEPTION_CLASSES - classes):
+        errors.append(f"reception-corpus: no item represents the '{missing}' class")
+
+
+def validate_acquisition_dossiers(terms, errors: list[str]) -> None:
+    """KAN-363: research dossiers that cannot recommend what they have not identified."""
+    rows = _read("acquisition_dossiers", errors)
+    _check_unique(rows, "dossier_id", "acquisition-dossiers", errors)
+    families: set[str] = set()
+
+    for row in rows:
+        dossier_id = row["dossier_id"]
+        label = f"acquisition-dossiers[{dossier_id}]"
+        if not dossier_id.startswith("acq-") or not SLUG.match(dossier_id):
+            errors.append(f"{label}: dossier_id must be an acq- slug")
+        families.add(row["family"])
+        for field in ("family", "title", "creator", "atlas_context", "notes"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        _check_https(row["source_url"], label, "source_url", errors)
+        _check_vocab(
+            row["date_precision"], "date_precision", terms, label, "date_precision", errors
+        )
+        _check_vocab(
+            row["rights_status"], "rights_statement", terms, label, "rights_status", errors
+        )
+        if row["review_status"] not in SOURCE_LEDGER_REVIEW_STATES:
+            errors.append(f"{label}: review_status '{row['review_status']}' is not recognised")
+        if row["verification_state"] not in VERIFICATION_STATES:
+            errors.append(f"{label}: verification_state is not recognised")
+        if row["acquisition_status"] not in ACQUISITION_STATES:
+            errors.append(f"{label}: acquisition_status is not recognised")
+        # Validity is assessed on the map, never inferred from whether it was
+        # bought: it is required on every row whatever the acquisition state.
+        if row["scholarly_validity"] not in SCHOLARLY_VALIDITY:
+            errors.append(f"{label}: scholarly_validity is not recognised")
+        if not row["issued_year"].lstrip("-").isdigit():
+            errors.append(f"{label}: issued_year must be a year")
+
+        unidentified = [f for f in ACQUISITION_IDENTITY if row[f] in {"", PENDING}]
+        if row["acquisition_status"] == "recommended":
+            if unidentified:
+                errors.append(
+                    f"{label}: a recommendation must identify what it recommends; "
+                    f"still pending: {', '.join(unidentified)}"
+                )
+            if row["verification_state"] != "verified":
+                errors.append(f"{label}: a recommendation requires a verified dossier")
+        # An unverified dossier that has nonetheless filled everything in is the
+        # dangerous case: it looks identified and nobody has checked it.
+        if row["verification_state"] == "verified" and unidentified:
+            errors.append(
+                f"{label}: a verified dossier cannot leave {', '.join(unidentified)} pending"
+            )
+
+        # The Ptolemaic rule, which is the reason this table has a family column:
+        # Tabula Europae numbering is not stable across editions, so a plate
+        # number without the edition it belongs to is not a citation.
+        if row["family"] == "ptolemaic" and row["plate_number"] not in {"", PENDING}:
+            if row["edition_state"] in {"", PENDING}:
+                errors.append(
+                    f"{label}: a Tabula Europae number means nothing without the edition it "
+                    "is numbered in; name the edition or leave the plate pending"
+                )
+
+    for missing in sorted(REQUIRED_ACQUISITION_FAMILIES - families):
+        errors.append(
+            f"acquisition-dossiers: the programme's priority families require a "
+            f"'{missing}' dossier, purchasable or not"
+        )
+
+
+def validate_treaty_frontier(terms, errors: list[str]) -> None:
+    """KAN-352: no timeless line, and no averaged one.
+
+    Every segment is attributed to the instrument that made it and to the years
+    it held. Where two sources give different lines for the same moment both are
+    kept, each naming the other, because a frontier averaged from two claims is
+    one nobody made.
+    """
+    rows = _read("treaty_frontier", errors)
+    _check_unique(rows, "segment_id", "treaty-frontier", errors)
+    payload = _load_gis_geojson("treaty-frontier", "treaty-frontier-", errors)
+    metadata = payload.get("metadata", {})
+    if metadata.get("derivedFromModernBorders") is not False:
+        errors.append("treaty-frontier: derivedFromModernBorders must be explicitly false")
+    shapes = {feature.get("id"): feature for feature in payload.get("features", [])}
+
+    ledgers = {
+        "treaty_frontier_sources": {
+            row["source_id"] for row in _read("treaty_frontier_sources", errors)
+        },
+        "carta_rubra_sources": {row["source_id"] for row in _read("carta_rubra_sources", errors)},
+    }
+    by_id = {row["segment_id"]: row for row in rows}
+    by_phase: dict[str, list[str]] = {}
+
+    for row in rows:
+        segment_id = row["segment_id"]
+        label = f"treaty-frontier[{segment_id}]"
+        if not segment_id.startswith("tf-seg-") or not SLUG.match(segment_id):
+            errors.append(f"{label}: segment_id must be a tf-seg- slug")
+        if not row["phase_id"].startswith("tfp-") or not SLUG.match(row["phase_id"]):
+            errors.append(f"{label}: phase_id must be a tfp- slug")
+        by_phase.setdefault(row["phase_id"], []).append(segment_id)
+
+        for field in ("name", "legal_context", "territorial_scope", "notes"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        if row["line_type"] not in FRONTIER_LINE_TYPES:
+            errors.append(f"{label}: line_type '{row['line_type']}' is not recognised")
+        if row["source_ledger"] not in FRONTIER_LEDGERS:
+            errors.append(f"{label}: source_ledger '{row['source_ledger']}' is not recognised")
+        elif row["source_id"] not in ledgers[row["source_ledger"]]:
+            errors.append(
+                f"{label}: source_id '{row['source_id']}' does not resolve in "
+                f"{row['source_ledger']}"
+            )
+        if row["interpretation_status"] not in TREATY_INTERPRETATION_STATES:
+            errors.append(f"{label}: interpretation_status is not recognised")
+        if row["review_status"] not in SOURCE_LEDGER_REVIEW_STATES:
+            errors.append(f"{label}: review_status '{row['review_status']}' is not recognised")
+        _check_vocab(
+            row["geometry_provenance"], "geometry_provenance", terms,
+            label, "geometry_provenance", errors,
+        )
+        if row["geometry_provenance"] in GIS_UNAVAILABLE_PROVENANCE:
+            errors.append(
+                f"{label}: the ledger records that no instrument here has usable delimitation "
+                f"geometry, so '{row['geometry_provenance']}' would overstate this line"
+            )
+        _check_vocab(row["confidence"], "confidence", terms, label, "confidence", errors)
+
+        # No timeless line: a frontier without a start year is not a phase, and
+        # an end year that precedes its start is not a period.
+        if not row["valid_from"].isdigit():
+            errors.append(f"{label}: a frontier line must say when it began")
+        elif int(row["valid_from"]) < FRONTIER_FROM:
+            errors.append(f"{label}: {row['valid_from']} precedes the ledger's {FRONTIER_FROM}")
+        if row["valid_to"]:
+            if not row["valid_to"].isdigit():
+                errors.append(f"{label}: valid_to must be a year or empty for open-ended")
+            elif row["valid_from"].isdigit() and int(row["valid_to"]) < int(row["valid_from"]):
+                errors.append(f"{label}: the phase ends before it starts")
+
+        alternative = row["alternative_of"]
+        if alternative:
+            other = by_id.get(alternative)
+            if other is None:
+                errors.append(f"{label}: alternative_of '{alternative}' does not resolve")
+            elif other["phase_id"] != row["phase_id"]:
+                errors.append(
+                    f"{label}: an alternative must contest the same phase, not "
+                    f"'{other['phase_id']}'"
+                )
+
+        shape = shapes.get(segment_id)
+        if shape is None:
+            errors.append(f"{label}: no geometry for this segment")
+        elif shape.get("geometry", {}).get("type") != "LineString":
+            errors.append(f"{label}: expected a LineString")
+        else:
+            positions = shape["geometry"].get("coordinates", [])
+            if len(positions) < 2:
+                errors.append(f"{label}: a frontier needs at least two positions")
+            for lon, lat in positions:
+                if not (
+                    LON_RANGE[0] <= lon <= LON_RANGE[1] and LAT_RANGE[0] <= lat <= LAT_RANGE[1]
+                ):
+                    errors.append(f"{label}: position {lon},{lat} is outside the Dacia window")
+                    break
+
+    # Two lines for one phase are a disagreement, and the table has to say so on
+    # both sides rather than leaving a reader to notice the overlap.
+    for phase_id, segments in sorted(by_phase.items()):
+        if len(segments) < 2:
+            continue
+        for segment_id in sorted(segments):
+            row = by_id[segment_id]
+            others = [s for s in segments if s != segment_id]
+            if not row["alternative_of"]:
+                errors.append(
+                    f"treaty-frontier[{segment_id}]: phase '{phase_id}' carries "
+                    f"{len(segments)} lines, so this one must name what it competes with "
+                    f"({', '.join(sorted(others))})"
+                )
+        # At least one of them has to be something other than a treaty line, or
+        # the phase is claiming an instrument contradicted itself.
+        kinds = {by_id[s]["line_type"] for s in segments}
+        if kinds == {"treaty_line"}:
+            errors.append(
+                f"treaty-frontier: phase '{phase_id}' holds only treaty lines; a competing "
+                "line is a proposal or a reconstruction, not a second instrument"
+            )
+
+    for orphan in sorted(set(shapes) - set(by_id)):
+        errors.append(f"treaty-frontier: geometry '{orphan}' has no row in treaty-frontier.csv")
 
 
 def validate_nomen_errans_witnesses(terms, ranks, name_uses, errors: list[str]) -> None:
@@ -1956,6 +2601,10 @@ def validate_inputs() -> list[str]:
         for row in _read("places", errors)
         if row["location_status"] == "located" and row["ref_lon"] and row["ref_lat"]
     }
+    validate_reception_corpus(terms, sources, errors)
+    validate_reception_claims(terms, errors)
+    validate_acquisition_dossiers(terms, errors)
+    validate_treaty_frontier(terms, errors)
     validate_roman_dacia(terms, places, errors)
     validate_principalities(terms, errors)
     validate_josephinian_sheets(terms, places, place_points, errors)
@@ -1981,6 +2630,10 @@ def readiness_lines() -> list[str]:
     carta_claims = _read("carta_rubra_claims", errors)
     borroczyn_sources = _read("borroczyn_seam_sources", errors)
     witnesses = _read("nomen_errans_witnesses", errors)
+    reception = _read("reception_corpus", errors)
+    reception_claims = _read("reception_claims", errors)
+    dossiers = _read("acquisition_dossiers", errors)
+    frontiers = _read("treaty_frontier", errors)
     roman = _read("roman_dacia", errors)
     phases = _read("principalities", errors)
     sheets = _read("josephinian_sheets", errors)
@@ -2022,7 +2675,24 @@ def readiness_lines() -> list[str]:
         f"({sum(1 for row in roman if row['feature_type'] == 'site')} joined to CND places), "
         f"{len(phases)} principality phases across "
         f"{len({row['polity_id'] for row in phases})} polities, "
-        f"{len(sheets)} Josephinian sheets; 0 digitised from a source",
+        f"{len(sheets)} Josephinian sheets, "
+        f"{len(frontiers)} treaty frontier lines across "
+        f"{len({row['phase_id'] for row in frontiers})} phases "
+        f"({sum(1 for row in frontiers if row['alternative_of'])} contested); "
+        f"0 digitised from a source",
+        f"  reception: {len(reception)} items across "
+        f"{len({row['source_class'] for row in reception})} classes; "
+        f"{sum(1 for row in reception if row['selection_state'] == 'selected')} selected, "
+        f"{sum(1 for row in reception if row['evidence_role'] == 'reference_artefact')} "
+        f"held as reference artefacts; {len(reception_claims)} claims, "
+        f"{sum(1 for row in reception_claims if row['relationship_kind'] == 'derives_from')} "
+        f"evidenced derivations and "
+        f"{sum(1 for row in reception_claims if row['relationship_kind'] == 'resembles')} "
+        f"resemblances that inherit nothing",
+        f"  acquisition: {len(dossiers)} dossiers across "
+        f"{len({row['family'] for row in dossiers})} priority families; "
+        f"{sum(1 for row in dossiers if row['verification_state'] == 'verified')} verified, "
+        f"{sum(1 for row in dossiers if row['acquisition_status'] == 'recommended')} recommended",
     ]
 
 

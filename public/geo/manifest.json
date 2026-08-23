@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "geo-1ca5dcb4a7446143",
+  "release": "geo-015d45320b25c121",
   "generatedBy": "scripts/geo-release.mjs",
   "assets": [
     {
@@ -345,6 +345,25 @@
       "sha256": "84285f399879242e663d41f859e9fb0fea50c768e5579831a436584e075f8184",
       "version": "84285f399879",
       "url": "/geo/dacia-josephinian-sheets.geojson?v=84285f399879"
+    },
+    {
+      "id": "dacia-treaty-frontiers",
+      "file": "dacia-treaty-frontiers.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": [
+        "LineString"
+      ],
+      "featureCount": 8,
+      "yearFrom": 1829,
+      "yearTo": 1947,
+      "source": "Terra Chartarum (compiled) - treaty frontier phases 1829-1947, KAN-352",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; instruments after Hertslet and the KAN-351 source ledger; all linework editorial",
+      "bytes": 14361,
+      "sha256": "3442e0999d7bf597c4c0dd224b9ac618303010c8214fd21cc0493c7e2c8b54f2",
+      "version": "3442e0999d7b",
+      "url": "/geo/dacia-treaty-frontiers.geojson?v=3442e0999d7b"
     }
   ]
 }

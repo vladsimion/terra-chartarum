@@ -1043,3 +1043,256 @@ def test_an_obvious_line_still_cannot_be_continuity_without_evidence(dataset):
 
     edit(dataset, "name_use_edges", mutate)
     refuses("a continuity edge must cite an attestation")
+
+
+# --- treaty frontier phases (KAN-352, KAN-353) -------------------------------
+
+
+def test_frontier_line_cannot_claim_it_was_digitised(dataset):
+    """The ledger says no instrument here has usable delimitation geometry."""
+
+    def mutate(rows):
+        find(rows, "segment_id", "tf-seg-danube-1829")["geometry_provenance"] = "source_geometry"
+
+    edit(dataset, "treaty_frontier", mutate)
+    refuses("would overstate this line")
+
+
+def test_frontier_line_must_say_when_it_began(dataset):
+    def mutate(rows):
+        find(rows, "segment_id", "tf-seg-danube-1829")["valid_from"] = ""
+
+    edit(dataset, "treaty_frontier", mutate)
+    refuses("must say when it began")
+
+
+def test_frontier_phase_cannot_end_before_it_starts(dataset):
+    def mutate(rows):
+        find(rows, "segment_id", "tf-seg-dobrudja-1878")["valid_to"] = "1800"
+
+    edit(dataset, "treaty_frontier", mutate)
+    refuses("the phase ends before it starts")
+
+
+def test_competing_lines_must_name_each_other(dataset):
+    """Two lines for one moment are a disagreement, declared on both sides."""
+
+    def mutate(rows):
+        find(rows, "segment_id", "tf-seg-transylvania-1920")["alternative_of"] = ""
+
+    edit(dataset, "treaty_frontier", mutate)
+    refuses("must name what it competes with")
+
+
+def test_a_phase_cannot_hold_two_instruments(dataset):
+    """A competing line is a proposal or a reconstruction, never a second treaty."""
+
+    def mutate(rows):
+        find(rows, "segment_id", "tf-seg-transylvania-1920-demartonne")["line_type"] = "treaty_line"
+
+    edit(dataset, "treaty_frontier", mutate)
+    refuses("not a second instrument")
+
+
+def test_an_alternative_must_contest_the_same_phase(dataset):
+    def mutate(rows):
+        row = find(rows, "segment_id", "tf-seg-transylvania-1920-demartonne")
+        row["phase_id"] = "tfp-1947-paris"
+
+    edit(dataset, "treaty_frontier", mutate)
+    refuses("must contest the same phase")
+
+
+def test_frontier_source_must_resolve_in_its_named_ledger(dataset):
+    """The proposal is cited from the Carta Rubra ledger, not the treaty one."""
+
+    def mutate(rows):
+        row = find(rows, "segment_id", "tf-seg-transylvania-1920-demartonne")
+        row["source_ledger"] = "treaty_frontier_sources"
+
+    edit(dataset, "treaty_frontier", mutate)
+    refuses("does not resolve in treaty_frontier_sources")
+
+
+def test_frontier_geometry_without_a_row_is_rejected(dataset):
+    def mutate(payload):
+        orphan = json.loads(json.dumps(payload["features"][0]))
+        orphan["id"] = "tf-seg-invented"
+        payload["features"].append(orphan)
+
+    edit_geojson(dataset, "treaty-frontier", mutate)
+    refuses("has no row in treaty-frontier.csv")
+
+
+# --- acquisition dossiers (KAN-363) ------------------------------------------
+
+
+def test_recommendation_must_identify_what_it_recommends(dataset):
+    def mutate(rows):
+        find(rows, "dossier_id", "acq-zatta-transilvania")["acquisition_status"] = "recommended"
+
+    edit(dataset, "acquisition_dossiers", mutate)
+    refuses("must identify what it recommends")
+
+
+def test_verified_dossier_cannot_leave_identity_pending(dataset):
+    """The dangerous case: filled in enough to look checked, and unchecked."""
+
+    def mutate(rows):
+        find(rows, "dossier_id", "acq-sanson-dacia")["verification_state"] = "verified"
+
+    edit(dataset, "acquisition_dossiers", mutate)
+    refuses("cannot leave")
+
+
+def test_ptolemaic_plate_number_needs_its_edition(dataset):
+    """Tabula Europae numbering is not stable across editions."""
+
+    def mutate(rows):
+        find(rows, "dossier_id", "acq-ptolemaic-dacia")["plate_number"] = "Tabula Europae IX"
+
+    edit(dataset, "acquisition_dossiers", mutate)
+    refuses("without the edition it is numbered in")
+
+
+def test_priority_family_dossier_cannot_be_dropped(dataset):
+    """The Schwantz dossier exists whether or not a copy is ever purchasable."""
+    edit(
+        dataset,
+        "acquisition_dossiers",
+        lambda rows: [r for r in rows if r["family"] != "schwantz_oltenia"],
+    )
+    refuses("require a 'schwantz_oltenia' dossier")
+
+
+def test_scholarly_validity_is_required_whatever_the_acquisition_state(dataset):
+    """Buying a map does not make it evidence, and declining one does not unmake it."""
+
+    def mutate(rows):
+        row = find(rows, "dossier_id", "acq-schwantz-oltenia")
+        row["acquisition_status"] = "declined"
+        row["scholarly_validity"] = ""
+
+    edit(dataset, "acquisition_dossiers", mutate)
+    refuses("scholarly_validity is not recognised")
+
+
+# --- reception corpus and review rubric (KAN-367) -----------------------------
+
+
+def test_reception_material_cannot_become_evidence_about_antiquity(dataset):
+    """Rubric rr-2: the 1930s map is evidence about the 1930s."""
+
+    def mutate(rows):
+        find(rows, "item_id", "rec-interwar-national")["evidence_role"] = "authoritative_evidence"
+
+    edit(dataset, "reception_corpus", mutate)
+    refuses("not about the antiquity it depicts")
+
+
+def test_an_unsourced_item_can_only_be_a_reference_artefact(dataset):
+    """Rubric rr-3: apparent detail is not provenance."""
+
+    def mutate(rows):
+        row = find(rows, "item_id", "rec-online-derivative")
+        row["source_class"] = "scholarly_reconstruction"
+        row["evidence_role"] = "contextual_evidence"
+
+    edit(dataset, "reception_corpus", mutate)
+    refuses("may only be a reference_artefact")
+
+
+def test_nothing_selected_from_a_class_cannot_carry_a_role(dataset):
+    """Rubric rr-5: a class is a finding; an unselected item is not a source."""
+
+    def mutate(rows):
+        row = find(rows, "item_id", "rec-protochronist")
+        row["creator"] = "A named lithographer"
+        row["provenance"] = "A named holding"
+        row["source_class"] = "scholarly_reconstruction"
+        row["evidence_role"] = "contextual_evidence"
+
+    edit(dataset, "reception_corpus", mutate)
+    refuses("nothing has been selected from this class")
+
+
+def test_a_selected_item_must_carry_its_citation(dataset):
+    def mutate(rows):
+        find(rows, "item_id", "rec-ortelius-parergon")["citation"] = "pending"
+
+    edit(dataset, "reception_corpus", mutate)
+    refuses("must carry its citation")
+
+
+def test_every_reception_class_must_be_represented(dataset):
+    """Dropping a register would turn the comparison into a claim."""
+    edit(
+        dataset,
+        "reception_corpus",
+        lambda rows: [r for r in rows if r["source_class"] != "contemporary_derivative"],
+    )
+    refuses("no item represents the 'contemporary_derivative' class")
+
+
+def test_a_rubric_rule_that_does_not_bind_is_not_a_rule(dataset):
+    def mutate(rows):
+        find(rows, "rule_id", "rr-1")["binding"] = "no"
+
+    edit(dataset, "reception_rubric", mutate)
+    refuses("does not bind is not a rule")
+
+
+def test_the_rubric_cannot_lose_a_required_rule(dataset):
+    edit(dataset, "reception_rubric", lambda rows: [r for r in rows if r["rule_id"] != "rr-1"])
+    refuses("missing required rules")
+
+
+# --- reception claim relationships (KAN-368) ---------------------------------
+
+
+def test_a_derivative_cannot_claim_descent_from_resemblance(dataset):
+    """The visual counterpart of homonym_only: looking alike inherits nothing."""
+
+    def mutate(rows):
+        find(rows, "claim_id", "rcl-online-resemblance")["relationship_kind"] = "derives_from"
+
+    edit(dataset, "reception_claims", mutate)
+    refuses("cannot claim descent from a historical source")
+
+
+def test_a_derivation_cannot_point_at_an_unselected_class(dataset):
+    def mutate(rows):
+        row = find(rows, "claim_id", "rcl-interwar-frontier")
+        row["relationship_kind"] = "derives_from"
+
+    edit(dataset, "reception_claims", mutate)
+    refuses("cannot be said to derive from anything in particular")
+
+
+def test_a_disputed_claim_must_state_its_uncertainty_in_words(dataset):
+    """Contested readings reach a reader who cannot use colour."""
+
+    def mutate(rows):
+        find(rows, "claim_id", "rcl-protochronist-descent")["uncertainty"] = "unclear"
+
+    edit(dataset, "reception_claims", mutate)
+    refuses("must state its uncertainty in words")
+
+
+def test_every_corpus_item_records_what_it_claims(dataset):
+    """An item with no claim is decoration."""
+    edit(
+        dataset,
+        "reception_claims",
+        lambda rows: [r for r in rows if r["item_id"] != "rec-tir-sheets"],
+    )
+    refuses("'rec-tir-sheets' is in the corpus with no claim recorded")
+
+
+def test_a_claim_cannot_relate_an_item_to_itself(dataset):
+    def mutate(rows):
+        row = find(rows, "claim_id", "rcl-ortelius-restores-ptolemy")
+        row["relates_to"] = row["item_id"]
+
+    edit(dataset, "reception_claims", mutate)
+    refuses("cannot relate an item to itself")

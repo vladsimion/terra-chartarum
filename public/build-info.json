@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "gitSha": "fa566e9f4687302058de426eb7975452b76416bc",
-  "builtAt": "2026-08-23T06:40:53.125Z",
+  "gitSha": "61ba02eb4b896443b43c44fccb0f7c0b0755021b",
+  "builtAt": "2026-08-23T10:07:30.403Z",
   "branch": null,
   "deployment": {
     "provider": "local",
@@ -10,6 +10,6 @@
   "releases": {
     "hanseatic": "hse-93858ddbe5f0da50",
     "hanseaticSchemaVersion": 2,
-    "geo": "geo-1ca5dcb4a7446143"
+    "geo": "geo-015d45320b25c121"
   }
 }
