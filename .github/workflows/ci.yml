@@ -122,10 +122,34 @@ jobs:
       - name: Validate sources and generated assets
         run: python scripts/hanseatic/validate.py
 
+  # The CND and Crusades validators already run inside `npm run build` (verify job),
+  # but their rule tests do not. Most of those rules only fire on data nobody has
+  # written yet, so a rule accidentally disabled would pass every other gate silently.
+  #
+  # Each suite needs its own pytest invocation: none of the scripts/* dirs carry an
+  # __init__.py and the module basenames collide (test_build.py and validate.py exist
+  # under more than one), so a single run cannot collect them together.
+  rule-tests:
+    name: CND + Crusades rule tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pytest
+        run: pip install pytest
+      - name: CND rule tests (schemas, promotion ladder, GIS packages)
+        run: python -m pytest scripts/dacia -q
+      - name: Crusades rule tests (source/rights audit, place authority)
+        run: python -m pytest scripts/crusades -q
+
   production-provenance:
     name: Verify canonical production origin
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-    needs: [verify, e2e, lighthouse, vmn-data, hanseatic-data]
+    needs: [verify, e2e, lighthouse, vmn-data, hanseatic-data, rule-tests]
     runs-on: ubuntu-latest
     environment:
       name: production
