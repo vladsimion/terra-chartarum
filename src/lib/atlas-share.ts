@@ -1,3 +1,16 @@
+/**
+ * The Atlas share contract (KAN-172/188-192, extended for the scalable
+ * catalogue by ATLAS-1209 / KAN-405).
+ *
+ * Every existing parameter keeps its name and meaning: the essay deep links
+ * already in published prose have to keep working, so the catalogue additions
+ * are new keys rather than a new scheme.
+ *
+ * `layers` is the composition and is the only thing that decides what is drawn.
+ * `collection` is context, not activation - arriving through a collection link
+ * shows you the argument and leaves the map alone, and a link that means
+ * "activate the defaults" says so by listing them in `layers`.
+ */
 export interface AtlasShareState {
   query?: string;
   essay?: string;
@@ -8,7 +21,18 @@ export interface AtlasShareState {
   layers?: string[];
   feature?: string;
   toponyms?: boolean;
+  /** Which lens the browser is showing. Cosmetic alone, but cheap and useful in a shared view. */
+  lens?: AtlasShareLens;
+  /** Collection context. Never implies activation. */
+  collection?: string;
+  /** The inspected layer. Focus is not activation, so this never draws anything. */
+  layer?: string;
+  /** The catalogue's "only layers relevant to the selected year" filter. */
+  relevant?: boolean;
 }
+
+export const ATLAS_SHARE_LENSES = ['themes', 'collections', 'rooms'] as const;
+export type AtlasShareLens = (typeof ATLAS_SHARE_LENSES)[number];
 
 const SAFE_ID = /^[a-z0-9]+(?:[-_][a-z0-9]+)*$/i;
 
@@ -28,6 +52,8 @@ export function parseAtlasShareState(search: string): AtlasShareState {
     const value = params.get(key)?.trim();
     return value && SAFE_ID.test(value) ? value : undefined;
   };
+  const rawLens = params.get('lens')?.trim();
+  const lens = ATLAS_SHARE_LENSES.find((candidate) => candidate === rawLens);
   return {
     query: params.get('q')?.trim() || undefined,
     essay: safe('essay'),
@@ -38,6 +64,10 @@ export function parseAtlasShareState(search: string): AtlasShareState {
     layers: layers.length ? [...new Set(layers)] : undefined,
     feature: safe('feature'),
     toponyms: params.get('toponyms') === '1',
+    lens,
+    collection: safe('collection'),
+    layer: safe('layer'),
+    relevant: params.get('relevant') === '1',
   };
 }
 
@@ -56,5 +86,9 @@ export function buildAtlasShareUrl(baseUrl: string, state: AtlasShareState): str
   set('layers', state.layers?.length ? [...new Set(state.layers)].sort().join(',') : undefined);
   set('feature', state.feature);
   set('toponyms', state.toponyms ? '1' : undefined);
+  set('lens', state.lens);
+  set('collection', state.collection);
+  set('layer', state.layer);
+  set('relevant', state.relevant ? '1' : undefined);
   return url.toString();
 }

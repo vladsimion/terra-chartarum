@@ -167,6 +167,165 @@ test.describe('atlas layer browser', () => {
     await expect(page.locator('[data-active-layers]')).toBeHidden();
   });
 
+  // --- Share and deep-link state (ATLAS-1209 / KAN-405) ---
+
+  test('a shared link restores the view it was seen through', async ({ page }) => {
+    await page.goto(
+      '/atlas/?lens=rooms&collection=hanseatic-world&layer=hanseatic-routes&relevant=1&year=1400',
+    );
+    await expect(page.locator('[data-atlasmap][data-layer-browser-ready="true"]')).toBeAttached({
+      timeout: MAP_READY,
+    });
+
+    await expect(page.locator('[data-lens="rooms"]')).toHaveAttribute('aria-selected', 'true');
+    await expect(page.locator('[data-year-relevance]')).toBeChecked();
+    await expect(page.locator('[data-dossier-for="hanseatic-routes"]')).toBeVisible();
+    await expect(page.locator('input[type="range"]')).toHaveValue('1400');
+  });
+
+  test('collection context restores without drawing the collection', async ({ page }) => {
+    await page.goto('/atlas/?lens=collections&collection=venetian-maritime-network');
+    await expect(page.locator('[data-atlasmap][data-layer-browser-ready="true"]')).toBeAttached({
+      timeout: MAP_READY,
+    });
+
+    // The argument is open...
+    await expect(page.locator('[data-group-toggle="venetian-maritime-network"]')).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    );
+    // ...and nothing was drawn on the reader's behalf.
+    await expect(inComposition(page, /ports/i)).toHaveCount(0);
+    await expect(inComposition(page, /galley routes/i)).toHaveCount(0);
+  });
+
+  test('an unknown lens, collection or layer still opens a working Atlas', async ({ page }) => {
+    await page.goto('/atlas/?lens=galaxies&collection=no-such-collection&layer=retired-layer');
+    await expect(page.locator('[data-atlasmap][data-layer-browser-ready="true"]')).toBeAttached({
+      timeout: MAP_READY,
+    });
+
+    // Falls back to the default lens rather than failing to render.
+    await expect(page.locator('[data-lens="themes"]')).toHaveAttribute('aria-selected', 'true');
+    await expect(page.locator('[data-dossier-for]:not([hidden])')).toHaveCount(0);
+    await expect(page.locator('[data-layer-browser]')).toBeVisible();
+  });
+
+  test('catalogue state is recorded in the URL as the reader moves', async ({ page }) => {
+    await openAtlas(page);
+
+    await page.locator('[data-lens="rooms"]').click();
+    await expect(page).toHaveURL(/lens=rooms/);
+
+    // The default lens is the absence of the parameter, not `lens=themes`:
+    // an unshared default should not clutter a scholarly link.
+    await page.locator('[data-lens="themes"]').click();
+    await expect(page).not.toHaveURL(/lens=/);
+  });
+
+  // --- Responsive shell and keyboard operation (ATLAS-1210 / KAN-406) ---
+
+  test('the catalogue becomes a dismissible sheet on a phone', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await openAtlas(page);
+
+    const trigger = page.locator('[data-browser-drawer]');
+    const sheet = page.locator('[data-browser-sheet]');
+    await expect(trigger).toBeVisible();
+    await expect(sheet).toBeHidden();
+
+    await trigger.click();
+    await expect(trigger).toHaveAttribute('aria-expanded', 'true');
+    await expect(sheet).toBeVisible();
+
+    // Escape closes it and hands focus back to the control that opened it, so a
+    // keyboard user is never left inside a hidden panel.
+    await page.keyboard.press('Escape');
+    await expect(sheet).toBeHidden();
+    await expect(trigger).toBeFocused();
+  });
+
+  test('closing the sheet preserves search, year and composition', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await openAtlas(page);
+
+    await page.locator('[data-browser-drawer]').click();
+    await page.locator('[data-layer-search]').fill('treaty frontiers');
+    await page.locator('input[type="range"]').fill('1850');
+    await page.locator('[data-browser-close]').click();
+    await expect(page.locator('[data-browser-sheet]')).toBeHidden();
+
+    await page.locator('[data-browser-drawer]').click();
+    await expect(page.locator('[data-layer-search]')).toHaveValue('treaty frontiers');
+    await expect(page.locator('input[type="range"]')).toHaveValue('1850');
+  });
+
+  test('the catalogue is inline on a desktop viewport', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 860 });
+    await openAtlas(page);
+    await expect(page.locator('[data-browser-drawer]')).toBeHidden();
+    await expect(page.locator('[data-browser-sheet]')).toBeVisible();
+  });
+
+  test('the whole layer-management path works without a pointer', async ({ page }) => {
+    await openAtlas(page);
+
+    // Switch lens.
+    await page.locator('[data-lens="collections"]').focus();
+    await page.keyboard.press('Enter');
+    await expect(page.locator('[data-lens="collections"]')).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+
+    // Expand a collection.
+    const toggle = page.locator('[data-group-toggle="venetian-maritime-network"]');
+    await toggle.focus();
+    await page.keyboard.press('Enter');
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+
+    // Activate its defaults.
+    await page.locator('[data-activate-collection="venetian-maritime-network"]').focus();
+    await page.keyboard.press('Enter');
+    await expect(inComposition(page, /ports/i)).toHaveCount(1, { timeout: MAP_READY });
+
+    // Inspect from the Active Layers panel.
+    await page.locator('.aal-inspect').first().focus();
+    await page.keyboard.press('Enter');
+    await expect(page.locator('[data-dossier-for]:not([hidden])')).toHaveCount(1);
+
+    // Dismiss the inspector.
+    await page.locator('[data-inspector-close]').focus();
+    await page.keyboard.press('Enter');
+    await expect(page.locator('[data-dossier-for]:not([hidden])')).toHaveCount(0);
+
+    // Remove a layer, and land on something focusable.
+    await page.locator('.aal-remove').first().focus();
+    await page.keyboard.press('Enter');
+    await expect(inComposition(page, /ports/i)).toHaveCount(0);
+    await expect(page.locator(':focus')).toHaveCount(1);
+  });
+
+  test('meaning does not depend on colour alone', async ({ page }) => {
+    await openAtlas(page);
+
+    // The selected lens carries weight and an inset rule, not just a hue.
+    await page.locator('[data-lens="rooms"]').click();
+    const weight = await page
+      .locator('[data-lens="rooms"]')
+      .evaluate((el) => getComputedStyle(el).fontWeight);
+    expect(Number(weight)).toBeGreaterThanOrEqual(600);
+
+    // Out-of-year state is words, not a colour swatch.
+    await page.locator('[data-lens="collections"]').click();
+    await page
+      .locator('[data-activate-collection="venetian-maritime-network"]')
+      .click({ timeout: MAP_READY });
+    await expect(inComposition(page, /ports/i)).toHaveCount(1, { timeout: MAP_READY });
+    await page.locator('input[type="range"]').fill('200');
+    await expect(page.locator('.aal-outside').first()).toHaveText(/outside selected year/i);
+  });
+
   test('the browser has no accessibility violations', async ({ page }) => {
     await openAtlas(page);
     await openCollections(page);

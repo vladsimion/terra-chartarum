@@ -28,3 +28,95 @@
     A layer outside the selected year keeps its place here. Move the year or remove it.
   </p>
 </section>
+
+<style>
+  /* --- Active layers (KAN-401) --- */
+  .aal {
+    border-top: 1px solid var(--rule, #3a352b);
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+  }
+  .aal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+  .aal-head h3 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted, #8a8171);
+    margin: 0;
+  }
+  .aal-count {
+    color: inherit;
+  }
+  .aal-clear {
+    font: inherit;
+    font-size: 0.75rem;
+    background: transparent;
+    color: var(--muted, #8a8171);
+    border: 1px solid var(--rule, #3a352b);
+    border-radius: 3px;
+    padding: 0.15rem 0.5rem;
+    cursor: pointer;
+  }
+  .aal-list {
+    list-style: none;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.3rem;
+  }
+  .aal-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+  }
+  .aal-name {
+    flex: 1;
+  }
+  .aal-outside {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent, #d4b87a);
+  }
+  .aal-inspect,
+  .aal-remove {
+    font: inherit;
+    font-size: 0.72rem;
+    background: transparent;
+    color: var(--muted, #8a8171);
+    border: 1px solid var(--rule, #3a352b);
+    border-radius: 3px;
+    padding: 0.1rem 0.4rem;
+    cursor: pointer;
+  }
+  .aal-note {
+    margin: 0.5rem 0 0;
+    font-size: 0.75rem;
+    color: var(--muted, #8a8171);
+  }
+
+  /* Touch targets on coarse pointers (KAN-406). */
+  @media (pointer: coarse) {
+    .aal-inspect,
+    .aal-remove,
+    .aal-clear {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  }
+
+  @media (max-width: 800px) {
+    /* Active Layers stays outside the catalogue sheet: the composition must
+       remain visible and editable without reopening the whole catalogue to
+       remove one layer. */
+    .aal {
+      margin-top: 0.75rem;
+    }
+  }
+</style>
