@@ -20,11 +20,54 @@ Review every manifest diff. A changed asset must produce a changed `sha256`,
 `?v=<12-char-sha256>` URL, so unchanged assets remain cacheable while a new
 binary cannot be confused with the previous release.
 
+## Classify a layer
+
+Every registry entry declares a `role`, and the Atlas classifies, groups and
+searches on that rather than on the display title or on which essay owns the
+layer. The vocabularies live in `src/lib/geo.ts` and are the single source of
+truth.
+
+| `role`        | What the layer claims                                        |
+| ------------- | ------------------------------------------------------------ |
+| `context`     | Neutral framing geography; asserts nothing about the past.   |
+| `historical`  | A reconstructed past state - the scholarly payload.          |
+| `evidence`    | What a source depicts or covers, not what was on the ground. |
+| `map-overlay` | A georeferenced historical map surface.                      |
+
+Non-context layers also declare a `category` from the closed vocabulary:
+`territories-boundaries`, `networks-circulation`, `places-settlements`,
+`names-peoples-attestations`, `conflict-campaigns-frontiers`,
+`cartographic-evidence`, `historical-map-overlays`. A new category is a
+vocabulary decision, not a per-layer choice; narrower families go in the open
+`subcategory` field instead.
+
+Three rules are enforced at parse time, so a malformed entry fails the build:
+
+- a `historical`, `evidence` or `map-overlay` layer must declare a `category`;
+- a `context` layer must **not** declare one - that is what stops modern
+  national boundaries being filed as historical evidence;
+- a `map-overlay` outside `historical-map-overlays` must justify itself in
+  `categoryException`.
+
+`lifecycle` (`published` / `in-review` / `in-preparation` / `planned`) is a
+statement about the scholarship, never about whether the binary exists. A layer
+can be `published` with an empty asset - `dacia-attestations` ships its contract
+ahead of the human review that will fill it - and asset presence stays the
+release manifest's job. `tags` carry search synonyms without touching `title`,
+`featured` controls editorial prominence, and `sortWeight` fixes catalogue order.
+`collectionIds` references the collection registry.
+
+Documentation links are audited and classified in
+[the Atlas GIS documentation audit](atlas-documentation-audit.md): every entry
+carries an audience, a canonical owner and a proposed public destination, and a
+reconciliation test fails the build if the registry and the inventory diverge.
+
 ## Register and load a layer
 
 1. Add the source/licence/CRS/temporal record to `data/geo/catalog.json`.
 2. Put the publishable `.geojson`, `.fgb` or `.pmtiles` asset in `public/geo/`.
-3. Register the same ID and metadata in `src/lib/geo.ts`.
+3. Register the same ID and metadata in `src/lib/geo.ts`, including its `role`,
+   `category`, `subcategory`, `tags` and `sortWeight`.
 4. Run `npm run geo:manifest`, `npm run geo:validate` and the relevant format
    validator.
 
