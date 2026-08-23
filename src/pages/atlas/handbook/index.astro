@@ -1,0 +1,187 @@
+---
+/**
+ * Atlas Handbook landing page (ATLAS-1215 / KAN-411).
+ *
+ * The reference section of the publication: what the layers claim, what the
+ * evidence is, what the words mean. It opens with orientation in plain language
+ * and keeps the technical gateway last, because a reader arriving from a map
+ * needs to know what they are looking at before they need to know how it builds.
+ */
+import PortalLayout from '../../../layouts/PortalLayout.astro';
+import { loadHandbook, loadHandbookCoverage } from '../../../lib/handbook-content';
+import { HANDBOOK_ROOT } from '../../../lib/handbook';
+
+const projection = await loadHandbook();
+const coverage = await loadHandbookCoverage();
+const documented = coverage.rows.filter((row) => row.documented);
+
+const sections = [
+  {
+    title: 'Layer catalogue',
+    href: `${HANDBOOK_ROOT}layers/`,
+    blurb: 'Every documented layer, what it claims and what it rests on.',
+    count: documented.length,
+  },
+  {
+    title: 'Methods',
+    href: `${HANDBOOK_ROOT}methods/`,
+    blurb: 'How a reconstruction was made, written once and cited by the layers that use it.',
+    count: projection.docs.filter((d) => d.doc.docType === 'method').length,
+  },
+  {
+    title: 'Sources and evidence',
+    href: `${HANDBOOK_ROOT}evidence/`,
+    blurb: 'Ledgers of instruments, witnesses and authorities behind the source-heavy layers.',
+    count: projection.docs.filter((d) => d.doc.docType === 'evidence').length,
+  },
+  {
+    title: 'Glossary',
+    href: `${HANDBOOK_ROOT}glossary/`,
+    blurb: 'The words this atlas uses about evidence and uncertainty, and what each commits to.',
+    count: projection.docs.filter((d) => d.doc.docType === 'glossary').length,
+  },
+  {
+    title: 'Data fields',
+    href: `${HANDBOOK_ROOT}data-fields/`,
+    blurb: 'Field meanings and controlled vocabularies, for reading the map and reusing the data.',
+    count: projection.docs.filter((d) => d.doc.docType === 'data-fields').length,
+  },
+  {
+    title: 'Editorial decisions',
+    href: `${HANDBOOK_ROOT}decisions/`,
+    blurb: 'Choices that shape what you see, and the reasoning behind them.',
+    count: projection.docs.filter((d) => d.doc.docType === 'editorial-decision').length,
+  },
+  {
+    title: 'Technical and reproducibility',
+    href: `${HANDBOOK_ROOT}technical/`,
+    blurb: 'Pipelines, schemas and release manifests. Not needed to read the atlas.',
+    count: projection.docs.filter((d) => d.doc.docType === 'technical').length,
+  },
+];
+---
+
+<PortalLayout
+  title="Atlas Handbook"
+  description="What each layer of the Atlas claims, what evidence it rests on, and how much of it was reconstructed."
+>
+  <main class="shell handbook-home">
+    <header>
+      <p class="eyebrow">Atlas reference</p>
+      <h1>Atlas Handbook</h1>
+      <p class="lede">
+        Every layer on this atlas makes a claim, and no claim is self-evident from a coloured line.
+        The Handbook is where each one is stated in plain language: what you are looking at, what it
+        rests on, how much of it was drawn rather than found, and what may be cited.
+      </p>
+      <p>
+        Nothing here requires knowing how the site is built. The repository stays reachable from
+        every page for anyone reproducing the work, and it is never the explanation.
+      </p>
+    </header>
+
+    <section aria-labelledby="how">
+      <h2 id="how">How to read the Atlas</h2>
+      <p>
+        Three distinctions carry most of the weight. A <strong>context</strong> layer frames the map and
+        asserts nothing about the past - present-day borders are context, and drawing them over historical
+        material is an anachronism the atlas labels rather than hides. A
+        <strong>historical</strong> layer is a reconstruction of a past state, and is the only kind of
+        layer that can be cited as a claim about what was there. An <strong>evidence</strong> layer describes
+        a source: a depicted extent tells you what a map shows, not what existed.
+      </p>
+      <p>
+        Where a line was drawn by this project rather than taken from a survey, the layer says so
+        and the styling shows it. See the <a href={`${HANDBOOK_ROOT}glossary/`}>glossary</a> for the vocabulary
+        of confidence, provenance and review.
+      </p>
+    </section>
+
+    <section aria-labelledby="sections">
+      <h2 id="sections">Sections</h2>
+      <ul class="cards">
+        {
+          sections.map((section) => (
+            <li>
+              <h3>
+                <a href={section.href}>{section.title}</a>
+              </h3>
+              <p>{section.blurb}</p>
+              <p class="count">
+                {section.count} {section.count === 1 ? 'record' : 'records'}
+              </p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section aria-labelledby="coverage">
+      <h2 id="coverage">What is documented so far</h2>
+      <p>
+        {documented.length} of {coverage.rows.length} published layers have a public record. The remainder
+        are being migrated programme by programme; until then their evidence lives in the repository,
+        which is exactly the situation this Handbook exists to end. The current gap list is published
+        as <a href="/data/handbook-coverage.json">machine-readable coverage</a>.
+      </p>
+    </section>
+  </main>
+</PortalLayout>
+
+<style>
+  .handbook-home {
+    padding-block: 2rem 4rem;
+  }
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.75rem;
+    margin: 0;
+    color: var(--muted, #8a8171);
+  }
+  h1 {
+    margin-block: 0.25rem 1rem;
+  }
+  .lede {
+    font-size: 1.2rem;
+  }
+  p {
+    max-width: 40rem;
+    line-height: 1.65;
+  }
+  section {
+    margin-block: 2.5rem;
+  }
+  .cards {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 45rem) {
+    .cards {
+      grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    }
+  }
+  .cards li {
+    border: 1px solid var(--rule, #3a352b);
+    border-radius: 4px;
+    padding: 1rem 1.15rem;
+  }
+  .cards h3 {
+    margin-block: 0 0.4rem;
+    font-size: 1.05rem;
+  }
+  .cards p {
+    margin: 0;
+    font-size: 0.92rem;
+  }
+  .count {
+    margin-top: 0.5rem !important;
+    font-size: 0.75rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted, #8a8171);
+  }
+</style>

@@ -1,5 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { ROOM_SLUGS } from '../data/rooms';
+import { HandbookDocFields } from '../lib/handbook';
 
 // Canonical meta-lens dimensions (see registry.ts crosswalk, §5 of the plan).
 export const CANONICAL_DIMENSIONS = [
@@ -70,4 +71,22 @@ const essays = defineCollection({
   }),
 });
 
-export const collections = { essays };
+/**
+ * Atlas Handbook documents (ATLAS-1216 / KAN-412).
+ *
+ * Frontmatter is validated here; the cross-field rules and the whole-corpus
+ * checks live in `src/lib/handbook.ts` and run in the projection, because a
+ * duplicate route or an unresolved reference is only visible with every document
+ * in hand. A Pattern A record leaves its body empty and names `sourcePath`: the
+ * prose stays in the repository document it came from, so publishing never
+ * creates a second copy to drift.
+ */
+const handbook = defineCollection({
+  type: 'content',
+  schema: HandbookDocFields.extend({
+    /** Pattern A only: the repository Markdown this page projects. */
+    sourcePath: z.string().optional(),
+  }),
+});
+
+export const collections = { essays, handbook };

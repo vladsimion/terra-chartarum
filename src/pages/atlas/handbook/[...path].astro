@@ -1,0 +1,163 @@
+---
+/**
+ * Handbook document and section-index routes (ATLAS-1215 / KAN-411).
+ *
+ * One catch-all serves every non-layer Handbook route: the section indexes
+ * (`/methods/`, `/evidence/`, ...) and the documents inside them. Routing them
+ * from the frozen contract in `handbook.ts` rather than from a file per section
+ * means a new document type is a model change, not seven new page files that can
+ * drift apart.
+ */
+import HandbookShell from '../../../components/handbook/HandbookShell.astro';
+import CitationPanel from '../../../components/handbook/CitationPanel.astro';
+import TechnicalLinks from '../../../components/handbook/TechnicalLinks.astro';
+import { loadHandbook } from '../../../lib/handbook-content';
+import { renderHandbookMarkdown } from '../../../lib/handbook-render';
+import { HANDBOOK_ROOT } from '../../../lib/handbook';
+import {
+  HANDBOOK_SECTIONS,
+  sectionForDocType,
+  type HandbookSection,
+} from '../../../lib/handbook-sections';
+import type { ProjectedDoc } from '../../../lib/handbook-projection';
+
+export async function getStaticPaths() {
+  const projection = await loadHandbook();
+  const paths: {
+    params: { path: string };
+    props: { entry?: ProjectedDoc; index?: HandbookSection };
+  }[] = [];
+
+  for (const section of HANDBOOK_SECTIONS) {
+    paths.push({ params: { path: section.path }, props: { index: section } });
+  }
+
+  for (const entry of projection.docs) {
+    // Layer records have their own canonical route under /atlas/layers/.
+    if (entry.doc.docType === 'layer') continue;
+    const relative = entry.route.slice(HANDBOOK_ROOT.length).replace(/\/$/, '');
+    paths.push({ params: { path: relative }, props: { entry } });
+  }
+
+  return paths;
+}
+
+const { entry, index } = Astro.props;
+const projection = await loadHandbook();
+
+const rendered = entry ? await renderHandbookMarkdown(entry.body) : null;
+const members = index
+  ? projection.docs
+      .filter((doc) => doc.doc.docType === index.docType)
+      .sort((a, b) => a.doc.title.localeCompare(b.doc.title))
+  : [];
+const title = entry ? entry.doc.title : index!.title;
+const description = entry ? entry.doc.summary : index!.blurb;
+const section = entry ? sectionForDocType(entry.doc.docType) : index;
+---
+
+<HandbookShell
+  title={title}
+  description={description}
+  eyebrow={entry ? section?.title : 'Atlas Handbook'}
+  breadcrumbs={[
+    { label: 'Atlas', href: '/atlas/' },
+    { label: 'Handbook', href: HANDBOOK_ROOT },
+    ...(entry && section
+      ? [{ label: section.title, href: `${HANDBOOK_ROOT}${section.path}/` }]
+      : []),
+    { label: title },
+  ]}
+  headings={rendered?.headings ?? []}
+>
+  <Fragment slot="header">
+    <p class="lede">{description}</p>
+    {
+      entry && entry.doc.lifecycle === 'in-review' && (
+        <p class="review-note" role="note">
+          <strong>Under review.</strong> This record describes material no human has yet cleared. It
+          may be read and argued with; it may not be cited as established evidence.
+        </p>
+      )
+    }
+  </Fragment>
+
+  {rendered && <div class="prose" set:html={rendered.html} />}
+
+  {
+    index && (
+      <section class="listing" aria-label={index.title}>
+        {members.length === 0 ? (
+          <p class="empty">
+            No records here yet. This section fills as the programme documentation is migrated out
+            of the repository.
+          </p>
+        ) : (
+          <ul>
+            {members.map((member) => (
+              <li>
+                <h2>
+                  <a href={member.route}>{member.doc.title}</a>
+                </h2>
+                <p>{member.doc.summary}</p>
+                <p class="meta">
+                  {member.doc.programme}
+                  {member.doc.lastReviewed && <> &middot; reviewed {member.doc.lastReviewed}</>}
+                </p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    )
+  }
+
+  {
+    entry && (
+      <CitationPanel
+        route={entry.route}
+        citation={entry.doc.citation}
+        lastReviewed={entry.doc.lastReviewed}
+      />
+    )
+  }
+
+  {entry && <TechnicalLinks links={entry.doc.technicalLinks} />}
+</HandbookShell>
+
+<style>
+  .lede {
+    font-size: 1.15rem;
+    max-width: 40rem;
+  }
+  .review-note {
+    border-left: 3px solid var(--accent, #d4b87a);
+    padding: 0.5rem 0 0.5rem 1rem;
+    max-width: 40rem;
+  }
+  .listing ul {
+    list-style: none;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+  .listing h2 {
+    margin-block: 0 0.35rem;
+    font-size: 1.1rem;
+  }
+  .listing p {
+    margin: 0;
+    max-width: 40rem;
+  }
+  .meta {
+    margin-top: 0.35rem !important;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted, #8a8171);
+  }
+  .empty {
+    color: var(--muted, #8a8171);
+  }
+</style>

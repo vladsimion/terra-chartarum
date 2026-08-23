@@ -61,6 +61,15 @@ Documentation links are audited and classified in
 [the Atlas GIS documentation audit](atlas-documentation-audit.md): every entry
 carries an audience, a canonical owner and a proposed public destination, and a
 reconciliation test fails the build if the registry and the inventory diverge.
+Their public destination is the Atlas Handbook - see
+[the content model](atlas-handbook-model.md) for the route and lifecycle
+contract, and [the authoring workflow](atlas-handbook-authoring.md) for how to
+publish a record.
+
+Collections bundle layers into curated arguments. A collection is declared in
+`src/lib/geo-collections.ts`, references layers by canonical ID and stores its
+own defaults, because whether a layer should be on when you arrive is a property
+of the composition, not of the layer.
 
 ## Register and load a layer
 

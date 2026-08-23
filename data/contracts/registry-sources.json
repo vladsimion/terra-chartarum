@@ -20,7 +20,11 @@
       "family": "map",
       "idField": "id",
       "idPattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
-      "source": { "format": "typescript-array", "path": "src/lib/corpus.ts", "variable": "RAW" }
+      "source": {
+        "format": "typescript-array",
+        "path": "src/lib/corpus.ts",
+        "variable": "RAW"
+      }
     },
     {
       "name": "cartographers",
@@ -52,7 +56,11 @@
       "family": "place",
       "idField": "id",
       "idPattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
-      "source": { "format": "typescript-array", "path": "src/lib/toponyms.ts", "variable": "RAW" }
+      "source": {
+        "format": "typescript-array",
+        "path": "src/lib/toponyms.ts",
+        "variable": "RAW"
+      }
     },
     {
       "name": "layers",
@@ -60,7 +68,23 @@
       "family": "layer",
       "idField": "id",
       "idPattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
-      "source": { "format": "typescript-array", "path": "src/lib/geo.ts", "variable": "RAW" }
+      "source": {
+        "format": "typescript-array",
+        "path": "src/lib/geo.ts",
+        "variable": "RAW"
+      }
+    },
+    {
+      "name": "collections",
+      "authority": "atlas",
+      "family": "collection",
+      "idField": "id",
+      "idPattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "source": {
+        "format": "typescript-array",
+        "path": "src/lib/geo-collections.ts",
+        "variable": "RAW"
+      }
     },
     {
       "name": "geo-release-assets",
@@ -68,7 +92,11 @@
       "family": "dataset",
       "idField": "id",
       "idPattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
-      "source": { "format": "json-array", "path": "data/geo/catalog.json", "property": "assets" }
+      "source": {
+        "format": "json-array",
+        "path": "data/geo/catalog.json",
+        "property": "assets"
+      }
     },
     {
       "name": "vmn-ports",
@@ -76,21 +104,30 @@
       "family": "port",
       "idField": "port_id",
       "coalesceIds": true,
-      "source": { "format": "csv", "path": "data/vmn/ports.csv" }
+      "source": {
+        "format": "csv",
+        "path": "data/vmn/ports.csv"
+      }
     },
     {
       "name": "vmn-waypoints",
       "authority": "vmn",
       "family": "place",
       "idField": "waypoint_id",
-      "source": { "format": "csv", "path": "data/vmn/waypoints.csv" }
+      "source": {
+        "format": "csv",
+        "path": "data/vmn/waypoints.csv"
+      }
     },
     {
       "name": "vmn-routes",
       "authority": "vmn",
       "family": "route",
       "idField": "route_id",
-      "source": { "format": "csv", "path": "data/vmn/routes.csv" }
+      "source": {
+        "format": "csv",
+        "path": "data/vmn/routes.csv"
+      }
     },
     {
       "name": "vmn-territories",
@@ -98,28 +135,40 @@
       "family": "period",
       "idField": "territory",
       "coalesceIds": true,
-      "source": { "format": "csv", "path": "data/vmn/events.csv" }
+      "source": {
+        "format": "csv",
+        "path": "data/vmn/events.csv"
+      }
     },
     {
       "name": "vmn-sources",
       "authority": "vmn",
       "family": "source",
       "idField": "key",
-      "source": { "format": "csv", "path": "data/vmn/sources.csv" }
+      "source": {
+        "format": "csv",
+        "path": "data/vmn/sources.csv"
+      }
     },
     {
       "name": "vmn-commodities",
       "authority": "vmn",
       "family": "dataset",
       "idField": "commodity_id",
-      "source": { "format": "csv", "path": "data/vmn/commodities.csv" }
+      "source": {
+        "format": "csv",
+        "path": "data/vmn/commodities.csv"
+      }
     },
     {
       "name": "vmn-atlas-links",
       "authority": "vmn",
       "family": "event",
       "idField": "beat_id",
-      "source": { "format": "csv", "path": "data/vmn/atlas_links.csv" }
+      "source": {
+        "format": "csv",
+        "path": "data/vmn/atlas_links.csv"
+      }
     },
     {
       "name": "cnd-places",
@@ -127,7 +176,10 @@
       "family": "place",
       "idField": "place_id",
       "idPattern": "^plc-[a-z0-9]+(?:-[a-z0-9]+)*$",
-      "source": { "format": "csv", "path": "data/dacia/places.csv" }
+      "source": {
+        "format": "csv",
+        "path": "data/dacia/places.csv"
+      }
     },
     {
       "name": "cnd-sources",
@@ -135,7 +187,10 @@
       "family": "source",
       "idField": "source_id",
       "idPattern": "^src-[a-z0-9]+(?:-[a-z0-9]+)*$",
-      "source": { "format": "csv", "path": "data/dacia/sources.csv" }
+      "source": {
+        "format": "csv",
+        "path": "data/dacia/sources.csv"
+      }
     },
     {
       "name": "cnd-attestations",
@@ -143,7 +198,10 @@
       "family": "event",
       "idField": "attestation_id",
       "idPattern": "^att-[0-9]{4,}$",
-      "source": { "format": "csv", "path": "data/dacia/attestations.csv" }
+      "source": {
+        "format": "csv",
+        "path": "data/dacia/attestations.csv"
+      }
     },
     {
       "name": "cnd-name-uses",
@@ -151,7 +209,11 @@
       "family": "dataset",
       "idField": "name_use_id",
       "idPattern": "^nmu-[a-z0-9]+(?:-[a-z0-9]+)*$",
-      "source": { "format": "csv", "path": "data/dacia/name-uses.csv", "optional": true }
+      "source": {
+        "format": "csv",
+        "path": "data/dacia/name-uses.csv",
+        "optional": true
+      }
     },
     {
       "name": "cnd-name-use-edges",
@@ -170,35 +232,50 @@
       "authority": "ccd",
       "family": "project",
       "idField": "id",
-      "source": { "format": "csv", "path": "data/dacia/reference/programme-ids.csv" }
+      "source": {
+        "format": "csv",
+        "path": "data/dacia/reference/programme-ids.csv"
+      }
     },
     {
       "name": "hse-places",
       "authority": "hse",
       "family": "place",
       "idField": "place_id",
-      "source": { "format": "csv", "path": "data/hanseatic/sources/places.csv" }
+      "source": {
+        "format": "csv",
+        "path": "data/hanseatic/sources/places.csv"
+      }
     },
     {
       "name": "hse-place-phases",
       "authority": "hse",
       "family": "period",
       "idField": "id",
-      "source": { "format": "csv", "path": "data/hanseatic/sources/places.csv" }
+      "source": {
+        "format": "csv",
+        "path": "data/hanseatic/sources/places.csv"
+      }
     },
     {
       "name": "hse-routes",
       "authority": "hse",
       "family": "route",
       "idField": "id",
-      "source": { "format": "csv", "path": "data/hanseatic/sources/routes.csv" }
+      "source": {
+        "format": "csv",
+        "path": "data/hanseatic/sources/routes.csv"
+      }
     },
     {
       "name": "hse-events",
       "authority": "hse",
       "family": "event",
       "idField": "id",
-      "source": { "format": "csv", "path": "data/hanseatic/sources/events.csv" }
+      "source": {
+        "format": "csv",
+        "path": "data/hanseatic/sources/events.csv"
+      }
     },
     {
       "name": "hse-sources",
@@ -206,64 +283,130 @@
       "family": "source",
       "idField": "key",
       "reportOrphans": true,
-      "source": { "format": "csv", "path": "data/hanseatic/sources/sources.csv" }
+      "source": {
+        "format": "csv",
+        "path": "data/hanseatic/sources/sources.csv"
+      }
     },
     {
       "name": "hse-commodities",
       "authority": "hse",
       "family": "dataset",
       "idField": "id",
-      "source": { "format": "csv", "path": "data/hanseatic/sources/commodities.csv" }
+      "source": {
+        "format": "csv",
+        "path": "data/hanseatic/sources/commodities.csv"
+      }
     },
     {
       "name": "hse-route-commodities",
       "authority": "hse",
       "family": "dataset",
       "idField": "id",
-      "source": { "format": "csv", "path": "data/hanseatic/sources/route_commodities.csv" }
+      "source": {
+        "format": "csv",
+        "path": "data/hanseatic/sources/route_commodities.csv"
+      }
     },
     {
       "name": "hse-kontore",
       "authority": "hse",
       "family": "dataset",
       "idField": "id",
-      "source": { "format": "csv", "path": "data/hanseatic/sources/kontore.csv" }
+      "source": {
+        "format": "csv",
+        "path": "data/hanseatic/sources/kontore.csv"
+      }
     },
     {
       "name": "hse-corpus",
       "authority": "hse",
       "family": "map",
       "idField": "key",
-      "source": { "format": "csv", "path": "data/hanseatic/sources/corpus.csv" }
+      "source": {
+        "format": "csv",
+        "path": "data/hanseatic/sources/corpus.csv"
+      }
     },
     {
       "name": "hse-evidence",
       "authority": "hse",
       "family": "dataset",
       "idField": "claim_id",
-      "source": { "format": "csv", "path": "data/hanseatic/sources/evidence.csv" }
+      "source": {
+        "format": "csv",
+        "path": "data/hanseatic/sources/evidence.csv"
+      }
     },
     {
       "name": "hse-chronology",
       "authority": "hse",
       "family": "period",
       "idField": "id",
-      "source": { "format": "csv", "path": "data/hanseatic/sources/chronology.csv" }
+      "source": {
+        "format": "csv",
+        "path": "data/hanseatic/sources/chronology.csv"
+      }
     }
   ],
   "relations": [
-    { "from": "maps", "field": "essaySlug", "to": ["essays"], "required": true },
-    { "from": "maps", "field": "cartographerId", "to": ["cartographers"] },
-    { "from": "maps", "field": "bibliography", "to": ["bibliography"] },
-    { "from": "maps", "field": "relatedMapIds", "to": ["maps"] },
-    { "from": "maps", "field": "relatedEssaySlugs", "to": ["essays"] },
-    { "from": "cartographers", "field": "essaySlugs", "to": ["essays"] },
-    { "from": "toponyms", "field": "mapIds", "to": ["maps"] },
-    { "from": "toponyms", "field": "essaySlugs", "to": ["essays"] },
-    { "from": "layers", "field": "essaySlugs", "to": ["essays"] },
-    { "from": "layers", "field": "essayLinks[].slug", "to": ["essays"] },
-    { "from": "geo-release-assets", "field": "id", "to": ["layers"], "required": true },
-
+    {
+      "from": "maps",
+      "field": "essaySlug",
+      "to": ["essays"],
+      "required": true
+    },
+    {
+      "from": "maps",
+      "field": "cartographerId",
+      "to": ["cartographers"]
+    },
+    {
+      "from": "maps",
+      "field": "bibliography",
+      "to": ["bibliography"]
+    },
+    {
+      "from": "maps",
+      "field": "relatedMapIds",
+      "to": ["maps"]
+    },
+    {
+      "from": "maps",
+      "field": "relatedEssaySlugs",
+      "to": ["essays"]
+    },
+    {
+      "from": "cartographers",
+      "field": "essaySlugs",
+      "to": ["essays"]
+    },
+    {
+      "from": "toponyms",
+      "field": "mapIds",
+      "to": ["maps"]
+    },
+    {
+      "from": "toponyms",
+      "field": "essaySlugs",
+      "to": ["essays"]
+    },
+    {
+      "from": "layers",
+      "field": "essaySlugs",
+      "to": ["essays"]
+    },
+    {
+      "from": "layers",
+      "field": "essayLinks[].slug",
+      "to": ["essays"]
+    },
+    {
+      "from": "geo-release-assets",
+      "field": "id",
+      "to": ["layers"],
+      "required": true
+    },
     {
       "from": "vmn-ports",
       "field": "source_keys",
@@ -318,21 +461,30 @@
       "field": "target_id",
       "to": ["vmn-routes"],
       "required": true,
-      "when": { "field": "target_type", "equals": "route" }
+      "when": {
+        "field": "target_type",
+        "equals": "route"
+      }
     },
     {
       "from": "vmn-atlas-links",
       "field": "target_id",
       "to": ["vmn-ports"],
       "required": true,
-      "when": { "field": "target_type", "equals": "port" }
+      "when": {
+        "field": "target_type",
+        "equals": "port"
+      }
     },
     {
       "from": "vmn-atlas-links",
       "field": "target_id",
       "to": ["vmn-territories"],
       "required": true,
-      "when": { "field": "target_type", "equals": "territory" }
+      "when": {
+        "field": "target_type",
+        "equals": "territory"
+      }
     },
     {
       "from": "vmn-atlas-links",
@@ -341,11 +493,28 @@
       "split": "\\|",
       "required": true
     },
-
-    { "from": "cnd-attestations", "field": "place_id", "to": ["cnd-places"], "required": true },
-    { "from": "cnd-attestations", "field": "source_id", "to": ["cnd-sources"], "required": true },
-    { "from": "cnd-name-uses", "field": "source_id", "to": ["cnd-sources"] },
-    { "from": "cnd-name-uses", "field": "referent_place_id", "to": ["cnd-places"] },
+    {
+      "from": "cnd-attestations",
+      "field": "place_id",
+      "to": ["cnd-places"],
+      "required": true
+    },
+    {
+      "from": "cnd-attestations",
+      "field": "source_id",
+      "to": ["cnd-sources"],
+      "required": true
+    },
+    {
+      "from": "cnd-name-uses",
+      "field": "source_id",
+      "to": ["cnd-sources"]
+    },
+    {
+      "from": "cnd-name-uses",
+      "field": "referent_place_id",
+      "to": ["cnd-places"]
+    },
     {
       "from": "cnd-name-use-edges",
       "field": "from_name_use",
@@ -363,11 +532,30 @@
       "field": "evidence_attestation_id",
       "to": ["cnd-attestations"]
     },
-
-    { "from": "hse-place-phases", "field": "place_id", "to": ["hse-places"], "required": true },
-    { "from": "hse-place-phases", "field": "source", "to": ["hse-sources"], "required": true },
-    { "from": "hse-routes", "field": "from_place_id", "to": ["hse-places"], "required": true },
-    { "from": "hse-routes", "field": "to_place_id", "to": ["hse-places"], "required": true },
+    {
+      "from": "hse-place-phases",
+      "field": "place_id",
+      "to": ["hse-places"],
+      "required": true
+    },
+    {
+      "from": "hse-place-phases",
+      "field": "source",
+      "to": ["hse-sources"],
+      "required": true
+    },
+    {
+      "from": "hse-routes",
+      "field": "from_place_id",
+      "to": ["hse-places"],
+      "required": true
+    },
+    {
+      "from": "hse-routes",
+      "field": "to_place_id",
+      "to": ["hse-places"],
+      "required": true
+    },
     {
       "from": "hse-routes",
       "field": "waypoints",
@@ -382,10 +570,30 @@
       "split": "\\|",
       "required": true
     },
-    { "from": "hse-routes", "field": "source", "to": ["hse-sources"], "required": true },
-    { "from": "hse-events", "field": "place_id", "to": ["hse-places"], "required": true },
-    { "from": "hse-events", "field": "source", "to": ["hse-sources"], "required": true },
-    { "from": "hse-commodities", "field": "source", "to": ["hse-sources"], "required": true },
+    {
+      "from": "hse-routes",
+      "field": "source",
+      "to": ["hse-sources"],
+      "required": true
+    },
+    {
+      "from": "hse-events",
+      "field": "place_id",
+      "to": ["hse-places"],
+      "required": true
+    },
+    {
+      "from": "hse-events",
+      "field": "source",
+      "to": ["hse-sources"],
+      "required": true
+    },
+    {
+      "from": "hse-commodities",
+      "field": "source",
+      "to": ["hse-sources"],
+      "required": true
+    },
     {
       "from": "hse-route-commodities",
       "field": "route_id",
@@ -398,11 +606,36 @@
       "to": ["hse-commodities"],
       "required": true
     },
-    { "from": "hse-route-commodities", "field": "source", "to": ["hse-sources"], "required": true },
-    { "from": "hse-kontore", "field": "place_id", "to": ["hse-places"], "required": true },
-    { "from": "hse-kontore", "field": "primary_witness", "to": ["hse-corpus"], "required": true },
-    { "from": "hse-kontore", "field": "source", "to": ["hse-sources"], "required": true },
-    { "from": "hse-evidence", "field": "source_key", "to": ["hse-sources"], "required": true },
+    {
+      "from": "hse-route-commodities",
+      "field": "source",
+      "to": ["hse-sources"],
+      "required": true
+    },
+    {
+      "from": "hse-kontore",
+      "field": "place_id",
+      "to": ["hse-places"],
+      "required": true
+    },
+    {
+      "from": "hse-kontore",
+      "field": "primary_witness",
+      "to": ["hse-corpus"],
+      "required": true
+    },
+    {
+      "from": "hse-kontore",
+      "field": "source",
+      "to": ["hse-sources"],
+      "required": true
+    },
+    {
+      "from": "hse-evidence",
+      "field": "source_key",
+      "to": ["hse-sources"],
+      "required": true
+    },
     {
       "from": "hse-evidence",
       "field": "feature_id",
@@ -417,6 +650,27 @@
       ],
       "required": true
     },
-    { "from": "hse-chronology", "field": "claim_id", "to": ["hse-evidence"], "required": true }
+    {
+      "from": "hse-chronology",
+      "field": "claim_id",
+      "to": ["hse-evidence"],
+      "required": true
+    },
+    {
+      "from": "collections",
+      "field": "layerIds",
+      "to": ["layers"],
+      "required": true
+    },
+    {
+      "from": "collections",
+      "field": "defaultLayerIds",
+      "to": ["layers"]
+    },
+    {
+      "from": "collections",
+      "field": "essaySlugs",
+      "to": ["essays"]
+    }
   ]
 }

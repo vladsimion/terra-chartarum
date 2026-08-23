@@ -1,0 +1,184 @@
+---
+/**
+ * Public layer documentation page (ATLAS-1215 / KAN-411).
+ *
+ * `/atlas/layers/{canonical-layer-id}/`. The route IS the canonical ID - there
+ * is no alias and no second slug, because the epic exists to stop one layer
+ * having two identities.
+ *
+ * One template serves both a full scholarly record and a minimal context record.
+ * Natural Earth's boundaries do not owe a reader a reconstruction-and-uncertainty
+ * section; they owe a source, a licence and an anachronism warning, and the
+ * template renders exactly what the document carries.
+ */
+import HandbookShell from '../../../components/handbook/HandbookShell.astro';
+import CitationPanel from '../../../components/handbook/CitationPanel.astro';
+import TechnicalLinks from '../../../components/handbook/TechnicalLinks.astro';
+import { loadHandbook } from '../../../lib/handbook-content';
+import { renderHandbookMarkdown } from '../../../lib/handbook-render';
+import { GEO_LAYERS } from '../../../lib/geo';
+import { collectionsForLayer } from '../../../lib/geo-collections';
+import { versionedGeoUrl } from '../../../lib/geo-release';
+import { HANDBOOK_ROOT } from '../../../lib/handbook';
+
+export async function getStaticPaths() {
+  const projection = await loadHandbook();
+  return projection.docs
+    .filter((entry) => entry.doc.docType === 'layer' && entry.doc.layerId)
+    .map((entry) => ({ params: { layer: entry.doc.layerId! }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const doc = entry.doc;
+const layer = GEO_LAYERS.find((candidate) => candidate.id === doc.layerId)!;
+const { html, headings } = await renderHandbookMarkdown(entry.body);
+const collections = collectionsForLayer(layer.id);
+
+let assetUrl: string | undefined;
+try {
+  assetUrl = versionedGeoUrl(layer);
+} catch {
+  // A layer whose asset is not in the release manifest still documents fine;
+  // it simply has nothing to offer for download.
+  assetUrl = undefined;
+}
+
+const span = `${layer.yearFrom < 0 ? `${Math.abs(layer.yearFrom)} BC` : layer.yearFrom}–${layer.yearTo}`;
+// Deep link through the existing Atlas share contract (atlas-share.ts), not a
+// second URL scheme invented for the Handbook.
+const openInAtlas = `/atlas/?layers=${layer.id}&year=${Math.max(layer.yearFrom, 0)}`;
+---
+
+<HandbookShell
+  title={doc.title}
+  description={doc.summary}
+  eyebrow={doc.minimalContext ? 'Context layer' : 'Atlas layer'}
+  breadcrumbs={[
+    { label: 'Atlas', href: '/atlas/' },
+    { label: 'Handbook', href: HANDBOOK_ROOT },
+    { label: 'Layers', href: `${HANDBOOK_ROOT}layers/` },
+    { label: doc.title },
+  ]}
+  headings={headings}
+>
+  <Fragment slot="header">
+    <p class="lede">{doc.summary}</p>
+    <dl class="facts">
+      <div><dt>Canonical ID</dt><dd><code>{layer.id}</code></dd></div>
+      <div><dt>Period</dt><dd>{span}</dd></div>
+      <div><dt>Role</dt><dd>{layer.role}</dd></div>
+      {
+        layer.category && (
+          <div>
+            <>
+              <dt>Category</dt>
+              <dd>{layer.category.replace(/-/g, ' ')}</dd>
+            </>
+          </div>
+        )
+      }
+      <div><dt>Status</dt><dd>{layer.lifecycle}</dd></div>
+    </dl>
+    {
+      doc.anachronismNote && (
+        <p class="anachronism" role="note">
+          <strong>Anachronism warning.</strong> {doc.anachronismNote}
+        </p>
+      )
+    }
+    <p class="actions">
+      <a class="open-atlas" href={openInAtlas}>Open in Atlas &rarr;</a>
+    </p>
+    {
+      collections.length > 0 && (
+        <p class="member">
+          Part of{' '}
+          {collections.map((collection, index) => (
+            <>
+              {index > 0 && <span aria-hidden="true">, </span>}
+              <a href={`/atlas/?collection=${collection.id}`}>{collection.title}</a>
+              {index === collections.length - 1 && '.'}
+            </>
+          ))}
+        </p>
+      )
+    }
+  </Fragment>
+
+  <div class="prose" set:html={html} />
+
+  {
+    doc.relatedEssaySlugs.length > 0 && (
+      <section class="related" aria-labelledby="related-title">
+        <h2 id="related-title">Related essays</h2>
+        <ul>
+          {doc.relatedEssaySlugs.map((slug) => (
+            <li>
+              <a href={`/essays/${slug}/`}>{slug.replace(/-/g, ' ')}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <CitationPanel
+    route={`/atlas/layers/${layer.id}/`}
+    citation={doc.citation}
+    assetUrl={assetUrl}
+    attribution={layer.attribution}
+    lastReviewed={doc.lastReviewed}
+  />
+
+  <TechnicalLinks links={doc.technicalLinks} />
+</HandbookShell>
+
+<style>
+  .lede {
+    font-size: 1.15rem;
+    max-width: 40rem;
+  }
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 2rem;
+    margin-block: 1.25rem;
+  }
+  .facts div {
+    display: grid;
+    gap: 0.1rem;
+  }
+  .facts dt {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted, #8a8171);
+  }
+  .facts dd {
+    margin: 0;
+  }
+  .anachronism {
+    border-left: 3px solid var(--accent, #d4b87a);
+    padding: 0.5rem 0 0.5rem 1rem;
+    max-width: 40rem;
+  }
+  .actions {
+    margin-block: 1.25rem 0.5rem;
+  }
+  .open-atlas {
+    display: inline-block;
+    border: 1px solid var(--rule, #3a352b);
+    padding: 0.4rem 0.9rem;
+    border-radius: 3px;
+  }
+  .member {
+    font-size: 0.9rem;
+    color: var(--muted, #8a8171);
+  }
+  .related ul {
+    padding-left: 1.1rem;
+  }
+  .related h2 {
+    font-size: 1rem;
+  }
+</style>
