@@ -271,3 +271,109 @@ def test_a_gap_must_block_something_real(dataset):
     edit(dataset, "source-gaps.csv", lambda rows: find(rows, "gap_id", "ant-gap-worsley-workings")
          .update({"blocks": "ant-clm-nonexistent"}))
     refuses("is neither a Jira key nor a claim")
+
+
+# --- Priority claims: a contest the schema cannot resolve (KAN-425) ----------
+
+def test_a_priority_claim_must_answer_a_definition(dataset):
+    edit(dataset, "priority-claims.csv",
+         lambda rows: find(rows, "priority_id", "ant-pri-bransfield-1820")
+         .update({"definition_satisfied": ""}))
+    refuses("must say which definition it satisfies")
+
+
+def test_a_priority_definition_must_be_a_real_term(dataset):
+    edit(dataset, "priority-claims.csv",
+         lambda rows: find(rows, "priority_id", "ant-pri-palmer-1820")
+         .update({"definition_satisfied": "ant-trm-first-obviously"}))
+    refuses("does not resolve")
+
+
+def test_a_contest_needs_more_than_one_claimant(dataset):
+    """A single-claimant contest is a finding dressed as an argument."""
+    edit(dataset, "priority-claims.csv", lambda rows: [
+        row for row in rows if row["contest"] != "continental_extent_1840"
+    ] + [find(rows, "priority_id", "ant-pri-wilkes-1840")])
+    refuses("has only 1 claim")
+
+
+# --- Coastline chronology (KAN-425) -----------------------------------------
+
+def test_a_segment_cannot_be_charted_before_it_was_claimed(dataset):
+    edit(dataset, "coastline-chronology.csv",
+         lambda rows: find(rows, "segment_id", "ant-seg-victoria-land")
+         .update({"first_charted_date": "1830"}))
+    refuses("first_charted_date precedes first_claimed_date")
+
+
+def test_a_confirmed_segment_needs_its_confirmation_date(dataset):
+    edit(dataset, "coastline-chronology.csv",
+         lambda rows: find(rows, "segment_id", "ant-seg-victoria-land")
+         .update({"first_confirmed_date": ""}))
+    refuses("needs the date it was confirmed")
+
+
+def test_a_claim_with_no_observation_is_allowed(dataset):
+    """The Wilkes problem stated in data. The schema must not require the gap
+    to be filled, because the gap is the finding."""
+    assert errors() == []
+    wilkes = None
+    with (dataset / "coastline-chronology.csv").open(encoding="utf-8", newline="") as handle:
+        for row in csv.DictReader(handle):
+            if row["segment_id"] == "ant-seg-wilkes-land":
+                wilkes = row
+    assert wilkes is not None
+    assert wilkes["first_claimed_date"]
+    assert not wilkes["first_observed_date"]
+
+
+# --- Expedition phases (KAN-428) --------------------------------------------
+
+def test_a_drift_is_not_under_the_vessels_own_power(dataset):
+    edit(dataset, "expedition-phases.csv", lambda rows: find(rows, "phase_id", "ant-phs-ite-drift")
+         .update({"under_own_power": "yes"}))
+    refuses("a drift is not under the vessel's own power")
+
+
+def test_a_planned_phase_cannot_claim_a_power_state(dataset):
+    edit(dataset, "expedition-phases.csv", lambda rows: find(rows, "phase_id", "ant-phs-ite-plan")
+         .update({"under_own_power": "yes"}))
+    refuses("cannot claim power state")
+
+
+def test_a_planned_phase_must_be_filed_as_interpolation(dataset):
+    edit(dataset, "expedition-phases.csv", lambda rows: find(rows, "phase_id", "ant-phs-ite-plan")
+         .update({"evidence_class": "direct_observation", "under_own_power": "planned"}))
+    refuses("must be filed as editorial_interpolation")
+
+
+def test_phase_sequences_do_not_collide(dataset):
+    edit(dataset, "expedition-phases.csv", lambda rows: find(rows, "phase_id", "ant-phs-ite-drift")
+         .update({"sequence": "2"}))
+    refuses("duplicate sequence")
+
+
+# --- Chart contributions (KAN-427) ------------------------------------------
+
+def test_a_contribution_must_appear_on_at_least_one_chart(dataset):
+    edit(dataset, "chart-contributions.csv",
+         lambda rows: find(rows, "contribution_id", "ant-con-cook")
+         .update({"present_on_1874": "no", "present_on_1910": "no"}))
+    refuses("must appear on at least one chart")
+
+
+def test_the_1910_sheet_must_compile_more_than_the_1874_one(dataset):
+    """Act VII rests on the revision. If the two lists ever match, the act has
+    nothing to show and this table is decoration."""
+    edit(dataset, "chart-contributions.csv", lambda rows: [
+        row | {"present_on_1874": "yes"} if row["present_on_1910"] == "yes" else row
+        for row in rows
+    ])
+    refuses("must compile more than the 1874 one")
+
+
+def test_an_unknown_contribution_kind_is_refused(dataset):
+    edit(dataset, "chart-contributions.csv",
+         lambda rows: find(rows, "contribution_id", "ant-con-ross")
+         .update({"contribution_kind": "discovery"}))
+    refuses("contribution_kind 'discovery' is not recognised")

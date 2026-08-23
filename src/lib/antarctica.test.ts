@@ -11,6 +11,14 @@ import {
   getPublicRecords,
   getRecordsByAct,
   getRecordsByEvidenceClass,
+  getCoastlineChronology,
+  getPhases,
+  getPriorityContest,
+  getPriorityContests,
+  getSelfPropelledPhases,
+  getUnobservedClaims,
+  chartRevision,
+  chartedByYear,
   isEditorialLinework,
   isRelevantInYear,
   type AntarcticRecord,
@@ -180,5 +188,112 @@ describe('expeditions', () => {
       layerIds: ['antarctica-pilot-tracks', 'antarctica-pilot-observations'],
       schemaVersion: 1,
     });
+  });
+});
+
+describe('Endurance as phases rather than a route', () => {
+  it('orders the phases and starts with the plan that never happened', () => {
+    const phases = getPhases('ant-exp-ite');
+    expect(phases.length).toBeGreaterThan(5);
+    expect(phases[0].phaseKind).toBe('planned');
+    expect(phases[0].underOwnPower).toBe('planned');
+    expect(phases.map((p) => p.sequence)).toEqual(
+      [...phases.map((p) => p.sequence)].sort((a, b) => a - b),
+    );
+  });
+
+  it('excludes the drift from the phases the ship actually sailed', () => {
+    const sailed = getSelfPropelledPhases('ant-exp-ite').map((p) => p.phaseKind);
+    expect(sailed).toContain('approach');
+    expect(sailed).not.toContain('drift');
+    expect(sailed).not.toContain('planned');
+    expect(sailed).not.toContain('ice_camp');
+  });
+
+  it('keeps abandonment and sinking as separate spans', () => {
+    const phases = getPhases('ant-exp-ite');
+    const abandon = phases.find((p) => p.phaseKind === 'abandonment')!;
+    expect(abandon.dateFrom).toBe('1915-10-27');
+    expect(abandon.dateTo).toBe('1915-11-21');
+    expect(abandon.dateFrom).not.toBe(abandon.dateTo);
+  });
+});
+
+describe('priority without a winner', () => {
+  it('holds more than one claim in every contest', () => {
+    const contests = getPriorityContests();
+    expect(contests.length).toBeGreaterThan(0);
+    for (const contest of contests) {
+      expect(getPriorityContest(contest).length, contest).toBeGreaterThan(1);
+    }
+  });
+
+  it('makes every claim answer a definition rather than a rank', () => {
+    for (const claim of getPriorityContest('first_mainland_or_ice_1820')) {
+      expect(claim.definitionSatisfied).toMatch(/^ant-trm-/);
+      expect(Object.keys(claim)).not.toContain('isFirst');
+      expect(Object.keys(claim)).not.toContain('winner');
+    }
+  });
+
+  it('carries the claims of 1820 against three different definitions', () => {
+    const claims = getPriorityContest('first_mainland_or_ice_1820');
+    const definitions = new Set(claims.map((c) => c.definitionSatisfied));
+    // Three parties are usually compared as if they answered one question.
+    // They do not, and the data has to be able to say so.
+    expect(definitions.size).toBeGreaterThan(1);
+  });
+
+  it('keeps the unrecorded sealers as a dateless row', () => {
+    const silent = getPriorityContest('first_mainland_or_ice_1820').find(
+      (c) => c.id === 'ant-pri-sealers-unrecorded',
+    );
+    expect(silent).toBeDefined();
+    expect(silent!.claimDate).toBe('');
+    expect(silent!.evidenceStrength).toBe('unresolved');
+  });
+});
+
+describe('coastline chronology', () => {
+  it('allows a claim with no observation behind it', () => {
+    const unobserved = getUnobservedClaims().map((s) => s.id);
+    expect(unobserved).toContain('ant-seg-wilkes-land');
+  });
+
+  it('never charts a segment before it was claimed', () => {
+    for (const segment of getCoastlineChronology()) {
+      if (segment.firstClaimedDate && segment.firstChartedDate) {
+        expect(Number(segment.firstChartedDate.slice(0, 4)), segment.id).toBeGreaterThanOrEqual(
+          Number(segment.firstClaimedDate.slice(0, 4)),
+        );
+      }
+    }
+  });
+
+  it('answers what was on the charts by a given year', () => {
+    const by1845 = chartedByYear(1845).map((s) => s.id);
+    expect(by1845).toContain('ant-seg-wilkes-land');
+    expect(chartedByYear(1830).map((s) => s.id)).not.toContain('ant-seg-adelie-coast');
+  });
+
+  it('does not call a drifting ice front confirmed coast', () => {
+    const barrier = getCoastlineChronology().find((s) => s.id === 'ant-seg-ross-ice-front')!;
+    expect(barrier.laterStatus).toBe('modified');
+  });
+});
+
+describe('the cumulative chart was itself revised', () => {
+  it('shows what the 1910 issue added to the 1874 compilation', () => {
+    const { retained, added, dropped } = chartRevision();
+    expect(added.length).toBeGreaterThan(0);
+    expect(retained.length).toBeGreaterThan(added.length);
+    expect(added.map((c) => c.voyageLabel).sort()).toEqual(['Scott 1901-4', 'Shackleton 1908-9']);
+    expect(dropped.map((c) => c.voyageLabel)).toEqual(['Towson 1855-59']);
+  });
+
+  it('holds a compiled analysis apart from a voyage', () => {
+    const towson = chartRevision().dropped[0];
+    expect(towson.contributionKind).toBe('compiled_analysis');
+    expect(towson.expeditionId).toBeNull();
   });
 });
