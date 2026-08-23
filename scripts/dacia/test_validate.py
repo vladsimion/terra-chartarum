@@ -1122,3 +1122,56 @@ def test_frontier_geometry_without_a_row_is_rejected(dataset):
 
     edit_geojson(dataset, "treaty-frontier", mutate)
     refuses("has no row in treaty-frontier.csv")
+
+
+# --- acquisition dossiers (KAN-363) ------------------------------------------
+
+
+def test_recommendation_must_identify_what_it_recommends(dataset):
+    def mutate(rows):
+        find(rows, "dossier_id", "acq-zatta-transilvania")["acquisition_status"] = "recommended"
+
+    edit(dataset, "acquisition_dossiers", mutate)
+    refuses("must identify what it recommends")
+
+
+def test_verified_dossier_cannot_leave_identity_pending(dataset):
+    """The dangerous case: filled in enough to look checked, and unchecked."""
+
+    def mutate(rows):
+        find(rows, "dossier_id", "acq-sanson-dacia")["verification_state"] = "verified"
+
+    edit(dataset, "acquisition_dossiers", mutate)
+    refuses("cannot leave")
+
+
+def test_ptolemaic_plate_number_needs_its_edition(dataset):
+    """Tabula Europae numbering is not stable across editions."""
+
+    def mutate(rows):
+        find(rows, "dossier_id", "acq-ptolemaic-dacia")["plate_number"] = "Tabula Europae IX"
+
+    edit(dataset, "acquisition_dossiers", mutate)
+    refuses("without the edition it is numbered in")
+
+
+def test_priority_family_dossier_cannot_be_dropped(dataset):
+    """The Schwantz dossier exists whether or not a copy is ever purchasable."""
+    edit(
+        dataset,
+        "acquisition_dossiers",
+        lambda rows: [r for r in rows if r["family"] != "schwantz_oltenia"],
+    )
+    refuses("require a 'schwantz_oltenia' dossier")
+
+
+def test_scholarly_validity_is_required_whatever_the_acquisition_state(dataset):
+    """Buying a map does not make it evidence, and declining one does not unmake it."""
+
+    def mutate(rows):
+        row = find(rows, "dossier_id", "acq-schwantz-oltenia")
+        row["acquisition_status"] = "declined"
+        row["scholarly_validity"] = ""
+
+    edit(dataset, "acquisition_dossiers", mutate)
+    refuses("scholarly_validity is not recognised")

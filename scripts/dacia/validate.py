@@ -96,6 +96,23 @@ TREATY_RECORD_TYPES = {
 TREATY_INTERPRETATION_STATES = {"uncontested", "ambiguous", "disputed"}
 # KAN-352: a proposal, the line an instrument actually fixed, and a later
 # reconstruction are three different kinds of claim and are never one column.
+# KAN-363: acquisition is a separate axis from scholarly validity and from
+# rights. A map does not become better evidence because it was bought, or worse
+# because it was declined, so the three never collapse into one column.
+ACQUISITION_STATES = {"not_sought", "watching", "recommended", "acquired", "declined"}
+VERIFICATION_STATES = {"unverified", "partially_verified", "verified"}
+SCHOLARLY_VALIDITY = {"established", "contested", "unassessed"}
+REQUIRED_ACQUISITION_FAMILIES = {
+    "ptolemaic",
+    "mercator_hondius",
+    "sanson",
+    "zatta",
+    "homann",
+    "schwantz_oltenia",
+}
+# The identifying fields a recommendation rests on. A dossier that still says
+# `pending` in any of them has not identified the thing it recommends buying.
+ACQUISITION_IDENTITY = ("plate_number", "edition_state", "publisher", "comparable_records")
 FRONTIER_LINE_TYPES = {"proposal", "treaty_line", "reconstruction"}
 FRONTIER_LEDGERS = {"treaty_frontier_sources", "carta_rubra_sources"}
 FRONTIER_FROM = 1829
@@ -199,6 +216,7 @@ TABLES = {
     "carta_rubra_sources": f"{REFERENCE}/carta-rubra-sources.csv",
     "carta_rubra_claims": f"{REFERENCE}/carta-rubra-claims.csv",
     "nomen_errans_witnesses": f"{REFERENCE}/nomen-errans-witnesses.csv",
+    "acquisition_dossiers": f"{REFERENCE}/acquisition-dossiers.csv",
     "borroczyn_seam_sources": f"{REFERENCE}/borroczyn-seam-sources.csv",
     "places": "places.csv",
     "sources": "sources.csv",
@@ -1165,6 +1183,74 @@ def validate_hiatus_witness_families(errors: list[str]) -> None:
         errors.append("hiatus-witness-families: the frozen minimum needs at least five families")
 
 
+def validate_acquisition_dossiers(terms, errors: list[str]) -> None:
+    """KAN-363: research dossiers that cannot recommend what they have not identified."""
+    rows = _read("acquisition_dossiers", errors)
+    _check_unique(rows, "dossier_id", "acquisition-dossiers", errors)
+    families: set[str] = set()
+
+    for row in rows:
+        dossier_id = row["dossier_id"]
+        label = f"acquisition-dossiers[{dossier_id}]"
+        if not dossier_id.startswith("acq-") or not SLUG.match(dossier_id):
+            errors.append(f"{label}: dossier_id must be an acq- slug")
+        families.add(row["family"])
+        for field in ("family", "title", "creator", "atlas_context", "notes"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        _check_https(row["source_url"], label, "source_url", errors)
+        _check_vocab(
+            row["date_precision"], "date_precision", terms, label, "date_precision", errors
+        )
+        _check_vocab(
+            row["rights_status"], "rights_statement", terms, label, "rights_status", errors
+        )
+        if row["review_status"] not in SOURCE_LEDGER_REVIEW_STATES:
+            errors.append(f"{label}: review_status '{row['review_status']}' is not recognised")
+        if row["verification_state"] not in VERIFICATION_STATES:
+            errors.append(f"{label}: verification_state is not recognised")
+        if row["acquisition_status"] not in ACQUISITION_STATES:
+            errors.append(f"{label}: acquisition_status is not recognised")
+        # Validity is assessed on the map, never inferred from whether it was
+        # bought: it is required on every row whatever the acquisition state.
+        if row["scholarly_validity"] not in SCHOLARLY_VALIDITY:
+            errors.append(f"{label}: scholarly_validity is not recognised")
+        if not row["issued_year"].lstrip("-").isdigit():
+            errors.append(f"{label}: issued_year must be a year")
+
+        unidentified = [f for f in ACQUISITION_IDENTITY if row[f] in {"", PENDING}]
+        if row["acquisition_status"] == "recommended":
+            if unidentified:
+                errors.append(
+                    f"{label}: a recommendation must identify what it recommends; "
+                    f"still pending: {', '.join(unidentified)}"
+                )
+            if row["verification_state"] != "verified":
+                errors.append(f"{label}: a recommendation requires a verified dossier")
+        # An unverified dossier that has nonetheless filled everything in is the
+        # dangerous case: it looks identified and nobody has checked it.
+        if row["verification_state"] == "verified" and unidentified:
+            errors.append(
+                f"{label}: a verified dossier cannot leave {', '.join(unidentified)} pending"
+            )
+
+        # The Ptolemaic rule, which is the reason this table has a family column:
+        # Tabula Europae numbering is not stable across editions, so a plate
+        # number without the edition it belongs to is not a citation.
+        if row["family"] == "ptolemaic" and row["plate_number"] not in {"", PENDING}:
+            if row["edition_state"] in {"", PENDING}:
+                errors.append(
+                    f"{label}: a Tabula Europae number means nothing without the edition it "
+                    "is numbered in; name the edition or leave the plate pending"
+                )
+
+    for missing in sorted(REQUIRED_ACQUISITION_FAMILIES - families):
+        errors.append(
+            f"acquisition-dossiers: the programme's priority families require a "
+            f"'{missing}' dossier, purchasable or not"
+        )
+
+
 def validate_treaty_frontier_sources(errors: list[str]) -> None:
     """KAN-351: legal sources are typed and frozen before geometry is drawn."""
     rows = _read("treaty_frontier_sources", errors)
@@ -1531,6 +1617,74 @@ def _load_gis_geojson(name: str, version_prefix: str, errors: list[str]) -> dict
     if not metadata.get("justification"):
         errors.append(f"{name}: drawn geometry requires a recorded justification")
     return payload
+
+
+def validate_acquisition_dossiers(terms, errors: list[str]) -> None:
+    """KAN-363: research dossiers that cannot recommend what they have not identified."""
+    rows = _read("acquisition_dossiers", errors)
+    _check_unique(rows, "dossier_id", "acquisition-dossiers", errors)
+    families: set[str] = set()
+
+    for row in rows:
+        dossier_id = row["dossier_id"]
+        label = f"acquisition-dossiers[{dossier_id}]"
+        if not dossier_id.startswith("acq-") or not SLUG.match(dossier_id):
+            errors.append(f"{label}: dossier_id must be an acq- slug")
+        families.add(row["family"])
+        for field in ("family", "title", "creator", "atlas_context", "notes"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        _check_https(row["source_url"], label, "source_url", errors)
+        _check_vocab(
+            row["date_precision"], "date_precision", terms, label, "date_precision", errors
+        )
+        _check_vocab(
+            row["rights_status"], "rights_statement", terms, label, "rights_status", errors
+        )
+        if row["review_status"] not in SOURCE_LEDGER_REVIEW_STATES:
+            errors.append(f"{label}: review_status '{row['review_status']}' is not recognised")
+        if row["verification_state"] not in VERIFICATION_STATES:
+            errors.append(f"{label}: verification_state is not recognised")
+        if row["acquisition_status"] not in ACQUISITION_STATES:
+            errors.append(f"{label}: acquisition_status is not recognised")
+        # Validity is assessed on the map, never inferred from whether it was
+        # bought: it is required on every row whatever the acquisition state.
+        if row["scholarly_validity"] not in SCHOLARLY_VALIDITY:
+            errors.append(f"{label}: scholarly_validity is not recognised")
+        if not row["issued_year"].lstrip("-").isdigit():
+            errors.append(f"{label}: issued_year must be a year")
+
+        unidentified = [f for f in ACQUISITION_IDENTITY if row[f] in {"", PENDING}]
+        if row["acquisition_status"] == "recommended":
+            if unidentified:
+                errors.append(
+                    f"{label}: a recommendation must identify what it recommends; "
+                    f"still pending: {', '.join(unidentified)}"
+                )
+            if row["verification_state"] != "verified":
+                errors.append(f"{label}: a recommendation requires a verified dossier")
+        # An unverified dossier that has nonetheless filled everything in is the
+        # dangerous case: it looks identified and nobody has checked it.
+        if row["verification_state"] == "verified" and unidentified:
+            errors.append(
+                f"{label}: a verified dossier cannot leave {', '.join(unidentified)} pending"
+            )
+
+        # The Ptolemaic rule, which is the reason this table has a family column:
+        # Tabula Europae numbering is not stable across editions, so a plate
+        # number without the edition it belongs to is not a citation.
+        if row["family"] == "ptolemaic" and row["plate_number"] not in {"", PENDING}:
+            if row["edition_state"] in {"", PENDING}:
+                errors.append(
+                    f"{label}: a Tabula Europae number means nothing without the edition it "
+                    "is numbered in; name the edition or leave the plate pending"
+                )
+
+    for missing in sorted(REQUIRED_ACQUISITION_FAMILIES - families):
+        errors.append(
+            f"acquisition-dossiers: the programme's priority families require a "
+            f"'{missing}' dossier, purchasable or not"
+        )
 
 
 def validate_treaty_frontier(terms, errors: list[str]) -> None:
@@ -2089,6 +2243,7 @@ def validate_inputs() -> list[str]:
         for row in _read("places", errors)
         if row["location_status"] == "located" and row["ref_lon"] and row["ref_lat"]
     }
+    validate_acquisition_dossiers(terms, errors)
     validate_treaty_frontier(terms, errors)
     validate_roman_dacia(terms, places, errors)
     validate_principalities(terms, errors)
@@ -2115,6 +2270,7 @@ def readiness_lines() -> list[str]:
     carta_claims = _read("carta_rubra_claims", errors)
     borroczyn_sources = _read("borroczyn_seam_sources", errors)
     witnesses = _read("nomen_errans_witnesses", errors)
+    dossiers = _read("acquisition_dossiers", errors)
     frontiers = _read("treaty_frontier", errors)
     roman = _read("roman_dacia", errors)
     phases = _read("principalities", errors)
@@ -2162,6 +2318,10 @@ def readiness_lines() -> list[str]:
         f"{len({row['phase_id'] for row in frontiers})} phases "
         f"({sum(1 for row in frontiers if row['alternative_of'])} contested); "
         f"0 digitised from a source",
+        f"  acquisition: {len(dossiers)} dossiers across "
+        f"{len({row['family'] for row in dossiers})} priority families; "
+        f"{sum(1 for row in dossiers if row['verification_state'] == 'verified')} verified, "
+        f"{sum(1 for row in dossiers if row['acquisition_status'] == 'recommended')} recommended",
     ]
 
 

@@ -154,7 +154,9 @@ filters rather than requiring a change to the island. Selections widen within a
 field and narrow across fields, are announced for screen readers, and travel in
 a `facets` URL parameter that only restores values the layer actually declares.
 
-See [`nomen-errans-ledger.md`](./nomen-errans-ledger.md) for what the word
+See [`acquisition-dossiers.md`](./acquisition-dossiers.md) for the priority map
+families and what each still has to establish,
+[`nomen-errans-ledger.md`](./nomen-errans-ledger.md) for what the word
 Dacia has meant and what may be shown beside it,
 [`shared-gis-layers.md`](./shared-gis-layers.md) for the shared Atlas layers,
 [`data-dictionary.md`](./data-dictionary.md) for the schemas,
