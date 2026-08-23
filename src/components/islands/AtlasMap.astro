@@ -628,9 +628,7 @@ const payload = {
     const contextDocs = root.querySelector<HTMLElement>('.am-context-docs')!;
     const gazetteer = root.querySelector<HTMLElement>('.am-gazetteer')!;
     const gazetteerList = root.querySelector<HTMLElement>('.am-gazetteer-list')!;
-    const layerToggles = Array.from(
-      root.querySelectorAll<HTMLInputElement>('.am-layer input[data-layer]'),
-    );
+    const layerToggles = Array.from(root.querySelectorAll<HTMLInputElement>('input[data-layer]'));
     const facetBoxes = Array.from(
       root.querySelectorAll<HTMLInputElement>('input[data-facet-layer]'),
     );
@@ -709,6 +707,9 @@ const payload = {
     let focusedFeatureId = '';
     let focusedFeatureLayer = '';
     const activeLayers = new Set<string>();
+    // Which layer the inspector is showing (KAN-402). Focus is not activation:
+    // reading about a layer must never draw it.
+    let inspectedLayer: string | null = null;
     const layerId = (id: string) => `geolyr-${id}`;
     const sourceId = (id: string) => `geosrc-${id}`;
 
@@ -1648,6 +1649,13 @@ const payload = {
         setTopoVisible(topoCheck?.checked ?? false);
         syncLayerTime(Number(yearIn.value));
         applyDeepLink();
+        // The default-on base layers only join the composition here, so this is
+        // the first moment the Active Layers panel is telling the whole truth.
+        renderActiveLayers();
+        // Readiness signal (pairs with data-layer-browser-ready). Anything
+        // waiting on the real composition - a test, a deep link - waits on this
+        // rather than on a hand-tuned timeout.
+        root.dataset.mapReady = 'true';
       });
     }
 
@@ -1995,7 +2003,11 @@ const payload = {
     const syncFacetPanel = (layerId: string) => {
       const panel = root.querySelector<HTMLElement>(`[data-facets-for="${layerId}"]`);
       if (!panel) return;
-      panel.hidden = !activeLayers.has(layerId);
+      // Filters are shown for the layer you are inspecting, and only while it is
+      // drawn - a filter for something you cannot see is only clutter. Hiding a
+      // panel never touches `facetSelections`, so another layer's filters are
+      // still there when you come back to it.
+      panel.hidden = !(activeLayers.has(layerId) && inspectedLayer === layerId);
       const status = root.querySelector<HTMLElement>(`[data-facets-status="${layerId}"]`);
       if (status && !panel.hidden) status.textContent = describeFacets(layerId);
     };
@@ -2066,8 +2078,291 @@ const payload = {
         }
         syncFacetPanel(l.id);
         updateFacetUrlState();
+        renderActiveLayers();
+        syncBrowserChecks();
       });
     }
+
+    // ---------------------------------------------------------------------
+    // Scalable layer browser (KAN-400), Active Layers (KAN-401), inspector
+    // focus (KAN-402) and catalogue search (KAN-403).
+    //
+    // None of this owns layer state. Every path here ends at the same
+    // `input[data-layer]` checkbox and its single change handler above, which is
+    // why the browser, the panel and MapLibre cannot disagree about what is
+    // drawn.
+    // ---------------------------------------------------------------------
+    const browser = root.querySelector<HTMLElement>('[data-layer-browser]');
+    const activePanel = root.querySelector<HTMLElement>('[data-active-layers]');
+    const activeList = root.querySelector<HTMLElement>('[data-active-list]');
+    const activeCount = root.querySelector<HTMLElement>('[data-active-count]');
+    const activeNote = root.querySelector<HTMLElement>('[data-active-note]');
+    const layerSearch = root.querySelector<HTMLInputElement>('[data-layer-search]');
+    const yearRelevance = root.querySelector<HTMLInputElement>('[data-year-relevance]');
+    const foundStatus = root.querySelector<HTMLElement>('[data-layer-found]');
+
+    /** A layer's display title, read from the row the server already rendered. */
+    const layerTitle = (id: string) =>
+      root.querySelector<HTMLElement>(`[data-row="${id}"] .alb-row-title`)?.textContent?.trim() ??
+      id;
+
+    const outsideYear = (id: string) => {
+      const l = geoLayers.find((x) => x.id === id);
+      if (!l) return false;
+      const year = Number(yearIn.value);
+      return !(l.yearFrom <= year && year <= l.yearTo);
+    };
+
+    /** The base layers that survive `Clear all` - clearing to a blank map helps nobody. */
+    const isBaseLayer = (id: string) => geoLayers.find((x) => x.id === id)?.defaultOn === true;
+
+    const checkboxFor = (id: string) =>
+      layerToggles.find((toggle) => toggle.dataset.layer === id) ?? null;
+
+    /** Flip a layer through its checkbox so the single change handler runs. */
+    const setLayerActive = (id: string, on: boolean) => {
+      const cb = checkboxFor(id);
+      if (!cb || cb.disabled || cb.checked === on) return;
+      cb.checked = on;
+      cb.dispatchEvent(new Event('change', { bubbles: true }));
+    };
+
+    /** Every checkbox for one layer agrees, whichever lens it was rendered in. */
+    const syncBrowserChecks = () => {
+      for (const cb of layerToggles) {
+        const id = cb.dataset.layer;
+        if (id) cb.checked = activeLayers.has(id);
+      }
+    };
+
+    const setInspected = (id: string | null) => {
+      inspectedLayer = id;
+      for (const dossier of root.querySelectorAll<HTMLElement>('[data-dossier-for]')) {
+        dossier.hidden = dossier.dataset.dossierFor !== id;
+      }
+      for (const panel of root.querySelectorAll<HTMLElement>('[data-facets-for]')) {
+        const layerId = panel.dataset.facetsFor;
+        if (layerId) syncFacetPanel(layerId);
+      }
+      for (const button of root.querySelectorAll<HTMLButtonElement>('[data-inspect]')) {
+        button.setAttribute('aria-pressed', String(button.dataset.inspect === id));
+      }
+      if (id) {
+        // Focus is not activation. The panel opens; the map does not change.
+        contextTitle.textContent = layerTitle(id);
+        contextSummary.textContent = '';
+        contextMeta.textContent = activeLayers.has(id) ? 'Drawn on the map' : 'Not currently drawn';
+        contextLink.hidden = true;
+        contextDocs.hidden = true;
+        document.dispatchEvent(new CustomEvent('atlas:layer-focus', { detail: { layerId: id } }));
+      }
+    };
+
+    /**
+     * The composition, rendered from the canonical active set. A layer outside
+     * the selected year keeps its place and is marked: the year moved, the
+     * reader's intent did not.
+     */
+    const renderActiveLayers = () => {
+      if (!activePanel || !activeList || !activeCount) return;
+      const ids = geoLayers.map((l) => l.id).filter((id) => activeLayers.has(id));
+      activeCount.textContent = String(ids.length);
+      const removable = ids.filter((id) => !isBaseLayer(id));
+      activePanel.hidden = removable.length === 0;
+      let anyOutside = false;
+
+      activeList.replaceChildren(
+        ...ids.map((id) => {
+          const item = document.createElement('li');
+          item.className = 'aal-item';
+          const title = layerTitle(id);
+          const name = document.createElement('span');
+          name.className = 'aal-name';
+          name.textContent = title;
+          item.append(name);
+
+          if (outsideYear(id)) {
+            anyOutside = true;
+            const flag = document.createElement('span');
+            flag.className = 'aal-outside';
+            flag.textContent = 'outside selected year';
+            item.append(flag);
+          }
+
+          const inspect = document.createElement('button');
+          inspect.type = 'button';
+          inspect.className = 'aal-inspect';
+          inspect.textContent = 'About';
+          inspect.setAttribute('aria-label', `About ${title}`);
+          inspect.addEventListener('click', () => setInspected(id));
+          item.append(inspect);
+
+          if (!isBaseLayer(id)) {
+            const remove = document.createElement('button');
+            remove.type = 'button';
+            remove.className = 'aal-remove';
+            remove.textContent = 'Remove';
+            remove.setAttribute('aria-label', `Remove ${title}`);
+            remove.addEventListener('click', () => {
+              const position = Array.from(
+                activeList.querySelectorAll<HTMLButtonElement>('.aal-remove'),
+              ).indexOf(remove);
+              setLayerActive(id, false);
+              // The list is rebuilt, so the old node is gone. Put focus on
+              // whatever now occupies this position, or on Clear all if the
+              // composition emptied - never on a detached element.
+              const rebuilt = Array.from(
+                activeList.querySelectorAll<HTMLButtonElement>('.aal-remove'),
+              );
+              (rebuilt[Math.min(position, rebuilt.length - 1)] ?? activeClear)?.focus();
+            });
+            item.append(remove);
+          }
+          return item;
+        }),
+      );
+      if (activeNote) activeNote.hidden = !anyOutside;
+    };
+
+    const activeClear = root.querySelector<HTMLButtonElement>('[data-active-clear]');
+    activeClear?.addEventListener('click', () => {
+      for (const id of [...activeLayers]) if (!isBaseLayer(id)) setLayerActive(id, false);
+      layerSearch?.focus();
+    });
+
+    // --- Lenses. Switching what you look through never changes what is drawn.
+    for (const tab of root.querySelectorAll<HTMLButtonElement>('[data-lens]')) {
+      tab.addEventListener('click', () => {
+        const lens = tab.dataset.lens!;
+        for (const other of root.querySelectorAll<HTMLButtonElement>('[data-lens]')) {
+          other.setAttribute('aria-selected', String(other === tab));
+        }
+        for (const panel of root.querySelectorAll<HTMLElement>('[data-lens-panel]')) {
+          panel.hidden = panel.dataset.lensPanel !== lens;
+        }
+        document.dispatchEvent(new CustomEvent('atlas:lens-changed', { detail: { lens } }));
+        applyBrowserFilter();
+      });
+    }
+
+    // --- Groups. Expansion is view state and never becomes scholarly state.
+    for (const toggle of root.querySelectorAll<HTMLButtonElement>('[data-group-toggle]')) {
+      toggle.addEventListener('click', () => {
+        const id = toggle.dataset.groupToggle!;
+        const body = root.querySelector<HTMLElement>(`[data-group-body="${id}"]`);
+        if (!body) return;
+        const open = toggle.getAttribute('aria-expanded') === 'true';
+        toggle.setAttribute('aria-expanded', String(!open));
+        body.hidden = open;
+      });
+    }
+
+    // --- Collection activation draws the collection's own defaults, and only
+    //     those. The member list is then the reader's to adjust.
+    for (const button of root.querySelectorAll<HTMLButtonElement>('[data-activate-collection]')) {
+      button.addEventListener('click', () => {
+        const id = button.dataset.activateCollection!;
+        const defaults = (button.dataset.defaults ?? '').split(',').filter(Boolean);
+        for (const layerId of defaults) setLayerActive(layerId, true);
+        const body = root.querySelector<HTMLElement>(`[data-group-body="${id}"]`);
+        const toggle = root.querySelector<HTMLButtonElement>(`[data-group-toggle="${id}"]`);
+        if (body && toggle) {
+          body.hidden = false;
+          toggle.setAttribute('aria-expanded', 'true');
+        }
+        document.dispatchEvent(
+          new CustomEvent('atlas:collection-activate', { detail: { collectionId: id } }),
+        );
+      });
+    }
+
+    // --- Inspect affordances on the rows.
+    for (const button of root.querySelectorAll<HTMLButtonElement>('[data-inspect]')) {
+      button.addEventListener('click', () => setInspected(button.dataset.inspect!));
+    }
+
+    /**
+     * Search and year relevance (KAN-403). Both are discovery filters: neither
+     * ever activates or deactivates a layer, so an active layer can never be
+     * removed by typing or by moving the year.
+     */
+    const applyBrowserFilter = () => {
+      if (!browser) return;
+      // Token AND matching rather than raw substring: someone typing
+      // "hanseatic events" means both words, in any order and anywhere in the
+      // haystack, and should not be defeated by the title reading "Hanseatic
+      // institutional events". Deterministic and dependency-free, as KAN-403
+      // asks for at this size.
+      const tokens = (layerSearch?.value ?? '').trim().toLowerCase().split(/\s+/).filter(Boolean);
+      const query = tokens.join(' ');
+      const relevantOnly = yearRelevance?.checked ?? false;
+      // A layer is rendered once per lens, so counting rows would report a
+      // catalogue several times its real size. Count canonical IDs instead.
+      const matched = new Set<string>();
+
+      for (const row of browser.querySelectorAll<HTMLElement>('[data-row]')) {
+        const id = row.dataset.row!;
+        const haystack = row.dataset.search ?? '';
+        const hit =
+          tokens.every((token) => haystack.includes(token)) && (!relevantOnly || !outsideYear(id));
+        const wrap = row.closest<HTMLElement>('.alb-row-wrap') ?? row;
+        wrap.hidden = !hit;
+        if (hit) matched.add(id);
+      }
+
+      for (const group of browser.querySelectorAll<HTMLElement>('[data-group]')) {
+        const id = group.dataset.group!;
+        const visible = Array.from(group.querySelectorAll<HTMLElement>('[data-row]')).filter(
+          (row) => !(row.closest<HTMLElement>('.alb-row-wrap') ?? row).hidden,
+        ).length;
+        const count = group.querySelector<HTMLElement>(`[data-group-count="${id}"]`);
+        if (count) count.textContent = String(visible);
+        group.hidden = visible === 0;
+        // A group that matches the search opens itself, so a hit is never
+        // hidden behind a collapsed heading.
+        if (visible > 0 && (query !== '' || relevantOnly)) {
+          const body = root.querySelector<HTMLElement>(`[data-group-body="${id}"]`);
+          const toggle = root.querySelector<HTMLButtonElement>(`[data-group-toggle="${id}"]`);
+          if (body && toggle) {
+            body.hidden = false;
+            toggle.setAttribute('aria-expanded', 'true');
+          }
+        }
+      }
+
+      for (const panel of browser.querySelectorAll<HTMLElement>('[data-lens-panel]')) {
+        const empty = panel.querySelector<HTMLElement>('[data-lens-empty]');
+        const anyGroup = Array.from(panel.querySelectorAll<HTMLElement>('[data-group]')).some(
+          (group) => !group.hidden,
+        );
+        if (empty) empty.hidden = anyGroup;
+      }
+
+      if (foundStatus) {
+        const total = matched.size;
+        foundStatus.textContent =
+          query === '' && !relevantOnly ? '' : `${total} matching layer${total === 1 ? '' : 's'}`;
+      }
+    };
+
+    layerSearch?.addEventListener('input', applyBrowserFilter);
+    yearRelevance?.addEventListener('change', applyBrowserFilter);
+    yearIn.addEventListener('input', () => {
+      // Year is a discovery filter as well as a rendering one, but it only ever
+      // re-marks the composition; it never empties it.
+      if (yearRelevance?.checked) applyBrowserFilter();
+      renderActiveLayers();
+    });
+
+    renderActiveLayers();
+    applyBrowserFilter();
+
+    // Readiness signal. The browser's markup is server-rendered and therefore
+    // present - and inert - before this module runs, so anything driving it
+    // (a test, an assistive tool, a deep link) needs a way to know the handlers
+    // are attached. Without it a click can land on a button that is not yet
+    // listening and silently do nothing.
+    root.dataset.layerBrowserReady = 'true';
 
     // Each match is a real link on the documented deep-link contract, so it is
     // keyboard-reachable and shareable, and it exercises the same state
@@ -2458,6 +2753,321 @@ const payload = {
     font-size: var(--step--1);
     color: var(--gold);
     margin-top: 0.2rem;
+  }
+
+  /* --- Scalable layer browser (KAN-400 / KAN-403) --- */
+  .alb {
+    border-top: 1px solid var(--rule, #3a352b);
+    margin-top: 1rem;
+    padding-top: 1rem;
+  }
+  .alb-title {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted, #8a8171);
+    margin: 0 0 0.75rem;
+  }
+  .alb-context {
+    border: 1px solid var(--rule, #3a352b);
+    border-radius: 3px;
+    padding: 0.6rem 0.8rem;
+    margin: 0 0 1rem;
+  }
+  .alb-context legend {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted, #8a8171);
+    padding-inline: 0.35rem;
+  }
+  .alb-context-note,
+  .alb-anachronism {
+    font-size: 0.78rem;
+    color: var(--muted, #8a8171);
+    margin: 0 0 0.5rem;
+  }
+  .alb-anachronism {
+    border-left: 2px solid var(--accent, #d4b87a);
+    padding-left: 0.5rem;
+  }
+  .alb-subhead {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted, #8a8171);
+    margin: 0.6rem 0 0.3rem;
+  }
+  .alb-find {
+    display: grid;
+    gap: 0.4rem;
+    margin-bottom: 0.85rem;
+  }
+  .alb-search {
+    display: grid;
+    gap: 0.2rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted, #8a8171);
+  }
+  .alb-search input {
+    font: inherit;
+    text-transform: none;
+    letter-spacing: normal;
+    padding: 0.35rem 0.5rem;
+    background: transparent;
+    color: inherit;
+    border: 1px solid var(--rule, #3a352b);
+    border-radius: 3px;
+  }
+  .alb-relevance {
+    display: flex;
+    gap: 0.4rem;
+    align-items: baseline;
+    font-size: 0.8rem;
+  }
+  .alb-found {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--muted, #8a8171);
+    min-height: 1em;
+  }
+  .alb-lenses {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 0.75rem;
+  }
+  .alb-lens {
+    font: inherit;
+    font-size: 0.8rem;
+    background: transparent;
+    color: var(--muted, #8a8171);
+    border: 1px solid var(--rule, #3a352b);
+    border-radius: 3px;
+    padding: 0.25rem 0.6rem;
+    cursor: pointer;
+  }
+  .alb-lens[aria-selected='true'] {
+    color: inherit;
+    border-color: var(--accent, #d4b87a);
+  }
+  .alb-group {
+    border-bottom: 1px solid var(--rule, #3a352b);
+  }
+  .alb-group h4 {
+    margin: 0;
+  }
+  .alb-group-toggle {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    align-items: baseline;
+    font: inherit;
+    font-size: 0.85rem;
+    background: transparent;
+    color: inherit;
+    border: 0;
+    padding: 0.5rem 0;
+    cursor: pointer;
+    text-align: left;
+  }
+  .alb-group-toggle::before {
+    content: '\25B8';
+    color: var(--muted, #8a8171);
+    transition: transform 0.15s ease;
+  }
+  .alb-group-toggle[aria-expanded='true']::before {
+    transform: rotate(90deg);
+  }
+  .alb-group-name {
+    flex: 1;
+  }
+  .alb-group-count {
+    font-size: 0.75rem;
+    color: var(--muted, #8a8171);
+  }
+  .alb-group-body {
+    padding-bottom: 0.5rem;
+  }
+  .alb-collection-summary,
+  .alb-collection-meta {
+    margin: 0 0 0.35rem;
+    font-size: 0.78rem;
+    color: var(--muted, #8a8171);
+  }
+  .alb-activate {
+    font: inherit;
+    font-size: 0.75rem;
+    background: transparent;
+    color: inherit;
+    border: 1px solid var(--rule, #3a352b);
+    border-radius: 3px;
+    padding: 0.2rem 0.55rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+  }
+  .alb-row-wrap {
+    display: flex;
+    align-items: baseline;
+    gap: 0.35rem;
+  }
+  .alb-row {
+    flex: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    padding: 0.2rem 0;
+  }
+  .alb-row-title {
+    flex: 1;
+  }
+  .alb-row-meta,
+  .alb-row-doc {
+    font-size: 0.72rem;
+    color: var(--muted, #8a8171);
+  }
+  .alb-info {
+    font: inherit;
+    font-size: 0.7rem;
+    line-height: 1;
+    width: 1.4rem;
+    height: 1.4rem;
+    border-radius: 50%;
+    border: 1px solid var(--rule, #3a352b);
+    background: transparent;
+    color: var(--muted, #8a8171);
+    cursor: pointer;
+  }
+  .alb-info[aria-pressed='true'] {
+    border-color: var(--accent, #d4b87a);
+    color: inherit;
+  }
+  .alb-empty {
+    font-size: 0.8rem;
+    color: var(--muted, #8a8171);
+    padding: 0.5rem 0;
+  }
+
+  /* --- Active layers (KAN-401) --- */
+  .aal {
+    border-top: 1px solid var(--rule, #3a352b);
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+  }
+  .aal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+  .aal-head h3 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted, #8a8171);
+    margin: 0;
+  }
+  .aal-count {
+    color: inherit;
+  }
+  .aal-clear {
+    font: inherit;
+    font-size: 0.75rem;
+    background: transparent;
+    color: var(--muted, #8a8171);
+    border: 1px solid var(--rule, #3a352b);
+    border-radius: 3px;
+    padding: 0.15rem 0.5rem;
+    cursor: pointer;
+  }
+  .aal-list {
+    list-style: none;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.3rem;
+  }
+  .aal-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+  }
+  .aal-name {
+    flex: 1;
+  }
+  .aal-outside {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent, #d4b87a);
+  }
+  .aal-inspect,
+  .aal-remove {
+    font: inherit;
+    font-size: 0.72rem;
+    background: transparent;
+    color: var(--muted, #8a8171);
+    border: 1px solid var(--rule, #3a352b);
+    border-radius: 3px;
+    padding: 0.1rem 0.4rem;
+    cursor: pointer;
+  }
+  .aal-note {
+    margin: 0.5rem 0 0;
+    font-size: 0.75rem;
+    color: var(--muted, #8a8171);
+  }
+
+  /* --- Layer inspector (KAN-402) --- */
+  .am-dossier-title {
+    font-size: 0.9rem;
+    margin: 0.75rem 0 0.25rem;
+  }
+  .am-dossier-summary {
+    font-size: 0.82rem;
+    margin: 0 0 0.5rem;
+  }
+  .am-dossier-facts {
+    margin: 0 0 0.5rem;
+    display: grid;
+    gap: 0.25rem;
+    font-size: 0.78rem;
+  }
+  .am-dossier-facts div {
+    display: grid;
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    gap: 0.5rem;
+  }
+  .am-dossier-facts dt {
+    text-transform: uppercase;
+    font-size: 0.65rem;
+    letter-spacing: 0.05em;
+    color: var(--muted, #8a8171);
+  }
+  .am-dossier-facts dd {
+    margin: 0;
+  }
+  .am-dossier-links {
+    display: grid;
+    gap: 0.2rem;
+    margin: 0 0 0.5rem;
+    font-size: 0.8rem;
+  }
+  .am-dossier-technical summary {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted, #8a8171);
+    cursor: pointer;
+  }
+  .am-dossier-technical ul {
+    margin: 0.4rem 0 0;
+    padding-left: 1rem;
+    font-size: 0.8rem;
   }
 
   .am-layers {

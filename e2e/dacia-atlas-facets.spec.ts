@@ -36,8 +36,33 @@ const facetBox = (field: string, value: string) =>
 // makes for the same reason.
 const MAP_READY = 20_000;
 
+// The catalogue renders one row per lens (KAN-400), so every selector here is
+// scoped to the Themes panel. Searching first is what expands the group holding
+// the row - the same path a reader takes - and the facet panel now belongs to
+// the inspector (KAN-402), so the layer must be drawn *and* inspected.
+const themeRow = (page: import('@playwright/test').Page, layer: string) =>
+  page.locator(`[data-lens-panel="themes"] [data-row-wrap="${layer}"]`);
+
+// Groups collapse by default, so open them all before reaching for a row. Done
+// through the real toggles rather than by unhiding the DOM, so this also keeps
+// the expand/collapse contract under test.
+const expandThemes = async (page: import('@playwright/test').Page) => {
+  const toggles = page.locator('[data-lens-panel="themes"] [data-group-toggle]');
+  for (let index = 0; index < (await toggles.count()); index += 1) {
+    const toggle = toggles.nth(index);
+    if ((await toggle.getAttribute('aria-expanded')) !== 'true') await toggle.click();
+  }
+};
+
+const revealLayer = async (page: import('@playwright/test').Page, layer: string) => {
+  await expandThemes(page);
+  await expect(themeRow(page, layer)).toBeVisible();
+};
+
 const enableLayer = async (page: import('@playwright/test').Page) => {
-  await page.locator(`input[data-layer="${RESEARCH_LAYER}"]`).check();
+  await revealLayer(page, RESEARCH_LAYER);
+  await themeRow(page, RESEARCH_LAYER).locator('input[data-layer]').check();
+  await themeRow(page, RESEARCH_LAYER).locator(`[data-inspect="${RESEARCH_LAYER}"]`).click();
   await expect(page.locator(panel)).toBeVisible({ timeout: MAP_READY });
 };
 
@@ -49,7 +74,7 @@ test.describe('atlas: corpus attestation facets', () => {
     // only clutter.
     await expect(page.locator(panel)).toBeHidden();
     await enableLayer(page);
-    await page.locator(`input[data-layer="${RESEARCH_LAYER}"]`).uncheck();
+    await themeRow(page, RESEARCH_LAYER).locator('input[data-layer]').uncheck();
     await expect(page.locator(panel)).toBeHidden();
   });
 
@@ -117,7 +142,8 @@ test.describe('atlas: corpus attestation facets', () => {
     await enableLayer(page);
 
     const results = await new AxeBuilder({ page })
-      .include('.am-layers')
+      .include('[data-layer-browser]')
+      .include('[data-inspector]')
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
       .analyze();
     expect(results.violations).toEqual([]);
@@ -177,10 +203,16 @@ test.describe('shared Dacia GIS layers', () => {
     await page.goto('/atlas');
 
     for (const layer of GIS_LAYERS) {
-      const toggle = page.locator(`input[data-layer="${layer}"]`);
+      await revealLayer(page, layer);
+      const toggle = themeRow(page, layer).locator('input[data-layer]');
       await expect(toggle).toHaveCount(1);
       await toggle.check({ timeout: MAP_READY });
       await expect(toggle).toBeChecked({ timeout: MAP_READY });
+      // Every lens instance of a layer reports the same state.
+      const all = page.locator(`input[data-layer="${layer}"]`);
+      for (let index = 0; index < (await all.count()); index += 1) {
+        await expect(all.nth(index)).toBeChecked();
+      }
     }
 
     // Provenance is a declared facet on both layers that carry drawn geometry,

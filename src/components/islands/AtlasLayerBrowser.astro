@@ -46,6 +46,14 @@ const historicalThemes = themeGroups.filter((group) =>
 );
 
 const span = (row: CatalogueLayer) => `${formatYear(row.yearFrom)}-${formatYear(row.yearTo)}`;
+
+/**
+ * The haystack one instance of a row is searched against. A layer appears once
+ * per lens, and each instance adds the group it is sitting in: someone looking
+ * for "hanseatic world" is remembering the collection, not the layer title.
+ */
+const haystack = (row: CatalogueLayer, ...context: (string | undefined)[]) =>
+  [row.searchText, ...context].filter(Boolean).join(' ').toLowerCase();
 ---
 
 <section class="alb" data-layer-browser>
@@ -60,7 +68,11 @@ const span = (row: CatalogueLayer) => `${formatYear(row.yearFrom)}-${formatYear(
         <div class="alb-context-group">
           <p class="alb-subhead">Physical geography</p>
           {physical.map((row) => (
-            <label class="am-layer alb-row" data-row={row.id} data-search={row.searchText}>
+            <label
+              class="am-layer alb-row"
+              data-row={row.id}
+              data-search={haystack(row, 'map context physical geography')}
+            >
               <input type="checkbox" data-layer={row.id} checked={row.defaultOn} />
               <span class="alb-row-title">{row.title}</span>
             </label>
@@ -78,7 +90,11 @@ const span = (row: CatalogueLayer) => `${formatYear(row.yearFrom)}-${formatYear(
           </p>
           {modern.map((row) => (
             <div class="alb-row-wrap">
-              <label class="am-layer alb-row" data-row={row.id} data-search={row.searchText}>
+              <label
+                class="am-layer alb-row"
+                data-row={row.id}
+                data-search={haystack(row, 'map context modern reference anachronistic')}
+              >
                 <input type="checkbox" data-layer={row.id} checked={row.defaultOn} />
                 <span class="alb-row-title">{row.title}</span>
                 <span class="alb-row-meta">{span(row)}</span>
@@ -174,7 +190,7 @@ const span = (row: CatalogueLayer) => `${formatYear(row.yearFrom)}-${formatYear(
                         <label
                           class="am-layer alb-row"
                           data-row={row.id}
-                          data-search={row.searchText}
+                          data-search={haystack(row, collection.title, collection.tags.join(' '))}
                         >
                           <input type="checkbox" data-layer={row.id} />
                           <span class="alb-row-title">{row.title}</span>
@@ -217,7 +233,7 @@ const span = (row: CatalogueLayer) => `${formatYear(row.yearFrom)}-${formatYear(
                         <label
                           class="am-layer alb-row"
                           data-row={row.id}
-                          data-search={row.searchText}
+                          data-search={haystack(row, group.title)}
                         >
                           <input type="checkbox" data-layer={row.id} />
                           <span class="alb-row-title">{row.title}</span>
