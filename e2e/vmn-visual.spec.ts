@@ -38,7 +38,8 @@ test('ID-only deep links infer the target layer and apply the requested year', a
       timeout: 20_000,
     });
     await expect(page.locator('.am-year-out')).toHaveText(`AD ${entry.year}`);
-    await expect(page.locator(`input[data-layer="${entry.layer}"]`)).toBeChecked();
+    // One row per lens (KAN-400); every instance agrees, so the first will do.
+    await expect(page.locator(`input[data-layer="${entry.layer}"]`).first()).toBeChecked();
     await expect(
       page.locator(`.maplibregl-popup a[href="/essays/venice-sicily/${entry.passage}"]`),
     ).toBeVisible();
@@ -84,7 +85,7 @@ test('VMN release screenshot scrub: 3 zooms × 6 slider years', async ({ page },
         timeout: 20_000,
       });
       for (const layer of VMN_LAYERS) {
-        await expect(page.locator(`input[data-layer="${layer}"]`)).toBeChecked();
+        await expect(page.locator(`input[data-layer="${layer}"]`).first()).toBeChecked();
       }
 
       await page.waitForTimeout(250);
