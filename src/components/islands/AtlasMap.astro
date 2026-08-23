@@ -328,6 +328,9 @@ const payload = {
           layer never activates it. */
       }
       <div class="am-inspector" data-inspector>
+        <button type="button" class="am-inspector-close" data-inspector-close hidden>
+          Close layer details
+        </button>
         {
           browsable.map((l) => (
             <div class="am-dossier" data-dossier-for={l.id} hidden>
@@ -710,6 +713,29 @@ const payload = {
     // Which layer the inspector is showing (KAN-402). Focus is not activation:
     // reading about a layer must never draw it.
     let inspectedLayer: string | null = null;
+    // Catalogue view state (KAN-405). Persisted with replaceState like the rest
+    // of the Atlas: toggling a layer should update the shareable URL, not push a
+    // history entry the reader has to press Back through.
+    let activeLens = 'themes';
+    let collectionContext: string | null = null;
+
+    const updateCatalogueUrlState = () => {
+      const url = new URL(location.href);
+      const set = (key: string, value: string | undefined) => {
+        if (value) url.searchParams.set(key, value);
+        else url.searchParams.delete(key);
+      };
+      set('lens', activeLens === 'themes' ? undefined : activeLens);
+      set('collection', collectionContext ?? undefined);
+      set('layer', inspectedLayer ?? undefined);
+      set('relevant', yearRelevance?.checked ? '1' : undefined);
+      // Deliberately does NOT write `layers`. The composition is restored
+      // asynchronously once MapLibre loads, so writing it from here would race
+      // that restoration and overwrite an incoming link's layers with whatever
+      // happened to be checked at the time. `Copy this view` writes the
+      // composition from live state, which is the moment it is actually known.
+      history.replaceState(history.state, '', `${url.pathname}${url.search}${url.hash}`);
+    };
     const layerId = (id: string) => `geolyr-${id}`;
     const sourceId = (id: string) => `geosrc-${id}`;
 
@@ -909,6 +935,10 @@ const payload = {
           .map((toggle) => toggle.dataset.layer!),
         feature: target?.startsWith('feature:') ? target.slice('feature:'.length) : undefined,
         toponyms: topoCheck?.checked ?? false,
+        lens: activeLens === 'themes' ? undefined : (activeLens as 'collections' | 'rooms'),
+        collection: collectionContext ?? undefined,
+        layer: inspectedLayer ?? undefined,
+        relevant: yearRelevance?.checked ?? false,
       });
       const url = new URL(shareUrl);
       // Re-apply after the share builder, which knows only its own contract.
@@ -1886,6 +1916,41 @@ const payload = {
     // /atlas?year=<n>&zoom=<n>&layers=<a,b>&feature=<stable-id> plus the VMN
     // beat/port/route/territory aliases. Generic features require an explicit
     // layer so IDs never need to be globally unique across datasets.
+    /**
+     * Restore the catalogue view a shared link describes (KAN-405).
+     *
+     * Deliberately does not touch `layers`: the composition is restored by the
+     * existing deep-link path below, and this only re-opens the view it was seen
+     * through. An unknown lens, collection or layer is ignored rather than
+     * failing, so a link to a retired ID still opens a working Atlas.
+     */
+    const applyCatalogueDeepLink = () => {
+      if (sharedState.lens) {
+        const tab = root.querySelector<HTMLButtonElement>(`[data-lens="${sharedState.lens}"]`);
+        tab?.click();
+      }
+      if (sharedState.collection) {
+        const toggle = root.querySelector<HTMLButtonElement>(
+          `[data-group-toggle="${sharedState.collection}"]`,
+        );
+        const body = root.querySelector<HTMLElement>(
+          `[data-group-body="${sharedState.collection}"]`,
+        );
+        if (toggle && body) {
+          collectionContext = sharedState.collection;
+          toggle.setAttribute('aria-expanded', 'true');
+          body.hidden = false;
+        }
+      }
+      if (sharedState.relevant && yearRelevance) {
+        yearRelevance.checked = true;
+        applyBrowserFilter();
+      }
+      if (sharedState.layer && root.querySelector(`[data-dossier-for="${sharedState.layer}"]`)) {
+        setInspected(sharedState.layer);
+      }
+    };
+
     const applyDeepLink = async () => {
       const state = resolveVmnBeatState(parseVmnAtlasState(location.search), vmnLinks);
       delete root.dataset.atlasTarget;
@@ -2080,6 +2145,7 @@ const payload = {
         updateFacetUrlState();
         renderActiveLayers();
         syncBrowserChecks();
+        updateCatalogueUrlState();
       });
     }
 
@@ -2156,6 +2222,8 @@ const payload = {
         contextDocs.hidden = true;
         document.dispatchEvent(new CustomEvent('atlas:layer-focus', { detail: { layerId: id } }));
       }
+      if (inspectorClose) inspectorClose.hidden = id === null;
+      updateCatalogueUrlState();
     };
 
     /**
@@ -2240,8 +2308,10 @@ const payload = {
         for (const panel of root.querySelectorAll<HTMLElement>('[data-lens-panel]')) {
           panel.hidden = panel.dataset.lensPanel !== lens;
         }
+        activeLens = lens;
         document.dispatchEvent(new CustomEvent('atlas:lens-changed', { detail: { lens } }));
         applyBrowserFilter();
+        updateCatalogueUrlState();
       });
     }
 
@@ -2270,9 +2340,11 @@ const payload = {
           body.hidden = false;
           toggle.setAttribute('aria-expanded', 'true');
         }
+        collectionContext = id;
         document.dispatchEvent(
           new CustomEvent('atlas:collection-activate', { detail: { collectionId: id } }),
         );
+        updateCatalogueUrlState();
       });
     }
 
@@ -2346,7 +2418,10 @@ const payload = {
     };
 
     layerSearch?.addEventListener('input', applyBrowserFilter);
-    yearRelevance?.addEventListener('change', applyBrowserFilter);
+    yearRelevance?.addEventListener('change', () => {
+      applyBrowserFilter();
+      updateCatalogueUrlState();
+    });
     yearIn.addEventListener('input', () => {
       // Year is a discovery filter as well as a rendering one, but it only ever
       // re-marks the composition; it never empties it.
@@ -2354,8 +2429,54 @@ const payload = {
       renderActiveLayers();
     });
 
+    // --- Responsive shell and dismissal (ATLAS-1210 / KAN-406) ---
+    //
+    // Below the tablet breakpoint the catalogue is a sheet over the map. Escape
+    // closes whatever is open and returns focus to the control that opened it,
+    // so a keyboard user is never left with focus inside a hidden panel.
+    const drawerToggle = root.querySelector<HTMLButtonElement>('[data-browser-drawer]');
+    const drawerSheet = root.querySelector<HTMLElement>('[data-browser-sheet]');
+    const drawerClose = root.querySelector<HTMLButtonElement>('[data-browser-close]');
+    const inspectorClose = root.querySelector<HTMLButtonElement>('[data-inspector-close]');
+
+    const setDrawer = (open: boolean) => {
+      if (!drawerToggle || !drawerSheet) return;
+      drawerToggle.setAttribute('aria-expanded', String(open));
+      drawerSheet.dataset.open = String(open);
+      // Closing preserves everything: active layers, year, search text and the
+      // lens are all state, not view, and none of them belong to the sheet.
+      if (!open) drawerToggle.focus();
+      else drawerSheet.querySelector<HTMLElement>('input, button')?.focus();
+    };
+
+    drawerToggle?.addEventListener('click', () => {
+      setDrawer(drawerToggle.getAttribute('aria-expanded') !== 'true');
+    });
+    drawerClose?.addEventListener('click', () => setDrawer(false));
+
+    inspectorClose?.addEventListener('click', () => {
+      const previous = inspectedLayer;
+      setInspected(null);
+      const invoker = previous
+        ? root.querySelector<HTMLButtonElement>(`[data-inspect="${previous}"]`)
+        : null;
+      (invoker ?? drawerToggle)?.focus();
+    });
+
+    root.addEventListener('keydown', (event) => {
+      if ((event as KeyboardEvent).key !== 'Escape') return;
+      if (inspectedLayer) {
+        inspectorClose?.click();
+        event.preventDefault();
+      } else if (drawerToggle?.getAttribute('aria-expanded') === 'true') {
+        setDrawer(false);
+        event.preventDefault();
+      }
+    });
+
     renderActiveLayers();
     applyBrowserFilter();
+    applyCatalogueDeepLink();
 
     // Readiness signal. The browser's markup is server-rendered and therefore
     // present - and inert - before this module runs, so anything driving it
@@ -2755,273 +2876,6 @@ const payload = {
     margin-top: 0.2rem;
   }
 
-  /* --- Scalable layer browser (KAN-400 / KAN-403) --- */
-  .alb {
-    border-top: 1px solid var(--rule, #3a352b);
-    margin-top: 1rem;
-    padding-top: 1rem;
-  }
-  .alb-title {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--muted, #8a8171);
-    margin: 0 0 0.75rem;
-  }
-  .alb-context {
-    border: 1px solid var(--rule, #3a352b);
-    border-radius: 3px;
-    padding: 0.6rem 0.8rem;
-    margin: 0 0 1rem;
-  }
-  .alb-context legend {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--muted, #8a8171);
-    padding-inline: 0.35rem;
-  }
-  .alb-context-note,
-  .alb-anachronism {
-    font-size: 0.78rem;
-    color: var(--muted, #8a8171);
-    margin: 0 0 0.5rem;
-  }
-  .alb-anachronism {
-    border-left: 2px solid var(--accent, #d4b87a);
-    padding-left: 0.5rem;
-  }
-  .alb-subhead {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--muted, #8a8171);
-    margin: 0.6rem 0 0.3rem;
-  }
-  .alb-find {
-    display: grid;
-    gap: 0.4rem;
-    margin-bottom: 0.85rem;
-  }
-  .alb-search {
-    display: grid;
-    gap: 0.2rem;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--muted, #8a8171);
-  }
-  .alb-search input {
-    font: inherit;
-    text-transform: none;
-    letter-spacing: normal;
-    padding: 0.35rem 0.5rem;
-    background: transparent;
-    color: inherit;
-    border: 1px solid var(--rule, #3a352b);
-    border-radius: 3px;
-  }
-  .alb-relevance {
-    display: flex;
-    gap: 0.4rem;
-    align-items: baseline;
-    font-size: 0.8rem;
-  }
-  .alb-found {
-    margin: 0;
-    font-size: 0.75rem;
-    color: var(--muted, #8a8171);
-    min-height: 1em;
-  }
-  .alb-lenses {
-    display: flex;
-    gap: 0.25rem;
-    margin-bottom: 0.75rem;
-  }
-  .alb-lens {
-    font: inherit;
-    font-size: 0.8rem;
-    background: transparent;
-    color: var(--muted, #8a8171);
-    border: 1px solid var(--rule, #3a352b);
-    border-radius: 3px;
-    padding: 0.25rem 0.6rem;
-    cursor: pointer;
-  }
-  .alb-lens[aria-selected='true'] {
-    color: inherit;
-    border-color: var(--accent, #d4b87a);
-  }
-  .alb-group {
-    border-bottom: 1px solid var(--rule, #3a352b);
-  }
-  .alb-group h4 {
-    margin: 0;
-  }
-  .alb-group-toggle {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    gap: 0.5rem;
-    align-items: baseline;
-    font: inherit;
-    font-size: 0.85rem;
-    background: transparent;
-    color: inherit;
-    border: 0;
-    padding: 0.5rem 0;
-    cursor: pointer;
-    text-align: left;
-  }
-  .alb-group-toggle::before {
-    content: '\25B8';
-    color: var(--muted, #8a8171);
-    transition: transform 0.15s ease;
-  }
-  .alb-group-toggle[aria-expanded='true']::before {
-    transform: rotate(90deg);
-  }
-  .alb-group-name {
-    flex: 1;
-  }
-  .alb-group-count {
-    font-size: 0.75rem;
-    color: var(--muted, #8a8171);
-  }
-  .alb-group-body {
-    padding-bottom: 0.5rem;
-  }
-  .alb-collection-summary,
-  .alb-collection-meta {
-    margin: 0 0 0.35rem;
-    font-size: 0.78rem;
-    color: var(--muted, #8a8171);
-  }
-  .alb-activate {
-    font: inherit;
-    font-size: 0.75rem;
-    background: transparent;
-    color: inherit;
-    border: 1px solid var(--rule, #3a352b);
-    border-radius: 3px;
-    padding: 0.2rem 0.55rem;
-    margin-bottom: 0.5rem;
-    cursor: pointer;
-  }
-  .alb-row-wrap {
-    display: flex;
-    align-items: baseline;
-    gap: 0.35rem;
-  }
-  .alb-row {
-    flex: 1;
-    display: flex;
-    align-items: baseline;
-    gap: 0.4rem;
-    font-size: 0.85rem;
-    padding: 0.2rem 0;
-  }
-  .alb-row-title {
-    flex: 1;
-  }
-  .alb-row-meta,
-  .alb-row-doc {
-    font-size: 0.72rem;
-    color: var(--muted, #8a8171);
-  }
-  .alb-info {
-    font: inherit;
-    font-size: 0.7rem;
-    line-height: 1;
-    width: 1.4rem;
-    height: 1.4rem;
-    border-radius: 50%;
-    border: 1px solid var(--rule, #3a352b);
-    background: transparent;
-    color: var(--muted, #8a8171);
-    cursor: pointer;
-  }
-  .alb-info[aria-pressed='true'] {
-    border-color: var(--accent, #d4b87a);
-    color: inherit;
-  }
-  .alb-empty {
-    font-size: 0.8rem;
-    color: var(--muted, #8a8171);
-    padding: 0.5rem 0;
-  }
-
-  /* --- Active layers (KAN-401) --- */
-  .aal {
-    border-top: 1px solid var(--rule, #3a352b);
-    margin-top: 1rem;
-    padding-top: 0.75rem;
-  }
-  .aal-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 0.5rem;
-  }
-  .aal-head h3 {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--muted, #8a8171);
-    margin: 0;
-  }
-  .aal-count {
-    color: inherit;
-  }
-  .aal-clear {
-    font: inherit;
-    font-size: 0.75rem;
-    background: transparent;
-    color: var(--muted, #8a8171);
-    border: 1px solid var(--rule, #3a352b);
-    border-radius: 3px;
-    padding: 0.15rem 0.5rem;
-    cursor: pointer;
-  }
-  .aal-list {
-    list-style: none;
-    margin: 0.5rem 0 0;
-    padding: 0;
-    display: grid;
-    gap: 0.3rem;
-  }
-  .aal-item {
-    display: flex;
-    align-items: baseline;
-    gap: 0.4rem;
-    font-size: 0.85rem;
-  }
-  .aal-name {
-    flex: 1;
-  }
-  .aal-outside {
-    font-size: 0.68rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--accent, #d4b87a);
-  }
-  .aal-inspect,
-  .aal-remove {
-    font: inherit;
-    font-size: 0.72rem;
-    background: transparent;
-    color: var(--muted, #8a8171);
-    border: 1px solid var(--rule, #3a352b);
-    border-radius: 3px;
-    padding: 0.1rem 0.4rem;
-    cursor: pointer;
-  }
-  .aal-note {
-    margin: 0.5rem 0 0;
-    font-size: 0.75rem;
-    color: var(--muted, #8a8171);
-  }
-
   /* --- Layer inspector (KAN-402) --- */
   .am-dossier-title {
     font-size: 0.9rem;
@@ -3263,6 +3117,25 @@ const payload = {
     grid-column: 2;
     font-size: var(--step--1);
     color: var(--ink-muted);
+  }
+
+  /* --- Responsive shell and accessibility (KAN-406) --- */
+  .am-inspector-close {
+    font: inherit;
+    font-size: 0.72rem;
+    background: transparent;
+    color: var(--muted, #8a8171);
+    border: 1px solid var(--rule, #3a352b);
+    border-radius: 3px;
+    padding: 0.2rem 0.5rem;
+    margin-bottom: 0.6rem;
+    cursor: pointer;
+  }
+  @media (pointer: coarse) {
+    .am-inspector-close {
+      min-height: 44px;
+      min-width: 44px;
+    }
   }
 
   @media (max-width: 800px) {

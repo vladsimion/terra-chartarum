@@ -45,6 +45,16 @@ const historicalThemes = themeGroups.filter((group) =>
   group.layerIds.some((id) => byId.get(id)?.role !== 'context'),
 );
 
+// Context layers belong to Map Context and appear nowhere else. Left in the
+// Rooms lens they would be exposed twice at once - once in their room, once in
+// the context fieldset - giving two live controls the same accessible name.
+const roomGroups = catalogue.groups.rooms
+  .map((group) => ({
+    ...group,
+    layerIds: group.layerIds.filter((id) => byId.get(id)?.role !== 'context'),
+  }))
+  .filter((group) => group.layerIds.length > 0);
+
 const span = (row: CatalogueLayer) => `${formatYear(row.yearFrom)}-${formatYear(row.yearTo)}`;
 
 /**
@@ -57,211 +67,505 @@ const haystack = (row: CatalogueLayer, ...context: (string | undefined)[]) =>
 ---
 
 <section class="alb" data-layer-browser>
-  <h3 class="alb-title">Layers</h3>
+  {
+    /* Below the tablet breakpoint the catalogue becomes a sheet so the map keeps
+      the screen. The trigger is a real button with aria-expanded, and it is the
+      element focus returns to when the sheet closes (KAN-406). */
+  }
+  <button type="button" class="alb-drawer-toggle" data-browser-drawer aria-expanded="false">
+    Browse layers
+  </button>
+  <div class="alb-sheet" data-browser-sheet>
+    <div class="alb-sheet-head">
+      <h3 class="alb-title">Layers</h3>
+      <button type="button" class="alb-sheet-close" data-browser-close>Close</button>
+    </div>
 
-  {/* Map context: physical framing and modern reference, never historical evidence. */}
-  <fieldset class="alb-context">
-    <legend>Map context</legend>
-    <p class="alb-context-note">Framing geography. These layers make no claim about the past.</p>
-    {
-      physical.length > 0 && (
-        <div class="alb-context-group">
-          <p class="alb-subhead">Physical geography</p>
-          {physical.map((row) => (
-            <label
-              class="am-layer alb-row"
-              data-row={row.id}
-              data-search={haystack(row, 'map context physical geography')}
-            >
-              <input type="checkbox" data-layer={row.id} checked={row.defaultOn} />
-              <span class="alb-row-title">{row.title}</span>
-            </label>
-          ))}
-        </div>
-      )
-    }
-    {
-      modern.length > 0 && (
-        <div class="alb-context-group">
-          <p class="alb-subhead">Modern reference</p>
-          <p class="alb-anachronism">
-            Present-day geometry, shown over historical material as a reading grid. It is an
-            anachronism, not evidence.
-          </p>
-          {modern.map((row) => (
-            <div class="alb-row-wrap">
+    {/* Map context: physical framing and modern reference, never historical evidence. */}
+    <fieldset class="alb-context">
+      <legend>Map context</legend>
+      <p class="alb-context-note">Framing geography. These layers make no claim about the past.</p>
+      {
+        physical.length > 0 && (
+          <div class="alb-context-group">
+            <p class="alb-subhead">Physical geography</p>
+            {physical.map((row) => (
               <label
                 class="am-layer alb-row"
                 data-row={row.id}
-                data-search={haystack(row, 'map context modern reference anachronistic')}
+                data-search={haystack(row, 'map context physical geography')}
               >
                 <input type="checkbox" data-layer={row.id} checked={row.defaultOn} />
                 <span class="alb-row-title">{row.title}</span>
-                <span class="alb-row-meta">{span(row)}</span>
               </label>
-              <button
-                type="button"
-                class="alb-info"
-                data-inspect={row.id}
-                aria-label={`About ${row.title}`}
-              >
-                i
-              </button>
-            </div>
-          ))}
-        </div>
-      )
-    }
-  </fieldset>
+            ))}
+          </div>
+        )
+      }
+      {
+        modern.length > 0 && (
+          <div class="alb-context-group">
+            <p class="alb-subhead">Modern reference</p>
+            <p class="alb-anachronism">
+              Present-day geometry, shown over historical material as a reading grid. It is an
+              anachronism, not evidence.
+            </p>
+            {modern.map((row) => (
+              <div class="alb-row-wrap">
+                <label
+                  class="am-layer alb-row"
+                  data-row={row.id}
+                  data-search={haystack(row, 'map context modern reference anachronistic')}
+                >
+                  <input type="checkbox" data-layer={row.id} checked={row.defaultOn} />
+                  <span class="alb-row-title">{row.title}</span>
+                  <span class="alb-row-meta">{span(row)}</span>
+                </label>
+                <button
+                  type="button"
+                  class="alb-info"
+                  data-inspect={row.id}
+                  aria-label={`About ${row.title}`}
+                >
+                  i
+                </button>
+              </div>
+            ))}
+          </div>
+        )
+      }
+    </fieldset>
 
-  {/* Search and year relevance (KAN-403). Neither ever changes what is drawn. */}
-  <div class="alb-find">
-    <label class="alb-search">
-      <span>Find a layer</span>
-      <input
-        type="search"
-        data-layer-search
-        placeholder="frontier, hansa, toponym..."
-        autocomplete="off"
-      />
-    </label>
-    <label class="alb-relevance">
-      <input type="checkbox" data-year-relevance />
-      <span>Only layers relevant to the selected year</span>
-    </label>
-    <p class="alb-found" data-layer-found aria-live="polite"></p>
-  </div>
+    {/* Search and year relevance (KAN-403). Neither ever changes what is drawn. */}
+    <div class="alb-find">
+      <label class="alb-search">
+        <span>Find a layer</span>
+        <input
+          type="search"
+          data-layer-search
+          placeholder="frontier, hansa, toponym..."
+          autocomplete="off"
+        />
+      </label>
+      <label class="alb-relevance">
+        <input type="checkbox" data-year-relevance />
+        <span>Only layers relevant to the selected year</span>
+      </label>
+      <p class="alb-found" data-layer-found aria-live="polite"></p>
+    </div>
 
-  <div class="alb-lenses" role="tablist" aria-label="Browse layers by">
+    <div class="alb-lenses" role="tablist" aria-label="Browse layers by">
+      {
+        LENSES.map((lens, index) => (
+          <button
+            type="button"
+            role="tab"
+            class="alb-lens"
+            data-lens={lens.id}
+            aria-selected={index === 0 ? 'true' : 'false'}
+            title={lens.hint}
+          >
+            {lens.label}
+          </button>
+        ))
+      }
+    </div>
+
     {
-      LENSES.map((lens, index) => (
-        <button
-          type="button"
-          role="tab"
-          class="alb-lens"
-          data-lens={lens.id}
-          aria-selected={index === 0 ? 'true' : 'false'}
-          title={lens.hint}
-        >
-          {lens.label}
-        </button>
+      LENSES.map((lens, lensIndex) => (
+        <div class="alb-panel" data-lens-panel={lens.id} hidden={lensIndex !== 0}>
+          {lens.id === 'collections'
+            ? catalogue.collections.map((collection) => (
+                <section class="alb-group alb-collection" data-group={collection.id}>
+                  <h4>
+                    <button
+                      type="button"
+                      class="alb-group-toggle"
+                      data-group-toggle={collection.id}
+                      aria-expanded="false"
+                    >
+                      <span class="alb-group-name">{collection.title}</span>
+                      <span class="alb-group-count" data-group-count={collection.id}>
+                        {collection.availableLayerIds.length}
+                      </span>
+                    </button>
+                  </h4>
+                  <p class="alb-collection-summary">{collection.summary}</p>
+                  <p class="alb-collection-meta">
+                    {formatYear(collection.yearFrom)}-{formatYear(collection.yearTo)}
+                    <span aria-hidden="true"> · </span>
+                    {collection.layerIds.length} layers
+                  </p>
+                  <button
+                    type="button"
+                    class="alb-activate"
+                    data-activate-collection={collection.id}
+                    data-defaults={collection.defaultLayerIds.join(',')}
+                  >
+                    Activate defaults
+                  </button>
+                  <div class="alb-group-body" data-group-body={collection.id} hidden>
+                    {collection.layerIds.map((id) => {
+                      const row = byId.get(id)!;
+                      return (
+                        <div class="alb-row-wrap" data-row-wrap={row.id}>
+                          <label
+                            class="am-layer alb-row"
+                            data-row={row.id}
+                            data-search={haystack(row, collection.title, collection.tags.join(' '))}
+                          >
+                            <input type="checkbox" data-layer={row.id} />
+                            <span class="alb-row-title">{row.title}</span>
+                            <span class="alb-row-meta">{span(row)}</span>
+                          </label>
+                          <button
+                            type="button"
+                            class="alb-info"
+                            data-inspect={row.id}
+                            aria-label={`About ${row.title}`}
+                          >
+                            i
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </section>
+              ))
+            : (lens.id === 'themes' ? historicalThemes : roomGroups).map((group) => (
+                <section class="alb-group" data-group={group.id}>
+                  <h4>
+                    <button
+                      type="button"
+                      class="alb-group-toggle"
+                      data-group-toggle={group.id}
+                      aria-expanded="false"
+                    >
+                      <span class="alb-group-name">{group.title}</span>
+                      <span class="alb-group-count" data-group-count={group.id}>
+                        {group.layerIds.length}
+                      </span>
+                    </button>
+                  </h4>
+                  <div class="alb-group-body" data-group-body={group.id} hidden>
+                    {group.layerIds.map((id) => {
+                      const row = byId.get(id)!;
+                      return (
+                        <div class="alb-row-wrap" data-row-wrap={row.id}>
+                          <label
+                            class="am-layer alb-row"
+                            data-row={row.id}
+                            data-search={haystack(row, group.title)}
+                          >
+                            <input type="checkbox" data-layer={row.id} />
+                            <span class="alb-row-title">{row.title}</span>
+                            <span class="alb-row-meta">{span(row)}</span>
+                            {documentationRoutes[row.id] && (
+                              <span class="alb-row-doc" aria-hidden="true">
+                                ✓
+                              </span>
+                            )}
+                          </label>
+                          <button
+                            type="button"
+                            class="alb-info"
+                            data-inspect={row.id}
+                            aria-label={`About ${row.title}`}
+                          >
+                            i
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </section>
+              ))}
+          <p class="alb-empty" data-lens-empty={lens.id} hidden>
+            No layers match. Clear the search or the year filter to see the catalogue again.
+          </p>
+        </div>
       ))
     }
   </div>
-
-  {
-    LENSES.map((lens, lensIndex) => (
-      <div class="alb-panel" data-lens-panel={lens.id} hidden={lensIndex !== 0}>
-        {lens.id === 'collections'
-          ? catalogue.collections.map((collection) => (
-              <section class="alb-group alb-collection" data-group={collection.id}>
-                <h4>
-                  <button
-                    type="button"
-                    class="alb-group-toggle"
-                    data-group-toggle={collection.id}
-                    aria-expanded="false"
-                  >
-                    <span class="alb-group-name">{collection.title}</span>
-                    <span class="alb-group-count" data-group-count={collection.id}>
-                      {collection.availableLayerIds.length}
-                    </span>
-                  </button>
-                </h4>
-                <p class="alb-collection-summary">{collection.summary}</p>
-                <p class="alb-collection-meta">
-                  {formatYear(collection.yearFrom)}-{formatYear(collection.yearTo)}
-                  <span aria-hidden="true"> · </span>
-                  {collection.layerIds.length} layers
-                </p>
-                <button
-                  type="button"
-                  class="alb-activate"
-                  data-activate-collection={collection.id}
-                  data-defaults={collection.defaultLayerIds.join(',')}
-                >
-                  Activate defaults
-                </button>
-                <div class="alb-group-body" data-group-body={collection.id} hidden>
-                  {collection.layerIds.map((id) => {
-                    const row = byId.get(id)!;
-                    return (
-                      <div class="alb-row-wrap" data-row-wrap={row.id}>
-                        <label
-                          class="am-layer alb-row"
-                          data-row={row.id}
-                          data-search={haystack(row, collection.title, collection.tags.join(' '))}
-                        >
-                          <input type="checkbox" data-layer={row.id} />
-                          <span class="alb-row-title">{row.title}</span>
-                          <span class="alb-row-meta">{span(row)}</span>
-                        </label>
-                        <button
-                          type="button"
-                          class="alb-info"
-                          data-inspect={row.id}
-                          aria-label={`About ${row.title}`}
-                        >
-                          i
-                        </button>
-                      </div>
-                    );
-                  })}
-                </div>
-              </section>
-            ))
-          : (lens.id === 'themes' ? historicalThemes : catalogue.groups.rooms).map((group) => (
-              <section class="alb-group" data-group={group.id}>
-                <h4>
-                  <button
-                    type="button"
-                    class="alb-group-toggle"
-                    data-group-toggle={group.id}
-                    aria-expanded="false"
-                  >
-                    <span class="alb-group-name">{group.title}</span>
-                    <span class="alb-group-count" data-group-count={group.id}>
-                      {group.layerIds.length}
-                    </span>
-                  </button>
-                </h4>
-                <div class="alb-group-body" data-group-body={group.id} hidden>
-                  {group.layerIds.map((id) => {
-                    const row = byId.get(id)!;
-                    return (
-                      <div class="alb-row-wrap" data-row-wrap={row.id}>
-                        <label
-                          class="am-layer alb-row"
-                          data-row={row.id}
-                          data-search={haystack(row, group.title)}
-                        >
-                          <input type="checkbox" data-layer={row.id} />
-                          <span class="alb-row-title">{row.title}</span>
-                          <span class="alb-row-meta">{span(row)}</span>
-                          {documentationRoutes[row.id] && (
-                            <span class="alb-row-doc" aria-hidden="true">
-                              ✓
-                            </span>
-                          )}
-                        </label>
-                        <button
-                          type="button"
-                          class="alb-info"
-                          data-inspect={row.id}
-                          aria-label={`About ${row.title}`}
-                        >
-                          i
-                        </button>
-                      </div>
-                    );
-                  })}
-                </div>
-              </section>
-            ))}
-        <p class="alb-empty" data-lens-empty={lens.id} hidden>
-          No layers match. Clear the search or the year filter to see the catalogue again.
-        </p>
-      </div>
-    ))
-  }
 </section>
+
+<style>
+  /* --- Scalable layer browser (KAN-400 / KAN-403) --- */
+  .alb {
+    border-top: 1px solid var(--rule, #3a352b);
+    margin-top: 1rem;
+    padding-top: 1rem;
+  }
+  .alb-title {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted, #8a8171);
+    margin: 0 0 0.75rem;
+  }
+  .alb-context {
+    border: 1px solid var(--rule, #3a352b);
+    border-radius: 3px;
+    padding: 0.6rem 0.8rem;
+    margin: 0 0 1rem;
+  }
+  .alb-context legend {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted, #8a8171);
+    padding-inline: 0.35rem;
+  }
+  .alb-context-note,
+  .alb-anachronism {
+    font-size: 0.78rem;
+    color: var(--muted, #8a8171);
+    margin: 0 0 0.5rem;
+  }
+  .alb-anachronism {
+    border-left: 2px solid var(--accent, #d4b87a);
+    padding-left: 0.5rem;
+  }
+  .alb-subhead {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted, #8a8171);
+    margin: 0.6rem 0 0.3rem;
+  }
+  .alb-find {
+    display: grid;
+    gap: 0.4rem;
+    margin-bottom: 0.85rem;
+  }
+  .alb-search {
+    display: grid;
+    gap: 0.2rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted, #8a8171);
+  }
+  .alb-search input {
+    font: inherit;
+    text-transform: none;
+    letter-spacing: normal;
+    padding: 0.35rem 0.5rem;
+    background: transparent;
+    color: inherit;
+    border: 1px solid var(--rule, #3a352b);
+    border-radius: 3px;
+  }
+  .alb-relevance {
+    display: flex;
+    gap: 0.4rem;
+    align-items: baseline;
+    font-size: 0.8rem;
+  }
+  .alb-found {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--muted, #8a8171);
+    min-height: 1em;
+  }
+  .alb-lenses {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 0.75rem;
+  }
+  .alb-lens {
+    font: inherit;
+    font-size: 0.8rem;
+    background: transparent;
+    color: var(--muted, #8a8171);
+    border: 1px solid var(--rule, #3a352b);
+    border-radius: 3px;
+    padding: 0.25rem 0.6rem;
+    cursor: pointer;
+  }
+  .alb-lens[aria-selected='true'] {
+    color: inherit;
+    border-color: var(--accent, #d4b87a);
+  }
+  .alb-group {
+    border-bottom: 1px solid var(--rule, #3a352b);
+  }
+  .alb-group h4 {
+    margin: 0;
+  }
+  .alb-group-toggle {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    align-items: baseline;
+    font: inherit;
+    font-size: 0.85rem;
+    background: transparent;
+    color: inherit;
+    border: 0;
+    padding: 0.5rem 0;
+    cursor: pointer;
+    text-align: left;
+  }
+  .alb-group-toggle::before {
+    content: '\25B8';
+    color: var(--muted, #8a8171);
+    transition: transform 0.15s ease;
+  }
+  .alb-group-toggle[aria-expanded='true']::before {
+    transform: rotate(90deg);
+  }
+  .alb-group-name {
+    flex: 1;
+  }
+  .alb-group-count {
+    font-size: 0.75rem;
+    color: var(--muted, #8a8171);
+  }
+  .alb-group-body {
+    padding-bottom: 0.5rem;
+  }
+  .alb-collection-summary,
+  .alb-collection-meta {
+    margin: 0 0 0.35rem;
+    font-size: 0.78rem;
+    color: var(--muted, #8a8171);
+  }
+  .alb-activate {
+    font: inherit;
+    font-size: 0.75rem;
+    background: transparent;
+    color: inherit;
+    border: 1px solid var(--rule, #3a352b);
+    border-radius: 3px;
+    padding: 0.2rem 0.55rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+  }
+  .alb-row-wrap {
+    display: flex;
+    align-items: baseline;
+    gap: 0.35rem;
+  }
+  .alb-row {
+    flex: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    padding: 0.2rem 0;
+  }
+  .alb-row-title {
+    flex: 1;
+  }
+  .alb-row-meta,
+  .alb-row-doc {
+    font-size: 0.72rem;
+    color: var(--muted, #8a8171);
+  }
+  .alb-info {
+    font: inherit;
+    font-size: 0.7rem;
+    line-height: 1;
+    width: 1.4rem;
+    height: 1.4rem;
+    border-radius: 50%;
+    border: 1px solid var(--rule, #3a352b);
+    background: transparent;
+    color: var(--muted, #8a8171);
+    cursor: pointer;
+  }
+  .alb-info[aria-pressed='true'] {
+    border-color: var(--accent, #d4b87a);
+    color: inherit;
+  }
+  .alb-empty {
+    font-size: 0.8rem;
+    color: var(--muted, #8a8171);
+    padding: 0.5rem 0;
+  }
+
+  /* --- Responsive shell and accessibility (KAN-406) --- */
+
+  /* The drawer trigger exists only below the tablet breakpoint; above it the
+     catalogue is simply part of the page. */
+  .alb-drawer-toggle,
+  .alb-sheet-head {
+    display: none;
+  }
+
+  /* Selected state is carried by weight and an underline as well as by colour,
+     so the current lens is legible without colour perception. */
+  .alb-lens[aria-selected='true'] {
+    font-weight: 600;
+    box-shadow: inset 0 -2px 0 var(--accent, #d4b87a);
+  }
+  .alb-info[aria-pressed='true'] {
+    font-weight: 700;
+  }
+
+  /* Icon-sized controls are fine under a mouse and not under a thumb. */
+  @media (pointer: coarse) {
+    .alb-info,
+    .alb-lens,
+    .alb-activate,
+    .alb-group-toggle,
+    .alb-drawer-toggle,
+    .alb-sheet-close {
+      min-height: 44px;
+      min-width: 44px;
+    }
+    .alb-row {
+      padding-block: 0.55rem;
+    }
+  }
+
+  @media (max-width: 800px) {
+    .alb-drawer-toggle {
+      display: block;
+      width: 100%;
+      font: inherit;
+      font-size: 0.9rem;
+      background: transparent;
+      color: inherit;
+      border: 1px solid var(--rule, #3a352b);
+      border-radius: 3px;
+      padding: 0.6rem;
+      cursor: pointer;
+    }
+    /* A sheet over the map rather than a column beside it: on a phone the map
+       needs the screen, and the catalogue is a thing you open. */
+    .alb-sheet {
+      display: none;
+      position: fixed;
+      inset: auto 0 0 0;
+      max-height: 80vh;
+      overflow-y: auto;
+      z-index: 40;
+      background: var(--panel, #1a1710);
+      border-top: 1px solid var(--rule, #3a352b);
+      padding: 1rem;
+    }
+    .alb-sheet[data-open='true'] {
+      display: block;
+    }
+    .alb-sheet-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .alb-sheet-close {
+      font: inherit;
+      font-size: 0.8rem;
+      background: transparent;
+      color: inherit;
+      border: 1px solid var(--rule, #3a352b);
+      border-radius: 3px;
+      padding: 0.35rem 0.75rem;
+      cursor: pointer;
+    }
+  }
+</style>

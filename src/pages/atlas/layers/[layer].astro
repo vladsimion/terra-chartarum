@@ -97,7 +97,6 @@ const openInAtlas = `/atlas/?layers=${layer.id}&year=${Math.max(layer.yearFrom, 
             <>
               {index > 0 && <span aria-hidden="true">, </span>}
               <a href={`/atlas/?collection=${collection.id}`}>{collection.title}</a>
-              {index === collections.length - 1 && '.'}
             </>
           ))}
         </p>

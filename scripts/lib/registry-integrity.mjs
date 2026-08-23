@@ -608,13 +608,14 @@ export function validateExecutableAlignment(contract, lighthouse, playwrightSour
     budgets.atlas.performanceScoreWarning,
     'Atlas budget',
   );
+  // Monitored rather than gating: see the exception recorded on the atlas budget.
   expectAssertion(
     errors,
     atlas,
     'total-blocking-time',
-    'error',
+    'warn',
     'maxNumericValue',
-    budgets.atlas.totalBlockingTimeMs,
+    budgets.atlas.totalBlockingTimeWarning,
     'Atlas budget',
   );
   expectAssertion(

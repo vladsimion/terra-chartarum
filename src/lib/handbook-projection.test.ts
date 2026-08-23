@@ -101,7 +101,14 @@ describe('the seeded corpus projects cleanly', () => {
 
   it('sends a reader to GitHub only through an advanced technical link', () => {
     const projection = projectHandbook(entries, context());
-    for (const entry of projection.docs) {
+    // Scoped to Pattern B, the records this project authors: a repository link
+    // in authored prose belongs in `technicalLinks`, never in the explanation.
+    //
+    // Pattern A bodies are projections of canonical documents and may cite a
+    // repository as a *source* - the VMN source log cites Natural Earth's
+    // vector repository, which is the dataset's actual home. That is a citation,
+    // not a redirection of the reader away from the explanation.
+    for (const entry of projection.docs.filter((doc) => doc.doc.pattern === 'B')) {
       const bodyLinks = entry.body.match(/https:\/\/github\.com\/\S+/g) ?? [];
       expect(bodyLinks, entry.doc.id).toEqual([]);
     }
@@ -217,15 +224,38 @@ describe('the pipeline refuses to publish what it should not', () => {
 });
 
 describe('coverage report', () => {
-  it('lists published layers with no documentation record', () => {
+  it('reports every published layer as documented', () => {
+    // The strong form of the KAN-418 gate, now that KAN-413 and KAN-414 have
+    // migrated the Dacia, VMN and Hanseatic families: a published layer without
+    // a public record is a release defect, and this is where it surfaces.
     const projection = projectHandbook(entries, context());
     const { rows, undocumented } = handbookCoverage(GEO_LAYERS, projection);
     expect(rows).toHaveLength(GEO_LAYERS.length);
-    expect(undocumented).not.toContain('roman-empire-117');
-    expect(undocumented).not.toContain('map-coverage');
-    // The programme families are KAN-413 and KAN-414's work and are still open.
-    expect(undocumented).toContain('venetian-ports');
-    expect(undocumented).toContain('dacia-treaty-frontiers');
+    expect(undocumented).toEqual([]);
+  });
+
+  it('gives each layer exactly one owning record', () => {
+    const projection = projectHandbook(entries, context());
+    const owners = projection.docs.filter((entry) => entry.doc.docType === 'layer');
+    expect(new Set(owners.map((entry) => entry.doc.layerId)).size).toBe(owners.length);
+  });
+
+  it('reuses shared method and evidence records instead of copying them', () => {
+    const projection = projectHandbook(entries, context());
+    const shared = projection.docs.filter((entry) =>
+      ['method', 'evidence', 'data-fields'].includes(entry.doc.docType),
+    );
+    expect(shared.length).toBeGreaterThan(0);
+    for (const record of shared) {
+      const citers = projection.docs.filter((entry) =>
+        entry.doc.referencesDocIds.includes(record.doc.id),
+      );
+      // Every shared record is actually referenced by the layers it serves,
+      // which is what keeps one method from becoming several accounts of itself.
+      if (record.doc.relatedLayerIds.length > 1) {
+        expect(citers.length, record.doc.id).toBeGreaterThan(0);
+      }
+    }
   });
 
   it('marks the context record as a minimal-context exemption', () => {
