@@ -1105,12 +1105,12 @@ const RAW: unknown[] = [
     secondaryRooms: ['map'],
     title: 'Antarctic knowledge pilot: tracks and extents (unreviewed)',
     description:
-      'The ANT-4 vertical slice as lines and outlines: a schematic Terra Australis envelope, a sampled Cook track, and the planned crossing and drift of Endurance. Every line declares where it came from, and three of the four are Terra Chartarum linework rather than a source geometry.',
+      'Lines and outlines from the Antarctic pilot: a schematic Terra Australis envelope, a sampled Cook track, the approach, planned crossing and drift of Endurance, and the James Caird passage. Every line declares where it came from, and most of them are Terra Chartarum linework rather than a source geometry.',
     kind: 'vector',
     format: 'geojson',
     url: '/geo/antarctica-pilot-tracks.geojson',
     yearFrom: 1531,
-    yearTo: 1915,
+    yearTo: 1916,
     source: 'Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-423',
     license: 'CC BY 4.0',
     attribution:
@@ -1160,12 +1160,12 @@ const RAW: unknown[] = [
     secondaryRooms: ['map'],
     title: 'Antarctic knowledge pilot: observations and fixes (unreviewed)',
     description:
-      'Dated positions from the same pilot slice: a farthest south, a disputed sighting, and two Endurance positions. A sighting is filed as a report rather than an observation wherever what was seen is still argued over.',
+      'Dated positions from the same pilot slice: farthest souths, the contested sightings of 1820 and 1840, the nineteenth-century survey landfalls and the Endurance sequence from besetment to South Georgia. A sighting is filed as a report rather than an observation wherever what was seen is still argued over.',
     kind: 'vector',
     format: 'geojson',
     url: '/geo/antarctica-pilot-observations.geojson',
     yearFrom: 1774,
-    yearTo: 1915,
+    yearTo: 1916,
     source: 'Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-423',
     license: 'CC BY 4.0',
     attribution:

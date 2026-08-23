@@ -254,9 +254,9 @@
       "format": "geojson",
       "crs": "EPSG:4326",
       "geometry": ["LineString", "Polygon"],
-      "featureCount": 4,
+      "featureCount": 6,
       "yearFrom": 1531,
-      "yearTo": 1915,
+      "yearTo": 1916,
       "source": "Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-423",
       "license": "CC BY 4.0",
       "attribution": "Terra Chartarum; each source and map object carries its own rights status; no object is cleared for reproduction"
@@ -267,9 +267,9 @@
       "format": "geojson",
       "crs": "EPSG:4326",
       "geometry": ["Point"],
-      "featureCount": 5,
+      "featureCount": 19,
       "yearFrom": 1774,
-      "yearTo": 1915,
+      "yearTo": 1916,
       "source": "Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-423",
       "license": "CC BY 4.0",
       "attribution": "Terra Chartarum; positions recorded from the general literature and not yet checked against an edition"

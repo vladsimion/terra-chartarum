@@ -19,14 +19,20 @@ geography apart: conjectured, reported, observed, reconciled and disproved.
 
 ## The state of it
 
-Nothing here is cleared. Two map objects have had their catalogue records read;
+Nothing here is cleared. Four map objects have had their catalogue records read;
 no object may be reproduced; no claim has been reviewed; every source locator is
 pending; the public tier is empty and the build asserts that it is.
 
 That is the intended state of a research foundation, not a shortfall against it.
 The audit's job at this stage is to make the distance between _we know this
-exists_ and _we have read it_ visible, and sixteen open gaps are the measure of
-that distance rather than a defect in the record.
+exists_ and _we have read it_ visible, and the open gaps are the measure of that
+distance rather than a defect in the record.
+
+Two gaps closed in the second batch, both by reading a catalogue record: the
+relationship between the 1874 and 1910 ice charts, and the identity of the second
+Greenwich impression of the Cook chart. Three moved to in progress once a citable
+source was located for the Endurance position, Worsley's logbook and the Wilkes
+atlas.
 
 ## Running it
 

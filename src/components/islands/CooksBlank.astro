@@ -1,0 +1,376 @@
+---
+/**
+ * Cook's Blank (ANT-5 / KAN-424)
+ *
+ * Acts I to IV in four steps: a continent drawn from reasoning, the tracks that
+ * crossed where it was drawn, the withdrawal of what the tracks contradicted,
+ * and the bounded blank left behind.
+ *
+ * Static first. Every step's drawing and caption is in the server-rendered
+ * markup, and the full transcript sits below the figure as an ordinary list, so
+ * the argument survives with no JavaScript, in a printed page, and in a screen
+ * reader that would rather read than operate a stepper. The script only hides
+ * steps that are already there.
+ *
+ * Nothing here authors geometry. Every path comes from the compiled pilot
+ * through src/lib/antarctic-transition.ts, and each one is dashed according to
+ * its own `geometryProvenance`, so Terra Chartarum's linework can never be drawn
+ * as though a source had given it.
+ */
+import {
+  transitionRecords,
+  transitionSteps,
+  transitionTranscript,
+} from '../../lib/antarctic-transition';
+import { encodingFor } from '../../lib/uncertainty';
+
+interface Props {
+  caption?: string;
+}
+const { caption } = Astro.props;
+
+const SIZE = 1000;
+const steps = transitionSteps();
+const records = transitionRecords(SIZE);
+const transcript = transitionTranscript();
+
+/**
+ * Our own linework is dotted, a transcribed coordinate is solid. This is the
+ * same rule the Atlas layer applies and it is derived from the record, not
+ * chosen per drawing.
+ */
+const OUR_OWN = ['editorial_interpolation', 'editorial_generalisation'];
+const dashFor = (provenance: string) => (OUR_OWN.includes(provenance) ? '6 4' : undefined);
+
+// Latitude rings, so "how far south" is readable rather than implied.
+const rings = [-40, -50, -60, -70, -80].map((lat) => ({
+  lat,
+  r: ((90 + lat) / (90 + -40)) * (SIZE / 2),
+}));
+
+const withdrawn = encodingFor('disproved');
+---
+
+<figure class="cooks-blank" data-cooks-blank>
+  <div class="cb-frame">
+    <svg
+      class="cb-plate"
+      viewBox={`0 0 ${SIZE} ${SIZE}`}
+      role="img"
+      aria-label="Four steps from a drawn southern continent to the blank left by Cook's tracks"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <g class="cb-graticule" aria-hidden="true">
+        {rings.map((ring) => <circle cx={SIZE / 2} cy={SIZE / 2} r={ring.r} />)}
+        {
+          rings.map((ring) => (
+            <text x={SIZE / 2 + 6} y={SIZE / 2 - ring.r + 16}>
+              {Math.abs(ring.lat)}&#176;S
+            </text>
+          ))
+        }
+      </g>
+
+      {
+        steps.map((step) => (
+          <g class="cb-step" data-step={step.id} data-ordinal={step.ordinal}>
+            {step.withdraws.map((id) => (
+              <path
+                class="cb-withdrawn"
+                d={records.get(id)!.path}
+                stroke-dasharray={withdrawn.dash.join(' ')}
+              >
+                <title>
+                  {records.get(id)!.record.title} - withdrawn: the tracks crossed where it was drawn
+                </title>
+              </path>
+            ))}
+            {step.shows.map((id) =>
+              records.get(id)!.isPoint ? (
+                <g class="cb-mark">
+                  <path
+                    class="cb-point"
+                    d={`${records.get(id)!.path} m-9 0 a9 9 0 1 0 18 0 a9 9 0 1 0 -18 0`}
+                  />
+                  <title>{records.get(id)!.record.title}</title>
+                </g>
+              ) : (
+                <path
+                  class="cb-shown"
+                  d={records.get(id)!.path}
+                  stroke-dasharray={dashFor(records.get(id)!.record.geometryProvenance)}
+                >
+                  <title>
+                    {records.get(id)!.record.title}
+                    {OUR_OWN.includes(records.get(id)!.record.geometryProvenance)
+                      ? ' - drawn by Terra Chartarum, not taken from a source'
+                      : ''}
+                  </title>
+                </path>
+              ),
+            )}
+          </g>
+        ))
+      }
+    </svg>
+
+    <div class="cb-readout">
+      {
+        steps.map((step) => (
+          <p class="cb-caption" data-caption-for={step.id}>
+            <strong>{step.title}.</strong> {step.caption}
+          </p>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="cb-controls" role="group" aria-label="Steps">
+    {
+      steps.map((step) => (
+        <button
+          type="button"
+          class="cb-button"
+          data-goto={step.id}
+          aria-pressed={step.ordinal === 1 ? 'true' : 'false'}
+        >
+          <span class="cb-ordinal">{step.ordinal}</span>
+          <span class="cb-button-label">{step.title}</span>
+        </button>
+      ))
+    }
+  </div>
+
+  <details class="cb-transcript">
+    <summary>Read this as text</summary>
+    <ol>
+      {
+        transcript.map((row) => (
+          <li>
+            <h4>{row.step}</h4>
+            <p>{row.caption}</p>
+            <p class="cb-showing">Showing: {row.showing.join('; ')}</p>
+          </li>
+        ))
+      }
+    </ol>
+    <p class="cb-provenance-note">
+      A dotted line is linework Terra Chartarum drew to make a comparison possible. It is not a
+      coastline anyone surveyed, and it may not be measured.
+    </p>
+  </details>
+
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<script>
+  function initCooksBlank(root: HTMLElement) {
+    if (root.dataset.cooksBlankReady) return;
+    root.dataset.cooksBlankReady = '1';
+    // Only now does the figure become a stepper. Before this runs, every step
+    // and caption is visible and the argument reads top to bottom.
+    root.classList.add('cb-interactive');
+
+    const steps = Array.from(root.querySelectorAll<SVGGElement>('.cb-step'));
+    const captions = Array.from(root.querySelectorAll<HTMLElement>('.cb-caption'));
+    const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>('.cb-button'));
+    if (!steps.length || !buttons.length) return;
+
+    let index = 0;
+    const show = (next: number) => {
+      index = Math.max(0, Math.min(steps.length - 1, next));
+      steps.forEach((step, i) => step.classList.toggle('cb-on', i === index));
+      captions.forEach((caption, i) => caption.classList.toggle('cb-on', i === index));
+      buttons.forEach((button, i) => {
+        button.setAttribute('aria-pressed', String(i === index));
+      });
+    };
+
+    buttons.forEach((button, i) => {
+      button.addEventListener('click', () => show(i));
+      button.addEventListener('keydown', (event) => {
+        const delta =
+          event.key === 'ArrowRight' || event.key === 'ArrowDown'
+            ? 1
+            : event.key === 'ArrowLeft' || event.key === 'ArrowUp'
+              ? -1
+              : event.key === 'Home'
+                ? -steps.length
+                : event.key === 'End'
+                  ? steps.length
+                  : 0;
+        if (!delta) return;
+        event.preventDefault();
+        const target = Math.max(0, Math.min(steps.length - 1, i + delta));
+        buttons[target].focus();
+        show(target);
+      });
+    });
+
+    show(0);
+  }
+
+  const boot = () =>
+    document.querySelectorAll<HTMLElement>('[data-cooks-blank]').forEach(initCooksBlank);
+  boot();
+  document.addEventListener('astro:page-load', boot);
+</script>
+
+<style>
+  .cooks-blank {
+    margin: 2.5rem 0;
+  }
+
+  .cb-frame {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .cb-plate {
+    width: 100%;
+    max-width: 34rem;
+    margin-inline: auto;
+    display: block;
+    background: var(--surface-2, #f5f1e8);
+    border: 1px solid var(--rule, #cfc6b3);
+  }
+
+  .cb-graticule circle {
+    fill: none;
+    stroke: var(--rule, #cfc6b3);
+    stroke-width: 1;
+  }
+
+  .cb-graticule text {
+    font-size: 20px;
+    fill: var(--text-muted, #8a8070);
+  }
+
+  .cb-shown,
+  .cb-withdrawn {
+    fill: none;
+    stroke-width: 3;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+
+  .cb-shown {
+    stroke: var(--ink, #2b2620);
+  }
+
+  /* Withdrawn, not erased. Thin and dotted: still on the plate, no longer asserted. */
+  .cb-withdrawn {
+    stroke: var(--text-muted, #8a8070);
+    stroke-width: 1.5;
+    opacity: 0.65;
+  }
+
+  .cb-point {
+    fill: var(--ink, #2b2620);
+    stroke: var(--surface-2, #f5f1e8);
+    stroke-width: 3;
+  }
+
+  .cb-caption {
+    margin: 0 0 0.75rem;
+    max-width: 44rem;
+    margin-inline: auto;
+  }
+
+  .cb-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    justify-content: center;
+  }
+
+  .cb-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    /* 44px minimum target on every axis. */
+    min-height: 2.75rem;
+    padding: 0.5rem 0.9rem;
+    background: transparent;
+    border: 1px solid var(--rule, #cfc6b3);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .cb-button:focus-visible {
+    outline: 2px solid var(--ink, #2b2620);
+    outline-offset: 2px;
+  }
+
+  /* Selection is an underline and a weight change, never colour alone. */
+  .cb-button[aria-pressed='true'] {
+    border-color: var(--ink, #2b2620);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .cb-ordinal {
+    font-variant-numeric: tabular-nums;
+    color: var(--text-muted, #8a8070);
+  }
+
+  /* Without JavaScript every step and caption stays visible, so the figure reads
+     as a sequence of four drawings rather than as a broken control. */
+  .cooks-blank:not(.cb-interactive) .cb-controls {
+    display: none;
+  }
+
+  .cb-interactive .cb-step,
+  .cb-interactive .cb-caption {
+    display: none;
+  }
+
+  .cb-interactive .cb-step.cb-on,
+  .cb-interactive .cb-caption.cb-on {
+    display: revert;
+  }
+
+  .cb-transcript {
+    margin-top: 1.25rem;
+    border-top: 1px solid var(--rule, #cfc6b3);
+    padding-top: 0.75rem;
+  }
+
+  .cb-transcript summary {
+    cursor: pointer;
+    min-height: 2.75rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .cb-transcript h4 {
+    margin: 1rem 0 0.25rem;
+  }
+
+  .cb-showing,
+  .cb-provenance-note {
+    color: var(--text-muted, #8a8070);
+    font-size: 0.9em;
+  }
+
+  @media (max-width: 40rem) {
+    .cb-controls {
+      justify-content: stretch;
+    }
+
+    .cb-button {
+      flex: 1 1 100%;
+    }
+  }
+
+  /* There is no animation to disable, which is the point: the step change is a
+     swap, so reduced-motion readers get the same figure rather than a variant. */
+  @media (prefers-reduced-motion: reduce) {
+    .cb-step,
+    .cb-caption {
+      transition: none;
+    }
+  }
+</style>

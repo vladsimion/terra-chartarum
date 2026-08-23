@@ -55,6 +55,7 @@ TABLES = [
     "sources", "map-objects", "source-gaps", "claims", "terminology",
     "coronelli-lineage", "coronelli-annotations", "expeditions", "features", "tracks",
     "observations", "ghost-geographies", "names", "feature-map-objects", "feature-evidence",
+    "priority-claims", "coastline-chronology", "expedition-phases", "chart-contributions",
 ]
 
 
@@ -229,6 +230,80 @@ def build_outputs() -> dict[Path, bytes]:
             }
             for row in sorted(read("expeditions"), key=lambda r: r["expedition_id"])
         ],
+        # Act VIII reads phases rather than a single route, because the whole
+        # point is that the expedition changed what kind of thing it was.
+        "phases": [
+            {
+                "id": row["phase_id"],
+                "expeditionId": row["expedition_id"],
+                "sequence": int(row["sequence"]),
+                "phaseKind": row["phase_kind"],
+                "displayName": row["display_name"],
+                "dateFrom": row["date_from"],
+                "dateTo": row["date_to"],
+                "datePrecision": row["date_precision"],
+                "underOwnPower": row["under_own_power"],
+                "evidenceClass": row["evidence_class"],
+                "confidence": row["confidence"],
+                "reviewState": row["review_state"],
+                "notes": row["notes"],
+            }
+            for row in sorted(read("expedition-phases"), key=lambda r: (r["expedition_id"], int(r["sequence"])))
+        ],
+        # Act V reads competing claims. There is no winner field and there will
+        # not be one; the reader is given the definitions and the claims.
+        "priorityClaims": [
+            {
+                "id": row["priority_id"],
+                "contest": row["contest"],
+                "claimant": row["claimant"],
+                "expeditionId": row["expedition_id"] or None,
+                "observationId": row["observation_id"] or None,
+                "claimDate": row["claim_date"],
+                "definitionSatisfied": row["definition_satisfied"],
+                "assertedBy": row["asserted_by"],
+                "contestedBy": row["contested_by"],
+                "evidenceStrength": row["evidence_strength"],
+                "reviewStatus": row["review_status"],
+                "notes": row["notes"],
+            }
+            for row in sorted(read("priority-claims"), key=lambda r: r["priority_id"])
+        ],
+        "coastline": [
+            {
+                "id": row["segment_id"],
+                "displayName": row["display_name"],
+                "region": row["region"],
+                "firstClaimedDate": row["first_claimed_date"] or None,
+                "firstObservedDate": row["first_observed_date"] or None,
+                "firstChartedDate": row["first_charted_date"] or None,
+                "firstConfirmedDate": row["first_confirmed_date"] or None,
+                "claimedByExpeditionId": row["claimed_by_expedition_id"] or None,
+                "confirmedByExpeditionId": row["confirmed_by_expedition_id"] or None,
+                "laterStatus": row["later_status"],
+                "evidenceClass": row["evidence_class"],
+                "confidence": row["confidence"],
+                "reviewState": row["review_state"],
+                "notes": row["notes"],
+            }
+            for row in sorted(read("coastline-chronology"), key=lambda r: r["segment_id"])
+        ],
+        # Act VII reads one chart against its own predecessor.
+        "chartContributions": [
+            {
+                "id": row["contribution_id"],
+                "mapObjectId": row["map_object_id"],
+                "expeditionId": row["expedition_id"] or None,
+                "voyageLabel": row["voyage_label"],
+                "chartDates": row["chart_dates"],
+                "contributionKind": row["contribution_kind"],
+                "presentOn1874": row["present_on_1874"] == "yes",
+                "presentOn1910": row["present_on_1910"] == "yes",
+                "reviewState": row["review_state"],
+                "notes": row["notes"],
+            }
+            for row in sorted(read("chart-contributions"), key=lambda r: r["contribution_id"])
+        ],
     })
 
     for name in TABLES:
@@ -260,6 +335,11 @@ def build_manifest(outputs: dict[Path, bytes], records: list[dict[str, object]])
         ),
         "openSourceGaps": sum(1 for r in tables["source-gaps"] if r["status"] == "open"),
         "highRiskClaims": sum(1 for r in tables["claims"] if r["risk"] == "high"),
+        "priorityContests": sorted({r["contest"] for r in tables["priority-claims"]}),
+        "chartRevision": {
+            "on1874": sum(1 for r in tables["chart-contributions"] if r["present_on_1874"] == "yes"),
+            "on1910": sum(1 for r in tables["chart-contributions"] if r["present_on_1910"] == "yes"),
+        },
         "reviewedClaims": sum(1 for r in tables["claims"] if r["review_status"] == "reviewed"),
         "evidenceClasses": sorted({str(r["evidenceClass"]) for r in records}),
         "inputs": {

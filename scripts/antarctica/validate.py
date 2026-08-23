@@ -537,6 +537,177 @@ def validate_pilot(errors: list[str], sources: set[str], objects: set[str],
     }
 
 
+def validate_priority(errors: list[str], expeditions: set[str], observations: set[str],
+                      terms: set[str], sources: set[str]) -> None:
+    """Competing discovery claims, held as rows rather than resolved (KAN-425).
+
+    The schema has no winner field and cannot acquire one: a claim records which
+    definition it satisfies, not whether it beats another. That is the only way
+    to carry the 1820 dispute without settling it by data entry, because the
+    disagreement is about what counts as a discovery, not about what happened.
+    """
+    rows = read("priority-claims.csv")
+    check_ids(errors, rows, "priority-claims", "priority_id", "ant-pri-")
+    contests: dict[str, int] = {}
+    for row in rows:
+        label = f"priority-claims[{row['priority_id']}]"
+        require(errors, row, label, ("contest", "claimant", "asserted_by", "contested_by", "notes"))
+        check_refs(errors, label, "expedition_id", row["expedition_id"], expeditions)
+        check_refs(errors, label, "observation_id", row["observation_id"], observations)
+        check_refs(errors, label, "definition_satisfied", row["definition_satisfied"], terms)
+        check_refs(errors, label, "source_ids", row["source_ids"], sources, multi=True)
+        in_vocab(errors, label, "evidence_strength", row["evidence_strength"], CONFIDENCE)
+        in_vocab(errors, label, "review_status", row["review_status"],
+                 {"unreviewed", "source_checked", "reviewed"})
+        contests[row["contest"]] = contests.get(row["contest"], 0) + 1
+        # Every claim answers a definition, or it is a claim to nothing in
+        # particular and the contest becomes a name-picking exercise.
+        if not row["definition_satisfied"]:
+            errors.append(f"{label}: a priority claim must say which definition it satisfies")
+
+    # A contest with one claimant is not a contest; it is a finding presented as
+    # an argument, which is the shape this table exists to prevent.
+    for contest, count in sorted(contests.items()):
+        if count < 2:
+            errors.append(f"priority-claims: contest '{contest}' has only {count} claim")
+
+
+def validate_coastline(errors: list[str], expeditions: set[str], sources: set[str]) -> set[str]:
+    """Coastline chronology (KAN-425): claimed, observed, charted, confirmed.
+
+    Four dates, any of which may be missing. The gap between a claimed date and
+    an absent observed date is the Wilkes problem stated in data, so the schema
+    must never require one to be filled in from the other.
+    """
+    rows = read("coastline-chronology.csv")
+    ids = check_ids(errors, rows, "coastline-chronology", "segment_id", "ant-seg-")
+    for row in rows:
+        label = f"coastline-chronology[{row['segment_id']}]"
+        require(errors, row, label, ("display_name", "region", "notes", "source_locator"))
+        in_vocab(errors, label, "evidence_class", row["evidence_class"], EVIDENCE_CLASSES)
+        in_vocab(errors, label, "confidence", row["confidence"], CONFIDENCE)
+        in_vocab(errors, label, "review_state", row["review_state"], REVIEW_STATES)
+        in_vocab(errors, label, "later_status", row["later_status"], LATER_STATUS)
+        check_refs(errors, label, "claimed_by_expedition_id", row["claimed_by_expedition_id"],
+                   expeditions)
+        check_refs(errors, label, "confirmed_by_expedition_id", row["confirmed_by_expedition_id"],
+                   expeditions)
+        check_refs(errors, label, "source_id", row["source_id"], sources)
+        check_geometry(errors, label, row["geometry_provenance"], row["geometry"])
+        promotion_rules(errors, label, row)
+
+        dates = {}
+        for field in ("first_claimed_date", "first_observed_date", "first_charted_date",
+                      "first_confirmed_date"):
+            value = row[field]
+            if not value:
+                continue
+            if not re.match(r"^\d{4}(-\d{2}(-\d{2})?)?$", value):
+                errors.append(f"{label}: {field} must be an ISO date or year")
+            else:
+                dates[field] = value[:4]
+        # A segment cannot be charted before it was claimed, or confirmed before
+        # it was charted. Anything else about the order is allowed, including a
+        # claim with no observation behind it.
+        order = ["first_claimed_date", "first_charted_date", "first_confirmed_date"]
+        present = [(f, dates[f]) for f in order if f in dates]
+        for (earlier, a), (later, b) in zip(present, present[1:]):
+            if a > b:
+                errors.append(f"{label}: {later} precedes {earlier}")
+        # A confirmation is a later observation by someone else, so it needs to
+        # say who. Without that, "confirmed" is just a stronger adjective.
+        if row["later_status"] == "confirmed" and not row["first_confirmed_date"]:
+            errors.append(f"{label}: a confirmed segment needs the date it was confirmed")
+    return ids
+
+
+def validate_phases(errors: list[str], expeditions: set[str], sources: set[str]) -> None:
+    """Expedition phases (KAN-428): plan against experience.
+
+    One rule matters. A phase records whether the vessel was under its own power,
+    and the planned phase is neither under power nor not: it never happened. A
+    drift filed as a voyage would make Act VIII's central question invisible.
+    """
+    rows = read("expedition-phases.csv")
+    check_ids(errors, rows, "expedition-phases", "phase_id", "ant-phs-")
+    kinds = {"planned", "approach", "beset", "drift", "abandonment", "ice_camp", "landfall",
+             "boat_journey", "overland"}
+    seen_sequences: dict[str, set[str]] = {}
+    for row in rows:
+        label = f"expedition-phases[{row['phase_id']}]"
+        require(errors, row, label, ("display_name", "date_from", "notes", "source_locator"))
+        check_refs(errors, label, "expedition_id", row["expedition_id"], expeditions)
+        check_refs(errors, label, "source_id", row["source_id"], sources)
+        in_vocab(errors, label, "evidence_class", row["evidence_class"], EVIDENCE_CLASSES)
+        in_vocab(errors, label, "confidence", row["confidence"], CONFIDENCE)
+        in_vocab(errors, label, "review_state", row["review_state"], REVIEW_STATES)
+        if row["phase_kind"] not in kinds:
+            errors.append(f"{label}: phase_kind '{row['phase_kind']}' is not recognised")
+        if row["under_own_power"] not in {"yes", "no", "planned"}:
+            errors.append(f"{label}: under_own_power must be yes, no or planned")
+        if not row["sequence"].isdigit():
+            errors.append(f"{label}: sequence must be a number")
+        else:
+            bucket = seen_sequences.setdefault(row["expedition_id"], set())
+            if row["sequence"] in bucket:
+                errors.append(f"{label}: duplicate sequence for this expedition")
+            bucket.add(row["sequence"])
+        promotion_rules(errors, label, row)
+
+        if row["phase_kind"] == "planned" and row["under_own_power"] != "planned":
+            errors.append(f"{label}: a planned phase was never sailed and cannot claim power state")
+        if row["phase_kind"] == "planned" and row["evidence_class"] != "editorial_interpolation":
+            errors.append(f"{label}: a planned phase must be filed as editorial_interpolation")
+        # The rule the act turns on: drifting is not sailing.
+        if row["phase_kind"] == "drift" and row["under_own_power"] != "no":
+            errors.append(f"{label}: a drift is not under the vessel's own power")
+
+
+def validate_contributions(errors: list[str], objects: set[str], expeditions: set[str],
+                           sources: set[str]) -> None:
+    """What a synthesis chart compiles (KAN-427).
+
+    A cumulative chart is a dated state of knowledge. Recording each contribution
+    against both the 1874 and the 1910 sheet is what turns "cartography is a
+    layered archive" from a metaphor into two catalogue titles that differ.
+    """
+    rows = read("chart-contributions.csv")
+    check_ids(errors, rows, "chart-contributions", "contribution_id", "ant-con-")
+    kinds = {"ice_observations", "coast_survey", "compiled_analysis", "soundings", "track"}
+    on_1874 = on_1910 = 0
+    for row in rows:
+        label = f"chart-contributions[{row['contribution_id']}]"
+        require(errors, row, label, ("voyage_label", "chart_dates", "notes", "source_locator"))
+        check_refs(errors, label, "map_object_id", row["map_object_id"], objects)
+        check_refs(errors, label, "expedition_id", row["expedition_id"], expeditions)
+        check_refs(errors, label, "source_id", row["source_id"], sources)
+        in_vocab(errors, label, "evidence_class", row["evidence_class"], EVIDENCE_CLASSES)
+        in_vocab(errors, label, "confidence", row["confidence"], CONFIDENCE)
+        in_vocab(errors, label, "review_state", row["review_state"], REVIEW_STATES)
+        if row["contribution_kind"] not in kinds:
+            errors.append(f"{label}: contribution_kind '{row['contribution_kind']}' is not recognised")
+        for field in ("present_on_1874", "present_on_1910"):
+            if row[field] not in {"yes", "no"}:
+                errors.append(f"{label}: {field} must be yes or no")
+        promotion_rules(errors, label, row)
+        if row["present_on_1874"] == "yes":
+            on_1874 += 1
+        if row["present_on_1910"] == "yes":
+            on_1910 += 1
+        # A contribution present on neither sheet is not a contribution to
+        # either, and would be a voyage smuggled into the synthesis by us.
+        if row["present_on_1874"] == "no" and row["present_on_1910"] == "no":
+            errors.append(f"{label}: a contribution must appear on at least one chart")
+
+    # The revision is the finding. If the two sheets ever carried the same list,
+    # Act VII would have nothing to show and this table would be decoration.
+    if on_1910 <= on_1874:
+        errors.append(
+            "chart-contributions: the 1910 sheet must compile more than the 1874 one, or the "
+            "revision Act VII rests on is not in the data"
+        )
+
+
 def promotion_rules(errors: list[str], label: str, row: dict[str, str]) -> None:
     """The two rules that decide whether a record may be argued from.
 
@@ -617,6 +788,15 @@ def readiness(counts: dict[str, object], open_gaps: int) -> list[str]:
         f"  pilot: {counts['features']} features, {counts['tracks']} tracks, "
         f"{counts['observations']} observations, {counts['ghosts']} ghost features, "
         f"{counts['evidence']} evidence links",
+        f"  discovery: {len(read('priority-claims.csv'))} priority claims across "
+        f"{len({r['contest'] for r in read('priority-claims.csv')})} contests, no winner recorded; "
+        f"{len(read('coastline-chronology.csv'))} coast segments",
+        f"  synthesis: {sum(1 for r in read('chart-contributions.csv') if r['present_on_1874'] == 'yes')} "
+        f"contributions on the 1874 chart, "
+        f"{sum(1 for r in read('chart-contributions.csv') if r['present_on_1910'] == 'yes')} on the 1910 issue",
+        f"  Endurance: {len(read('expedition-phases.csv'))} phases, "
+        f"{sum(1 for r in read('expedition-phases.csv') if r['under_own_power'] == 'yes')} under the "
+        f"vessel's own power",
         f"  public tier: {len(public)} of {len(tables)} spatial records; "
         f"{open_gaps} source gaps open",
     ]
@@ -636,6 +816,14 @@ def validate_inputs(*, include_release: bool = True) -> tuple[list[str], dict[st
     validate_coronelli(errors, objects, claims)
     open_gaps = validate_gaps(errors, claims)
     counts = validate_pilot(errors, sources, objects, claims)
+
+    expeditions = {r["expedition_id"] for r in read("expeditions.csv")}
+    observations = {r["observation_id"] for r in read("observations.csv")}
+    terms = {r["term_id"] for r in read("terminology.csv")}
+    validate_priority(errors, expeditions, observations, terms, sources)
+    segments = validate_coastline(errors, expeditions, sources)
+    validate_phases(errors, expeditions, sources)
+    validate_contributions(errors, objects, expeditions, sources)
     if include_release:
         validate_release(errors)
 
@@ -646,6 +834,7 @@ def validate_inputs(*, include_release: bool = True) -> tuple[list[str], dict[st
         | {r["track_id"] for r in read("tracks.csv")}
         | {r["observation_id"] for r in read("observations.csv")}
         | {r["ghost_id"] for r in read("ghost-geographies.csv")}
+        | segments
     )
     for missing in sorted(gis_refs - spatial_ids):
         errors.append(f"claims: gis_dependency '{missing}' does not resolve to a pilot record")

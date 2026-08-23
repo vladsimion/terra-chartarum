@@ -82,6 +82,74 @@ export interface AntarcticRecord {
   currentScholarlyStatus?: string;
 }
 
+/** One phase of an expedition. `underOwnPower` is the field Act VIII turns on. */
+export interface AntarcticPhase {
+  id: string;
+  expeditionId: string;
+  sequence: number;
+  phaseKind: string;
+  displayName: string;
+  dateFrom: string;
+  dateTo: string;
+  datePrecision: string;
+  underOwnPower: 'yes' | 'no' | 'planned';
+  evidenceClass: string;
+  confidence: string;
+  reviewState: string;
+  notes: string;
+}
+
+/**
+ * One party's claim in a priority contest. There is no winner field, and adding
+ * one would settle by data entry a question the historiography has not settled.
+ */
+export interface AntarcticPriorityClaim {
+  id: string;
+  contest: string;
+  claimant: string;
+  expeditionId: string | null;
+  observationId: string | null;
+  claimDate: string;
+  definitionSatisfied: string;
+  assertedBy: string;
+  contestedBy: string;
+  evidenceStrength: string;
+  reviewStatus: string;
+  notes: string;
+}
+
+/** A coast, with the four dates that may or may not exist for it. */
+export interface AntarcticCoastSegment {
+  id: string;
+  displayName: string;
+  region: string;
+  firstClaimedDate: string | null;
+  firstObservedDate: string | null;
+  firstChartedDate: string | null;
+  firstConfirmedDate: string | null;
+  claimedByExpeditionId: string | null;
+  confirmedByExpeditionId: string | null;
+  laterStatus: string;
+  evidenceClass: string;
+  confidence: string;
+  reviewState: string;
+  notes: string;
+}
+
+/** What a cumulative chart compiles, and which issue of it carries the entry. */
+export interface AntarcticChartContribution {
+  id: string;
+  mapObjectId: string;
+  expeditionId: string | null;
+  voyageLabel: string;
+  chartDates: string;
+  contributionKind: string;
+  presentOn1874: boolean;
+  presentOn1910: boolean;
+  reviewState: string;
+  notes: string;
+}
+
 export interface AntarcticExpedition {
   id: string;
   act: string;
@@ -95,6 +163,10 @@ export interface AntarcticExpedition {
 
 const RECORDS = pilot.records as AntarcticRecord[];
 const EXPEDITIONS = pilot.expeditions as AntarcticExpedition[];
+const PHASES = pilot.phases as AntarcticPhase[];
+const PRIORITY_CLAIMS = pilot.priorityClaims as AntarcticPriorityClaim[];
+const COASTLINE = pilot.coastline as AntarcticCoastSegment[];
+const CHART_CONTRIBUTIONS = pilot.chartContributions as AntarcticChartContribution[];
 
 export function getAntarcticRecords(): AntarcticRecord[] {
   return RECORDS;
@@ -165,4 +237,81 @@ export function isRelevantInYear(record: AntarcticRecord, year: number): boolean
   if (from !== null && year < from) return false;
   if (to !== null && to !== 9999 && year > to) return false;
   return true;
+}
+
+/**
+ * Expedition phases in order. Act VIII reads these rather than a single route,
+ * because the expedition stopped being one kind of thing and became another.
+ */
+export function getPhases(expeditionId: string): AntarcticPhase[] {
+  return PHASES.filter((phase) => phase.expeditionId === expeditionId).sort(
+    (a, b) => a.sequence - b.sequence,
+  );
+}
+
+/**
+ * The phases in which the vessel actually went where it was steered. Everything
+ * else was carried, planned, or walked, and a route drawn across all of them
+ * would be a route nobody sailed.
+ */
+export function getSelfPropelledPhases(expeditionId: string): AntarcticPhase[] {
+  return getPhases(expeditionId).filter((phase) => phase.underOwnPower === 'yes');
+}
+
+/** Every claim in one priority contest, in date order, with no winner marked. */
+export function getPriorityContest(contest: string): AntarcticPriorityClaim[] {
+  return PRIORITY_CLAIMS.filter((claim) => claim.contest === contest).sort((a, b) =>
+    a.claimDate.localeCompare(b.claimDate),
+  );
+}
+
+export function getPriorityContests(): string[] {
+  return [...new Set(PRIORITY_CLAIMS.map((claim) => claim.contest))].sort();
+}
+
+export function getCoastlineChronology(): AntarcticCoastSegment[] {
+  return COASTLINE;
+}
+
+/**
+ * Segments claimed but never independently observed. The gap between those two
+ * dates is what Act VI is about, and it is computed rather than asserted.
+ */
+export function getUnobservedClaims(): AntarcticCoastSegment[] {
+  return COASTLINE.filter(
+    (segment) => segment.firstClaimedDate !== null && segment.firstObservedDate === null,
+  );
+}
+
+/**
+ * What a reader could have known from the charted record by a given year. Uses
+ * the charted date rather than the claimed one: a claim in a logbook nobody has
+ * read is not knowledge anyone had.
+ */
+export function chartedByYear(year: number): AntarcticCoastSegment[] {
+  return COASTLINE.filter((segment) => {
+    const charted = segment.firstChartedDate;
+    return charted !== null && Number(charted.slice(0, 4)) <= year;
+  });
+}
+
+export function getChartContributions(): AntarcticChartContribution[] {
+  return CHART_CONTRIBUTIONS;
+}
+
+/**
+ * What the 1910 issue of the ice chart added to the 1874 compilation. The whole
+ * of Act VII's "layered archive" reduces to this list being non-empty, and it is
+ * derived from two catalogue titles rather than asserted in prose.
+ */
+export function chartRevision(): {
+  retained: AntarcticChartContribution[];
+  added: AntarcticChartContribution[];
+  dropped: AntarcticChartContribution[];
+} {
+  return {
+    retained: CHART_CONTRIBUTIONS.filter((c) => c.presentOn1874 && c.presentOn1910),
+    added: CHART_CONTRIBUTIONS.filter((c) => !c.presentOn1874 && c.presentOn1910),
+    dropped: CHART_CONTRIBUTIONS.filter((c) => c.presentOn1874 && !c.presentOn1910),
+  };
 }

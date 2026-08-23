@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "geo-8e3e7fa433445f2d",
+  "release": "geo-c3c685ef9b99e8f5",
   "generatedBy": "scripts/geo-release.mjs",
   "assets": [
     {
@@ -374,16 +374,16 @@
         "LineString",
         "Polygon"
       ],
-      "featureCount": 4,
+      "featureCount": 6,
       "yearFrom": 1531,
-      "yearTo": 1915,
+      "yearTo": 1916,
       "source": "Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-423",
       "license": "CC BY 4.0",
       "attribution": "Terra Chartarum; each source and map object carries its own rights status; no object is cleared for reproduction",
-      "bytes": 5567,
-      "sha256": "1ce8006a9b51473a258781235606935ffc4a19279c3d555c24a564fbe579885f",
-      "version": "1ce8006a9b51",
-      "url": "/geo/antarctica-pilot-tracks.geojson?v=1ce8006a9b51"
+      "bytes": 8198,
+      "sha256": "2f67d2e622ad92c4ece8a8c25fce86b30475a7de20a4ee46b784e71841c4e2a9",
+      "version": "2f67d2e622ad",
+      "url": "/geo/antarctica-pilot-tracks.geojson?v=2f67d2e622ad"
     },
     {
       "id": "antarctica-pilot-observations",
@@ -393,16 +393,16 @@
       "geometry": [
         "Point"
       ],
-      "featureCount": 5,
+      "featureCount": 19,
       "yearFrom": 1774,
-      "yearTo": 1915,
+      "yearTo": 1916,
       "source": "Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-423",
       "license": "CC BY 4.0",
       "attribution": "Terra Chartarum; positions recorded from the general literature and not yet checked against an edition",
-      "bytes": 5640,
-      "sha256": "33aab7c98154dc83d118cb2d2d7d0f77d26b6d3820ff76f223e8ddacea311dc8",
-      "version": "33aab7c98154",
-      "url": "/geo/antarctica-pilot-observations.geojson?v=33aab7c98154"
+      "bytes": 21247,
+      "sha256": "e0b9a97439f1b8320ea47827f2d472ac819aa4b43bd7ebb6c90f8b4868ed8af9",
+      "version": "e0b9a97439f1",
+      "url": "/geo/antarctica-pilot-observations.geojson?v=e0b9a97439f1"
     }
   ]
 }
