@@ -48,6 +48,7 @@ OPEN_ENDED = 9999
 TABLES = ["places", "sources", "attestations", "transcriptions", "name-uses", "name-use-edges"]
 INVENTORY = DATA / "pilot" / "trench-a-inventory.csv"
 GIS = DATA / "gis"
+REFERENCE = DATA / "reference"
 
 # The Atlas takes one render hint per layer, so the Roman baseline ships as
 # two assets - points and lines - compiled from one table (KAN-341).
@@ -542,6 +543,66 @@ def gis_collection(features: list[dict], layer: str, ticket: str, note: str) -> 
     }
 
 
+def hiatus_timeline() -> dict:
+    """Compile the Hiatus timeline into something an essay can filter (KAN-349).
+
+    The states and the absence taxonomy are already gated in the reference
+    tables; what was missing is a form a timeline can query. Emitting the
+    taxonomy alongside the states matters as much as the states do: a reader
+    filtering by absence class needs all six classes present, including the ones
+    no state has earned yet, or the interface silently redefines the taxonomy as
+    whatever the data happens to contain.
+    """
+    def read(name: str) -> list[dict[str, str]]:
+        with (REFERENCE / f"{name}.csv").open(encoding="utf-8", newline="") as handle:
+            return [{k: (v or "").strip() for k, v in row.items()} for row in csv.DictReader(handle)]
+
+    witnesses = {row["witness_id"]: row for row in read("hiatus-witness-families")}
+    classes = [
+        {
+            "absenceClass": row["absence_class"],
+            "definition": row["definition"],
+            "evidentialWeight": row["evidential_weight"],
+            "requiresScopeReview": row["requires_scope_review"] == "yes",
+            "allowedBeforeReview": row["allowed_before_review"] == "yes",
+        }
+        for row in sorted(read("hiatus-absence-classes"), key=lambda r: r["absence_class"])
+    ]
+
+    states = []
+    for row in sorted(read("hiatus-timeline"), key=lambda r: r["state_id"]):
+        witness = witnesses.get(row["witness_id"], {})
+        states.append({
+            "stateId": row["state_id"],
+            "witnessId": row["witness_id"],
+            "witnessTitle": witness.get("candidate_title", ""),
+            "witnessQuestion": witness.get("historical_question", ""),
+            "sourceFamily": row["source_family"],
+            "periodFrom": int(row["period_from"]),
+            "periodTo": int(row["period_to"]),
+            "datePrecision": row["date_precision"],
+            "locator": row["locator"],
+            "absenceClass": row["absence_class"],
+            "scopeReviewed": row["scope_reviewed"] == "yes",
+            "reviewStatus": row["review_status"],
+            "confidence": row["confidence"],
+            "note": row["notes"],
+        })
+
+    return {
+        "schemaVersion": SCHEMA_VERSION,
+        "generatedBy": "scripts/dacia/build.py",
+        "trench": "ccd-b",
+        "absenceClasses": classes,
+        "states": states,
+        "sourceFamilies": sorted({state["sourceFamily"] for state in states}),
+        "span": {
+            "from": min((state["periodFrom"] for state in states), default=0),
+            "to": max((state["periodTo"] for state in states), default=0),
+        },
+    }
+
+
 def build_outputs() -> dict[Path, bytes]:
     tables = {name: read_table(name) for name in TABLES}
     fieldnames = {
@@ -574,6 +635,7 @@ def build_outputs() -> dict[Path, bytes]:
         feature_collection(research, "research")
     )
     outputs[GENERATED_DIR / "trench-a.json"] = canonical_json(trench_a_bridge(tables))
+    outputs[GENERATED_DIR / "hiatus-timeline.json"] = canonical_json(hiatus_timeline())
 
     sites, network = roman_dacia_features(tables["places"])
     outputs[GEO_DIR / f"{ROMAN_SITES}.geojson"] = canonical_json(gis_collection(

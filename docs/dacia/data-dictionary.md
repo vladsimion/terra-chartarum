@@ -318,6 +318,36 @@ trusted, may not redistribute a scan, and may keep `archive_sheet_id: pending`
 only while it is still unreviewed. See
 [`shared-gis-layers.md`](./shared-gis-layers.md).
 
+## `reference/nomen-errans-witnesses.csv` (KAN-344)
+
+What Trench C might show, as against what it can argue. One row per candidate
+visual witness, each pointing at the `name_use_id` it would illustrate - a
+picture with no argument behind it is decoration, and the validator refuses one
+whose use does not resolve.
+
+The production bar is the one the other research packages hold: a witness may
+only be planned into the page once `rights_status` permits production-wide
+reuse, `resolution_status` is `sufficient`, and a repository object identifier
+has been transcribed. `repository_object_id` is required on every row, `pending`
+if unknown. Nothing currently clears the bar, which is reported in the gate's
+readiness lines rather than raised as an error: an essay may be written from
+description alone. See [`nomen-errans-ledger.md`](./nomen-errans-ledger.md).
+
+## `generated/hiatus-timeline.json` (KAN-349)
+
+The Hiatus states, their witness families and the absence taxonomy, compiled by
+`make dacia` into `src/data/dacia/generated/` and consumed through
+`src/lib/hiatus.ts`, so no chronology is written twice.
+
+The taxonomy travels with the states deliberately. A filter built from the
+states alone would offer whichever classes some state happens to carry and
+quietly redefine the taxonomy as that; all six classes ship, including the four
+no state has earned. `isArguable()` restates the compiler's rule where a
+component would otherwise render an unearned silence as a finding: a class whose
+`evidentialWeight` is `none` is never an argument however well reviewed -
+`not_surveyed` says nobody looked - and the classes that can carry weight need
+the scope read and the state reviewed.
+
 ## Research source ledgers (KAN-348, KAN-351)
 
 `reference/hiatus-witness-families.csv` is one row per candidate evidence

@@ -38,6 +38,11 @@ OWNERS = {
     "plc-": ("places", "place_id"),
     "src-": ("sources", "source_id"),
     "att-": ("attestations", "attestation_id"),
+    # KAN-344: Trench C is reviewed through this tool like everything else. The
+    # ledger would otherwise be a table nobody could promote, which is the one
+    # way a review workflow can fail without anybody noticing.
+    "nmu-": ("name_uses", "name_use_id"),
+    "nue-": ("name_use_edges", "edge_id"),
 }
 LADDER = ["raw", "normalized", "reviewed", "approved", "published"]
 
@@ -46,7 +51,8 @@ def _table_for(record_id: str) -> tuple[str, str]:
     for prefix, owner in OWNERS.items():
         if record_id.startswith(prefix):
             return owner
-    raise SystemExit(f"unrecognised identifier: {record_id!r} (expected plc-, src- or att-)")
+    prefixes = ", ".join(sorted(OWNERS))
+    raise SystemExit(f"unrecognised identifier: {record_id!r} (expected one of {prefixes})")
 
 
 def _load(root: Path, key: str) -> tuple[list[str], list[dict[str, str]]]:
@@ -114,6 +120,12 @@ def _blockers(record_id: str, current: str) -> list[str]:
         "review_date": "2000-01-01",
         "last_verified": "2000-01-01",
     }
+    # Not every promotable table carries every review column - a name use has no
+    # last_verified - and a trial that sets a column the table lacks reports the
+    # tool's own mistake as though it were the record's blocker.
+    key, _ = _table_for(record_id)
+    fieldnames, _rows = _load(validate.DATA, key)
+    trial = {column: value for column, value in trial.items() if column in fieldnames}
     errors = _validate_in_scratch({record_id: trial})
     return [e for e in errors if record_id in e]
 

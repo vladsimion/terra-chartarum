@@ -4,18 +4,18 @@
   },
   "counts": {
     "attestations": 49,
-    "name-use-edges": 7,
-    "name-uses": 9,
+    "name-use-edges": 13,
+    "name-uses": 12,
     "places": 40,
-    "sources": 12,
+    "sources": 14,
     "transcriptions": 24
   },
   "inputs": {
     "data/dacia/attestations.csv": "0605de667f5c84f1beda7db33e57d107122b0d3cf87d17c4cabe54391031cf5b",
-    "data/dacia/name-use-edges.csv": "9e21d9af5cff1ae293cccee879f724d186140818294ac4d7b2a6d898694b9164",
-    "data/dacia/name-uses.csv": "926ae962f072da7bbdcef240cc93281f0910a927830d5e160e1d422d367d119a",
+    "data/dacia/name-use-edges.csv": "0860728e09b1c0413a5a8252dbf553259cb795465b3ff28c5a5338f263c3ff17",
+    "data/dacia/name-uses.csv": "a1e2236adf6233fa850cb4683145a01946adf0d621077f4d5b0974f0b17173df",
     "data/dacia/places.csv": "fe874b423a6a592f92a14006a99ac0b92c5158e91d8c4e04af8ade7df6e120c0",
-    "data/dacia/sources.csv": "e8468cdc884af80945978cb377651c4598ef7b95c98bba02dbdae20120565292",
+    "data/dacia/sources.csv": "a8d69716d7da0f99777d2b0f2244f1783480c5aef6092b1bc3c57678eec1b1f3",
     "data/dacia/transcriptions.csv": "f33ad714d0e7346d526876e44bfb09241c0c0b20130f7d7d391242ca30f8a3f4"
   },
   "kind": "pilot_research_release",
@@ -30,24 +30,24 @@
       "sha256": "b0830101120923a99e907984fb8fdece262884c43658eb9882aef3bbf61d43b6"
     },
     "data/dacia/release/cnd-0.1/cnd.jsonld": {
-      "bytes": 93562,
-      "sha256": "169743b09834321c8cd074f68141bafd95ba1fe9a138b9ebfe6d6da0bc89266c"
+      "bytes": 104454,
+      "sha256": "1123c5edb8e01da9311989e5a6d6e30e803318898ba888353cd19b930c673034"
     },
     "data/dacia/release/cnd-0.1/name-use-edges.csv": {
-      "bytes": 2106,
-      "sha256": "1ae988d9327197e7ed5ad5a8acab694674301f3db978c0b885705d9df34a81f7"
+      "bytes": 4165,
+      "sha256": "bbe8607b857ad9e4018470aaad4f1318773d968259b3d5d80df2fc203a386270"
     },
     "data/dacia/release/cnd-0.1/name-use-edges.parquet": {
-      "bytes": 3102,
-      "sha256": "32abe2ebec1c956c8c41621a21b0fa51f8e6ecc10b92065db16ada29e1c06548"
+      "bytes": 3869,
+      "sha256": "9f2769df51b5fbbb281c7880fcf1de9a4b35a95002ca0354e426b3cfe1f74be5"
     },
     "data/dacia/release/cnd-0.1/name-uses.csv": {
-      "bytes": 2615,
-      "sha256": "bb3e9ff38eeed347445f73a89d4aa168442773c6ab6ea69d3af4b6950f88890e"
+      "bytes": 5045,
+      "sha256": "73a9986bb493e576407fbc0bc1c92b3ac5d1deea3fa6f87d6d8739cc01d649b6"
     },
     "data/dacia/release/cnd-0.1/name-uses.parquet": {
-      "bytes": 4540,
-      "sha256": "c9377d08edb978a85b457bf39ebc3737d4c2518929847976ab5b42c8db9cf490"
+      "bytes": 5732,
+      "sha256": "6f8ef466fd39cee2a3df36133bec7e75ab26b88d56ee83f21f5dcd2b11a6e506"
     },
     "data/dacia/release/cnd-0.1/places.csv": {
       "bytes": 7690,
@@ -58,12 +58,12 @@
       "sha256": "d0c2993fff3421f7b2f3704f1bf1f0cbf71c48e2307b294d29da675ce55b1f1c"
     },
     "data/dacia/release/cnd-0.1/sources.csv": {
-      "bytes": 5767,
-      "sha256": "e18ff330445d4207f656a0377e9c1a821a13ddd8ce9efa1913bff51ec11e8751"
+      "bytes": 7486,
+      "sha256": "75d9c781b193aa9ead0dd9ac09a3b9fb15ae63c81b9867faa79765d48fd98a13"
     },
     "data/dacia/release/cnd-0.1/sources.parquet": {
-      "bytes": 7385,
-      "sha256": "af66a573dc8ad3231ca2b264c105d941e20580f5fb345b2b464595ae29931d70"
+      "bytes": 8317,
+      "sha256": "e48012527d3d4760438a494d1b1a985c63a74d9fae37620deb90f27aab6c062a"
     },
     "data/dacia/release/cnd-0.1/transcriptions.csv": {
       "bytes": 4422,
@@ -97,6 +97,10 @@
       "bytes": 14358,
       "sha256": "f40a3ec3f723f00be16d6f7c1fb51cb312fb39fd02c7d01ea2794c9c8a7f4cff"
     },
+    "src/data/dacia/generated/hiatus-timeline.json": {
+      "bytes": 6548,
+      "sha256": "f5207bd851c5b6aecba5ce3b20a39a2a6ecbbd63dbbe0e182e561acfcd886b4a"
+    },
     "src/data/dacia/generated/trench-a.json": {
       "bytes": 7728,
       "sha256": "bc016628185af0c66a5429da88e7e3fd969fa3ccb18e863830503e7a9de4fcca"
@@ -106,12 +110,14 @@
   "release": "cnd-0.1",
   "schemaVersion": 1,
   "sourceFamilies": [
+    "administrative_register",
     "antiquarian_reconstruction",
     "coordinate_catalogue",
     "itinerary",
     "mappa_mundi",
     "military_survey",
     "national_survey",
+    "numismatic",
     "portolan",
     "regional_print"
   ],

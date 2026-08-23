@@ -490,7 +490,11 @@ def test_shared_lexical_form_must_be_adjudicated(dataset):
     edit(
         dataset,
         "name_use_edges",
-        lambda rows: [r for r in rows if r["edge_id"] != "nue-dacia-province-marque"],
+        lambda rows: [
+            r
+            for r in rows
+            if "nmu-dacia-marque" not in (r["from_name_use"], r["to_name_use"])
+        ],
     )
     refuses("is joined to none of them")
 
@@ -505,8 +509,9 @@ def test_settlement_referent_must_resolve_to_a_place(dataset):
 
 def test_use_needs_a_source_or_an_institution(dataset):
     def mutate(rows):
-        row = find(rows, "name_uses" and "name_use_id", "nmu-dacia-aureliana")
+        row = find(rows, "name_use_id", "nmu-dacia-aureliana")
         row["institution"] = ""
+        row["source_id"] = ""
 
     edit(dataset, "name_uses", mutate)
     refuses("needs either a source or an institution")
@@ -514,7 +519,8 @@ def test_use_needs_a_source_or_an_institution(dataset):
 
 def test_undated_use_cannot_carry_a_period(dataset):
     def mutate(rows):
-        find(rows, "name_use_id", "nmu-dacia-reception")["period_from"] = "1918"
+        row = find(rows, "name_use_id", "nmu-dacia-reception")
+        row["date_precision"] = "undated"
 
     edit(dataset, "name_uses", mutate)
     refuses("an undated use cannot carry a period")
@@ -962,3 +968,78 @@ def test_sheet_footprint_needs_extent(dataset):
 
     edit(dataset, "josephinian_sheets", mutate)
     refuses("the footprint has no extent")
+
+
+# --- Nomen Errans ledger and rights package (KAN-344) ------------------------
+
+
+def test_witness_must_illustrate_a_name_use(dataset):
+    """A candidate witness is a candidate *for* an argument, not decoration."""
+
+    def mutate(rows):
+        find(rows, "witness_id", "ne-ortelius-parergon")["name_use_id"] = "nmu-does-not-exist"
+
+    edit(dataset, "nomen_errans_witnesses", mutate)
+    refuses("name_use_id 'nmu-does-not-exist' does not resolve")
+
+
+def test_witness_planned_into_the_page_needs_open_rights(dataset):
+    def mutate(rows):
+        row = find(rows, "witness_id", "ne-hereford-mappa")
+        row["production_role"] = "production_primary"
+        row["resolution_status"] = "sufficient"
+        row["repository_object_id"] = "MS-1"
+
+    edit(dataset, "nomen_errans_witnesses", mutate)
+    refuses("production role requires production-wide reuse rights")
+
+
+def test_witness_planned_into_the_page_needs_a_resolved_reproduction(dataset):
+    def mutate(rows):
+        row = find(rows, "witness_id", "ne-notitia-page")
+        row["production_role"] = "production_fallback"
+        row["rights_status"] = "no_known_restrictions"
+        row["repository_object_id"] = "seeck-1876"
+
+    edit(dataset, "nomen_errans_witnesses", mutate)
+    refuses("production role requires sufficient resolution")
+
+
+def test_witness_planned_into_the_page_needs_an_object_identifier(dataset):
+    def mutate(rows):
+        row = find(rows, "witness_id", "ne-notitia-page")
+        row["production_role"] = "production_fallback"
+        row["rights_status"] = "no_known_restrictions"
+        row["resolution_status"] = "sufficient"
+
+    edit(dataset, "nomen_errans_witnesses", mutate)
+    refuses("production role requires a repository object identifier")
+
+
+def test_witness_needs_an_object_identifier_or_pending(dataset):
+    def mutate(rows):
+        find(rows, "witness_id", "ne-dacia-coin")["repository_object_id"] = ""
+
+    edit(dataset, "nomen_errans_witnesses", mutate)
+    refuses("repository_object_id is required, pending if unknown")
+
+
+
+def test_a_pending_locator_cannot_be_normalized(dataset):
+    """The rule that keeps institution-only uses honest about what they lack."""
+
+    def mutate(rows):
+        find(rows, "name_use_id", "nmu-dacia-marque-renault")["review_state"] = "normalized"
+
+    edit(dataset, "name_uses", mutate)
+    refuses("locator is still pending at review_state normalized")
+
+
+def test_an_obvious_line_still_cannot_be_continuity_without_evidence(dataset):
+    """The marque under Renault is plainly the same marque, and that is not evidence."""
+
+    def mutate(rows):
+        find(rows, "edge_id", "nue-dacia-marque-renault")["edge_kind"] = "continuity"
+
+    edit(dataset, "name_use_edges", mutate)
+    refuses("a continuity edge must cite an attestation")
