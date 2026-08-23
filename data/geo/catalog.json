@@ -234,6 +234,19 @@
       "source": "Terra Chartarum (compiled) - Josephinian sheet index, KAN-343",
       "license": "CC BY 4.0",
       "attribution": "Terra Chartarum; sheets held by the Kriegsarchiv, Vienna; no scan redistributed"
+    },
+    {
+      "id": "dacia-treaty-frontiers",
+      "file": "dacia-treaty-frontiers.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": ["LineString"],
+      "featureCount": 8,
+      "yearFrom": 1829,
+      "yearTo": 1947,
+      "source": "Terra Chartarum (compiled) - treaty frontier phases 1829-1947, KAN-352",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; instruments after Hertslet and the KAN-351 source ledger; all linework editorial"
     }
   ]
 }

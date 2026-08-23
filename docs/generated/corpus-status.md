@@ -13,9 +13,9 @@
 | Bibliography entries |    37 |
 | Toponyms             |    12 |
 | Rooms                |     7 |
-| GIS layers           |    18 |
+| GIS layers           |    19 |
 
-Geo release: `geo-1ca5dcb4a7446143`.
+Geo release: `geo-015d45320b25c121`.
 
 ## Live essays by primary room
 

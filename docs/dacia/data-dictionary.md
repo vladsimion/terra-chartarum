@@ -248,6 +248,22 @@ its version, freeze date, count and SHA-256. Editing the pilot without recording
 a new version and hash fails the gate. See
 [`trench-a-inventory.md`](./trench-a-inventory.md).
 
+### `gis/treaty-frontier.csv` (KAN-352)
+
+Frontier phases 1829-1947, joined to `treaty-frontier.geojson` by `segment_id`.
+`line_type` is the load-bearing column: `proposal`, `treaty_line` and
+`reconstruction` are three kinds of claim and the Atlas styles them apart by
+dash and width as well as colour. `source_ledger` says which ledger a
+`source_id` belongs to, so a frontier phase may cite the Carta Rubra package
+without either package absorbing the other.
+
+Every row needs `valid_from`; only the frontier still in force may leave
+`valid_to` empty. Where two sources give different lines for one moment, each is
+its own row naming the other in `alternative_of`, the validator requires the
+disagreement declared from both sides, and a phase may not hold two
+`treaty_line` rows - a competing line is a proposal or a reconstruction, not a
+second instrument. See [`shared-gis-layers.md`](./shared-gis-layers.md).
+
 ## `release/cnd-0.1/` (KAN-337)
 
 `make dacia` compiles every canonical table to UTF-8 CSV and a Parquet twin,

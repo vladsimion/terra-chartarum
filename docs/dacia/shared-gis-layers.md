@@ -118,3 +118,46 @@ Two things this index deliberately does not do:
 The footprints are a regular graticule approximating the survey's sheet layout,
 not the archive's index geometry, which is why they are typed
 `editorial_reconstruction` and confidence `low`.
+
+## Treaty frontiers, 1829-1947 (KAN-352, KAN-353)
+
+Eight lines across seven phases, each attributed to the instrument that made it
+and to the years it held.
+
+**No timeless line.** A frontier without a start year is not a phase, and the
+validator refuses one. The 1947 restoration is the only open-ended row, because
+it is the frontier still in force - and it is recorded as its own phase rather
+than as a continuation of 1920, since a frontier restored by instrument is a
+separate legal fact from the frontier it restores.
+
+**Three kinds of line, and never one column.** `line_type` separates a
+`proposal` from the `treaty_line` an instrument actually fixed and from a later
+`reconstruction`. The Atlas carries that distinction in the dash pattern and the
+stroke width as well as the colour, so the difference survives for a reader who
+cannot use colour: a proposal is dotted and thin, a treaty line solid and heavy.
+
+**Competing lines are kept, not averaged.** Where two sources give different
+lines for the same moment, each is a feature and each names the other in
+`alternative_of`. The validator enforces the disagreement from both sides - a
+phase carrying two lines where only one declares the conflict fails - and
+refuses a phase holding two `treaty_line` rows, because a competing line is a
+proposal or a reconstruction, not a second instrument claiming the same
+authority. The case in the data is the Trianon frontier of 1920 beside de
+Martonne's ethnographic proposal for the same zone: one an instrument, one an
+argument. Averaging them would produce a frontier nobody proposed and erase the
+disagreement the trench exists to show.
+
+The proposal is cited from the Carta Rubra ledger rather than the treaty one, so
+a row names which ledger its `source_id` belongs to and the validator resolves it
+there. That is what lets a frontier phase cite an ethnographic argument without
+either package absorbing the other.
+
+**Nothing here is digitised.** The KAN-351 ledger records the geometry position
+of all eight instruments: `no_geometry` for Adrianople and the 1944 armistice,
+`commission_geometry_required` for Paris 1856 and Bucharest 1913,
+`map_not_georeferenced` for Berlin, Trianon and Paris 1947, and
+`annex_map_unacquired` for the Second Vienna Award. Tracing a modern boundary in
+their place would launder a 1947 line into an 1829 claim, so the corridors are
+drawn, declared editorial, and given low confidence. `vd-treaty-frontier-geometry`
+records the debt and blocks Carta Rubra's data gate, since that trench argues
+over this frontier.

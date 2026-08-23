@@ -170,6 +170,7 @@ test.describe('shared Dacia GIS layers', () => {
     'dacia-roman-network',
     'dacia-principalities',
     'dacia-josephinian-sheets',
+    'dacia-treaty-frontiers',
   ];
 
   test('every layer registers, toggles and declares its provenance facet', async ({ page }) => {
@@ -192,6 +193,31 @@ test.describe('shared Dacia GIS layers', () => {
     await expect(
       page.locator(
         'input[data-facet-layer="dacia-principalities"][data-facet-field="sovereignty"]',
+      ),
+    ).not.toHaveCount(0);
+  });
+
+  test('the treaty frontier layer separates its line kinds without colour', async ({ page }) => {
+    await page.goto('/atlas');
+    // Dash pattern and stroke width carry line_type as well as colour does, so
+    // the distinction survives for a reader who cannot use colour.
+    const layer = await page.evaluate(async () => {
+      const response = await fetch('/geo/dacia-treaty-frontiers.geojson');
+      const data = await response.json();
+      return data.features.map(
+        (feature: { properties: { line_type: string; alternative_of: string } }) =>
+          feature.properties,
+      );
+    });
+
+    expect(new Set(layer.map((p: { line_type: string }) => p.line_type))).toEqual(
+      new Set(['treaty_line', 'proposal']),
+    );
+    expect(layer.filter((p: { alternative_of: string }) => p.alternative_of).length).toBe(2);
+
+    await expect(
+      page.locator(
+        'input[data-facet-layer="dacia-treaty-frontiers"][data-facet-field="line_type"]',
       ),
     ).not.toHaveCount(0);
   });

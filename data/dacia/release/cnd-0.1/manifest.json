@@ -97,6 +97,10 @@
       "bytes": 14358,
       "sha256": "f40a3ec3f723f00be16d6f7c1fb51cb312fb39fd02c7d01ea2794c9c8a7f4cff"
     },
+    "public/geo/dacia-treaty-frontiers.geojson": {
+      "bytes": 14361,
+      "sha256": "3442e0999d7bf597c4c0dd224b9ac618303010c8214fd21cc0493c7e2c8b54f2"
+    },
     "src/data/dacia/generated/hiatus-timeline.json": {
       "bytes": 6548,
       "sha256": "f5207bd851c5b6aecba5ce3b20a39a2a6ecbbd63dbbe0e182e561acfcd886b4a"

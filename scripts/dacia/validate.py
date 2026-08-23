@@ -94,6 +94,11 @@ TREATY_RECORD_TYPES = {
     "later_reconstruction",
 }
 TREATY_INTERPRETATION_STATES = {"uncontested", "ambiguous", "disputed"}
+# KAN-352: a proposal, the line an instrument actually fixed, and a later
+# reconstruction are three different kinds of claim and are never one column.
+FRONTIER_LINE_TYPES = {"proposal", "treaty_line", "reconstruction"}
+FRONTIER_LEDGERS = {"treaty_frontier_sources", "carta_rubra_sources"}
+FRONTIER_FROM = 1829
 NOMEN_ERRANS_WITNESS_TYPES = {"map_witness", "object_witness", "text_witness"}
 ROMAN_FEATURE_TYPES = {"site", "road", "limes"}
 PRINCIPALITY_SOVEREIGNTY = {
@@ -206,6 +211,7 @@ TABLES = {
     "roman_dacia": f"{GIS}/roman-dacia.csv",
     "principalities": f"{GIS}/principalities.csv",
     "josephinian_sheets": f"{GIS}/josephinian-sheets.csv",
+    "treaty_frontier": f"{GIS}/treaty-frontier.csv",
 }
 PILOT_MANIFEST = f"{PILOT}/pilot-manifest.json"
 SOURCE_LEDGER_MANIFEST = f"{REFERENCE}/source-ledger-manifest.json"
@@ -1527,6 +1533,133 @@ def _load_gis_geojson(name: str, version_prefix: str, errors: list[str]) -> dict
     return payload
 
 
+def validate_treaty_frontier(terms, errors: list[str]) -> None:
+    """KAN-352: no timeless line, and no averaged one.
+
+    Every segment is attributed to the instrument that made it and to the years
+    it held. Where two sources give different lines for the same moment both are
+    kept, each naming the other, because a frontier averaged from two claims is
+    one nobody made.
+    """
+    rows = _read("treaty_frontier", errors)
+    _check_unique(rows, "segment_id", "treaty-frontier", errors)
+    payload = _load_gis_geojson("treaty-frontier", "treaty-frontier-", errors)
+    metadata = payload.get("metadata", {})
+    if metadata.get("derivedFromModernBorders") is not False:
+        errors.append("treaty-frontier: derivedFromModernBorders must be explicitly false")
+    shapes = {feature.get("id"): feature for feature in payload.get("features", [])}
+
+    ledgers = {
+        "treaty_frontier_sources": {
+            row["source_id"] for row in _read("treaty_frontier_sources", errors)
+        },
+        "carta_rubra_sources": {row["source_id"] for row in _read("carta_rubra_sources", errors)},
+    }
+    by_id = {row["segment_id"]: row for row in rows}
+    by_phase: dict[str, list[str]] = {}
+
+    for row in rows:
+        segment_id = row["segment_id"]
+        label = f"treaty-frontier[{segment_id}]"
+        if not segment_id.startswith("tf-seg-") or not SLUG.match(segment_id):
+            errors.append(f"{label}: segment_id must be a tf-seg- slug")
+        if not row["phase_id"].startswith("tfp-") or not SLUG.match(row["phase_id"]):
+            errors.append(f"{label}: phase_id must be a tfp- slug")
+        by_phase.setdefault(row["phase_id"], []).append(segment_id)
+
+        for field in ("name", "legal_context", "territorial_scope", "notes"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        if row["line_type"] not in FRONTIER_LINE_TYPES:
+            errors.append(f"{label}: line_type '{row['line_type']}' is not recognised")
+        if row["source_ledger"] not in FRONTIER_LEDGERS:
+            errors.append(f"{label}: source_ledger '{row['source_ledger']}' is not recognised")
+        elif row["source_id"] not in ledgers[row["source_ledger"]]:
+            errors.append(
+                f"{label}: source_id '{row['source_id']}' does not resolve in "
+                f"{row['source_ledger']}"
+            )
+        if row["interpretation_status"] not in TREATY_INTERPRETATION_STATES:
+            errors.append(f"{label}: interpretation_status is not recognised")
+        if row["review_status"] not in SOURCE_LEDGER_REVIEW_STATES:
+            errors.append(f"{label}: review_status '{row['review_status']}' is not recognised")
+        _check_vocab(
+            row["geometry_provenance"], "geometry_provenance", terms,
+            label, "geometry_provenance", errors,
+        )
+        if row["geometry_provenance"] in GIS_UNAVAILABLE_PROVENANCE:
+            errors.append(
+                f"{label}: the ledger records that no instrument here has usable delimitation "
+                f"geometry, so '{row['geometry_provenance']}' would overstate this line"
+            )
+        _check_vocab(row["confidence"], "confidence", terms, label, "confidence", errors)
+
+        # No timeless line: a frontier without a start year is not a phase, and
+        # an end year that precedes its start is not a period.
+        if not row["valid_from"].isdigit():
+            errors.append(f"{label}: a frontier line must say when it began")
+        elif int(row["valid_from"]) < FRONTIER_FROM:
+            errors.append(f"{label}: {row['valid_from']} precedes the ledger's {FRONTIER_FROM}")
+        if row["valid_to"]:
+            if not row["valid_to"].isdigit():
+                errors.append(f"{label}: valid_to must be a year or empty for open-ended")
+            elif row["valid_from"].isdigit() and int(row["valid_to"]) < int(row["valid_from"]):
+                errors.append(f"{label}: the phase ends before it starts")
+
+        alternative = row["alternative_of"]
+        if alternative:
+            other = by_id.get(alternative)
+            if other is None:
+                errors.append(f"{label}: alternative_of '{alternative}' does not resolve")
+            elif other["phase_id"] != row["phase_id"]:
+                errors.append(
+                    f"{label}: an alternative must contest the same phase, not "
+                    f"'{other['phase_id']}'"
+                )
+
+        shape = shapes.get(segment_id)
+        if shape is None:
+            errors.append(f"{label}: no geometry for this segment")
+        elif shape.get("geometry", {}).get("type") != "LineString":
+            errors.append(f"{label}: expected a LineString")
+        else:
+            positions = shape["geometry"].get("coordinates", [])
+            if len(positions) < 2:
+                errors.append(f"{label}: a frontier needs at least two positions")
+            for lon, lat in positions:
+                if not (
+                    LON_RANGE[0] <= lon <= LON_RANGE[1] and LAT_RANGE[0] <= lat <= LAT_RANGE[1]
+                ):
+                    errors.append(f"{label}: position {lon},{lat} is outside the Dacia window")
+                    break
+
+    # Two lines for one phase are a disagreement, and the table has to say so on
+    # both sides rather than leaving a reader to notice the overlap.
+    for phase_id, segments in sorted(by_phase.items()):
+        if len(segments) < 2:
+            continue
+        for segment_id in sorted(segments):
+            row = by_id[segment_id]
+            others = [s for s in segments if s != segment_id]
+            if not row["alternative_of"]:
+                errors.append(
+                    f"treaty-frontier[{segment_id}]: phase '{phase_id}' carries "
+                    f"{len(segments)} lines, so this one must name what it competes with "
+                    f"({', '.join(sorted(others))})"
+                )
+        # At least one of them has to be something other than a treaty line, or
+        # the phase is claiming an instrument contradicted itself.
+        kinds = {by_id[s]["line_type"] for s in segments}
+        if kinds == {"treaty_line"}:
+            errors.append(
+                f"treaty-frontier: phase '{phase_id}' holds only treaty lines; a competing "
+                "line is a proposal or a reconstruction, not a second instrument"
+            )
+
+    for orphan in sorted(set(shapes) - set(by_id)):
+        errors.append(f"treaty-frontier: geometry '{orphan}' has no row in treaty-frontier.csv")
+
+
 def validate_nomen_errans_witnesses(terms, ranks, name_uses, errors: list[str]) -> None:
     """KAN-344: what the essay might show, and whether it may (rights, not readings).
 
@@ -1956,6 +2089,7 @@ def validate_inputs() -> list[str]:
         for row in _read("places", errors)
         if row["location_status"] == "located" and row["ref_lon"] and row["ref_lat"]
     }
+    validate_treaty_frontier(terms, errors)
     validate_roman_dacia(terms, places, errors)
     validate_principalities(terms, errors)
     validate_josephinian_sheets(terms, places, place_points, errors)
@@ -1981,6 +2115,7 @@ def readiness_lines() -> list[str]:
     carta_claims = _read("carta_rubra_claims", errors)
     borroczyn_sources = _read("borroczyn_seam_sources", errors)
     witnesses = _read("nomen_errans_witnesses", errors)
+    frontiers = _read("treaty_frontier", errors)
     roman = _read("roman_dacia", errors)
     phases = _read("principalities", errors)
     sheets = _read("josephinian_sheets", errors)
@@ -2022,7 +2157,11 @@ def readiness_lines() -> list[str]:
         f"({sum(1 for row in roman if row['feature_type'] == 'site')} joined to CND places), "
         f"{len(phases)} principality phases across "
         f"{len({row['polity_id'] for row in phases})} polities, "
-        f"{len(sheets)} Josephinian sheets; 0 digitised from a source",
+        f"{len(sheets)} Josephinian sheets, "
+        f"{len(frontiers)} treaty frontier lines across "
+        f"{len({row['phase_id'] for row in frontiers})} phases "
+        f"({sum(1 for row in frontiers if row['alternative_of'])} contested); "
+        f"0 digitised from a source",
     ]
 
 

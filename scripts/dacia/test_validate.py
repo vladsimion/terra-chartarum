@@ -1043,3 +1043,82 @@ def test_an_obvious_line_still_cannot_be_continuity_without_evidence(dataset):
 
     edit(dataset, "name_use_edges", mutate)
     refuses("a continuity edge must cite an attestation")
+
+
+# --- treaty frontier phases (KAN-352, KAN-353) -------------------------------
+
+
+def test_frontier_line_cannot_claim_it_was_digitised(dataset):
+    """The ledger says no instrument here has usable delimitation geometry."""
+
+    def mutate(rows):
+        find(rows, "segment_id", "tf-seg-danube-1829")["geometry_provenance"] = "source_geometry"
+
+    edit(dataset, "treaty_frontier", mutate)
+    refuses("would overstate this line")
+
+
+def test_frontier_line_must_say_when_it_began(dataset):
+    def mutate(rows):
+        find(rows, "segment_id", "tf-seg-danube-1829")["valid_from"] = ""
+
+    edit(dataset, "treaty_frontier", mutate)
+    refuses("must say when it began")
+
+
+def test_frontier_phase_cannot_end_before_it_starts(dataset):
+    def mutate(rows):
+        find(rows, "segment_id", "tf-seg-dobrudja-1878")["valid_to"] = "1800"
+
+    edit(dataset, "treaty_frontier", mutate)
+    refuses("the phase ends before it starts")
+
+
+def test_competing_lines_must_name_each_other(dataset):
+    """Two lines for one moment are a disagreement, declared on both sides."""
+
+    def mutate(rows):
+        find(rows, "segment_id", "tf-seg-transylvania-1920")["alternative_of"] = ""
+
+    edit(dataset, "treaty_frontier", mutate)
+    refuses("must name what it competes with")
+
+
+def test_a_phase_cannot_hold_two_instruments(dataset):
+    """A competing line is a proposal or a reconstruction, never a second treaty."""
+
+    def mutate(rows):
+        find(rows, "segment_id", "tf-seg-transylvania-1920-demartonne")["line_type"] = "treaty_line"
+
+    edit(dataset, "treaty_frontier", mutate)
+    refuses("not a second instrument")
+
+
+def test_an_alternative_must_contest_the_same_phase(dataset):
+    def mutate(rows):
+        row = find(rows, "segment_id", "tf-seg-transylvania-1920-demartonne")
+        row["phase_id"] = "tfp-1947-paris"
+
+    edit(dataset, "treaty_frontier", mutate)
+    refuses("must contest the same phase")
+
+
+def test_frontier_source_must_resolve_in_its_named_ledger(dataset):
+    """The proposal is cited from the Carta Rubra ledger, not the treaty one."""
+
+    def mutate(rows):
+        row = find(rows, "segment_id", "tf-seg-transylvania-1920-demartonne")
+        row["source_ledger"] = "treaty_frontier_sources"
+
+    edit(dataset, "treaty_frontier", mutate)
+    refuses("does not resolve in treaty_frontier_sources")
+
+
+def test_frontier_geometry_without_a_row_is_rejected(dataset):
+    def mutate(payload):
+        orphan = json.loads(json.dumps(payload["features"][0]))
+        orphan["id"] = "tf-seg-invented"
+        payload["features"].append(orphan)
+
+    edit_geojson(dataset, "treaty-frontier", mutate)
+    refuses("has no row in treaty-frontier.csv")

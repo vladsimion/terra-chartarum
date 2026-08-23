@@ -736,6 +736,52 @@ const RAW: unknown[] = [
     facets: ['confidence', 'footprint_provenance', 'review_status'],
     defaultOn: false,
   },
+  {
+    // KAN-353. Styling has to separate a proposal from the line an instrument
+    // fixed without relying on colour, so line_type drives both the dash pattern
+    // and the width: a proposal reads as dotted and thin, a treaty line solid
+    // and heavy, a later reconstruction dashed between them.
+    id: 'dacia-treaty-frontiers',
+    room: 'border',
+    secondaryRooms: ['map'],
+    title: 'Treaty frontiers, 1829-1947',
+    description:
+      'What each settlement moved, as dated phases. Not one instrument in the source ledger has delimitation geometry this project can use, so every line is drawn and declared editorial; where two sources give different lines for one moment, both are kept rather than averaged into a frontier nobody proposed.',
+    kind: 'vector',
+    format: 'geojson',
+    url: '/geo/dacia-treaty-frontiers.geojson',
+    yearFrom: 1829,
+    yearTo: 1947,
+    source: 'Terra Chartarum (compiled) - treaty frontier phases 1829-1947, KAN-352',
+    license: 'CC BY 4.0',
+    attribution:
+      'Terra Chartarum; instruments after Hertslet and the KAN-351 source ledger; all linework editorial',
+    documentationLinks: [
+      {
+        label: 'Treaty frontier source ledger',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/dacia/treaty-frontier-source-ledger.md',
+      },
+      {
+        label: 'Shared GIS layers',
+        href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/dacia/shared-gis-layers.md',
+      },
+    ],
+    essaySlugs: ['dacia'],
+    geometry: 'line',
+    color: '#b0563f',
+    perFeatureTime: true,
+    facets: ['line_type', 'interpretation_status', 'confidence', 'source_id', 'review_status'],
+    dash: {
+      field: 'line_type',
+      patterns: { treaty_line: [], reconstruction: [4, 2], proposal: [1, 2] },
+    },
+    width: {
+      field: 'line_type',
+      widths: { treaty_line: 2.6, reconstruction: 1.8, proposal: 1.2 },
+      fallback: 1.2,
+    },
+    defaultOn: false,
+  },
 ];
 
 export const GEO_LAYERS: GeoLayer[] = RAW.map((l) => GeoLayerSchema.parse(l));
