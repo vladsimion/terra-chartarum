@@ -37,7 +37,11 @@
       "retainTechnicalLink": true,
       "notes": "Field meanings, controlled vocabularies and temporal conventions are reader-facing; the FGB build contracts and the spec section numbers are not. Pattern B: an authored data-fields record cites the canonical field IDs, and the full dictionary stays reachable under Advanced/Technical.",
       "currentHref": "https://github.com/vladsimion/terra-chartarum/blob/main/docs/vmn/data-dictionary.md",
-      "citedByLayers": ["venetian-ports", "venetian-routes", "venetian-possessions"]
+      "citedByLayers": ["venetian-ports", "venetian-routes", "venetian-possessions"],
+      "migrationOutcome": "replaced-by-public-route",
+      "implementedPattern": "B",
+      "implementedRoute": "/atlas/handbook/data-fields/vmn/",
+      "outcomeNote": "The reader-facing half - status vocabulary, route types, phases, locator rules - is now an authored data-fields record. The machine schema stays in the repository as an Advanced link, which is what Pattern B is for."
     },
     {
       "id": "doc-vmn-source-log",
@@ -52,7 +56,11 @@
       "retainTechnicalLink": true,
       "notes": "The historical authorities behind every VMN feature, plus the publication rules. Wholly reader-facing and short enough to render as-is (Pattern A). Feature-level citations already resolve through it, so it must not stay behind a GitHub hop.",
       "currentHref": "https://github.com/vladsimion/terra-chartarum/blob/main/docs/vmn/source-log.md",
-      "citedByLayers": ["venetian-ports", "venetian-routes", "venetian-possessions"]
+      "citedByLayers": ["venetian-ports", "venetian-routes", "venetian-possessions"],
+      "migrationOutcome": "replaced-by-public-route",
+      "implementedPattern": "A",
+      "implementedRoute": "/atlas/handbook/evidence/vmn-sources/",
+      "outcomeNote": "Projected whole, as the audit proposed. It was already wholly reader-facing. The bibliography page, which used to send readers to GitHub for it, now links this route."
     },
     {
       "id": "doc-vmn-deep-links",
@@ -67,7 +75,11 @@
       "retainTechnicalLink": true,
       "notes": "A specification of Atlas URL parameters and an anchor validation table. The reader-facing equivalent of this document is the Atlas affordance itself - \"Copy this view\" (KAN-405) - not a page of parameter tables. Demote from first-level to Advanced/Technical; do not publish.",
       "currentHref": "https://github.com/vladsimion/terra-chartarum/blob/main/docs/vmn/deep-links.md",
-      "citedByLayers": ["venetian-ports", "venetian-routes", "venetian-possessions"]
+      "citedByLayers": ["venetian-ports", "venetian-routes", "venetian-possessions"],
+      "migrationOutcome": "retained-technical",
+      "implementedPattern": "none",
+      "implementedRoute": null,
+      "outcomeNote": "Demoted rather than published, as the audit proposed. It is no longer a first-level peer of the source log because catalogue rows carry no documentation clusters at all; it survives as an Advanced link on the three VMN layer records. Its reader-facing equivalent is the Atlas share contract itself."
     },
     {
       "id": "doc-hse-data-dictionary",
@@ -82,7 +94,11 @@
       "retainTechnicalLink": true,
       "notes": "Same split as the VMN dictionary. The participation classes, evidence types and certainty vocabulary are exactly what a reader needs to interpret the map; the compile outputs, promotion rules and release manifest are not.",
       "currentHref": "https://github.com/vladsimion/terra-chartarum/blob/main/docs/hanseatic/data-dictionary.md",
-      "citedByLayers": ["hanseatic-places", "hanseatic-routes", "hanseatic-events"]
+      "citedByLayers": ["hanseatic-places", "hanseatic-routes", "hanseatic-events"],
+      "migrationOutcome": "replaced-by-public-route",
+      "implementedPattern": "B",
+      "implementedRoute": "/atlas/handbook/data-fields/hanseatic/",
+      "outcomeNote": "Participation classes, evidence types and certainty are published in reader language; compile outputs and promotion rules stay technical."
     },
     {
       "id": "doc-hse-decisions",
@@ -97,7 +113,11 @@
       "retainTechnicalLink": true,
       "notes": "Carries genuinely reader-facing editorial reasoning (\"Two different fours\", \"Bruges in the past tense\", the vocabulary decisions) interleaved with stable-ID and build-contract governance. Pattern B: publish the curated editorial decisions; the full log stays technical. This document also holds the network-not-territory rationale that KAN-418 requires be publicly legible.",
       "currentHref": "https://github.com/vladsimion/terra-chartarum/blob/main/docs/hanseatic/decisions.md",
-      "citedByLayers": ["hanseatic-places", "hanseatic-routes", "hanseatic-events"]
+      "citedByLayers": ["hanseatic-places", "hanseatic-routes", "hanseatic-events"],
+      "migrationOutcome": "split-public-and-technical",
+      "implementedPattern": "B",
+      "implementedRoute": "/atlas/handbook/decisions/network-not-territory/",
+      "outcomeNote": "Split as KAN-414 required. The historiographical decision - the League held privileges in places, not ground between them - is published. Stable IDs, build contracts and the superseded vertical-slice boundary stay in the repository, because they are not historical arguments."
     },
     {
       "id": "doc-dacia-data-dictionary",
@@ -112,7 +132,11 @@
       "retainTechnicalLink": true,
       "notes": "416 lines, mostly CSV schemas and governance tables. The reader-facing minority - the promotion ladder, the confidence and attestation-class vocabularies, and the two-tier release contract - is what the Atlas facets expose, so it must surface publicly while the schemas stay technical.",
       "currentHref": "https://github.com/vladsimion/terra-chartarum/blob/main/docs/dacia/data-dictionary.md",
-      "citedByLayers": ["dacia-attestations", "dacia-attestations-research"]
+      "citedByLayers": ["dacia-attestations", "dacia-attestations-research"],
+      "migrationOutcome": "replaced-by-public-route",
+      "implementedPattern": "B",
+      "implementedRoute": "/atlas/handbook/data-fields/dacia/",
+      "outcomeNote": "The reader-facing minority of a 416-line document: confidence, geometry provenance, line types, attestation classes, review state, sovereignty. The CSV schemas stay technical."
     },
     {
       "id": "doc-dacia-readme",
@@ -127,7 +151,11 @@
       "retainTechnicalLink": true,
       "notes": "The only current link whose public owner already exists: the programme index shipped in KAN-370. The layer should point at that route, not at the README. The README keeps the identifier, immutability and gate-running material as technical documentation.",
       "currentHref": "https://github.com/vladsimion/terra-chartarum/blob/main/docs/dacia/README.md",
-      "citedByLayers": ["dacia-attestations"]
+      "citedByLayers": ["dacia-attestations"],
+      "migrationOutcome": "repointed-to-existing-owner",
+      "implementedPattern": "B",
+      "implementedRoute": "/programmes/corpus-chartarum-daciae/",
+      "outcomeNote": "The only entry whose public owner already existed. The layer record now links the KAN-370 programme index; the README keeps the identifier, immutability and gate-running material as technical documentation."
     },
     {
       "id": "doc-dacia-shared-gis-layers",
@@ -148,7 +176,11 @@
         "dacia-principalities",
         "dacia-josephinian-sheets",
         "dacia-treaty-frontiers"
-      ]
+      ],
+      "migrationOutcome": "replaced-by-public-route",
+      "implementedPattern": "A",
+      "implementedRoute": "/atlas/handbook/methods/dacia-shared-gis/",
+      "outcomeNote": "DEVIATION from the audit, which proposed Pattern B. Projected whole instead: the document is wholly public-scholarly, and one projected method referenced by five layer records is a stronger guarantee against duplication than five authored records that each retell it. The hazard the audit named is closed by referencesDocIds rather than by splitting the prose."
     },
     {
       "id": "doc-dacia-treaty-ledger",
@@ -163,7 +195,11 @@
       "retainTechnicalLink": true,
       "notes": "Frozen instruments, interpretation and confidence, the editorial geometry rule and the rights posture, in reader-facing prose and bound to one layer. This is the gold-standard target for KAN-413: the pattern every other layer is measured against.",
       "currentHref": "https://github.com/vladsimion/terra-chartarum/blob/main/docs/dacia/treaty-frontier-source-ledger.md",
-      "citedByLayers": ["dacia-treaty-frontiers"]
+      "citedByLayers": ["dacia-treaty-frontiers"],
+      "migrationOutcome": "replaced-by-public-route",
+      "implementedPattern": "A",
+      "implementedRoute": "/atlas/handbook/evidence/dacia-treaty-frontiers/",
+      "outcomeNote": "Projected whole, as the audit proposed. It is the gold-standard evidence record the treaty-frontier layer page cites for instrument-by-instrument detail."
     }
   ],
   "links": [
@@ -416,7 +452,10 @@
       "documentId": "doc-vmn-source-log",
       "audience": "public-scholarly",
       "disposition": "migrate-public",
-      "notes": "A first-level GitHub link in reader-facing prose on a public page: feature-level citations are told to resolve through it. Repoint to the VMN sources route when it exists."
+      "notes": "A first-level GitHub link in reader-facing prose on a public page: feature-level citations are told to resolve through it. Repoint to the VMN sources route when it exists.",
+      "migrationOutcome": "replaced-by-public-route",
+      "implementedRoute": "/atlas/handbook/evidence/vmn-sources/",
+      "outcomeNote": "Repointed at cutover (KAN-418). The bibliography no longer sends a reader to GitHub to resolve a feature-level citation."
     },
     {
       "id": "nrl-bibliography-vmn-dictionary",
@@ -425,7 +464,10 @@
       "documentId": "doc-vmn-data-dictionary",
       "audience": "mixed",
       "disposition": "migrate-public",
-      "notes": "As above: repoint to the VMN data-fields route, keeping the raw dictionary under Advanced/Technical."
+      "notes": "As above: repoint to the VMN data-fields route, keeping the raw dictionary under Advanced/Technical.",
+      "migrationOutcome": "replaced-by-public-route",
+      "implementedRoute": "/atlas/handbook/data-fields/vmn/",
+      "outcomeNote": "Repointed at cutover (KAN-418)."
     },
     {
       "id": "nrl-hse-src-spec-confluence",
@@ -434,7 +476,10 @@
       "documentId": null,
       "audience": "internal-governance",
       "disposition": "internal-only",
-      "notes": "The only Confluence URL anywhere in the data or the site. It is a source row cited by one provisional HSE evidence claim (hse-claim-lubeck-leading), and it does not reach the built output today. Not a live public defect - but it becomes one the moment HSE sources are published, which KAN-414 is going to do. The claim it supports is already marked superseded, so the fix is to retire the citation rather than to publish the URL. Guarded by a test."
+      "notes": "The only Confluence URL anywhere in the data or the site. It is a source row cited by one provisional HSE evidence claim (hse-claim-lubeck-leading), and it does not reach the built output today. Not a live public defect - but it becomes one the moment HSE sources are published, which KAN-414 is going to do. The claim it supports is already marked superseded, so the fix is to retire the citation rather than to publish the URL. Guarded by a test.",
+      "migrationOutcome": "internal-only",
+      "implementedRoute": null,
+      "outcomeNote": "Still the only Confluence URL in the data, still absent from the built output, and now guarded twice: by the inventory test and by validate-handbook.mjs, which fails the build on any governance URL anywhere in dist/. KAN-414 published the HSE sources without promoting it; retiring the superseded claim that cites it remains open."
     },
     {
       "id": "nrl-dacia-programme-release-tree",
@@ -443,7 +488,10 @@
       "documentId": null,
       "audience": "technical",
       "disposition": "retain-technical",
-      "notes": "A link to the released CND 0.1 data tree, surfaced by the public programme index. Legitimately technical: it is the download/reuse gateway, and KAN-416 gives it a proper citation and data-reuse surface. Keep, but present it as Advanced/Technical rather than as documentation."
+      "notes": "A link to the released CND 0.1 data tree, surfaced by the public programme index. Legitimately technical: it is the download/reuse gateway, and KAN-416 gives it a proper citation and data-reuse surface. Keep, but present it as Advanced/Technical rather than as documentation.",
+      "migrationOutcome": "retained-technical",
+      "implementedRoute": null,
+      "outcomeNote": "Kept as the data-reuse gateway on the programme index, which is its correct role."
     }
   ],
   "retirements": [
@@ -494,5 +542,19 @@
       "citedBy": 2,
       "risk": "Cited by both CND attestation tiers. The public data-fields record must be programme-scoped and must state the two-tier contract once, so the reviewed and research layers cannot end up explaining the review gate differently."
     }
-  ]
+  ],
+  "cutover": {
+    "ticket": "KAN-418",
+    "reRunAgainstRegistry": "2026-08-23",
+    "summary": "Every inventoried entry has an outcome. Seven documents are replaced by or split into public routes, one is repointed to a public owner that already existed, and one is retained as technical-only with its reason recorded. No entry is unaccounted for, and no first-level GitHub or Confluence documentation link remains in a reader-facing page.",
+    "outcomes": [
+      "replaced-by-public-route",
+      "split-public-and-technical",
+      "repointed-to-existing-owner",
+      "retained-technical",
+      "internal-only",
+      "deprecated"
+    ],
+    "crusadesDependency": "KAN-388 has registered no Atlas layers, so no Crusades layer exists to inherit the public documentation contract. This is recorded as a mandatory publication dependency for the first public GIS release rather than as a completed check: whichever ticket registers the first Crusades layer must give it a public record, and the KAN-412 coverage report plus validate-handbook.mjs will fail the build until it does."
+  }
 }

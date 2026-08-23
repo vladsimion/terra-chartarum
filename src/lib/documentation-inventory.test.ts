@@ -4,6 +4,8 @@ import { describe, it, expect } from 'vitest';
 import { GEO_LAYERS } from './geo';
 import {
   DOCUMENTATION_INVENTORY,
+  PUBLIC_OUTCOMES,
+  unmigratedDocuments,
   INVENTORY_COVERAGE,
   INVENTORY_DOCUMENTS,
   INVENTORY_LINKS,
@@ -240,5 +242,62 @@ describe('the audit changes nothing it is not allowed to change', () => {
       expect(retirement.rationale.length, retirement.documentId).toBeGreaterThan(40);
       expect(INVENTORY_DOCUMENTS.some((d) => d.id === retirement.documentId)).toBe(true);
     }
+  });
+});
+
+// The cutover re-run (ATLAS-1222 / KAN-418). The audit recorded an intention;
+// these assert the result, so "the documentation was migrated" is checkable.
+describe('every inventoried entry reached a destination', () => {
+  it('gives every document an outcome and an argued note', () => {
+    for (const doc of INVENTORY_DOCUMENTS) {
+      expect(DOCUMENTATION_INVENTORY.cutover.outcomes, doc.id).toContain(doc.migrationOutcome);
+      expect(doc.outcomeNote.length, doc.id).toBeGreaterThan(40);
+    }
+  });
+
+  it('resolves every public outcome to an internal route', () => {
+    for (const doc of INVENTORY_DOCUMENTS) {
+      if (!PUBLIC_OUTCOMES.includes(doc.migrationOutcome)) continue;
+      expect(doc.implementedRoute, doc.id).toBeTruthy();
+      expect(doc.implementedRoute, doc.id).toMatch(/^\/[a-z0-9/-]*\/$/);
+      expect(doc.implementedRoute, doc.id).not.toContain('github.com');
+      expect(doc.implementedRoute, doc.id).not.toContain('atlassian.net');
+    }
+    expect(unmigratedDocuments()).toEqual([]);
+  });
+
+  it('leaves a technical-only entry routeless, with its reason recorded', () => {
+    const technical = INVENTORY_DOCUMENTS.filter(
+      (doc) => doc.migrationOutcome === 'retained-technical',
+    );
+    expect(technical.length).toBeGreaterThan(0);
+    for (const doc of technical) {
+      expect(doc.implementedRoute, doc.id).toBeNull();
+      expect(doc.implementedPattern, doc.id).toBe('none');
+    }
+  });
+
+  it('records where the implementation deviated from the audit', () => {
+    // docs/dacia/shared-gis-layers.md was audited as Pattern B and shipped as
+    // Pattern A. A deviation is fine; an unrecorded one is not.
+    const shared = INVENTORY_DOCUMENTS.find((doc) => doc.id === 'doc-dacia-shared-gis-layers')!;
+    expect(shared.pattern).toBe('B');
+    expect(shared.implementedPattern).toBe('A');
+    expect(shared.outcomeNote).toMatch(/DEVIATION/);
+  });
+
+  it('repoints both first-level bibliography links to internal routes', () => {
+    const repointed = DOCUMENTATION_INVENTORY.nonRegistryLinks.filter(
+      (link) => link.location === 'src/pages/bibliography.astro',
+    );
+    expect(repointed).toHaveLength(2);
+    for (const link of repointed) {
+      expect(link.migrationOutcome).toBe('replaced-by-public-route');
+      expect(link.implementedRoute).toMatch(/^\/atlas\/handbook\//);
+    }
+  });
+
+  it('records the Crusades contract as a dependency rather than a passed check', () => {
+    expect(DOCUMENTATION_INVENTORY.cutover.crusadesDependency).toMatch(/mandatory publication/i);
   });
 });

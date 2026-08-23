@@ -7,11 +7,12 @@ import AxeBuilder from '@axe-core/playwright';
 // The contract under test: a reader reaches a layer's scholarship through
 // Terra Chartarum, never through GitHub, and can get back to the view they left.
 
-test.use({
-  launchOptions: {
-    args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'],
-  },
-});
+// Deliberately NOT asking for software GL. Nothing here needs the map: the
+// catalogue markup is server-rendered, the readiness signal fires from the
+// island's own script, and every assertion is about navigation, prose and
+// metadata. Holding a MapLibre context would only make this file compete with
+// the specs that genuinely need one, which is what made it flake under the full
+// parallel suite.
 test.describe.configure({ mode: 'default' });
 
 const MAP_READY = 20_000;
@@ -57,14 +58,20 @@ test.describe('Atlas to Handbook and back', () => {
       // About & sources is the primary action and stays on Terra Chartarum.
       const about = dossier.locator(`[data-about-sources="${programme.layer}"]`);
       await expect(about).toHaveText(/About & sources/i);
+      await expect(about).toBeVisible();
       await about.click();
 
-      await expect(page).toHaveURL(new RegExp(`/atlas/layers/${programme.layer}/`));
+      // The site uses client-side view transitions, so the URL settles after the
+      // click rather than with it. waitForURL is the honest wait here; a bare
+      // toHaveURL races the transition under a loaded suite.
+      await page.waitForURL(new RegExp(`/atlas/layers/${programme.layer}/`), {
+        timeout: MAP_READY,
+      });
       await expect(page.getByRole('heading', { level: 1 })).toHaveText(programme.heading);
 
       // ...and back.
       await page.locator('[data-open-atlas]').click();
-      await expect(page).toHaveURL(/\/atlas\/\?/);
+      await page.waitForURL(/\/atlas\/\?/, { timeout: MAP_READY });
       await expect(page.locator('[data-layer-browser]')).toBeVisible();
     });
   }
@@ -80,7 +87,7 @@ test.describe('Atlas to Handbook and back', () => {
 
     const about = page.locator('[data-about-sources]:visible').first();
     await about.click();
-    await expect(page).toHaveURL(/year=1350/);
+    await page.waitForURL(/year=1350/, { timeout: MAP_READY });
 
     const back = page.locator('[data-open-atlas]');
     await expect(back).toHaveAttribute('href', /year=1350/);
