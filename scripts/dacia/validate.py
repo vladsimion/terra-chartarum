@@ -113,6 +113,10 @@ RECEPTION_ROLES = {"authoritative_evidence", "contextual_evidence", "reference_a
 # the antiquity it depicts.
 RECEPTION_NEVER_AUTHORITATIVE = {"historical_reception", "contemporary_derivative"}
 RECEPTION_SELECTION = {"selected", "class_only", "rejected"}
+# KAN-368. `resembles` is the visual counterpart of Nomen Errans' homonym_only:
+# it asserts that two things look alike and that nothing follows from it.
+RECEPTION_RELATIONSHIPS = {"derives_from", "resembles", "responds_to", "no_relationship"}
+RECEPTION_CLAIM_KINDS = {"continuity", "origin", "extent", "descent"}
 REQUIRED_RUBRIC_RULES = {"rr-1", "rr-2", "rr-3", "rr-4", "rr-5"}
 ACQUISITION_STATES = {"not_sought", "watching", "recommended", "acquired", "declined"}
 VERIFICATION_STATES = {"unverified", "partially_verified", "verified"}
@@ -234,6 +238,7 @@ TABLES = {
     "acquisition_dossiers": f"{REFERENCE}/acquisition-dossiers.csv",
     "reception_corpus": f"{REFERENCE}/reception-corpus.csv",
     "reception_rubric": f"{REFERENCE}/reception-review-rubric.csv",
+    "reception_claims": f"{REFERENCE}/reception-claims.csv",
     "borroczyn_seam_sources": f"{REFERENCE}/borroczyn-seam-sources.csv",
     "places": "places.csv",
     "sources": "sources.csv",
@@ -1200,6 +1205,88 @@ def validate_hiatus_witness_families(errors: list[str]) -> None:
         errors.append("hiatus-witness-families: the frozen minimum needs at least five families")
 
 
+def validate_reception_claims(terms, errors: list[str]) -> None:
+    """KAN-368: how a claim is made, and what it may not inherit by looking alike.
+
+    The corpus classifies items; this records what each one asserts and how it
+    stands to the material it invokes. The rule the table exists for is that a
+    contemporary derivative cannot acquire authority from resembling a scholarly
+    map - the visual counterpart of the homonym_only edge in Nomen Errans.
+    """
+    items = {row["item_id"]: row for row in _read("reception_corpus", errors)}
+    rows = _read("reception_claims", errors)
+    _check_unique(rows, "claim_id", "reception-claims", errors)
+    claimed: set[str] = set()
+
+    for row in rows:
+        claim_id = row["claim_id"]
+        label = f"reception-claims[{claim_id}]"
+        if not claim_id.startswith("rcl-") or not SLUG.match(claim_id):
+            errors.append(f"{label}: claim_id must be an rcl- slug")
+        item = items.get(row["item_id"])
+        if item is None:
+            errors.append(f"{label}: item_id '{row['item_id']}' does not resolve")
+        else:
+            claimed.add(row["item_id"])
+        target = items.get(row["relates_to"])
+        if row["relates_to"] and target is None:
+            errors.append(f"{label}: relates_to '{row['relates_to']}' does not resolve")
+        if row["relates_to"] == row["item_id"]:
+            errors.append(f"{label}: a claim cannot relate an item to itself")
+
+        for field in ("claim", "asserted_about", "evidence_note", "uncertainty", "notes"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        if row["claim_kind"] not in RECEPTION_CLAIM_KINDS:
+            errors.append(f"{label}: claim_kind '{row['claim_kind']}' is not recognised")
+        kind = row["relationship_kind"]
+        if kind not in RECEPTION_RELATIONSHIPS:
+            errors.append(f"{label}: relationship_kind '{kind}' is not recognised")
+        if row["interpretation_status"] not in TREATY_INTERPRETATION_STATES:
+            errors.append(f"{label}: interpretation_status is not recognised")
+        _check_vocab(row["confidence"], "confidence", terms, label, "confidence", errors)
+        if row["review_status"] not in SOURCE_LEDGER_REVIEW_STATES:
+            errors.append(f"{label}: review_status '{row['review_status']}' is not recognised")
+
+        if item is None:
+            continue
+
+        # The rule this table is for. A derivative may look exactly like a
+        # scholarly map and inherit nothing from it, so the only relationships
+        # it may assert are ones that claim no descent.
+        if item["source_class"] == "contemporary_derivative" and kind == "derives_from":
+            errors.append(
+                f"{label}: a contemporary derivative cannot claim descent from a historical "
+                "source on the strength of resembling one; use resembles or responds_to"
+            )
+        # A derivation is a claim about transmission and needs its evidence, in
+        # the same way a continuity edge in Nomen Errans does.
+        if kind == "derives_from":
+            if target is not None and target["selection_state"] == "class_only":
+                errors.append(
+                    f"{label}: nothing has been selected from '{row['relates_to']}', so no "
+                    "derivation from it can be evidenced"
+                )
+            if item["selection_state"] == "class_only":
+                errors.append(
+                    f"{label}: a class from which nothing is selected cannot be said to derive "
+                    "from anything in particular"
+                )
+        # Uncertainty travels as text, so a reader who cannot use colour still
+        # gets the contested reading rather than a hue.
+        if row["interpretation_status"] == "disputed" and len(row["uncertainty"]) < 40:
+            errors.append(
+                f"{label}: a disputed claim must state its uncertainty in words, not leave it "
+                "to a colour"
+            )
+
+    for item_id, item in sorted(items.items()):
+        # An item with no claim recorded is decoration: the essay would show it
+        # without being able to say what it asserts.
+        if item_id not in claimed:
+            errors.append(f"reception-claims: '{item_id}' is in the corpus with no claim recorded")
+
+
 def validate_reception_corpus(terms, sources, errors: list[str]) -> None:
     """KAN-367: the reception corpus, and the rubric that keeps it from arguing.
 
@@ -1720,6 +1807,88 @@ def _load_gis_geojson(name: str, version_prefix: str, errors: list[str]) -> dict
     if not metadata.get("justification"):
         errors.append(f"{name}: drawn geometry requires a recorded justification")
     return payload
+
+
+def validate_reception_claims(terms, errors: list[str]) -> None:
+    """KAN-368: how a claim is made, and what it may not inherit by looking alike.
+
+    The corpus classifies items; this records what each one asserts and how it
+    stands to the material it invokes. The rule the table exists for is that a
+    contemporary derivative cannot acquire authority from resembling a scholarly
+    map - the visual counterpart of the homonym_only edge in Nomen Errans.
+    """
+    items = {row["item_id"]: row for row in _read("reception_corpus", errors)}
+    rows = _read("reception_claims", errors)
+    _check_unique(rows, "claim_id", "reception-claims", errors)
+    claimed: set[str] = set()
+
+    for row in rows:
+        claim_id = row["claim_id"]
+        label = f"reception-claims[{claim_id}]"
+        if not claim_id.startswith("rcl-") or not SLUG.match(claim_id):
+            errors.append(f"{label}: claim_id must be an rcl- slug")
+        item = items.get(row["item_id"])
+        if item is None:
+            errors.append(f"{label}: item_id '{row['item_id']}' does not resolve")
+        else:
+            claimed.add(row["item_id"])
+        target = items.get(row["relates_to"])
+        if row["relates_to"] and target is None:
+            errors.append(f"{label}: relates_to '{row['relates_to']}' does not resolve")
+        if row["relates_to"] == row["item_id"]:
+            errors.append(f"{label}: a claim cannot relate an item to itself")
+
+        for field in ("claim", "asserted_about", "evidence_note", "uncertainty", "notes"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        if row["claim_kind"] not in RECEPTION_CLAIM_KINDS:
+            errors.append(f"{label}: claim_kind '{row['claim_kind']}' is not recognised")
+        kind = row["relationship_kind"]
+        if kind not in RECEPTION_RELATIONSHIPS:
+            errors.append(f"{label}: relationship_kind '{kind}' is not recognised")
+        if row["interpretation_status"] not in TREATY_INTERPRETATION_STATES:
+            errors.append(f"{label}: interpretation_status is not recognised")
+        _check_vocab(row["confidence"], "confidence", terms, label, "confidence", errors)
+        if row["review_status"] not in SOURCE_LEDGER_REVIEW_STATES:
+            errors.append(f"{label}: review_status '{row['review_status']}' is not recognised")
+
+        if item is None:
+            continue
+
+        # The rule this table is for. A derivative may look exactly like a
+        # scholarly map and inherit nothing from it, so the only relationships
+        # it may assert are ones that claim no descent.
+        if item["source_class"] == "contemporary_derivative" and kind == "derives_from":
+            errors.append(
+                f"{label}: a contemporary derivative cannot claim descent from a historical "
+                "source on the strength of resembling one; use resembles or responds_to"
+            )
+        # A derivation is a claim about transmission and needs its evidence, in
+        # the same way a continuity edge in Nomen Errans does.
+        if kind == "derives_from":
+            if target is not None and target["selection_state"] == "class_only":
+                errors.append(
+                    f"{label}: nothing has been selected from '{row['relates_to']}', so no "
+                    "derivation from it can be evidenced"
+                )
+            if item["selection_state"] == "class_only":
+                errors.append(
+                    f"{label}: a class from which nothing is selected cannot be said to derive "
+                    "from anything in particular"
+                )
+        # Uncertainty travels as text, so a reader who cannot use colour still
+        # gets the contested reading rather than a hue.
+        if row["interpretation_status"] == "disputed" and len(row["uncertainty"]) < 40:
+            errors.append(
+                f"{label}: a disputed claim must state its uncertainty in words, not leave it "
+                "to a colour"
+            )
+
+    for item_id, item in sorted(items.items()):
+        # An item with no claim recorded is decoration: the essay would show it
+        # without being able to say what it asserts.
+        if item_id not in claimed:
+            errors.append(f"reception-claims: '{item_id}' is in the corpus with no claim recorded")
 
 
 def validate_reception_corpus(terms, sources, errors: list[str]) -> None:
@@ -2433,6 +2602,7 @@ def validate_inputs() -> list[str]:
         if row["location_status"] == "located" and row["ref_lon"] and row["ref_lat"]
     }
     validate_reception_corpus(terms, sources, errors)
+    validate_reception_claims(terms, errors)
     validate_acquisition_dossiers(terms, errors)
     validate_treaty_frontier(terms, errors)
     validate_roman_dacia(terms, places, errors)
@@ -2461,6 +2631,7 @@ def readiness_lines() -> list[str]:
     borroczyn_sources = _read("borroczyn_seam_sources", errors)
     witnesses = _read("nomen_errans_witnesses", errors)
     reception = _read("reception_corpus", errors)
+    reception_claims = _read("reception_claims", errors)
     dossiers = _read("acquisition_dossiers", errors)
     frontiers = _read("treaty_frontier", errors)
     roman = _read("roman_dacia", errors)
@@ -2513,7 +2684,11 @@ def readiness_lines() -> list[str]:
         f"{len({row['source_class'] for row in reception})} classes; "
         f"{sum(1 for row in reception if row['selection_state'] == 'selected')} selected, "
         f"{sum(1 for row in reception if row['evidence_role'] == 'reference_artefact')} "
-        f"held as reference artefacts",
+        f"held as reference artefacts; {len(reception_claims)} claims, "
+        f"{sum(1 for row in reception_claims if row['relationship_kind'] == 'derives_from')} "
+        f"evidenced derivations and "
+        f"{sum(1 for row in reception_claims if row['relationship_kind'] == 'resembles')} "
+        f"resemblances that inherit nothing",
         f"  acquisition: {len(dossiers)} dossiers across "
         f"{len({row['family'] for row in dossiers})} priority families; "
         f"{sum(1 for row in dossiers if row['verification_state'] == 'verified')} verified, "

@@ -60,3 +60,43 @@ detailed, confident and widely shared, and none of that is provenance. **The
 apparent authority of such an item is the reason for the rule, not an exception
 to it**: an unidentified creator and an unstated source are what make something
 reception rather than evidence, however good it looks.
+
+## What each item claims (KAN-368)
+
+The corpus classifies items;
+[`reception-claims.csv`](../../data/dacia/reference/reception-claims.csv)
+records what each one asserts and how it stands to the material it invokes. An
+item with no claim recorded fails validation: without one it is decoration, and
+the essay could show it without being able to say what it argues.
+
+Four relationship kinds, and the distinction between the first two is the point
+of the table:
+
+- `derives_from` is a claim about transmission and needs its evidence, exactly as
+  a `continuity` edge does in Nomen Errans. Ortelius restoring the province from
+  the ancient authors is one; the TIR reconciling testimony with excavation is
+  another. Neither may point at a class from which nothing has been selected.
+- `resembles` asserts that two things look alike **and that nothing follows from
+  it**. This is the visual counterpart of the `homonym_only` edge: a shared
+  appearance is not a relationship, and the corpus says so in a row rather than
+  leaving a reader to join them by eye.
+- `responds_to` is for material that reaches for an older tradition without
+  descending from it - the interwar and protochronist classes place a modern
+  frontier beside an ancient one and let the resemblance argue.
+- `no_relationship` is for the ancient testimony at the head of the corpus, which
+  derives from nothing else in it.
+
+**A contemporary derivative may never claim `derives_from`.** It may look exactly
+like a scholarly map and inherit nothing from it, so the only relationships it
+can assert are ones claiming no descent. That rule is enforced, and it is the
+row `rcl-online-resemblance` exists to demonstrate.
+
+Uncertainty travels as text. A claim marked `disputed` must state its
+uncertainty in words rather than leaving it to a hue, so the contested reading
+reaches a reader who cannot use colour - checked by length, crudely but
+effectively.
+
+The descent claim is recorded and not adjudicated. `rcl-protochronist-descent`
+exists so the essay can show the claim being made; rubric `rr-1` forbids using
+any map here to settle it, and nothing in the corpus may be read as taking a
+position on who anyone is today.

@@ -1245,3 +1245,54 @@ def test_a_rubric_rule_that_does_not_bind_is_not_a_rule(dataset):
 def test_the_rubric_cannot_lose_a_required_rule(dataset):
     edit(dataset, "reception_rubric", lambda rows: [r for r in rows if r["rule_id"] != "rr-1"])
     refuses("missing required rules")
+
+
+# --- reception claim relationships (KAN-368) ---------------------------------
+
+
+def test_a_derivative_cannot_claim_descent_from_resemblance(dataset):
+    """The visual counterpart of homonym_only: looking alike inherits nothing."""
+
+    def mutate(rows):
+        find(rows, "claim_id", "rcl-online-resemblance")["relationship_kind"] = "derives_from"
+
+    edit(dataset, "reception_claims", mutate)
+    refuses("cannot claim descent from a historical source")
+
+
+def test_a_derivation_cannot_point_at_an_unselected_class(dataset):
+    def mutate(rows):
+        row = find(rows, "claim_id", "rcl-interwar-frontier")
+        row["relationship_kind"] = "derives_from"
+
+    edit(dataset, "reception_claims", mutate)
+    refuses("cannot be said to derive from anything in particular")
+
+
+def test_a_disputed_claim_must_state_its_uncertainty_in_words(dataset):
+    """Contested readings reach a reader who cannot use colour."""
+
+    def mutate(rows):
+        find(rows, "claim_id", "rcl-protochronist-descent")["uncertainty"] = "unclear"
+
+    edit(dataset, "reception_claims", mutate)
+    refuses("must state its uncertainty in words")
+
+
+def test_every_corpus_item_records_what_it_claims(dataset):
+    """An item with no claim is decoration."""
+    edit(
+        dataset,
+        "reception_claims",
+        lambda rows: [r for r in rows if r["item_id"] != "rec-tir-sheets"],
+    )
+    refuses("'rec-tir-sheets' is in the corpus with no claim recorded")
+
+
+def test_a_claim_cannot_relate_an_item_to_itself(dataset):
+    def mutate(rows):
+        row = find(rows, "claim_id", "rcl-ortelius-restores-ptolemy")
+        row["relates_to"] = row["item_id"]
+
+    edit(dataset, "reception_claims", mutate)
+    refuses("cannot relate an item to itself")
