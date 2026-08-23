@@ -1,0 +1,64 @@
+---
+/**
+ * The Advanced/Technical section (ATLAS-1215 / KAN-411).
+ *
+ * Deliberately last and deliberately quiet. GitHub stays reachable for anyone
+ * reproducing the work, and it is never the primary explanation of a historical
+ * claim - which is the whole point of the KAN-409 migration.
+ */
+interface Props {
+  links: { label: string; href: string }[];
+}
+const { links } = Astro.props;
+---
+
+{
+  links.length > 0 && (
+    <details class="technical">
+      <summary>Advanced and technical</summary>
+      <p>
+        Schemas, source data, build history and raw assets. Nothing here is needed to understand
+        what this page describes; it is here so the work can be checked and reused.
+      </p>
+      <ul>
+        {links.map((link) => (
+          <li>
+            <a href={link.href} rel="noopener">
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </details>
+  )
+}
+
+<style>
+  .technical {
+    margin-block: 2.5rem 0;
+    border-top: 1px solid var(--rule, #3a352b);
+    padding-top: 1rem;
+    font-size: 0.9rem;
+  }
+  summary {
+    cursor: pointer;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted, #8a8171);
+  }
+  summary:focus-visible {
+    outline: 2px solid var(--accent, #d4b87a);
+    outline-offset: 2px;
+  }
+  ul {
+    margin: 0.75rem 0 0;
+    padding-left: 1.1rem;
+    display: grid;
+    gap: 0.35rem;
+  }
+  p {
+    margin-block: 0.75rem;
+    color: var(--muted, #8a8171);
+  }
+</style>

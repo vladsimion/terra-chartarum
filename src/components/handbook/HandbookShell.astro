@@ -1,0 +1,211 @@
+---
+/**
+ * Shared Handbook page frame (ATLAS-1215 / KAN-411).
+ *
+ * Breadcrumbs, an in-page section nav and the prose treatment every document
+ * type gets. The Handbook is part of Terra Chartarum and is styled as such: it
+ * reads as the publication's reference section, not as a developer doc portal
+ * that happens to share a domain.
+ */
+import PortalLayout from '../../layouts/PortalLayout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  eyebrow?: string;
+  breadcrumbs: { label: string; href?: string }[];
+  headings?: { slug: string; text: string }[];
+}
+
+const { title, description, eyebrow, breadcrumbs, headings = [] } = Astro.props;
+---
+
+<PortalLayout title={title} description={description}>
+  <main class="shell handbook">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <ol>
+        {
+          breadcrumbs.map((crumb, index) => (
+            <li>
+              {crumb.href ? <a href={crumb.href}>{crumb.label}</a> : <span>{crumb.label}</span>}
+              {index < breadcrumbs.length - 1 && <span aria-hidden="true"> / </span>}
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+
+    <div class="hb-body">
+      <div class="hb-main">
+        <header class="hb-head">
+          {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+          <h1>{title}</h1>
+          <slot name="header" />
+        </header>
+        <slot />
+      </div>
+
+      {
+        headings.length > 1 && (
+          <aside class="hb-toc" aria-labelledby="hb-toc-title">
+            <h2 id="hb-toc-title">On this page</h2>
+            <nav>
+              <ul>
+                {headings.map((heading) => (
+                  <li>
+                    <a href={`#${heading.slug}`}>{heading.text}</a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </aside>
+        )
+      }
+    </div>
+  </main>
+</PortalLayout>
+
+<style>
+  .handbook {
+    padding-block: 2rem 4rem;
+  }
+  .crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    list-style: none;
+    margin: 0 0 1.5rem;
+    padding: 0;
+    font-size: 0.85rem;
+    color: var(--muted, #8a8171);
+  }
+  .crumbs a {
+    color: inherit;
+  }
+  .hb-body {
+    display: grid;
+    gap: 2.5rem;
+    align-items: start;
+    /* Grid children default to min-content width, which lets a wide code block
+       or table push the whole page sideways. Pinning them to 0 makes the wide
+       thing scroll inside its own box instead. */
+    min-width: 0;
+  }
+  .hb-body > * {
+    min-width: 0;
+  }
+  @media (min-width: 60rem) {
+    .hb-body {
+      grid-template-columns: minmax(0, 1fr) 15rem;
+    }
+    .hb-toc {
+      position: sticky;
+      top: 5rem;
+    }
+  }
+  .hb-head h1 {
+    margin-block: 0 0.5rem;
+  }
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.75rem;
+    margin: 0;
+    color: var(--muted, #8a8171);
+  }
+  .hb-toc {
+    border-left: 1px solid var(--rule, #3a352b);
+    padding-left: 1rem;
+    font-size: 0.9rem;
+  }
+  .hb-toc h2 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted, #8a8171);
+    margin-block: 0 0.5rem;
+  }
+  .hb-toc ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  /* Prose treatment. Tables scroll inside their own box rather than pushing the
+     page sideways - a source ledger is wide and a phone is not. */
+  .hb-main :global(h2) {
+    margin-block: 2.25rem 0.75rem;
+  }
+  .hb-main :global(h3) {
+    margin-block: 1.75rem 0.5rem;
+  }
+  .hb-main :global(p),
+  .hb-main :global(li) {
+    max-width: 38rem;
+    line-height: 1.65;
+  }
+  .hb-main :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  .hb-main :global(th),
+  .hb-main :global(td) {
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--rule, #3a352b);
+    vertical-align: top;
+  }
+  .hb-main :global(th) {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted, #8a8171);
+  }
+
+  /* A projected technical document carries code fences that are wider than a
+     phone. They scroll; the page does not. */
+  .hb-main :global(pre) {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+  .hb-main :global(:not(pre) > code) {
+    overflow-wrap: anywhere;
+  }
+  .hb-head h1 {
+    overflow-wrap: anywhere;
+  }
+</style>
+
+<script>
+  // Wrap every rendered table in a scroll container. Doing it here rather than
+  // in the Markdown keeps the source semantically plain, and the container is
+  // focusable so a keyboard user can scroll a wide ledger without a mouse.
+  function wrapTables() {
+    for (const table of document.querySelectorAll<HTMLTableElement>('.hb-main table')) {
+      if (table.parentElement?.classList.contains('hb-scroll')) continue;
+      const box = document.createElement('div');
+      box.className = 'hb-scroll';
+      box.tabIndex = 0;
+      box.setAttribute('role', 'region');
+      box.setAttribute('aria-label', 'Table, scrollable');
+      table.parentNode?.insertBefore(box, table);
+      box.appendChild(table);
+    }
+  }
+  wrapTables();
+  document.addEventListener('astro:page-load', wrapTables);
+</script>
+
+<style is:global>
+  .hb-scroll {
+    overflow-x: auto;
+    margin-block: 1rem;
+  }
+  .hb-scroll:focus-visible {
+    outline: 2px solid var(--accent, #d4b87a);
+    outline-offset: 2px;
+  }
+</style>
