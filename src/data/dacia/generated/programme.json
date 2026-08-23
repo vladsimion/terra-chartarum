@@ -1,0 +1,450 @@
+{
+  "entries": [
+    {
+      "campaign": "i",
+      "corpusRecords": 21,
+      "epicKey": "KAN-318",
+      "essaySlug": "dacia",
+      "gates": [
+        {
+          "gate": "research",
+          "note": "Each stela carries maker, repository and survival; none carries a page or sheet locator.",
+          "status": "partial"
+        },
+        {
+          "gate": "rights",
+          "note": "All thirteen plates are authored SVG reconstructions; no third-party reproduction is used.",
+          "status": "passed"
+        },
+        {
+          "gate": "data",
+          "note": "Place and source evidence is inline in the exhibition and not yet corpus-backed.",
+          "status": "pending"
+        },
+        {
+          "gate": "interaction",
+          "note": "Sondaje cells carry editorial notes but resolve to no attestation record.",
+          "status": "partial"
+        },
+        {
+          "gate": "editorial",
+          "note": "Published essay; prose reviewed at its original release.",
+          "status": "passed"
+        },
+        {
+          "gate": "release",
+          "note": "In production with accessibility coverage, but released before this Definition of Done existed; re-passes when KAN-338 and KAN-339 close the data and interaction gates.",
+          "status": "partial"
+        }
+      ],
+      "gatesPassed": 2,
+      "id": "ccd-a",
+      "kind": "trench",
+      "label": "Terra Sigillata · Lapidarivm Dacicvm",
+      "note": "published before the programme; joins the corpus by migration",
+      "openDebts": 4,
+      "room": "border",
+      "state": "live"
+    },
+    {
+      "campaign": "ii",
+      "corpusRecords": 0,
+      "epicKey": "KAN-321",
+      "essaySlug": "",
+      "gates": [
+        {
+          "gate": "research",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "rights",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "data",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "interaction",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "editorial",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "release",
+          "note": "",
+          "status": "pending"
+        }
+      ],
+      "gatesPassed": 0,
+      "id": "ccd-b",
+      "kind": "trench",
+      "label": "Hiatvs · Argumentum ex Silentio",
+      "note": "absence taxonomy trench",
+      "openDebts": 1,
+      "room": "archive",
+      "state": "planned"
+    },
+    {
+      "campaign": "i",
+      "corpusRecords": 0,
+      "epicKey": "KAN-320",
+      "essaySlug": "",
+      "gates": [
+        {
+          "gate": "research",
+          "note": "Twelve name uses compiled across five fate classes and five source or institution types; seven normalized, none reviewed. The gate cannot pass until a person clears rows against their sources, which llm_assisted work cannot do for itself.",
+          "status": "partial"
+        },
+        {
+          "gate": "rights",
+          "note": "Six candidate witnesses assessed; none cleared for publication. The essay can be written from description, but no image may be shown until a rights basis is settled.",
+          "status": "partial"
+        },
+        {
+          "gate": "data",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "interaction",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "editorial",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "release",
+          "note": "",
+          "status": "pending"
+        }
+      ],
+      "gatesPassed": 0,
+      "id": "ccd-c",
+      "kind": "trench",
+      "label": "Nomen Errans · The Migration of a Word",
+      "note": "proving vertical slice for the corpus",
+      "openDebts": 3,
+      "room": "border",
+      "state": "planned"
+    },
+    {
+      "campaign": "ii",
+      "corpusRecords": 0,
+      "epicKey": "KAN-323",
+      "essaySlug": "",
+      "gates": [
+        {
+          "gate": "research",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "rights",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "data",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "interaction",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "editorial",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "release",
+          "note": "",
+          "status": "pending"
+        }
+      ],
+      "gatesPassed": 0,
+      "id": "ccd-d",
+      "kind": "trench",
+      "label": "Carta Rvbra · The Ethnographic Weapon",
+      "note": "consumes the treaty-frontier system",
+      "openDebts": 1,
+      "room": "border",
+      "state": "planned"
+    },
+    {
+      "campaign": "iii",
+      "corpusRecords": 0,
+      "epicKey": "KAN-324",
+      "essaySlug": "",
+      "gates": [
+        {
+          "gate": "research",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "rights",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "data",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "interaction",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "editorial",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "release",
+          "note": "",
+          "status": "pending"
+        }
+      ],
+      "gatesPassed": 0,
+      "id": "ccd-e",
+      "kind": "trench",
+      "label": "Borroczyn · The Parcel and the Bulldozer",
+      "note": "bounded Bucharest cadastral seam",
+      "openDebts": 1,
+      "room": "city",
+      "state": "planned"
+    },
+    {
+      "campaign": "iv",
+      "corpusRecords": 0,
+      "epicKey": "KAN-327",
+      "essaySlug": "",
+      "gates": [
+        {
+          "gate": "research",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "rights",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "data",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "interaction",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "editorial",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "release",
+          "note": "",
+          "status": "pending"
+        }
+      ],
+      "gatesPassed": 0,
+      "id": "ccd-f",
+      "kind": "trench",
+      "label": "Dacia Rediviva · Ancestry as Cartography",
+      "note": "closing reception-history trench",
+      "openDebts": 0,
+      "room": "theatre",
+      "state": "planned"
+    },
+    {
+      "campaign": "iii",
+      "corpusRecords": 0,
+      "epicKey": "KAN-325",
+      "essaySlug": "",
+      "gates": [
+        {
+          "gate": "research",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "rights",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "data",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "interaction",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "editorial",
+          "note": "",
+          "status": "pending"
+        },
+        {
+          "gate": "release",
+          "note": "",
+          "status": "pending"
+        }
+      ],
+      "gatesPassed": 0,
+      "id": "ccd-g",
+      "kind": "trench",
+      "label": "In Manibvs · Dacia in the Cabinet",
+      "note": "physically inspected sheets only",
+      "openDebts": 0,
+      "room": "archive",
+      "state": "planned"
+    },
+    {
+      "campaign": "i",
+      "corpusRecords": 0,
+      "epicKey": "KAN-316",
+      "essaySlug": "",
+      "gates": [],
+      "gatesPassed": 0,
+      "id": "ccd",
+      "kind": "programme",
+      "label": "Corpus Chartarum Daciae",
+      "note": "programme root; every Dacia label carries programme-dacia",
+      "openDebts": 0,
+      "room": "archive",
+      "state": "live"
+    },
+    {
+      "campaign": "ii",
+      "corpusRecords": 0,
+      "epicKey": "KAN-325",
+      "essaySlug": "",
+      "gates": [],
+      "gatesPassed": 0,
+      "id": "ccd-acq",
+      "kind": "workstream",
+      "label": "Dacia acquisition dossiers",
+      "note": "plate/state verification ahead of purchase",
+      "openDebts": 0,
+      "room": "archive",
+      "state": "planned"
+    },
+    {
+      "campaign": "i",
+      "corpusRecords": 0,
+      "epicKey": "KAN-319",
+      "essaySlug": "",
+      "gates": [],
+      "gatesPassed": 0,
+      "id": "ccd-gis",
+      "kind": "workstream",
+      "label": "Dacia Atlas layers",
+      "note": "shared GIS family and CND projection",
+      "openDebts": 4,
+      "room": "map",
+      "state": "planned"
+    },
+    {
+      "campaign": "iv",
+      "corpusRecords": 0,
+      "epicKey": "KAN-328",
+      "essaySlug": "",
+      "gates": [],
+      "gatesPassed": 0,
+      "id": "ccd-ix",
+      "kind": "workstream",
+      "label": "Programme index and cross-trench integration",
+      "note": "programme landing page and cycle closeout",
+      "openDebts": 0,
+      "room": "archive",
+      "state": "planned"
+    },
+    {
+      "campaign": "i",
+      "corpusRecords": 0,
+      "epicKey": "KAN-317",
+      "essaySlug": "",
+      "gates": [],
+      "gatesPassed": 0,
+      "id": "cnd",
+      "kind": "workstream",
+      "label": "Corpus Nominum Daciae",
+      "note": "canonical place/source/attestation authority",
+      "openDebts": 0,
+      "room": "archive",
+      "state": "live"
+    }
+  ],
+  "generatedBy": "scripts/dacia/build.py",
+  "openDebts": 14,
+  "programmeId": "ccd",
+  "release": "cnd-0.1",
+  "schemaVersion": 1,
+  "sharedDatasets": [
+    {
+      "detail": "40 places, 14 sources, 49 attestations",
+      "href": "https://github.com/vladsimion/terra-chartarum/tree/main/data/dacia/release/cnd-0.1",
+      "id": "cnd",
+      "kind": "corpus",
+      "label": "Corpus Nominum Daciae"
+    },
+    {
+      "detail": "Every compiled attestation, silences included, at its place's reference point",
+      "href": "/atlas?layers=dacia-attestations-research",
+      "id": "dacia-attestations-research",
+      "kind": "atlas_layer",
+      "label": "Attestation projection"
+    },
+    {
+      "detail": "Sites joined to corpus places; roads and frontier corridors beside them",
+      "href": "/atlas?layers=dacia-roman-sites",
+      "id": "dacia-roman-sites",
+      "kind": "atlas_layer",
+      "label": "Roman Dacia baseline"
+    },
+    {
+      "detail": "Dated phases rather than one timeless outline",
+      "href": "/atlas?layers=dacia-principalities",
+      "id": "dacia-principalities",
+      "kind": "atlas_layer",
+      "label": "Principality phases, 1526-1859"
+    },
+    {
+      "detail": "Phases attributed to their instruments, competing lines kept apart",
+      "href": "/atlas?layers=dacia-treaty-frontiers",
+      "id": "dacia-treaty-frontiers",
+      "kind": "atlas_layer",
+      "label": "Treaty frontiers, 1829-1947"
+    },
+    {
+      "detail": "Survey footprints over the corpus, linking to the repository",
+      "href": "/atlas?layers=dacia-josephinian-sheets",
+      "id": "dacia-josephinian-sheets",
+      "kind": "atlas_layer",
+      "label": "Josephinian sheet index"
+    }
+  ]
+}

@@ -1,0 +1,261 @@
+---
+// Corpus Chartarum Daciae programme index (KAN-370).
+//
+// One page from which all seven trenches are discoverable, and from which the
+// shared datasets read as programme infrastructure rather than as something
+// Terra Sigillata owns. Everything here is generated from the governance tables
+// by `make dacia`; nothing about a trench's state is written into this file.
+import PortalLayout from '../../layouts/PortalLayout.astro';
+import RoomBadge from '../../components/RoomBadge.astro';
+import {
+  describeState,
+  getCorpusConsumers,
+  getOpenDebtCount,
+  getSharedDatasets,
+  getTrenches,
+  getWorkstreams,
+} from '../../lib/dacia-programme';
+
+const trenches = getTrenches();
+const workstreams = getWorkstreams();
+const datasets = getSharedDatasets();
+const consumers = getCorpusConsumers();
+const openDebts = getOpenDebtCount();
+const published = trenches.filter((trench) => trench.essaySlug);
+---
+
+<PortalLayout
+  title="Corpus Chartarum Daciae"
+  description="Seven trenches into the cartographic record of Dacia and Romania, and the shared corpus they all read."
+>
+  <main class="shell programme">
+    <header class="programme-head">
+      <p class="eyebrow">A Terra Chartarum programme</p>
+      <h1>Corpus Chartarum Daciae</h1>
+      <p class="lede">
+        Seven trenches cut into the same ground from different directions: what a place was called,
+        what the record declines to say, where a frontier was moved, what a map was made to prove.
+        They share one corpus and one Atlas, and none of them owns either.
+      </p>
+      <dl class="programme-facts">
+        <div><dt>Trenches</dt><dd>{trenches.length}</dd></div>
+        <div><dt>Published</dt><dd>{published.length}</dd></div>
+        <div><dt>Open verification debts</dt><dd>{openDebts}</dd></div>
+      </dl>
+    </header>
+
+    <section aria-labelledby="trenches">
+      <h2 id="trenches">The trenches</h2>
+      <p class="section-note">
+        Each trench is an argument with its own evidence and its own six gates. A gate that has not
+        passed is stated rather than hidden, because a programme that reports only its finished work
+        is not reporting.
+      </p>
+      <ul class="trench-list">
+        {
+          trenches.map((trench) => (
+            <li class="trench" data-state={trench.state}>
+              <div class="trench-head">
+                <h3>
+                  {trench.essaySlug ? (
+                    <a href={`/essays/${trench.essaySlug}/`}>{trench.label}</a>
+                  ) : (
+                    trench.label
+                  )}
+                </h3>
+                <RoomBadge room={trench.room} />
+              </div>
+              <p class="trench-note">{trench.note}</p>
+              <dl class="trench-facts">
+                <div>
+                  <dt>Status</dt>
+                  <dd>{describeState(trench)}</dd>
+                </div>
+                <div>
+                  <dt>Gates passed</dt>
+                  <dd>
+                    {trench.gatesPassed} of {trench.gates.length}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Corpus records</dt>
+                  <dd>{trench.corpusRecords || 'none yet'}</dd>
+                </div>
+                <div>
+                  <dt>Open debts</dt>
+                  <dd>{trench.openDebts || 'none'}</dd>
+                </div>
+              </dl>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section aria-labelledby="infrastructure">
+      <h2 id="infrastructure">Shared infrastructure</h2>
+      <p class="section-note">
+        The corpus and the Atlas layers belong to the programme. A trench reads them; it does not
+        keep its own copy, and the migration inventory is what proves the difference.
+        {
+          consumers.length === 1
+            ? ' One trench currently has records in the corpus.'
+            : ` ${consumers.length} trenches currently have records in the corpus.`
+        }
+      </p>
+      <ul class="dataset-list">
+        {
+          datasets.map((dataset) => (
+            <li class="dataset">
+              <a href={dataset.href}>{dataset.label}</a>
+              <span class="dataset-kind">
+                {dataset.kind === 'corpus' ? 'Corpus' : 'Atlas layer'}
+              </span>
+              <p>{dataset.detail}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section aria-labelledby="workstreams">
+      <h2 id="workstreams">Workstreams</h2>
+      <p class="section-note">Work that serves every trench rather than belonging to one.</p>
+      <ul class="workstream-list">
+        {
+          workstreams.map((workstream) => (
+            <li>
+              <strong>{workstream.label}</strong>
+              <span class="workstream-state">{workstream.state}</span>
+              <p>{workstream.note}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section aria-labelledby="index-essay">
+      <h2 id="index-essay">The cycle's index</h2>
+      <p>
+        <a href="/essays/dacia/">Terra Sigillata</a> is the programme's intellectual index. Its thirteen
+        strata are the periods every other trench cuts through, and its four test pits are where the corpus
+        began: the exhibition was the corpus before there was one, and its records migrated into the shared
+        authorities rather than being copied beside them.
+      </p>
+      <p class="section-note">
+        It is read here as an index and not extended as one. No stone was added to it, and none will
+        be: a trench that needs a new period writes its own argument rather than enlarging the one
+        that came first.
+      </p>
+    </section>
+  </main>
+</PortalLayout>
+
+<style>
+  .programme {
+    padding-block: clamp(2.8rem, 7vw, 5.5rem);
+  }
+  .programme-head {
+    max-width: var(--prose-max);
+    margin-bottom: 3rem;
+  }
+  .programme-head h1 {
+    margin: 0.25rem 0 0.8rem;
+    font-size: var(--step-5);
+  }
+  .lede {
+    color: var(--ink-muted);
+    font-size: var(--step-1);
+  }
+  .programme-facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: 0.75rem;
+    margin: 2rem 0 0;
+  }
+  .programme-facts div {
+    border-top: 1px solid var(--rule);
+    padding-top: 0.6rem;
+  }
+  .programme-facts dt {
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+  }
+  .programme-facts dd {
+    margin: 0.2rem 0 0;
+    font-size: var(--step-2);
+  }
+  section {
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+  }
+  .section-note {
+    max-width: var(--prose-max);
+    color: var(--ink-muted);
+  }
+  .trench-list,
+  .dataset-list,
+  .workstream-list {
+    list-style: none;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+  }
+  .trench-list {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  }
+  .trench,
+  .dataset,
+  .workstream-list li {
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 1rem 1.1rem;
+  }
+  /* A planned trench is quieter than a live one, but never invisible: the point
+     of the index is that unfinished work is discoverable too. */
+  .trench[data-state='planned'] {
+    opacity: 0.86;
+  }
+  .trench-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  .trench-head h3 {
+    margin: 0;
+    font-size: var(--step-1);
+  }
+  .trench-note,
+  .dataset p,
+  .workstream-list p {
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+    margin: 0.5rem 0 0;
+  }
+  .trench-facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem 1rem;
+    margin: 0.9rem 0 0;
+  }
+  .trench-facts dt {
+    font-size: var(--step--2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .trench-facts dd {
+    margin: 0.1rem 0 0;
+  }
+  .dataset-kind,
+  .workstream-state {
+    margin-left: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+</style>

@@ -1,13 +1,13 @@
-id,kind,label,epic_key,jira_label,campaign,state,note
-ccd,programme,Corpus Chartarum Daciae,KAN-316,programme-dacia,i,live,programme root; every Dacia label carries programme-dacia
-ccd-a,trench,Terra Sigillata · Lapidarivm Dacicvm,KAN-318,ccd-a,i,live,published before the programme; joins the corpus by migration
-ccd-b,trench,Hiatvs · Argumentum ex Silentio,KAN-321,ccd-b,ii,planned,absence taxonomy trench
-ccd-c,trench,Nomen Errans · The Migration of a Word,KAN-320,ccd-c,i,planned,proving vertical slice for the corpus
-ccd-d,trench,Carta Rvbra · The Ethnographic Weapon,KAN-323,ccd-d,ii,planned,consumes the treaty-frontier system
-ccd-e,trench,Borroczyn · The Parcel and the Bulldozer,KAN-324,ccd-e,iii,planned,bounded Bucharest cadastral seam
-ccd-f,trench,Dacia Rediviva · Ancestry as Cartography,KAN-327,ccd-f,iv,planned,closing reception-history trench
-ccd-g,trench,In Manibvs · Dacia in the Cabinet,KAN-325,ccd-g,iii,planned,physically inspected sheets only
-cnd,workstream,Corpus Nominum Daciae,KAN-317,cnd,i,live,canonical place/source/attestation authority
-ccd-gis,workstream,Dacia Atlas layers,KAN-319,ccd-gis,i,planned,shared GIS family and CND projection
-ccd-acq,workstream,Dacia acquisition dossiers,KAN-325,ccd-acq,ii,planned,plate/state verification ahead of purchase
-ccd-ix,workstream,Programme index and cross-trench integration,KAN-328,ccd-ix,iv,planned,programme landing page and cycle closeout
+id,kind,label,epic_key,jira_label,campaign,room,essay_slug,state,note
+ccd,programme,Corpus Chartarum Daciae,KAN-316,programme-dacia,i,archive,,live,programme root; every Dacia label carries programme-dacia
+ccd-a,trench,Terra Sigillata · Lapidarivm Dacicvm,KAN-318,ccd-a,i,border,dacia,live,published before the programme; joins the corpus by migration
+ccd-b,trench,Hiatvs · Argumentum ex Silentio,KAN-321,ccd-b,ii,archive,,planned,absence taxonomy trench
+ccd-c,trench,Nomen Errans · The Migration of a Word,KAN-320,ccd-c,i,border,,planned,proving vertical slice for the corpus
+ccd-d,trench,Carta Rvbra · The Ethnographic Weapon,KAN-323,ccd-d,ii,border,,planned,consumes the treaty-frontier system
+ccd-e,trench,Borroczyn · The Parcel and the Bulldozer,KAN-324,ccd-e,iii,city,,planned,bounded Bucharest cadastral seam
+ccd-f,trench,Dacia Rediviva · Ancestry as Cartography,KAN-327,ccd-f,iv,theatre,,planned,closing reception-history trench
+ccd-g,trench,In Manibvs · Dacia in the Cabinet,KAN-325,ccd-g,iii,archive,,planned,physically inspected sheets only
+cnd,workstream,Corpus Nominum Daciae,KAN-317,cnd,i,archive,,live,canonical place/source/attestation authority
+ccd-gis,workstream,Dacia Atlas layers,KAN-319,ccd-gis,i,map,,planned,shared GIS family and CND projection
+ccd-acq,workstream,Dacia acquisition dossiers,KAN-325,ccd-acq,ii,archive,,planned,plate/state verification ahead of purchase
+ccd-ix,workstream,Programme index and cross-trench integration,KAN-328,ccd-ix,iv,archive,,planned,programme landing page and cycle closeout

@@ -105,6 +105,10 @@
       "bytes": 6548,
       "sha256": "f5207bd851c5b6aecba5ce3b20a39a2a6ecbbd63dbbe0e182e561acfcd886b4a"
     },
+    "src/data/dacia/generated/programme.json": {
+      "bytes": 11639,
+      "sha256": "c0f130b4271a0db63d924010d85cbb09dc3cc6958b6753d95e83add7c10185e4"
+    },
     "src/data/dacia/generated/trench-a.json": {
       "bytes": 7728,
       "sha256": "bc016628185af0c66a5429da88e7e3fd969fa3ccb18e863830503e7a9de4fcca"

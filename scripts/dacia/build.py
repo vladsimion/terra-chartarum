@@ -344,6 +344,118 @@ def trench_a_bridge(tables: dict[str, list[dict[str, str]]]) -> dict:
     }
 
 
+def programme_graph(tables: dict[str, list[dict[str, str]]]) -> dict:
+    """The programme's own index of itself (KAN-370).
+
+    Seven trenches, four workstreams and the shared datasets they all read.
+    Compiled from the governance tables rather than written into a page,
+    because a hand-maintained index is a second copy of the programme's state
+    and the copy is the one that goes stale.
+
+    Cross-trench links are counted from the data that actually holds them - the
+    corpus, the migration inventory, the GIS packages - so a trench cannot be
+    listed as consuming shared evidence unless it does.
+    """
+    programme = _read_reference("programme-ids")
+    gates = _read_reference("trench-gates")
+    debts = _read_reference("verification-debt")
+    inventory = read_inventory()
+
+    gates_by_trench: dict[str, list[dict]] = {}
+    for row in gates:
+        gates_by_trench.setdefault(row["trench_id"], []).append(
+            {"gate": row["gate_id"], "status": row["status"], "note": row["note"]}
+        )
+    debts_by_subject: dict[str, int] = {}
+    for row in debts:
+        if row["status"] == "open":
+            debts_by_subject[row["subject_id"]] = debts_by_subject.get(row["subject_id"], 0) + 1
+
+    # What each trench actually consumes from the shared authorities. Trench A
+    # is the only one with corpus records today, and saying so is the point:
+    # the index reports consumption, it does not assert it.
+    corpus_by_trench = {"ccd-a": len([r for r in inventory if r["migration_state"] == "done"])}
+
+    entries = []
+    for row in sorted(programme, key=lambda r: (r["kind"] != "trench", r["id"])):
+        trench_gates = gates_by_trench.get(row["id"], [])
+        entries.append({
+            "id": row["id"],
+            "kind": row["kind"],
+            "label": row["label"],
+            "epicKey": row["epic_key"],
+            "campaign": row["campaign"],
+            "room": row["room"],
+            "essaySlug": row["essay_slug"],
+            "state": row["state"],
+            "note": row["note"],
+            "gates": trench_gates,
+            "gatesPassed": sum(1 for gate in trench_gates if gate["status"] == "passed"),
+            "openDebts": debts_by_subject.get(row["id"], 0),
+            "corpusRecords": corpus_by_trench.get(row["id"], 0),
+        })
+
+    return {
+        "schemaVersion": SCHEMA_VERSION,
+        "generatedBy": "scripts/dacia/build.py",
+        "programmeId": "ccd",
+        "release": RELEASE_VERSION,
+        "entries": entries,
+        # Shared infrastructure, listed once. These belong to the programme and
+        # not to whichever essay happens to show them first.
+        "sharedDatasets": [
+            {
+                "id": "cnd",
+                "label": "Corpus Nominum Daciae",
+                "kind": "corpus",
+                "detail": f"{len(tables['places'])} places, {len(tables['sources'])} sources, "
+                          f"{len(tables['attestations'])} attestations",
+                # The release lives in the repository, not behind a site route:
+                # linking at a path the site does not serve would be a broken
+                # link dressed as a dataset.
+                "href": "https://github.com/vladsimion/terra-chartarum/tree/main/data/dacia/release/"
+                        + RELEASE_VERSION,
+            },
+            {
+                "id": "dacia-attestations-research",
+                "label": "Attestation projection",
+                "kind": "atlas_layer",
+                "detail": "Every compiled attestation, silences included, at its place's reference point",
+                "href": "/atlas?layers=dacia-attestations-research",
+            },
+            {
+                "id": "dacia-roman-sites",
+                "label": "Roman Dacia baseline",
+                "kind": "atlas_layer",
+                "detail": "Sites joined to corpus places; roads and frontier corridors beside them",
+                "href": "/atlas?layers=dacia-roman-sites",
+            },
+            {
+                "id": "dacia-principalities",
+                "label": "Principality phases, 1526-1859",
+                "kind": "atlas_layer",
+                "detail": "Dated phases rather than one timeless outline",
+                "href": "/atlas?layers=dacia-principalities",
+            },
+            {
+                "id": "dacia-treaty-frontiers",
+                "label": "Treaty frontiers, 1829-1947",
+                "kind": "atlas_layer",
+                "detail": "Phases attributed to their instruments, competing lines kept apart",
+                "href": "/atlas?layers=dacia-treaty-frontiers",
+            },
+            {
+                "id": "dacia-josephinian-sheets",
+                "label": "Josephinian sheet index",
+                "kind": "atlas_layer",
+                "detail": "Survey footprints over the corpus, linking to the repository",
+                "href": "/atlas?layers=dacia-josephinian-sheets",
+            },
+        ],
+        "openDebts": sum(1 for row in debts if row["status"] == "open"),
+    }
+
+
 def read_gis(name: str) -> list[dict[str, str]]:
     with (GIS / f"{name}.csv").open(encoding="utf-8", newline="") as handle:
         return [{k: (v or "").strip() for k, v in row.items()} for row in csv.DictReader(handle)]
@@ -698,6 +810,7 @@ def build_outputs() -> dict[Path, bytes]:
     )
     outputs[GENERATED_DIR / "trench-a.json"] = canonical_json(trench_a_bridge(tables))
     outputs[GENERATED_DIR / "hiatus-timeline.json"] = canonical_json(hiatus_timeline())
+    outputs[GENERATED_DIR / "programme.json"] = canonical_json(programme_graph(tables))
 
     sites, network = roman_dacia_features(tables["places"])
     outputs[GEO_DIR / f"{ROMAN_SITES}.geojson"] = canonical_json(gis_collection(
