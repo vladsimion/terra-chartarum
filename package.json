@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "npm run registries:validate && npm run editorial:validate && npm run typography:validate && npm run epic:validate && npm run release:validate && npm run hanseatic:validate && npm run hanseatic:release:validate && npm run dacia:validate && npm run crusades:validate && npm run provenance:write && astro build && npm run reports:check && npm run embed:prune && npm run indexing:validate && npm run geo:interop:validate",
+    "build": "npm run registries:validate && npm run editorial:validate && npm run typography:validate && npm run epic:validate && npm run release:validate && npm run hanseatic:validate && npm run hanseatic:release:validate && npm run dacia:validate && npm run crusades:validate && npm run provenance:write && astro build && npm run reports:check && npm run embed:prune && npm run indexing:validate && npm run geo:interop:validate && npm run handbook:validate",
     "preview": "astro preview",
     "check": "astro check",
     "lint": "eslint .",
@@ -47,7 +47,8 @@
     "build-room-images": "node scripts/build-room-images.mjs",
     "cartometry:export": "node scripts/export-cartometry.mjs",
     "build-map-tiles": "node scripts/build-map-tiles.mjs",
-    "astro": "astro"
+    "astro": "astro",
+    "handbook:validate": "node scripts/validate-handbook.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^5.3.0",

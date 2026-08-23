@@ -179,6 +179,59 @@ export function personSchema(person: Cartographer, site: URL) {
 }
 
 /** One rung of a breadcrumb trail: a label and the page it points at. */
+/**
+ * A published GIS layer, as schema.org Dataset (ATLAS-1221 / KAN-417).
+ *
+ * `Dataset` rather than `Map`: what is published here is the data behind a
+ * drawing, and the distribution is the content-addressed asset. `version`
+ * carries the content hash, so a citation and this metadata identify the same
+ * bytes rather than merely the same page.
+ */
+export interface DatasetInput {
+  layerId: string;
+  title: string;
+  description: string;
+  licence?: string;
+  version?: string;
+  attribution?: string;
+  temporalFrom: number;
+  temporalTo: number;
+  keywords?: string[];
+  distribution?: { url: string; format: string; bytes?: number };
+}
+
+export function datasetSchema(input: DatasetInput, site: URL) {
+  const url = absolute(`/atlas/layers/${input.layerId}/`, site);
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Dataset',
+    name: input.title,
+    description: input.description,
+    url,
+    identifier: input.layerId,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+    ...(input.version ? { version: input.version } : {}),
+    ...(input.licence ? { license: input.licence } : {}),
+    ...(input.attribution ? { creditText: input.attribution } : {}),
+    // Negative years are BC and ISO 8601 expresses them with a leading minus.
+    temporalCoverage: `${isoYear(input.temporalFrom)}/${isoYear(input.temporalTo)}`,
+    creator: { '@type': 'Organization', name: SITE_NAME },
+    publisher: { '@type': 'Organization', name: SITE_NAME },
+    isPartOf: { '@type': 'Collection', name: `${SITE_NAME} Atlas` },
+    ...(input.keywords?.length ? { keywords: input.keywords } : {}),
+    ...(input.distribution
+      ? {
+          distribution: {
+            '@type': 'DataDownload',
+            contentUrl: absolute(input.distribution.url, site),
+            encodingFormat: input.distribution.format,
+            ...(input.distribution.bytes ? { contentSize: `${input.distribution.bytes}` } : {}),
+          },
+        }
+      : {}),
+  };
+}
+
 export interface Crumb {
   name: string;
   path: string;

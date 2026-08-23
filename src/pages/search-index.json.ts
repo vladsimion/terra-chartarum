@@ -4,6 +4,7 @@ import { getCartographers, mapsByCartographer } from '../lib/cartographers';
 import { getToponyms, toponymNames } from '../lib/toponyms';
 import { getEssays, formatYear } from '../lib/registry';
 import type { RoomSlug } from '../data/rooms';
+import { loadHandbook } from '../lib/handbook-content';
 
 /** Collapse an item's primary + secondary room tags into a slug list (KAN-100). */
 function roomTags(item: { room?: RoomSlug; secondaryRooms?: RoomSlug[] }): RoomSlug[] {
@@ -17,7 +18,14 @@ function roomTags(item: { room?: RoomSlug; secondaryRooms?: RoomSlug[] }): RoomS
  * any historical name a place is known by and land on it in the atlas.
  */
 interface SearchDoc {
-  type: 'essay' | 'map' | 'cartographer' | 'toponym';
+  /**
+   * `reference` covers the Atlas Handbook: layer records, methods, evidence
+   * ledgers, data fields and the glossary. It is a distinct type so reference
+   * material is findable without crowding essay results - a reader searching
+   * "frontier" wants the essay first and the layer record close behind, not
+   * fifteen glossary fragments (KAN-416).
+   */
+  type: 'essay' | 'map' | 'cartographer' | 'toponym' | 'reference';
   id: string;
   url: string;
   title: string;
@@ -33,6 +41,21 @@ interface SearchDoc {
 
 export async function GET(_context: APIContext) {
   const docs: SearchDoc[] = [];
+
+  // Handbook records (KAN-416). Only the title and the one-line summary are
+  // indexed, never the body: a layer record runs to a couple of thousand words
+  // and indexing all of it would let one page dominate every query.
+  const handbook = await loadHandbook();
+  for (const entry of handbook.docs) {
+    docs.push({
+      type: 'reference',
+      id: entry.doc.id,
+      url: entry.route,
+      title: entry.doc.title,
+      subtitle: entry.doc.summary,
+      tags: [entry.doc.docType, entry.doc.programme],
+    });
+  }
 
   const essays = await getEssays();
   for (const e of essays) {

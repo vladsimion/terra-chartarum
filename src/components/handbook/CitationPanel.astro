@@ -1,27 +1,47 @@
 ---
 /**
- * Citation, licence and download panel (ATLAS-1215 / KAN-411).
+ * Citation, licence and download panel (ATLAS-1215 / KAN-411, ATLAS-1220 / KAN-416).
  *
- * Version and licence come from the document's citation metadata; the stable
- * URL is the page itself, because the page is the citable public record. The
- * asset link is offered separately: citing a layer and downloading it are
- * different acts and the panel should not blur them.
+ * Reuses the site's existing citation machinery rather than growing a second
+ * one: `CiteInput` and the BibTeX/RIS/Chicago formatters are the same ones the
+ * corpus and the essays use, so a layer citation is not a special case with its
+ * own quirks.
+ *
+ * A dataset citation pins the *bytes*, not the day you looked. The geo release
+ * carries no timestamp on purpose - it is reproducible from content alone - so
+ * retrieval is identified by release ID and SHA-256 rather than an access date
+ * that would differ between two identical builds.
  */
+import CiteExport from '../islands/CiteExport.astro';
+import type { CiteInput } from '../../lib/cite';
+
 interface Props {
   route: string;
   citation?: { version: string; licence: string; stableUrl?: string };
-  assetUrl?: string;
-  attribution?: string;
   lastReviewed?: string;
+  /** Present only for a layer record whose asset is in the release manifest. */
+  dataset?: {
+    input: CiteInput;
+    format: string;
+    featureCount?: number;
+    bytes: number;
+    url: string;
+    release: string;
+  };
+  attribution?: string;
+  /** When set, the data is deliberately withheld and this says why. */
+  dataRestriction?: string;
 }
 
-const { route, citation, assetUrl, attribution, lastReviewed } = Astro.props;
+const { route, citation, lastReviewed, dataset, attribution, dataRestriction } = Astro.props;
 const site = Astro.site?.toString().replace(/\/$/, '') ?? '';
 const stableUrl = citation?.stableUrl ?? `${site}${route}`;
+const kb = (bytes: number) => `${Math.max(1, Math.round(bytes / 1024))} kB`;
 ---
 
-<section class="cite" aria-labelledby="cite-title">
+<section class="cite-panel" aria-labelledby="cite-title">
   <h2 id="cite-title">Citation and reuse</h2>
+
   <dl>
     <div><dt>Stable URL</dt><dd><a href={route}>{stableUrl}</a></dd></div>
     {
@@ -67,30 +87,58 @@ const stableUrl = citation?.stableUrl ?? `${site}${route}`;
       )
     }
   </dl>
+
   {
-    assetUrl && (
-      <p class="asset">
-        The data itself is served from the content-addressed release:{' '}
-        <a href={assetUrl}>download this layer</a>. A given URL always returns the same bytes.
-      </p>
+    dataset && (
+      <>
+        <h3>Cite this dataset</h3>
+        <CiteExport input={dataset.input} />
+      </>
     )
   }
+
+  {
+    dataRestriction ? (
+      <p class="restricted" data-download-restricted>
+        <strong>Not available for download.</strong> {dataRestriction}
+      </p>
+    ) : (
+      dataset && (
+        <p class="download" data-download>
+          <a href={dataset.url}>Download this layer</a>
+          <span class="download-meta">
+            {dataset.format}
+            {dataset.featureCount !== undefined && ` · ${dataset.featureCount} features`}
+            {` · ${kb(dataset.bytes)} · release ${dataset.release}`}
+          </span>
+        </p>
+      )
+    )
+  }
+
   <p class="note">
     Attribution must travel with any reuse. Where a layer carries a third-party licence, that
-    licence governs the data regardless of this page.
+    licence governs the data regardless of anything on this page.
   </p>
 </section>
 
 <style>
-  .cite {
+  .cite-panel {
     margin-block: 2.5rem;
     padding: 1.25rem 1.5rem;
     border: 1px solid var(--rule, #3a352b);
     border-radius: 4px;
   }
-  .cite h2 {
+  .cite-panel h2 {
     margin-block: 0 1rem;
     font-size: 1rem;
+  }
+  .cite-panel h3 {
+    margin-block: 1.5rem 0.5rem;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted, #8a8171);
   }
   dl {
     margin: 0;
@@ -117,10 +165,20 @@ const stableUrl = citation?.stableUrl ?? `${site}${route}`;
     margin: 0;
     overflow-wrap: anywhere;
   }
-  .asset,
+  .download,
+  .restricted,
   .note {
     margin-block: 1rem 0;
     font-size: 0.9rem;
+  }
+  .download-meta {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--muted, #8a8171);
+  }
+  .restricted {
+    border-left: 3px solid var(--accent, #d4b87a);
+    padding-left: 0.75rem;
   }
   .note {
     color: var(--muted, #8a8171);
