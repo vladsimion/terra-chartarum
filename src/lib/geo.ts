@@ -14,10 +14,86 @@
 import { z } from 'astro:content';
 import { ROOM_SLUGS } from '../data/rooms';
 
-export const GeoLayerSchema = z.object({
+/**
+ * Layer taxonomy (ATLAS-1201 / KAN-397).
+ *
+ * These four vocabularies are the SINGLE SOURCE OF TRUTH for how the Atlas
+ * classifies, groups, searches and governs layers. They exist so the catalogue
+ * never has to infer semantics from a display title or from which essay happens
+ * to own a layer.
+ *
+ * `role` answers "what kind of claim does this layer make?":
+ *   - `context`      neutral framing geography; makes no historical claim.
+ *   - `historical`   a reconstructed past state - the scholarly payload.
+ *   - `evidence`     what a source depicts or covers, not what was there.
+ *   - `map-overlay`  a georeferenced historical map surface.
+ *
+ * `category` is the canonical thematic grouping the browser renders. It is
+ * deliberately closed: a new theme is a vocabulary decision, not a per-layer
+ * free-text choice. `subcategory` carries narrower editorial grouping and stays
+ * open, so a programme can distinguish its own families without lobbying for a
+ * new global category.
+ */
+export const GEO_LAYER_ROLES = ['context', 'historical', 'evidence', 'map-overlay'] as const;
+export type GeoLayerRole = (typeof GEO_LAYER_ROLES)[number];
+
+export const GEO_LAYER_CATEGORIES = [
+  'territories-boundaries',
+  'networks-circulation',
+  'places-settlements',
+  'names-peoples-attestations',
+  'conflict-campaigns-frontiers',
+  'cartographic-evidence',
+  'historical-map-overlays',
+] as const;
+export type GeoLayerCategory = (typeof GEO_LAYER_CATEGORIES)[number];
+
+/**
+ * Editorial publication state. This is a statement about the scholarship, NOT
+ * about whether the binary exists: a layer can be `published` while its asset is
+ * still empty (dacia-attestations ships its contract ahead of the human review
+ * that will fill it), and asset presence is decided at render time by the
+ * release manifest. Conflating the two is what ATLAS-1208 has to unpick.
+ */
+export const GEO_LAYER_LIFECYCLES = [
+  'published',
+  'in-review',
+  'in-preparation',
+  'planned',
+] as const;
+export type GeoLayerLifecycle = (typeof GEO_LAYER_LIFECYCLES)[number];
+
+/** Roles that make a historical/evidential claim and therefore need a category. */
+const CATEGORISED_ROLES: readonly GeoLayerRole[] = ['historical', 'evidence', 'map-overlay'];
+
+const BaseGeoLayerSchema = z.object({
   id: z.string(),
   title: z.string(),
   description: z.string(),
+  // Taxonomy (KAN-397). `role` is required on every entry: the catalogue must
+  // never have to guess whether a line is a frontier or a coastline.
+  role: z.enum(GEO_LAYER_ROLES),
+  category: z.enum(GEO_LAYER_CATEGORIES).optional(),
+  subcategory: z.string().optional(),
+  /**
+   * Justification for a `map-overlay` that is filed outside
+   * `historical-map-overlays`. Without it the cross-field check rejects the
+   * layer, so the exception is always argued rather than assumed.
+   */
+  categoryException: z.string().min(1).optional(),
+  /**
+   * Many-to-many references into the collection registry (ATLAS-1202). Whether a
+   * layer is default-on is deliberately NOT recorded here: that is a property of
+   * a collection, not of a layer, so it lives with the collection.
+   */
+  collectionIds: z.array(z.string()).default([]),
+  /** Search/discovery synonyms and concepts. Authored without touching `title`. */
+  tags: z.array(z.string()).default([]),
+  /** Controlled editorial prominence in the catalogue. */
+  featured: z.boolean().default(false),
+  /** Deterministic catalogue order; lower sorts first, ties break on `id`. */
+  sortWeight: z.number().default(0),
+  lifecycle: z.enum(GEO_LAYER_LIFECYCLES).default('published'),
   kind: z.enum(['vector', 'raster', 'georef-scan']),
   format: z.enum(['pmtiles', 'cog', 'flatgeobuf', 'geojson']),
   url: z.string(),
@@ -88,6 +164,53 @@ export const GeoLayerSchema = z.object({
   roomAnchor: z.boolean().default(false),
 });
 
+/**
+ * Cross-field taxonomy rules (KAN-397 step 3). Kept as a refinement rather than
+ * a union so the inferred type stays one flat `GeoLayer` for every consumer.
+ */
+export const GeoLayerSchema = BaseGeoLayerSchema.superRefine((layer, ctx) => {
+  if (CATEGORISED_ROLES.includes(layer.role) && !layer.category) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['category'],
+      message: `Layer "${layer.id}" has role "${layer.role}" and must declare a canonical category`,
+    });
+  }
+
+  // A context layer states no historical thesis, so it may not borrow a
+  // historical category - that is what would let modern national boundaries pass
+  // themselves off as historical evidence. Narrower grouping goes in
+  // `subcategory` instead (e.g. `physical-geography`, `modern-reference`).
+  if (layer.role === 'context' && layer.category) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['category'],
+      message: `Context layer "${layer.id}" must not declare a historical category (use subcategory)`,
+    });
+  }
+
+  if (
+    layer.role === 'map-overlay' &&
+    layer.category &&
+    layer.category !== 'historical-map-overlays' &&
+    !layer.categoryException
+  ) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['category'],
+      message: `Map overlay "${layer.id}" must use historical-map-overlays or declare a categoryException`,
+    });
+  }
+
+  if (layer.categoryException && layer.role !== 'map-overlay') {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['categoryException'],
+      message: `Layer "${layer.id}" declares a categoryException but is not a map overlay`,
+    });
+  }
+});
+
 export type GeoLayer = z.infer<typeof GeoLayerSchema>;
 
 // Layers. The Natural Earth base layers and the AWMC Roman Empire extent are real
@@ -101,6 +224,10 @@ export type GeoLayer = z.infer<typeof GeoLayerSchema>;
 const RAW: unknown[] = [
   {
     id: 'ne-coastline',
+    role: 'context',
+    subcategory: 'physical-geography',
+    tags: ['coastline', 'shoreline', 'base map', 'physical geography', 'natural earth'],
+    sortWeight: 10,
     room: 'earth',
     title: 'Natural Earth - Coastline',
     description: 'Small-scale physical coastline, a neutral base for historical overlays.',
@@ -118,6 +245,10 @@ const RAW: unknown[] = [
   },
   {
     id: 'ne-land',
+    role: 'context',
+    subcategory: 'physical-geography',
+    tags: ['landmass', 'land outline', 'base map', 'physical geography', 'natural earth'],
+    sortWeight: 20,
     room: 'earth',
     title: 'Natural Earth - Land outline',
     description: 'Coastal landmass outlines - a subtle physical frame for the corpus.',
@@ -135,6 +266,17 @@ const RAW: unknown[] = [
   },
   {
     id: 'ne-rivers',
+    role: 'context',
+    subcategory: 'physical-geography',
+    tags: [
+      'rivers',
+      'lakes',
+      'waterways',
+      'inland navigation',
+      'physical geography',
+      'natural earth',
+    ],
+    sortWeight: 30,
     room: 'earth',
     secondaryRooms: ['road'],
     title: 'Natural Earth - Rivers',
@@ -153,6 +295,19 @@ const RAW: unknown[] = [
   },
   {
     id: 'ne-boundaries',
+    // Classified `context`, never `historical`: these are present-day lines used as a
+    // reading grid. The UI must keep labelling them anachronistic (KAN-402).
+    role: 'context',
+    subcategory: 'modern-reference',
+    tags: [
+      'modern borders',
+      'national boundaries',
+      'present-day',
+      'anachronism',
+      'reference grid',
+      'natural earth',
+    ],
+    sortWeight: 40,
     room: 'border',
     title: 'Modern national boundaries',
     description: 'Present-day land borders - an anachronistic reference grid over historical maps.',
@@ -170,6 +325,21 @@ const RAW: unknown[] = [
   },
   {
     id: 'map-coverage',
+    // `evidence`, not `historical`: a footprint records what a map depicts, which is
+    // a claim about the source rather than about the ground.
+    role: 'evidence',
+    category: 'cartographic-evidence',
+    subcategory: 'depicted-extent',
+    tags: [
+      'coverage',
+      'depicted extent',
+      'footprint',
+      'corpus',
+      'map sheets',
+      'what the map shows',
+    ],
+    featured: true,
+    sortWeight: 100,
     room: 'map',
     title: 'Depicted extents (corpus)',
     description:
@@ -188,6 +358,12 @@ const RAW: unknown[] = [
   },
   {
     id: 'roman-empire-117',
+    role: 'historical',
+    category: 'territories-boundaries',
+    subcategory: 'imperial-extent',
+    tags: ['rome', 'roman empire', 'trajan', 'provinces', 'antiquity', 'imperial extent'],
+    featured: true,
+    sortWeight: 200,
     room: 'border',
     secondaryRooms: ['archive'],
     title: 'Roman Empire, AD 117',
@@ -212,6 +388,11 @@ const RAW: unknown[] = [
   // pipeline produces and validates all three binaries; AtlasMap lazily decodes them.
   {
     id: 'venetian-ports',
+    role: 'historical',
+    category: 'places-settlements',
+    subcategory: 'ports-and-harbours',
+    tags: ['venice', 'stato da mar', 'ports', 'harbours', 'colonies', 'mediterranean', 'maritime'],
+    sortWeight: 300,
     room: 'road',
     secondaryRooms: ['border'],
     title: 'Venetian maritime ports, c.1200–1500',
@@ -277,6 +458,12 @@ const RAW: unknown[] = [
   },
   {
     id: 'venetian-routes',
+    role: 'historical',
+    category: 'networks-circulation',
+    subcategory: 'maritime-routes',
+    tags: ['venice', 'muda', 'galley', 'convoy', 'trade routes', 'mediterranean', 'maritime'],
+    featured: true,
+    sortWeight: 310,
     room: 'road',
     secondaryRooms: ['border'],
     title: 'Venetian galley routes (mude), c.1200–1500',
@@ -326,6 +513,18 @@ const RAW: unknown[] = [
   },
   {
     id: 'venetian-possessions',
+    role: 'historical',
+    category: 'territories-boundaries',
+    subcategory: 'maritime-empire',
+    tags: [
+      'venice',
+      'stato da mar',
+      'possessions',
+      'protectorates',
+      'condominium',
+      'mediterranean',
+    ],
+    sortWeight: 320,
     room: 'border',
     secondaryRooms: ['road'],
     title: 'Venetian possessions, c.1200–1500',
@@ -368,6 +567,11 @@ const RAW: unknown[] = [
   },
   {
     id: 'hanseatic-places',
+    role: 'historical',
+    category: 'places-settlements',
+    subcategory: 'member-cities',
+    tags: ['hansa', 'hanseatic league', 'kontor', 'cities', 'markets', 'baltic', 'north sea'],
+    sortWeight: 400,
     room: 'road',
     secondaryRooms: ['city', 'archive'],
     title: 'Hanseatic places and participation phases',
@@ -419,6 +623,12 @@ const RAW: unknown[] = [
   },
   {
     id: 'hanseatic-routes',
+    role: 'historical',
+    category: 'networks-circulation',
+    subcategory: 'trade-corridors',
+    tags: ['hansa', 'hanseatic league', 'trade corridors', 'commodities', 'baltic', 'north sea'],
+    featured: true,
+    sortWeight: 410,
     room: 'road',
     secondaryRooms: ['city'],
     title: 'Hanseatic trade corridors',
@@ -474,6 +684,23 @@ const RAW: unknown[] = [
   },
   {
     id: 'hanseatic-events',
+    // Filed under places rather than conflict: the events are overwhelmingly
+    // institutional (privileges, Hansetage, Kontor rules) and they happen AT the
+    // cities of hanseatic-places. `subcategory` keeps them separable in the
+    // browser without inventing the territorial polygon the League never had.
+    role: 'historical',
+    category: 'places-settlements',
+    subcategory: 'institutional-events',
+    tags: [
+      'hansa',
+      'hanseatic league',
+      'privileges',
+      'hansetag',
+      'embargo',
+      'treaties',
+      'institutions',
+    ],
+    sortWeight: 420,
     room: 'archive',
     secondaryRooms: ['road', 'city'],
     title: 'Hanseatic institutional events',
@@ -517,6 +744,13 @@ const RAW: unknown[] = [
   },
   {
     id: 'dacia-attestations',
+    // `published` although the asset is currently empty: lifecycle describes the
+    // editorial contract, and asset availability is the release manifest's job.
+    role: 'historical',
+    category: 'names-peoples-attestations',
+    subcategory: 'toponym-attestations',
+    tags: ['dacia', 'toponyms', 'attestations', 'place names', 'corpus nominum daciae', 'reviewed'],
+    sortWeight: 500,
     room: 'archive',
     secondaryRooms: ['map'],
     title: 'Dacia name attestations (reviewed)',
@@ -566,6 +800,22 @@ const RAW: unknown[] = [
     // before anyone has cleared them. Every feature carries its review_state,
     // and this layer is never on by default.
     id: 'dacia-attestations-research',
+    // `in-review` states the plain fact that no record here has had a human pass;
+    // the asset itself exists and ships.
+    role: 'historical',
+    category: 'names-peoples-attestations',
+    subcategory: 'toponym-attestations',
+    tags: [
+      'dacia',
+      'toponyms',
+      'attestations',
+      'place names',
+      'corpus nominum daciae',
+      'research tier',
+      'unreviewed',
+    ],
+    sortWeight: 510,
+    lifecycle: 'in-review',
     room: 'archive',
     secondaryRooms: ['map'],
     title: 'Dacia name attestations (research tier, unreviewed)',
@@ -610,6 +860,11 @@ const RAW: unknown[] = [
     // hint per layer, not because it is two datasets: both are compiled from
     // data/dacia/gis/roman-dacia.csv (KAN-341).
     id: 'dacia-roman-sites',
+    role: 'historical',
+    category: 'places-settlements',
+    subcategory: 'roman-province',
+    tags: ['dacia', 'roman', 'fortresses', 'road stations', 'mining', 'antiquity', 'sites'],
+    sortWeight: 520,
     room: 'map',
     secondaryRooms: ['archive'],
     title: 'Roman Dacia · principal sites',
@@ -644,6 +899,13 @@ const RAW: unknown[] = [
   },
   {
     id: 'dacia-roman-network',
+    // Roads and limes travel together in one asset, so the layer is filed by its
+    // dominant claim - circulation - and the limes read through `subcategory`.
+    role: 'historical',
+    category: 'networks-circulation',
+    subcategory: 'roads-and-frontier-corridors',
+    tags: ['dacia', 'roman', 'roads', 'limes', 'frontier', 'antiquity', 'network'],
+    sortWeight: 530,
     room: 'road',
     secondaryRooms: ['border', 'map'],
     title: 'Roman Dacia · roads and frontier corridors',
@@ -682,6 +944,19 @@ const RAW: unknown[] = [
   },
   {
     id: 'dacia-principalities',
+    role: 'historical',
+    category: 'territories-boundaries',
+    subcategory: 'principality-phases',
+    tags: [
+      'wallachia',
+      'moldavia',
+      'transylvania',
+      'principalities',
+      'habsburg',
+      'bessarabia',
+      'bukovina',
+    ],
+    sortWeight: 540,
     room: 'border',
     secondaryRooms: ['map'],
     title: 'Principalities and provinces, 1526-1859',
@@ -710,6 +985,18 @@ const RAW: unknown[] = [
   },
   {
     id: 'dacia-josephinian-sheets',
+    role: 'evidence',
+    category: 'cartographic-evidence',
+    subcategory: 'survey-sheet-index',
+    tags: [
+      'josephinian',
+      'first military survey',
+      'transylvania',
+      'sheet index',
+      'kriegsarchiv',
+      'survey',
+    ],
+    sortWeight: 110,
     room: 'archive',
     secondaryRooms: ['map'],
     title: 'Josephinian survey · sheet index',
@@ -742,6 +1029,12 @@ const RAW: unknown[] = [
     // and the width: a proposal reads as dotted and thin, a treaty line solid
     // and heavy, a later reconstruction dashed between them.
     id: 'dacia-treaty-frontiers',
+    role: 'historical',
+    category: 'conflict-campaigns-frontiers',
+    subcategory: 'treaty-frontiers',
+    tags: ['dacia', 'treaties', 'frontiers', 'borders', 'diplomacy', 'hertslet', 'delimitation'],
+    featured: true,
+    sortWeight: 550,
     room: 'border',
     secondaryRooms: ['map'],
     title: 'Treaty frontiers, 1829-1947',
