@@ -1,0 +1,159 @@
+{
+  "absenceClasses": [
+    {
+      "absenceClass": "extra_muros",
+      "allowedBeforeReview": false,
+      "definition": "The target lies outside the geographic, institutional, chronological, or generic scope of the witness.",
+      "evidentialWeight": "none",
+      "requiresScopeReview": true
+    },
+    {
+      "absenceClass": "named_elsewhere",
+      "allowedBeforeReview": false,
+      "definition": "The target is named in another passage, sheet, recension, or source-level context but not at the focal locator.",
+      "evidentialWeight": "contextual",
+      "requiresScopeReview": true
+    },
+    {
+      "absenceClass": "not_asked",
+      "allowedBeforeReview": true,
+      "definition": "The witness's purpose or declared scope does not address the historical question.",
+      "evidentialWeight": "none",
+      "requiresScopeReview": false
+    },
+    {
+      "absenceClass": "not_named",
+      "allowedBeforeReview": false,
+      "definition": "A reviewed witness whose scope includes the question does not name the target.",
+      "evidentialWeight": "conditional",
+      "requiresScopeReview": true
+    },
+    {
+      "absenceClass": "not_surveyed",
+      "allowedBeforeReview": true,
+      "definition": "The project has not inspected the defined witness or sample.",
+      "evidentialWeight": "none",
+      "requiresScopeReview": false
+    },
+    {
+      "absenceClass": "survival_unknown",
+      "allowedBeforeReview": true,
+      "definition": "Loss, incomplete survival, cataloguing, digitisation, or sampling prevents a source-level absence decision.",
+      "evidentialWeight": "none",
+      "requiresScopeReview": false
+    }
+  ],
+  "generatedBy": "scripts/dacia/build.py",
+  "schemaVersion": 1,
+  "sourceFamilies": [
+    "charter",
+    "chronicle",
+    "late_cartography",
+    "notarial_commercial",
+    "ottoman_fiscal",
+    "papal_register"
+  ],
+  "span": {
+    "from": 1100,
+    "to": 1619
+  },
+  "states": [
+    {
+      "absenceClass": "not_surveyed",
+      "confidence": "low",
+      "datePrecision": "year_range",
+      "locator": "Calibration record DL-DF 12016; bounded issuer/date/series sample not yet selected",
+      "note": "The family resolves to the KAN-348 witness record; a catalogue landing page is not a reviewed corpus.",
+      "periodFrom": 1300,
+      "periodTo": 1526,
+      "reviewStatus": "candidate",
+      "scopeReviewed": false,
+      "sourceFamily": "charter",
+      "stateId": "hs-charters",
+      "witnessId": "hw-charters",
+      "witnessQuestion": "When, where, and for which referents do documentary acts use Dacia or competing regional names?",
+      "witnessTitle": "Diplomatic Archives (DL-DF), Charter Database"
+    },
+    {
+      "absenceClass": "not_surveyed",
+      "confidence": "low",
+      "datePrecision": "year_range",
+      "locator": "MEK 19808 and MEK 10633; edition passages and recensions not yet collated",
+      "note": "Searchable editions are discovery aids until a named edition or witness is reviewed.",
+      "periodFrom": 1100,
+      "periodTo": 1500,
+      "reviewStatus": "candidate",
+      "scopeReviewed": false,
+      "sourceFamily": "chronicle",
+      "stateId": "hs-chronicles",
+      "witnessId": "hw-chronicles",
+      "witnessQuestion": "How do narrative histories name Roman Dacia, the Danubian region, and the medieval polities treated as its successors?",
+      "witnessTitle": "Gesta Hungarorum and Chronica Hungarorum"
+    },
+    {
+      "absenceClass": "not_asked",
+      "confidence": "medium",
+      "datePrecision": "year_range",
+      "locator": "Hungarian National Archives Ottoman censuses collection; individual register pending",
+      "note": "Fiscal enumeration can answer settlement-name questions, but its current family-level scope does not ask whether learned writers use Dacia as a macro-region.",
+      "periodFrom": 1546,
+      "periodTo": 1619,
+      "reviewStatus": "candidate",
+      "scopeReviewed": false,
+      "sourceFamily": "ottoman_fiscal",
+      "stateId": "hs-fiscal",
+      "witnessId": "hw-fiscal",
+      "witnessQuestion": "What settlement and administrative names occur in Ottoman fiscal surveys, and can this source type answer the macro-regional lexical question at all?",
+      "witnessTitle": "Ottoman tax registers (defters) in the Hungarian National Archives"
+    },
+    {
+      "absenceClass": "not_surveyed",
+      "confidence": "low",
+      "datePrecision": "exact_year",
+      "locator": "Library of Congress G3200m.GCT00126, Hvngaria images 93-94 and Transsylvania images 95-96",
+      "note": "The exact plates are located but have not been transcribed or reviewed.",
+      "periodFrom": 1570,
+      "periodTo": 1570,
+      "reviewStatus": "candidate",
+      "scopeReviewed": false,
+      "sourceFamily": "late_cartography",
+      "stateId": "hs-late-maps",
+      "witnessId": "hw-late-maps",
+      "witnessQuestion": "When does Dacia return as a learned regional label, and how is that label related to contemporary Hungary and Transylvania?",
+      "witnessTitle": "Theatrum orbis terrarum"
+    },
+    {
+      "absenceClass": "not_surveyed",
+      "confidence": "low",
+      "datePrecision": "exact_year",
+      "locator": "Balard 1980, acts pp. 23-194; archival-unit reconciliation pending",
+      "note": "The bounded edition is identified but its acts have not been checked for this question.",
+      "periodFrom": 1360,
+      "periodTo": 1360,
+      "reviewStatus": "candidate",
+      "scopeReviewed": false,
+      "sourceFamily": "notarial_commercial",
+      "stateId": "hs-notarial",
+      "witnessId": "hw-notarial",
+      "witnessQuestion": "Does a Black Sea commercial notarial corpus use Dacia, or instead port, polity, and route names, for its geographic frame?",
+      "witnessTitle": "Actes de Kilia du notaire Antonio di Ponzo, 1360"
+    },
+    {
+      "absenceClass": "not_surveyed",
+      "confidence": "low",
+      "datePrecision": "year_range",
+      "locator": "DigiVatLib catalogue; exact register and folio range pending",
+      "note": "No query or absence is recorded before the register sample exists.",
+      "periodFrom": 1200,
+      "periodTo": 1500,
+      "reviewStatus": "candidate",
+      "scopeReviewed": false,
+      "sourceFamily": "papal_register",
+      "stateId": "hs-papal-registers",
+      "witnessId": "hw-papal-registers",
+      "witnessQuestion": "Which curial administrative names are used for dioceses, rulers, and territories north of the Danube?",
+      "witnessTitle": "Registra Vaticana and related papal register series"
+    }
+  ],
+  "trench": "ccd-b"
+}

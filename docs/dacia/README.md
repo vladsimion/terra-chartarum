@@ -142,6 +142,8 @@ python3 scripts/dacia/review.py queue --verbose
 is not vendored - use the venv from `make vmn-venv`, or install it yourself.
 `review.py` is the adjudication workflow: it promotes a record only if the
 ordinary gate still passes afterwards, so an unearned promotion writes nothing.
+It covers places, sources, attestations and, since KAN-344, name uses and their
+edges.
 
 ## In the Atlas
 
@@ -152,7 +154,10 @@ filters rather than requiring a change to the island. Selections widen within a
 field and narrow across fields, are announced for screen readers, and travel in
 a `facets` URL parameter that only restores values the layer actually declares.
 
-See [`data-dictionary.md`](./data-dictionary.md) for the schemas,
+See [`nomen-errans-ledger.md`](./nomen-errans-ledger.md) for what the word
+Dacia has meant and what may be shown beside it,
+[`shared-gis-layers.md`](./shared-gis-layers.md) for the shared Atlas layers,
+[`data-dictionary.md`](./data-dictionary.md) for the schemas,
 [`definition-of-done.md`](./definition-of-done.md) for the gates, and
 [`trench-a-inventory.md`](./trench-a-inventory.md) for the migration and the
 frozen pilot.

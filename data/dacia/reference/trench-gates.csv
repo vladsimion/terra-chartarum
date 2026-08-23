@@ -1,9 +1,9 @@
 trench_id,gate_id,status,jira_key,evidence,note
 ccd-a,research,partial,KAN-338,public/embed/dacia/index.html,"Each stela carries maker, repository and survival; none carries a page or sheet locator."
-ccd-a,rights,passed,KAN-318,public/embed/dacia/index.html,"All thirteen plates are authored SVG reconstructions; no third-party reproduction is used."
-ccd-a,data,pending,KAN-338,,"Place and source evidence is inline in the exhibition and not yet corpus-backed."
-ccd-a,interaction,partial,KAN-339,public/embed/dacia/index.html,"Sondaje cells carry editorial notes but resolve to no attestation record."
-ccd-a,editorial,passed,KAN-27,src/content/essays/dacia.mdx,"Published essay; prose reviewed at its original release."
+ccd-a,rights,passed,KAN-318,public/embed/dacia/index.html,All thirteen plates are authored SVG reconstructions; no third-party reproduction is used.
+ccd-a,data,pending,KAN-338,,Place and source evidence is inline in the exhibition and not yet corpus-backed.
+ccd-a,interaction,partial,KAN-339,public/embed/dacia/index.html,Sondaje cells carry editorial notes but resolve to no attestation record.
+ccd-a,editorial,passed,KAN-27,src/content/essays/dacia.mdx,Published essay; prose reviewed at its original release.
 ccd-a,release,partial,KAN-27,e2e/dacia-axe.spec.ts,"In production with accessibility coverage, but released before this Definition of Done existed; re-passes when KAN-338 and KAN-339 close the data and interaction gates."
 ccd-b,research,pending,KAN-348,,
 ccd-b,rights,pending,KAN-348,,
@@ -11,8 +11,8 @@ ccd-b,data,pending,KAN-349,,
 ccd-b,interaction,pending,KAN-350,,
 ccd-b,editorial,pending,KAN-350,,
 ccd-b,release,pending,KAN-350,,
-ccd-c,research,pending,KAN-344,,
-ccd-c,rights,pending,KAN-344,,
+ccd-c,research,partial,KAN-344,data/dacia/name-uses.csv,"Twelve name uses compiled across five fate classes and five source or institution types; seven normalized, none reviewed. The gate cannot pass until a person clears rows against their sources, which llm_assisted work cannot do for itself."
+ccd-c,rights,partial,KAN-344,data/dacia/reference/nomen-errans-witnesses.csv,"Six candidate witnesses assessed; none cleared for publication. The essay can be written from description, but no image may be shown until a rights basis is settled."
 ccd-c,data,pending,KAN-345,,
 ccd-c,interaction,pending,KAN-346,,
 ccd-c,editorial,pending,KAN-347,,

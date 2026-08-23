@@ -41,6 +41,8 @@ ISO_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 DISPOSITIONS = {"migrate", "link", "preserve_local", "retire"}
 MIGRATION_STATES = {"done", "partial", "planned"}
 GATE_STATUSES = {"pending", "partial", "passed", "waived"}
+# The states that mean a person has cleared the row, for reporting.
+REVIEWED_OR_ABOVE = {"reviewed", "approved", "published"}
 TABLE_STATES = {"live", "planned", "reserved"}
 SOURCE_LEDGER_REVIEW_STATES = {"candidate", "source_checked", "reviewed"}
 HIATUS_ABSENCE_CLASSES = {
@@ -92,6 +94,7 @@ TREATY_RECORD_TYPES = {
     "later_reconstruction",
 }
 TREATY_INTERPRETATION_STATES = {"uncontested", "ambiguous", "disputed"}
+NOMEN_ERRANS_WITNESS_TYPES = {"map_witness", "object_witness", "text_witness"}
 ROMAN_FEATURE_TYPES = {"site", "road", "limes"}
 PRINCIPALITY_SOVEREIGNTY = {
     "autonomous_tributary",
@@ -190,6 +193,7 @@ TABLES = {
     "treaty_frontier_sources": f"{REFERENCE}/treaty-frontier-sources.csv",
     "carta_rubra_sources": f"{REFERENCE}/carta-rubra-sources.csv",
     "carta_rubra_claims": f"{REFERENCE}/carta-rubra-claims.csv",
+    "nomen_errans_witnesses": f"{REFERENCE}/nomen-errans-witnesses.csv",
     "borroczyn_seam_sources": f"{REFERENCE}/borroczyn-seam-sources.csv",
     "places": "places.csv",
     "sources": "sources.csv",
@@ -1523,6 +1527,66 @@ def _load_gis_geojson(name: str, version_prefix: str, errors: list[str]) -> dict
     return payload
 
 
+def validate_nomen_errans_witnesses(terms, ranks, name_uses, errors: list[str]) -> None:
+    """KAN-344: what the essay might show, and whether it may (rights, not readings).
+
+    The ledger records what a name meant; this records what could be put on the
+    page beside it. They are separate questions and separate tables, because a
+    use can be perfectly well evidenced and still have no image anyone may
+    publish - which is the situation the trench is actually in.
+    """
+    rows = _read("nomen_errans_witnesses", errors)
+    _check_unique(rows, "witness_id", "nomen-errans-witnesses", errors)
+    publishable = 0
+
+    for row in rows:
+        witness_id = row["witness_id"]
+        label = f"nomen-errans-witnesses[{witness_id}]"
+        if not witness_id.startswith("ne-") or not SLUG.match(witness_id):
+            errors.append(f"{label}: witness_id must be an ne- slug")
+        if row["witness_type"] not in NOMEN_ERRANS_WITNESS_TYPES:
+            errors.append(f"{label}: witness_type '{row['witness_type']}' is not recognised")
+        # Every candidate witness is a candidate *for* something: the use it
+        # would illustrate. A picture with no argument behind it is decoration.
+        if row["name_use_id"] not in name_uses:
+            errors.append(f"{label}: name_use_id '{row['name_use_id']}' does not resolve")
+        for field in ("title", "creator", "repository", "citation", "locator", "notes"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        if not row["issued_year"].lstrip("-").isdigit():
+            errors.append(f"{label}: issued_year must be a year")
+        _check_https(row["source_url"], label, "source_url", errors)
+        _check_https(row["rights_basis_url"], label, "rights_basis_url", errors)
+        if row["rights_status"] not in RESEARCH_RIGHTS:
+            errors.append(f"{label}: rights_status '{row['rights_status']}' is not recognised")
+        if row["resolution_status"] not in RESEARCH_RESOLUTION_STATES:
+            errors.append(f"{label}: resolution_status is not recognised")
+        if row["review_status"] not in SOURCE_LEDGER_REVIEW_STATES:
+            errors.append(f"{label}: review_status '{row['review_status']}' is not recognised")
+        if not row["repository_object_id"]:
+            errors.append(f"{label}: repository_object_id is required, pending if unknown")
+
+        role = row["production_role"]
+        if role not in RESEARCH_PRODUCTION_ROLES:
+            errors.append(f"{label}: production_role '{role}' is not recognised")
+        elif role in {"production_primary", "production_fallback"}:
+            publishable += 1
+            # The same bar the other packages hold: a witness may only be planned
+            # into the page once its rights permit production-wide reuse and
+            # somebody has confirmed there is a usable reproduction to reuse.
+            if row["rights_status"] not in OPEN_PRODUCTION_RIGHTS:
+                errors.append(f"{label}: production role requires production-wide reuse rights")
+            if row["resolution_status"] != "sufficient":
+                errors.append(f"{label}: production role requires sufficient resolution")
+            if row["repository_object_id"] == PENDING:
+                errors.append(f"{label}: production role requires a repository object identifier")
+
+    # Whether any witness is publishable is not an error either way - an essay
+    # may be written from description alone - so it is reported in the readiness
+    # lines rather than raised here.
+    del publishable
+
+
 def validate_roman_dacia(terms, places, errors: list[str]) -> None:
     """KAN-341: a baseline that never authors a coordinate the corpus already holds."""
     rows = _read("roman_dacia", errors)
@@ -1885,6 +1949,8 @@ def validate_inputs() -> list[str]:
     validate_treaty_frontier_sources(errors)
     validate_carta_rubra_package(errors)
     validate_borroczyn_package(errors)
+    name_uses = {row["name_use_id"] for row in _read("name_uses", errors)}
+    validate_nomen_errans_witnesses(terms, ranks, name_uses, errors)
     place_points = {
         row["place_id"]: (float(row["ref_lon"]), float(row["ref_lat"]))
         for row in _read("places", errors)
@@ -1914,6 +1980,7 @@ def readiness_lines() -> list[str]:
     carta_sources = _read("carta_rubra_sources", errors)
     carta_claims = _read("carta_rubra_claims", errors)
     borroczyn_sources = _read("borroczyn_seam_sources", errors)
+    witnesses = _read("nomen_errans_witnesses", errors)
     roman = _read("roman_dacia", errors)
     phases = _read("principalities", errors)
     sheets = _read("josephinian_sheets", errors)
@@ -1945,6 +2012,12 @@ def readiness_lines() -> list[str]:
         f"  research packages: {len(hiatus_states)} Hiatus states, "
         f"{len(carta_sources)} Carta Rubra sources/{len(carta_claims)} claims, and "
         f"{len(borroczyn_sources)} Borroczyn seam sources",
+        f"  Nomen Errans: {len(uses)} name uses, "
+        f"{sum(1 for row in uses if row['review_state'] == 'normalized')} normalized and "
+        f"{sum(1 for row in uses if row['review_state'] in REVIEWED_OR_ABOVE)} reviewed; "
+        f"{len(witnesses)} candidate witnesses, "
+        f"{sum(1 for row in witnesses if row['production_role'] != 'research_only')} cleared "
+        f"for publication",
         f"  shared GIS: {len(roman)} Roman baseline features "
         f"({sum(1 for row in roman if row['feature_type'] == 'site')} joined to CND places), "
         f"{len(phases)} principality phases across "
