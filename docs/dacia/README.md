@@ -124,6 +124,30 @@ the wrong thing.
 resolves every `place_id` and `source_id` against its authority, so a name in an
 FK column fails rather than silently matching nothing.
 
+## The programme index
+
+[`/programmes/corpus-chartarum-daciae/`](../../src/pages/programmes/corpus-chartarum-daciae.astro)
+is the public index of the cycle (KAN-370). All seven trenches are discoverable
+from it whether or not they have been written, each with its primary room, its
+gate tally, its open verification debts and the number of records it has
+actually migrated into the shared corpus.
+
+Nothing about a trench's state is written into that page. `make dacia` compiles
+`src/data/dacia/generated/programme.json` from `programme-ids.csv`,
+`trench-gates.csv`, `verification-debt.csv` and the migration inventory, and the
+page renders it - because a hand-maintained index is a second copy of the
+programme's state and the copy is the one that goes stale.
+
+Two things the index is careful about. **Consumption is counted, not claimed**:
+a trench appears as reading the shared corpus by having records in it, which
+today only Trench A does. And the shared datasets are listed once, as programme
+infrastructure, rather than under the essay that happens to show them first.
+
+Terra Sigillata is presented there as the cycle's intellectual index and is not
+extended as one: no stone was added and none will be. The index is discoverable
+from the essay in turn, which is how the series pages work elsewhere in the
+site.
+
 ## Running the gate
 
 ```bash

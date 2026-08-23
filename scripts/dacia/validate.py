@@ -44,6 +44,8 @@ GATE_STATUSES = {"pending", "partial", "passed", "waived"}
 # The states that mean a person has cleared the row, for reporting.
 REVIEWED_OR_ABOVE = {"reviewed", "approved", "published"}
 TABLE_STATES = {"live", "planned", "reserved"}
+# The seven rooms of the cosmography, mirrored from src/data/rooms.ts.
+PROGRAMME_ROOMS = {"earth", "map", "city", "border", "road", "archive", "theatre"}
 SOURCE_LEDGER_REVIEW_STATES = {"candidate", "source_checked", "reviewed"}
 HIATUS_ABSENCE_CLASSES = {
     "not_surveyed",
@@ -369,6 +371,16 @@ def validate_programme(terms, errors: list[str]) -> tuple[set[str], set[str]]:
             errors.append(f"{label}: jira_label must equal the repository id")
         if row["state"] not in TABLE_STATES:
             errors.append(f"{label}: state '{row['state']}' is not recognised")
+        # KAN-370: the programme index shows each entry's primary room, so every
+        # entry has to have one. An essay slug is optional - most trenches have
+        # not been written yet - but a live trench that claims one must resolve.
+        if row["room"] not in PROGRAMME_ROOMS:
+            errors.append(f"{label}: room '{row['room']}' is not one of the seven")
+        if row["essay_slug"] and not SLUG.match(row["essay_slug"]):
+            errors.append(f"{label}: essay_slug '{row['essay_slug']}' is not a slug")
+        if row["essay_slug"] and not (REPO / "src" / "content" / "essays" /
+                                      f"{row['essay_slug']}.mdx").exists():
+            errors.append(f"{label}: essay_slug '{row['essay_slug']}' has no essay")
         if row["kind"] == "trench":
             trenches.add(row["id"])
         campaigns_used.add(row["campaign"])

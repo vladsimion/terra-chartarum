@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "gitSha": "61ba02eb4b896443b43c44fccb0f7c0b0755021b",
-  "builtAt": "2026-08-23T10:07:30.403Z",
+  "gitSha": "4641f14650d59fc293b9fbafb0cbfae637c33ed0",
+  "builtAt": "2026-08-23T10:37:44.828Z",
   "branch": null,
   "deployment": {
     "provider": "local",
