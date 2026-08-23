@@ -99,6 +99,21 @@ TREATY_INTERPRETATION_STATES = {"uncontested", "ambiguous", "disputed"}
 # KAN-363: acquisition is a separate axis from scholarly validity and from
 # rights. A map does not become better evidence because it was bought, or worse
 # because it was declined, so the three never collapse into one column.
+# KAN-367. The classes are the argument: what a map is evidence *of* depends on
+# which of these it belongs to, and reception is never evidence about antiquity.
+RECEPTION_CLASSES = {
+    "ancient_evidence",
+    "scholarly_reconstruction",
+    "historical_reception",
+    "contemporary_derivative",
+}
+RECEPTION_ROLES = {"authoritative_evidence", "contextual_evidence", "reference_artefact"}
+# Reception and derivative material documents its own moment. It may be shown,
+# discussed and taken seriously - and it may never be cited as testimony about
+# the antiquity it depicts.
+RECEPTION_NEVER_AUTHORITATIVE = {"historical_reception", "contemporary_derivative"}
+RECEPTION_SELECTION = {"selected", "class_only", "rejected"}
+REQUIRED_RUBRIC_RULES = {"rr-1", "rr-2", "rr-3", "rr-4", "rr-5"}
 ACQUISITION_STATES = {"not_sought", "watching", "recommended", "acquired", "declined"}
 VERIFICATION_STATES = {"unverified", "partially_verified", "verified"}
 SCHOLARLY_VALIDITY = {"established", "contested", "unassessed"}
@@ -217,6 +232,8 @@ TABLES = {
     "carta_rubra_claims": f"{REFERENCE}/carta-rubra-claims.csv",
     "nomen_errans_witnesses": f"{REFERENCE}/nomen-errans-witnesses.csv",
     "acquisition_dossiers": f"{REFERENCE}/acquisition-dossiers.csv",
+    "reception_corpus": f"{REFERENCE}/reception-corpus.csv",
+    "reception_rubric": f"{REFERENCE}/reception-review-rubric.csv",
     "borroczyn_seam_sources": f"{REFERENCE}/borroczyn-seam-sources.csv",
     "places": "places.csv",
     "sources": "sources.csv",
@@ -1183,6 +1200,92 @@ def validate_hiatus_witness_families(errors: list[str]) -> None:
         errors.append("hiatus-witness-families: the frozen minimum needs at least five families")
 
 
+def validate_reception_corpus(terms, sources, errors: list[str]) -> None:
+    """KAN-367: the reception corpus, and the rubric that keeps it from arguing.
+
+    Dacia Rediviva is about how antiquity has been used, which means its corpus
+    is full of material that is compelling and is not evidence. The rules that
+    keep those apart are data here rather than editorial intention, so they
+    cannot be forgotten in a later interaction.
+    """
+    rubric = _read("reception_rubric", errors)
+    _check_unique(rubric, "rule_id", "reception-review-rubric", errors)
+    for row in rubric:
+        label = f"reception-review-rubric[{row['rule_id']}]"
+        for field in ("rule", "rationale"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        if row["enforced_by"] not in {"validator", "editorial"}:
+            errors.append(f"{label}: enforced_by must be validator or editorial")
+        if row["binding"] != "yes":
+            errors.append(f"{label}: a rubric rule that does not bind is not a rule")
+    if missing := REQUIRED_RUBRIC_RULES - {row["rule_id"] for row in rubric}:
+        errors.append(f"reception-review-rubric: missing required rules {sorted(missing)}")
+
+    rows = _read("reception_corpus", errors)
+    _check_unique(rows, "item_id", "reception-corpus", errors)
+    classes: set[str] = set()
+
+    for row in rows:
+        item_id = row["item_id"]
+        label = f"reception-corpus[{item_id}]"
+        if not item_id.startswith("rec-") or not SLUG.match(item_id):
+            errors.append(f"{label}: item_id must be a rec- slug")
+        source_class = row["source_class"]
+        classes.add(source_class)
+        if source_class not in RECEPTION_CLASSES:
+            errors.append(f"{label}: source_class '{source_class}' is not recognised")
+        role = row["evidence_role"]
+        if role not in RECEPTION_ROLES:
+            errors.append(f"{label}: evidence_role '{role}' is not recognised")
+        for field in ("title", "historical_context", "notes"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        _check_vocab(
+            row["date_precision"], "date_precision", terms, label, "date_precision", errors
+        )
+        _check_vocab(
+            row["rights_status"], "rights_statement", terms, label, "rights_status", errors
+        )
+        _check_https(row["source_url"], label, "source_url", errors)
+        _check_https(row["rights_basis_url"], label, "rights_basis_url", errors)
+        if row["review_status"] not in SOURCE_LEDGER_REVIEW_STATES:
+            errors.append(f"{label}: review_status '{row['review_status']}' is not recognised")
+        if row["selection_state"] not in RECEPTION_SELECTION:
+            errors.append(f"{label}: selection_state is not recognised")
+        if not row["issued_year"].lstrip("-").isdigit():
+            errors.append(f"{label}: issued_year must be a year")
+        if row["corpus_source_id"] and row["corpus_source_id"] not in sources:
+            errors.append(f"{label}: corpus_source_id does not resolve in sources.csv")
+
+        # rr-2: reception documents its own moment, and never antiquity.
+        if source_class in RECEPTION_NEVER_AUTHORITATIVE and role == "authoritative_evidence":
+            errors.append(
+                f"{label}: {source_class} is evidence about its own moment, not about the "
+                "antiquity it depicts, so it cannot be authoritative_evidence (rubric rr-2)"
+            )
+        # rr-3: apparent detail is not provenance.
+        unidentified = row["creator"] in {"", PENDING} or row["provenance"] in {"", PENDING}
+        if unidentified and role != "reference_artefact":
+            errors.append(
+                f"{label}: an item with no identified creator or provenance may only be a "
+                "reference_artefact (rubric rr-3)"
+            )
+        # rr-5: a class is a finding; an unselected item is not a source.
+        if row["selection_state"] == "class_only" and role != "reference_artefact":
+            errors.append(
+                f"{label}: nothing has been selected from this class, so it cannot carry "
+                f"the role '{role}' (rubric rr-5)"
+            )
+        if row["selection_state"] == "selected" and row["citation"] in {"", PENDING}:
+            errors.append(f"{label}: a selected item must carry its citation")
+
+    # The essay argues across all four registers; dropping one would turn the
+    # comparison into a claim about whichever remained.
+    for missing in sorted(RECEPTION_CLASSES - classes):
+        errors.append(f"reception-corpus: no item represents the '{missing}' class")
+
+
 def validate_acquisition_dossiers(terms, errors: list[str]) -> None:
     """KAN-363: research dossiers that cannot recommend what they have not identified."""
     rows = _read("acquisition_dossiers", errors)
@@ -1617,6 +1720,92 @@ def _load_gis_geojson(name: str, version_prefix: str, errors: list[str]) -> dict
     if not metadata.get("justification"):
         errors.append(f"{name}: drawn geometry requires a recorded justification")
     return payload
+
+
+def validate_reception_corpus(terms, sources, errors: list[str]) -> None:
+    """KAN-367: the reception corpus, and the rubric that keeps it from arguing.
+
+    Dacia Rediviva is about how antiquity has been used, which means its corpus
+    is full of material that is compelling and is not evidence. The rules that
+    keep those apart are data here rather than editorial intention, so they
+    cannot be forgotten in a later interaction.
+    """
+    rubric = _read("reception_rubric", errors)
+    _check_unique(rubric, "rule_id", "reception-review-rubric", errors)
+    for row in rubric:
+        label = f"reception-review-rubric[{row['rule_id']}]"
+        for field in ("rule", "rationale"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        if row["enforced_by"] not in {"validator", "editorial"}:
+            errors.append(f"{label}: enforced_by must be validator or editorial")
+        if row["binding"] != "yes":
+            errors.append(f"{label}: a rubric rule that does not bind is not a rule")
+    if missing := REQUIRED_RUBRIC_RULES - {row["rule_id"] for row in rubric}:
+        errors.append(f"reception-review-rubric: missing required rules {sorted(missing)}")
+
+    rows = _read("reception_corpus", errors)
+    _check_unique(rows, "item_id", "reception-corpus", errors)
+    classes: set[str] = set()
+
+    for row in rows:
+        item_id = row["item_id"]
+        label = f"reception-corpus[{item_id}]"
+        if not item_id.startswith("rec-") or not SLUG.match(item_id):
+            errors.append(f"{label}: item_id must be a rec- slug")
+        source_class = row["source_class"]
+        classes.add(source_class)
+        if source_class not in RECEPTION_CLASSES:
+            errors.append(f"{label}: source_class '{source_class}' is not recognised")
+        role = row["evidence_role"]
+        if role not in RECEPTION_ROLES:
+            errors.append(f"{label}: evidence_role '{role}' is not recognised")
+        for field in ("title", "historical_context", "notes"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        _check_vocab(
+            row["date_precision"], "date_precision", terms, label, "date_precision", errors
+        )
+        _check_vocab(
+            row["rights_status"], "rights_statement", terms, label, "rights_status", errors
+        )
+        _check_https(row["source_url"], label, "source_url", errors)
+        _check_https(row["rights_basis_url"], label, "rights_basis_url", errors)
+        if row["review_status"] not in SOURCE_LEDGER_REVIEW_STATES:
+            errors.append(f"{label}: review_status '{row['review_status']}' is not recognised")
+        if row["selection_state"] not in RECEPTION_SELECTION:
+            errors.append(f"{label}: selection_state is not recognised")
+        if not row["issued_year"].lstrip("-").isdigit():
+            errors.append(f"{label}: issued_year must be a year")
+        if row["corpus_source_id"] and row["corpus_source_id"] not in sources:
+            errors.append(f"{label}: corpus_source_id does not resolve in sources.csv")
+
+        # rr-2: reception documents its own moment, and never antiquity.
+        if source_class in RECEPTION_NEVER_AUTHORITATIVE and role == "authoritative_evidence":
+            errors.append(
+                f"{label}: {source_class} is evidence about its own moment, not about the "
+                "antiquity it depicts, so it cannot be authoritative_evidence (rubric rr-2)"
+            )
+        # rr-3: apparent detail is not provenance.
+        unidentified = row["creator"] in {"", PENDING} or row["provenance"] in {"", PENDING}
+        if unidentified and role != "reference_artefact":
+            errors.append(
+                f"{label}: an item with no identified creator or provenance may only be a "
+                "reference_artefact (rubric rr-3)"
+            )
+        # rr-5: a class is a finding; an unselected item is not a source.
+        if row["selection_state"] == "class_only" and role != "reference_artefact":
+            errors.append(
+                f"{label}: nothing has been selected from this class, so it cannot carry "
+                f"the role '{role}' (rubric rr-5)"
+            )
+        if row["selection_state"] == "selected" and row["citation"] in {"", PENDING}:
+            errors.append(f"{label}: a selected item must carry its citation")
+
+    # The essay argues across all four registers; dropping one would turn the
+    # comparison into a claim about whichever remained.
+    for missing in sorted(RECEPTION_CLASSES - classes):
+        errors.append(f"reception-corpus: no item represents the '{missing}' class")
 
 
 def validate_acquisition_dossiers(terms, errors: list[str]) -> None:
@@ -2243,6 +2432,7 @@ def validate_inputs() -> list[str]:
         for row in _read("places", errors)
         if row["location_status"] == "located" and row["ref_lon"] and row["ref_lat"]
     }
+    validate_reception_corpus(terms, sources, errors)
     validate_acquisition_dossiers(terms, errors)
     validate_treaty_frontier(terms, errors)
     validate_roman_dacia(terms, places, errors)
@@ -2270,6 +2460,7 @@ def readiness_lines() -> list[str]:
     carta_claims = _read("carta_rubra_claims", errors)
     borroczyn_sources = _read("borroczyn_seam_sources", errors)
     witnesses = _read("nomen_errans_witnesses", errors)
+    reception = _read("reception_corpus", errors)
     dossiers = _read("acquisition_dossiers", errors)
     frontiers = _read("treaty_frontier", errors)
     roman = _read("roman_dacia", errors)
@@ -2318,6 +2509,11 @@ def readiness_lines() -> list[str]:
         f"{len({row['phase_id'] for row in frontiers})} phases "
         f"({sum(1 for row in frontiers if row['alternative_of'])} contested); "
         f"0 digitised from a source",
+        f"  reception: {len(reception)} items across "
+        f"{len({row['source_class'] for row in reception})} classes; "
+        f"{sum(1 for row in reception if row['selection_state'] == 'selected')} selected, "
+        f"{sum(1 for row in reception if row['evidence_role'] == 'reference_artefact')} "
+        f"held as reference artefacts",
         f"  acquisition: {len(dossiers)} dossiers across "
         f"{len({row['family'] for row in dossiers})} priority families; "
         f"{sum(1 for row in dossiers if row['verification_state'] == 'verified')} verified, "

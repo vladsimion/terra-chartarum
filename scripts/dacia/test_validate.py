@@ -1175,3 +1175,73 @@ def test_scholarly_validity_is_required_whatever_the_acquisition_state(dataset):
 
     edit(dataset, "acquisition_dossiers", mutate)
     refuses("scholarly_validity is not recognised")
+
+
+# --- reception corpus and review rubric (KAN-367) -----------------------------
+
+
+def test_reception_material_cannot_become_evidence_about_antiquity(dataset):
+    """Rubric rr-2: the 1930s map is evidence about the 1930s."""
+
+    def mutate(rows):
+        find(rows, "item_id", "rec-interwar-national")["evidence_role"] = "authoritative_evidence"
+
+    edit(dataset, "reception_corpus", mutate)
+    refuses("not about the antiquity it depicts")
+
+
+def test_an_unsourced_item_can_only_be_a_reference_artefact(dataset):
+    """Rubric rr-3: apparent detail is not provenance."""
+
+    def mutate(rows):
+        row = find(rows, "item_id", "rec-online-derivative")
+        row["source_class"] = "scholarly_reconstruction"
+        row["evidence_role"] = "contextual_evidence"
+
+    edit(dataset, "reception_corpus", mutate)
+    refuses("may only be a reference_artefact")
+
+
+def test_nothing_selected_from_a_class_cannot_carry_a_role(dataset):
+    """Rubric rr-5: a class is a finding; an unselected item is not a source."""
+
+    def mutate(rows):
+        row = find(rows, "item_id", "rec-protochronist")
+        row["creator"] = "A named lithographer"
+        row["provenance"] = "A named holding"
+        row["source_class"] = "scholarly_reconstruction"
+        row["evidence_role"] = "contextual_evidence"
+
+    edit(dataset, "reception_corpus", mutate)
+    refuses("nothing has been selected from this class")
+
+
+def test_a_selected_item_must_carry_its_citation(dataset):
+    def mutate(rows):
+        find(rows, "item_id", "rec-ortelius-parergon")["citation"] = "pending"
+
+    edit(dataset, "reception_corpus", mutate)
+    refuses("must carry its citation")
+
+
+def test_every_reception_class_must_be_represented(dataset):
+    """Dropping a register would turn the comparison into a claim."""
+    edit(
+        dataset,
+        "reception_corpus",
+        lambda rows: [r for r in rows if r["source_class"] != "contemporary_derivative"],
+    )
+    refuses("no item represents the 'contemporary_derivative' class")
+
+
+def test_a_rubric_rule_that_does_not_bind_is_not_a_rule(dataset):
+    def mutate(rows):
+        find(rows, "rule_id", "rr-1")["binding"] = "no"
+
+    edit(dataset, "reception_rubric", mutate)
+    refuses("does not bind is not a rule")
+
+
+def test_the_rubric_cannot_lose_a_required_rule(dataset):
+    edit(dataset, "reception_rubric", lambda rows: [r for r in rows if r["rule_id"] != "rr-1"])
+    refuses("missing required rules")
