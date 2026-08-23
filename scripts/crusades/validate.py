@@ -52,6 +52,27 @@ REQUIRED_STAGES = {
 }
 
 TABLE = "source-audit.csv"
+PLACES = "places.csv"
+
+# 15-25 core places is the pilot's own bound (KAN-385): enough to carry both
+# proofs, few enough that every one can be argued for.
+PLACE_RANGE = (15, 25)
+PLACE_ROLES = {
+    "itinerary_stage",
+    "itinerary_pass",
+    "itinerary_terminus",
+    "fleet_contract",
+    "diversion",
+    "assembly",
+    "landfall",
+    "objective",
+    "post_1204_control",
+}
+# The one basis a modern coordinate may have here. A medieval source gives
+# no coordinates, so a row claiming one would be inventing a precision the
+# record does not have.
+COORDINATE_BASES = {"modern_reference"}
+REVIEW_STATES = {"raw", "normalized", "reviewed", "approved", "published"}
 
 
 def read(name: str) -> list[dict[str, str]]:
@@ -65,6 +86,7 @@ def pipe(value: str) -> list[str]:
 
 def validate_inputs() -> list[str]:
     errors: list[str] = []
+    validate_places(errors)
     rows = read(TABLE)
     seen: set[str] = set()
     stages: set[str] = set()
@@ -151,7 +173,86 @@ def validate_inputs() -> list[str]:
     return errors
 
 
-def readiness(rows: list[dict[str, str]]) -> list[str]:
+def validate_places(errors: list[str]) -> None:
+    """KAN-385: the shared authority both prototypes read, and its limits.
+
+    Two rules carry the weight. A modern coordinate is reference context and is
+    never presented as a source-given medieval position, because no source here
+    gives one. And a transliteration is a reading aid that may not stand in for
+    the form a place actually carried - the Greek of Constantinople is the
+    city's own name and the Latin is the crusaders', and flattening either into
+    a romanisation loses the distinction the proof is about.
+    """
+    rows = read(PLACES)
+    seen: set[str] = set()
+    proofs: dict[str, int] = {}
+
+    if not PLACE_RANGE[0] <= len(rows) <= PLACE_RANGE[1]:
+        errors.append(
+            f"places: the pilot holds {PLACE_RANGE[0]}-{PLACE_RANGE[1]} core places, "
+            f"found {len(rows)}"
+        )
+
+    for row in rows:
+        place_id = row["place_id"]
+        label = f"places[{place_id}]"
+        if not place_id.startswith("cru-plc-") or not SLUG.match(place_id):
+            errors.append(f"{label}: place_id must be a cru-plc- slug")
+        if place_id in seen:
+            errors.append(f"{label}: duplicate place_id")
+        seen.add(place_id)
+
+        if row["proof"] not in PROOFS:
+            errors.append(f"{label}: proof '{row['proof']}' is not recognised")
+        else:
+            proofs[row["proof"]] = proofs.get(row["proof"], 0) + 1
+        if row["role"] not in PLACE_ROLES:
+            errors.append(f"{label}: role '{row['role']}' is not recognised")
+        for field in ("preferred_name", "name_modern", "script_note", "modern_country", "notes"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        if row["review_state"] not in REVIEW_STATES:
+            errors.append(f"{label}: review_state '{row['review_state']}' is not recognised")
+        if row["review_status"] not in REVIEW:
+            errors.append(f"{label}: review_status '{row['review_status']}' is not recognised")
+
+        # A place needs at least one historical form, or it is a modern town
+        # with a crusade attached to it.
+        if not row["name_latin"] and not row["name_greek"]:
+            errors.append(f"{label}: a core place needs a Latin or Greek form")
+        # The transliteration rule: a Greek form written in Latin letters is a
+        # reading aid, and the row has to say which script it is talking about.
+        if row["name_greek"] and "Greek" not in row["script_note"]:
+            errors.append(
+                f"{label}: a Greek form must say in script_note how it relates to the Latin one"
+            )
+
+        try:
+            lon, lat = float(row["lon"]), float(row["lat"])
+        except ValueError:
+            errors.append(f"{label}: coordinates are not numbers")
+        else:
+            if not (-25.0 <= lon <= 45.0 and 30.0 <= lat <= 60.0):
+                errors.append(f"{label}: {lon},{lat} is outside the Road-to-Sea window")
+        if row["coordinate_basis"] not in COORDINATE_BASES:
+            errors.append(
+                f"{label}: '{row['coordinate_basis']}' is not a basis these coordinates can have; "
+                "no source in the corpus gives a medieval position"
+            )
+
+        for field in ("valid_from", "valid_to"):
+            if not row[field].lstrip("-").isdigit():
+                errors.append(f"{label}: {field} must be a year")
+        if row["valid_from"].isdigit() and row["valid_to"].isdigit():
+            if int(row["valid_from"]) > int(row["valid_to"]):
+                errors.append(f"{label}: the place's window ends before it starts")
+
+    for proof in sorted(PROOFS):
+        if not proofs.get(proof):
+            errors.append(f"places: the '{proof}' proof has no places")
+
+
+def readiness(rows: list[dict[str, str]], places: list[dict[str, str]]) -> list[str]:
     cleared = [row for row in rows if row["production_role"] != "research_only"]
     itinerary = [row for row in rows if row["proof"] == "matthew_paris"]
     return [
@@ -161,6 +262,9 @@ def readiness(rows: list[dict[str, str]]) -> list[str]:
         f"{sum(1 for r in rows if r['locator'] == PENDING)} with untranscribed folios",
         f"  rights: {len(cleared)} cleared for publication; "
         f"{sum(1 for r in rows if r['rights_status'] in OPEN_PRODUCTION_RIGHTS)} open as texts",
+        f"  places: {len(places)} core places, "
+        f"{sum(1 for r in places if r['name_greek'])} carrying a Greek form; "
+        f"all coordinates modern reference context",
     ]
 
 
@@ -172,7 +276,7 @@ def main() -> int:
             print(f"ERROR: {error}", file=sys.stderr)
         return 1
     print("Crusades QA: the flagship source and rights audit is valid.")
-    for line in readiness(read(TABLE)):
+    for line in readiness(read(TABLE), read(PLACES)):
         print(line)
     return 0
 

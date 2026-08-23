@@ -108,3 +108,62 @@ def test_dealer_imagery_cannot_be_a_publication_source(dataset):
     edit(dataset, lambda rows: find(rows, "cru-mp-luard-edition").update(
         {"repository_url": "https://www.abebooks.co.uk/"}))
     refuses("may not be a publication source")
+
+
+# --- pilot place authority (KAN-385) -----------------------------------------
+
+
+def edit_places(dataset: Path, mutate) -> None:
+    path = dataset / "places.csv"
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        fieldnames, rows = list(reader.fieldnames or []), list(reader)
+    result = mutate(rows)
+    rows = rows if result is None else result
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def find_place(rows, place_id):
+    for row in rows:
+        if row["place_id"] == place_id:
+            return row
+    raise AssertionError(f"no place {place_id}")
+
+
+def test_a_modern_coordinate_cannot_claim_a_medieval_basis(dataset):
+    """No source in the corpus gives a position, so none may be implied."""
+    edit_places(dataset, lambda rows: find_place(rows, "cru-plc-venice").update(
+        {"coordinate_basis": "source_given"}))
+    refuses("no source in the corpus gives a medieval position")
+
+
+def test_a_core_place_needs_a_historical_form(dataset):
+    """Otherwise it is a modern town with a crusade attached to it."""
+    edit_places(dataset, lambda rows: find_place(rows, "cru-plc-zara").update(
+        {"name_latin": "", "name_greek": ""}))
+    refuses("needs a Latin or Greek form")
+
+
+def test_a_greek_form_must_explain_its_relation_to_the_latin(dataset):
+    edit_places(dataset, lambda rows: find_place(rows, "cru-plc-constantinople").update(
+        {"script_note": "Two names"}))
+    refuses("must say in script_note how it relates to the Latin one")
+
+
+def test_the_pilot_stays_within_its_bound(dataset):
+    edit_places(dataset, lambda rows: rows[:8])
+    refuses("core places, found 8")
+
+
+def test_a_place_window_cannot_end_before_it_starts(dataset):
+    edit_places(dataset, lambda rows: find_place(rows, "cru-plc-corfu").update(
+        {"valid_to": "1150"}))
+    refuses("window ends before it starts")
+
+
+def test_both_proofs_need_places(dataset):
+    edit_places(dataset, lambda rows: [r for r in rows if r["proof"] != "fourth_crusade"])
+    refuses("the 'fourth_crusade' proof has no places")
