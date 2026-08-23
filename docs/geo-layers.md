@@ -57,6 +57,11 @@ release manifest's job. `tags` carry search synonyms without touching `title`,
 `featured` controls editorial prominence, and `sortWeight` fixes catalogue order.
 `collectionIds` references the collection registry.
 
+Documentation links are audited and classified in
+[the Atlas GIS documentation audit](atlas-documentation-audit.md): every entry
+carries an audience, a canonical owner and a proposed public destination, and a
+reconciliation test fails the build if the registry and the inventory diverge.
+
 ## Register and load a layer
 
 1. Add the source/licence/CRS/temporal record to `data/geo/catalog.json`.

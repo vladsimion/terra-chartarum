@@ -1,0 +1,498 @@
+{
+  "version": "1.0.0",
+  "ticket": "KAN-409",
+  "summary": "Migration inventory for every documentation link the Atlas GIS registry exposes. Classifies audience, canonical owner and public destination before any UI link is changed, so evidence is not hidden and developer documentation is not promoted as public narrative. Public routes are proposals: the Handbook route model is fixed by KAN-410.",
+  "vocabularies": {
+    "audience": [
+      "public-scholarly",
+      "mixed",
+      "technical",
+      "internal-governance",
+      "obsolete-duplicate"
+    ],
+    "publicFunction": [
+      "layer-explanation",
+      "sources-evidence",
+      "methodology",
+      "glossary-data-fields",
+      "editorial-decision",
+      "citation-data-reuse",
+      "technical-gateway"
+    ],
+    "pattern": ["A", "B", "none"],
+    "disposition": ["migrate-public", "retain-technical", "retire", "internal-only"],
+    "coverage": ["covered", "partial", "gap", "exempt", "exempt-with-warning"]
+  },
+  "documents": [
+    {
+      "id": "doc-vmn-data-dictionary",
+      "title": "VMN data dictionary",
+      "repoPath": "docs/vmn/data-dictionary.md",
+      "audience": "mixed",
+      "publicFunctions": ["glossary-data-fields", "methodology"],
+      "canonicalOwner": "VMN programme (repository Markdown)",
+      "pattern": "B",
+      "publicRoute": "/atlas/handbook/programmes/vmn/data-fields/",
+      "disposition": "migrate-public",
+      "retainTechnicalLink": true,
+      "notes": "Field meanings, controlled vocabularies and temporal conventions are reader-facing; the FGB build contracts and the spec section numbers are not. Pattern B: an authored data-fields record cites the canonical field IDs, and the full dictionary stays reachable under Advanced/Technical.",
+      "currentHref": "https://github.com/vladsimion/terra-chartarum/blob/main/docs/vmn/data-dictionary.md",
+      "citedByLayers": ["venetian-ports", "venetian-routes", "venetian-possessions"]
+    },
+    {
+      "id": "doc-vmn-source-log",
+      "title": "VMN source log",
+      "repoPath": "docs/vmn/source-log.md",
+      "audience": "public-scholarly",
+      "publicFunctions": ["sources-evidence", "citation-data-reuse"],
+      "canonicalOwner": "VMN programme (repository Markdown)",
+      "pattern": "A",
+      "publicRoute": "/atlas/handbook/programmes/vmn/sources/",
+      "disposition": "migrate-public",
+      "retainTechnicalLink": true,
+      "notes": "The historical authorities behind every VMN feature, plus the publication rules. Wholly reader-facing and short enough to render as-is (Pattern A). Feature-level citations already resolve through it, so it must not stay behind a GitHub hop.",
+      "currentHref": "https://github.com/vladsimion/terra-chartarum/blob/main/docs/vmn/source-log.md",
+      "citedByLayers": ["venetian-ports", "venetian-routes", "venetian-possessions"]
+    },
+    {
+      "id": "doc-vmn-deep-links",
+      "title": "VMN essay-Atlas deep-link guide",
+      "repoPath": "docs/vmn/deep-links.md",
+      "audience": "technical",
+      "publicFunctions": ["technical-gateway"],
+      "canonicalOwner": "VMN programme (repository Markdown)",
+      "pattern": "none",
+      "publicRoute": null,
+      "disposition": "retain-technical",
+      "retainTechnicalLink": true,
+      "notes": "A specification of Atlas URL parameters and an anchor validation table. The reader-facing equivalent of this document is the Atlas affordance itself - \"Copy this view\" (KAN-405) - not a page of parameter tables. Demote from first-level to Advanced/Technical; do not publish.",
+      "currentHref": "https://github.com/vladsimion/terra-chartarum/blob/main/docs/vmn/deep-links.md",
+      "citedByLayers": ["venetian-ports", "venetian-routes", "venetian-possessions"]
+    },
+    {
+      "id": "doc-hse-data-dictionary",
+      "title": "HSE data dictionary",
+      "repoPath": "docs/hanseatic/data-dictionary.md",
+      "audience": "mixed",
+      "publicFunctions": ["glossary-data-fields", "methodology"],
+      "canonicalOwner": "HSE programme (repository Markdown)",
+      "pattern": "B",
+      "publicRoute": "/atlas/handbook/programmes/hanseatic/data-fields/",
+      "disposition": "migrate-public",
+      "retainTechnicalLink": true,
+      "notes": "Same split as the VMN dictionary. The participation classes, evidence types and certainty vocabulary are exactly what a reader needs to interpret the map; the compile outputs, promotion rules and release manifest are not.",
+      "currentHref": "https://github.com/vladsimion/terra-chartarum/blob/main/docs/hanseatic/data-dictionary.md",
+      "citedByLayers": ["hanseatic-places", "hanseatic-routes", "hanseatic-events"]
+    },
+    {
+      "id": "doc-hse-decisions",
+      "title": "HSE decisions log",
+      "repoPath": "docs/hanseatic/decisions.md",
+      "audience": "mixed",
+      "publicFunctions": ["editorial-decision", "methodology"],
+      "canonicalOwner": "HSE programme (repository Markdown)",
+      "pattern": "B",
+      "publicRoute": "/atlas/handbook/programmes/hanseatic/decisions/",
+      "disposition": "migrate-public",
+      "retainTechnicalLink": true,
+      "notes": "Carries genuinely reader-facing editorial reasoning (\"Two different fours\", \"Bruges in the past tense\", the vocabulary decisions) interleaved with stable-ID and build-contract governance. Pattern B: publish the curated editorial decisions; the full log stays technical. This document also holds the network-not-territory rationale that KAN-418 requires be publicly legible.",
+      "currentHref": "https://github.com/vladsimion/terra-chartarum/blob/main/docs/hanseatic/decisions.md",
+      "citedByLayers": ["hanseatic-places", "hanseatic-routes", "hanseatic-events"]
+    },
+    {
+      "id": "doc-dacia-data-dictionary",
+      "title": "CCD data dictionary",
+      "repoPath": "docs/dacia/data-dictionary.md",
+      "audience": "mixed",
+      "publicFunctions": ["glossary-data-fields", "methodology"],
+      "canonicalOwner": "CCD programme (repository Markdown)",
+      "pattern": "B",
+      "publicRoute": "/atlas/handbook/programmes/dacia/data-fields/",
+      "disposition": "migrate-public",
+      "retainTechnicalLink": true,
+      "notes": "416 lines, mostly CSV schemas and governance tables. The reader-facing minority - the promotion ladder, the confidence and attestation-class vocabularies, and the two-tier release contract - is what the Atlas facets expose, so it must surface publicly while the schemas stay technical.",
+      "currentHref": "https://github.com/vladsimion/terra-chartarum/blob/main/docs/dacia/data-dictionary.md",
+      "citedByLayers": ["dacia-attestations", "dacia-attestations-research"]
+    },
+    {
+      "id": "doc-dacia-readme",
+      "title": "Corpus Chartarum Daciae programme README",
+      "repoPath": "docs/dacia/README.md",
+      "audience": "mixed",
+      "publicFunctions": ["layer-explanation", "methodology"],
+      "canonicalOwner": "Site: /programmes/corpus-chartarum-daciae/ (KAN-370)",
+      "pattern": "B",
+      "publicRoute": "/programmes/corpus-chartarum-daciae/",
+      "disposition": "migrate-public",
+      "retainTechnicalLink": true,
+      "notes": "The only current link whose public owner already exists: the programme index shipped in KAN-370. The layer should point at that route, not at the README. The README keeps the identifier, immutability and gate-running material as technical documentation.",
+      "currentHref": "https://github.com/vladsimion/terra-chartarum/blob/main/docs/dacia/README.md",
+      "citedByLayers": ["dacia-attestations"]
+    },
+    {
+      "id": "doc-dacia-shared-gis-layers",
+      "title": "The shared Dacia GIS family",
+      "repoPath": "docs/dacia/shared-gis-layers.md",
+      "audience": "public-scholarly",
+      "publicFunctions": ["layer-explanation", "methodology"],
+      "canonicalOwner": "CCD programme (repository Markdown)",
+      "pattern": "B",
+      "publicRoute": "/atlas/handbook/methods/dacia-shared-gis/",
+      "disposition": "migrate-public",
+      "retainTechnicalLink": true,
+      "notes": "The heaviest reuse in the registry: five layers cite this one document, and four of them are asking it for their own per-layer explanation. Migration must split it into one shared method record (the rule the family is built on, the geometry_provenance contract) plus per-layer records that reference it. Copying the shared prose into five layer pages would create exactly the duplicate scholarly identity KAN-418 forbids.",
+      "currentHref": "https://github.com/vladsimion/terra-chartarum/blob/main/docs/dacia/shared-gis-layers.md",
+      "citedByLayers": [
+        "dacia-roman-sites",
+        "dacia-roman-network",
+        "dacia-principalities",
+        "dacia-josephinian-sheets",
+        "dacia-treaty-frontiers"
+      ]
+    },
+    {
+      "id": "doc-dacia-treaty-ledger",
+      "title": "Treaty and frontier source ledger, 1829-1947",
+      "repoPath": "docs/dacia/treaty-frontier-source-ledger.md",
+      "audience": "public-scholarly",
+      "publicFunctions": ["sources-evidence", "methodology", "citation-data-reuse"],
+      "canonicalOwner": "CCD programme (repository Markdown)",
+      "pattern": "A",
+      "publicRoute": "/atlas/handbook/layers/dacia-treaty-frontiers/sources/",
+      "disposition": "migrate-public",
+      "retainTechnicalLink": true,
+      "notes": "Frozen instruments, interpretation and confidence, the editorial geometry rule and the rights posture, in reader-facing prose and bound to one layer. This is the gold-standard target for KAN-413: the pattern every other layer is measured against.",
+      "currentHref": "https://github.com/vladsimion/terra-chartarum/blob/main/docs/dacia/treaty-frontier-source-ledger.md",
+      "citedByLayers": ["dacia-treaty-frontiers"]
+    }
+  ],
+  "links": [
+    {
+      "layerId": "venetian-ports",
+      "label": "Data dictionary",
+      "documentId": "doc-vmn-data-dictionary"
+    },
+    {
+      "layerId": "venetian-ports",
+      "label": "Source log",
+      "documentId": "doc-vmn-source-log"
+    },
+    {
+      "layerId": "venetian-ports",
+      "label": "Deep-link guide",
+      "documentId": "doc-vmn-deep-links"
+    },
+    {
+      "layerId": "venetian-routes",
+      "label": "Data dictionary",
+      "documentId": "doc-vmn-data-dictionary"
+    },
+    {
+      "layerId": "venetian-routes",
+      "label": "Source log",
+      "documentId": "doc-vmn-source-log"
+    },
+    {
+      "layerId": "venetian-routes",
+      "label": "Deep-link guide",
+      "documentId": "doc-vmn-deep-links"
+    },
+    {
+      "layerId": "venetian-possessions",
+      "label": "Data dictionary",
+      "documentId": "doc-vmn-data-dictionary"
+    },
+    {
+      "layerId": "venetian-possessions",
+      "label": "Source log",
+      "documentId": "doc-vmn-source-log"
+    },
+    {
+      "layerId": "venetian-possessions",
+      "label": "Deep-link guide",
+      "documentId": "doc-vmn-deep-links"
+    },
+    {
+      "layerId": "hanseatic-places",
+      "label": "Data dictionary",
+      "documentId": "doc-hse-data-dictionary"
+    },
+    {
+      "layerId": "hanseatic-places",
+      "label": "Decisions",
+      "documentId": "doc-hse-decisions"
+    },
+    {
+      "layerId": "hanseatic-routes",
+      "label": "Data dictionary",
+      "documentId": "doc-hse-data-dictionary"
+    },
+    {
+      "layerId": "hanseatic-routes",
+      "label": "Decisions",
+      "documentId": "doc-hse-decisions"
+    },
+    {
+      "layerId": "hanseatic-events",
+      "label": "Data dictionary",
+      "documentId": "doc-hse-data-dictionary"
+    },
+    {
+      "layerId": "hanseatic-events",
+      "label": "Decisions",
+      "documentId": "doc-hse-decisions"
+    },
+    {
+      "layerId": "dacia-attestations",
+      "label": "Data dictionary",
+      "documentId": "doc-dacia-data-dictionary"
+    },
+    {
+      "layerId": "dacia-attestations",
+      "label": "Programme",
+      "documentId": "doc-dacia-readme"
+    },
+    {
+      "layerId": "dacia-attestations-research",
+      "label": "Data dictionary",
+      "documentId": "doc-dacia-data-dictionary"
+    },
+    {
+      "layerId": "dacia-roman-sites",
+      "label": "Shared GIS layers",
+      "documentId": "doc-dacia-shared-gis-layers"
+    },
+    {
+      "layerId": "dacia-roman-network",
+      "label": "Shared GIS layers",
+      "documentId": "doc-dacia-shared-gis-layers"
+    },
+    {
+      "layerId": "dacia-principalities",
+      "label": "Shared GIS layers",
+      "documentId": "doc-dacia-shared-gis-layers"
+    },
+    {
+      "layerId": "dacia-josephinian-sheets",
+      "label": "Shared GIS layers",
+      "documentId": "doc-dacia-shared-gis-layers"
+    },
+    {
+      "layerId": "dacia-treaty-frontiers",
+      "label": "Treaty frontier source ledger",
+      "documentId": "doc-dacia-treaty-ledger"
+    },
+    {
+      "layerId": "dacia-treaty-frontiers",
+      "label": "Shared GIS layers",
+      "documentId": "doc-dacia-shared-gis-layers"
+    }
+  ],
+  "layerCoverage": {
+    "requiredPublicFunctions": ["layer-explanation", "sources-evidence"],
+    "note": "Assessed against what a published historical or evidential layer owes a reader: an explanation of the claim and a record of the evidence behind it. Context layers take a minimal-context exemption. \"partial\" means some public function is documented and at least one required one is not.",
+    "layers": [
+      {
+        "layerId": "ne-coastline",
+        "coverage": "exempt",
+        "missing": [],
+        "note": "Neutral base geography. Minimal-context exemption: source, licence and attribution on the layer record are sufficient."
+      },
+      {
+        "layerId": "ne-land",
+        "coverage": "exempt",
+        "missing": [],
+        "note": "Neutral base geography. Minimal-context exemption."
+      },
+      {
+        "layerId": "ne-rivers",
+        "coverage": "exempt",
+        "missing": [],
+        "note": "Neutral base geography. Minimal-context exemption."
+      },
+      {
+        "layerId": "ne-boundaries",
+        "coverage": "exempt-with-warning",
+        "missing": [],
+        "note": "Minimal-context exemption, but conditional: the present-day boundary layer must carry a visible anachronism warning wherever it is drawn over historical material (KAN-402 inspector, KAN-418 step 8). The exemption covers documentation depth, not the warning."
+      },
+      {
+        "layerId": "map-coverage",
+        "coverage": "gap",
+        "missing": ["layer-explanation", "sources-evidence", "methodology"],
+        "note": "No documentation link of any kind, and it is an evidence layer. A reader cannot currently learn how a depicted extent was derived, what precision it claims, or that it describes the map rather than the ground. Must be closed before first public GIS release."
+      },
+      {
+        "layerId": "roman-empire-117",
+        "coverage": "gap",
+        "missing": ["layer-explanation", "sources-evidence"],
+        "note": "No documentation link of any kind. The layer carries an AWMC/Barrington attribution and an ODbL licence in its record, but nothing explains what \"imperial extent\" means as a claim, how the frontier was drawn, or how it relates to the Dacia material it frames. The most visible unsourced historical layer in the registry."
+      },
+      {
+        "layerId": "venetian-ports",
+        "coverage": "partial",
+        "missing": ["layer-explanation"],
+        "note": "Sources and data fields are covered by the VMN source log and dictionary. Missing a per-layer explanation of what a port phase asserts and why status drives symbol size."
+      },
+      {
+        "layerId": "venetian-routes",
+        "coverage": "partial",
+        "missing": ["layer-explanation"],
+        "note": "Same as venetian-ports. Missing the reader-facing statement that a muda line is a documented convoy relation, not a surveyed track."
+      },
+      {
+        "layerId": "venetian-possessions",
+        "coverage": "partial",
+        "missing": ["layer-explanation"],
+        "note": "Same as venetian-ports. Missing the reader-facing statement about clipping to the coastline and what a phased fill does and does not claim about control."
+      },
+      {
+        "layerId": "hanseatic-places",
+        "coverage": "partial",
+        "missing": ["sources-evidence", "layer-explanation"],
+        "note": "Data fields and decisions are documented; the sources and per-claim evidence are not public. data/hanseatic/sources/sources.csv and evidence.csv hold exactly the apparatus a reader needs and are currently unpublished."
+      },
+      {
+        "layerId": "hanseatic-routes",
+        "coverage": "partial",
+        "missing": ["sources-evidence", "layer-explanation"],
+        "note": "As hanseatic-places. Additionally the evidence_type width scale (documented route / repeated connection / generalized reconstruction) is the layer’s central epistemic claim and is only explained inside the technical dictionary."
+      },
+      {
+        "layerId": "hanseatic-events",
+        "coverage": "partial",
+        "missing": ["sources-evidence", "layer-explanation"],
+        "note": "As hanseatic-places. The network-not-territory rationale that KAN-418 requires be publicly legible currently lives only in the decisions log and the essay."
+      },
+      {
+        "layerId": "dacia-attestations",
+        "coverage": "partial",
+        "missing": ["sources-evidence", "layer-explanation"],
+        "note": "Dictionary and programme README are linked; no public evidence record. The layer is also empty pending human review, and nothing public says so - a reader meets an empty layer with no explanation."
+      },
+      {
+        "layerId": "dacia-attestations-research",
+        "coverage": "partial",
+        "missing": ["sources-evidence", "layer-explanation"],
+        "note": "Highest-risk gap in the registry: an unreviewed research corpus published live with a single link to a 416-line technical dictionary. The \"may not be cited as established evidence\" condition exists only in the layer description. It needs a public record stating the review gate, the two-tier contract and the citation restriction."
+      },
+      {
+        "layerId": "dacia-roman-sites",
+        "coverage": "partial",
+        "missing": ["sources-evidence"],
+        "note": "The shared GIS family document explains the layer well; the sources behind each identification (Barrington, TIR L-34/L-35) have no public record, and the geometry_provenance contract is only stated in the shared document."
+      },
+      {
+        "layerId": "dacia-roman-network",
+        "coverage": "partial",
+        "missing": ["sources-evidence"],
+        "note": "As dacia-roman-sites. The editorial-versus-attested distinction is carried by the dash pattern and explained only in the shared document."
+      },
+      {
+        "layerId": "dacia-principalities",
+        "coverage": "partial",
+        "missing": ["sources-evidence"],
+        "note": "As dacia-roman-sites. The Hertslet basis for the phases is in the attribution string, not in a citable record."
+      },
+      {
+        "layerId": "dacia-josephinian-sheets",
+        "coverage": "partial",
+        "missing": ["sources-evidence"],
+        "note": "Evidence layer. Needs a public record for the Kriegsarchiv holdings, the reconstructed-footprint caveat and the no-scan-redistributed rights posture; all three currently sit in the attribution string and the shared document."
+      },
+      {
+        "layerId": "dacia-treaty-frontiers",
+        "coverage": "covered",
+        "missing": [],
+        "note": "The only fully covered layer: a dedicated source ledger with instruments, interpretation, confidence, geometry rule and rights posture, plus the shared family method. KAN-413 gold standard."
+      }
+    ]
+  },
+  "nonRegistryLinks": [
+    {
+      "id": "nrl-bibliography-vmn-source-log",
+      "location": "src/pages/bibliography.astro",
+      "href": "https://github.com/vladsimion/terra-chartarum/blob/main/docs/vmn/source-log.md",
+      "documentId": "doc-vmn-source-log",
+      "audience": "public-scholarly",
+      "disposition": "migrate-public",
+      "notes": "A first-level GitHub link in reader-facing prose on a public page: feature-level citations are told to resolve through it. Repoint to the VMN sources route when it exists."
+    },
+    {
+      "id": "nrl-bibliography-vmn-dictionary",
+      "location": "src/pages/bibliography.astro",
+      "href": "https://github.com/vladsimion/terra-chartarum/blob/main/docs/vmn/data-dictionary.md",
+      "documentId": "doc-vmn-data-dictionary",
+      "audience": "mixed",
+      "disposition": "migrate-public",
+      "notes": "As above: repoint to the VMN data-fields route, keeping the raw dictionary under Advanced/Technical."
+    },
+    {
+      "id": "nrl-hse-src-spec-confluence",
+      "location": "data/hanseatic/sources/sources.csv",
+      "href": "https://vladsimion.atlassian.net/wiki/spaces/.../pages/11665410/",
+      "documentId": null,
+      "audience": "internal-governance",
+      "disposition": "internal-only",
+      "notes": "The only Confluence URL anywhere in the data or the site. It is a source row cited by one provisional HSE evidence claim (hse-claim-lubeck-leading), and it does not reach the built output today. Not a live public defect - but it becomes one the moment HSE sources are published, which KAN-414 is going to do. The claim it supports is already marked superseded, so the fix is to retire the citation rather than to publish the URL. Guarded by a test."
+    },
+    {
+      "id": "nrl-dacia-programme-release-tree",
+      "location": "src/data/dacia/generated/programme.json",
+      "href": "https://github.com/vladsimion/terra-chartarum/tree/main/data/dacia/release/cnd-0.1",
+      "documentId": null,
+      "audience": "technical",
+      "disposition": "retain-technical",
+      "notes": "A link to the released CND 0.1 data tree, surfaced by the public programme index. Legitimately technical: it is the download/reuse gateway, and KAN-416 gives it a proper citation and data-reuse surface. Keep, but present it as Advanced/Technical rather than as documentation."
+    }
+  ],
+  "retirements": [
+    {
+      "documentId": "doc-vmn-deep-links",
+      "action": "demote",
+      "rationale": "Not obsolete, but wrongly promoted: three layers carry it as a first-level peer of their source log. Its reader-facing function is served by the Atlas \"Copy this view\" affordance (KAN-405). Demote to Advanced/Technical on all three VMN layers."
+    },
+    {
+      "documentId": "doc-dacia-readme",
+      "action": "repoint",
+      "rationale": "Superseded as a public destination by /programmes/corpus-chartarum-daciae/ (KAN-370). The \"Programme\" link on dacia-attestations should resolve to the site route; the README stays as technical documentation."
+    }
+  ],
+  "duplicationRisks": [
+    {
+      "documentId": "doc-dacia-shared-gis-layers",
+      "citedBy": 5,
+      "risk": "Five layers cite one document, four of them for their own layer explanation. Naive migration would copy the shared prose into five layer pages and create five competing owners of one method. Split into a single method record plus per-layer records that reference it."
+    },
+    {
+      "documentId": "doc-vmn-data-dictionary",
+      "citedBy": 3,
+      "risk": "One dictionary, three layers. The public data-fields record must be programme-scoped, not per-layer."
+    },
+    {
+      "documentId": "doc-hse-data-dictionary",
+      "citedBy": 3,
+      "risk": "As the VMN dictionary."
+    },
+    {
+      "documentId": "doc-hse-decisions",
+      "citedBy": 3,
+      "risk": "Programme-scoped decisions; must not be restated per layer."
+    },
+    {
+      "documentId": "doc-vmn-source-log",
+      "citedBy": 3,
+      "risk": "Programme-scoped source log, additionally cited from the public bibliography. One owner, three referents."
+    },
+    {
+      "documentId": "doc-vmn-deep-links",
+      "citedBy": 3,
+      "risk": "Repeated across all three VMN layers as a first-level peer link. The duplication is not the main problem here - the promotion is - but it is why the demotion has to happen in one place rather than three."
+    },
+    {
+      "documentId": "doc-dacia-data-dictionary",
+      "citedBy": 2,
+      "risk": "Cited by both CND attestation tiers. The public data-fields record must be programme-scoped and must state the two-tier contract once, so the reviewed and research layers cannot end up explaining the review gate differently."
+    }
+  ]
+}
