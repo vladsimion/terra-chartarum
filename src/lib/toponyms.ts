@@ -22,6 +22,13 @@ export const ToponymSchema = z.object({
   coords: z.tuple([z.number(), z.number()]), // [lng, lat]
   pleiadesId: z.string().optional(),
   whgId: z.string().optional(),
+  /**
+   * The CND place this entry is the same referent as (KAN-339). It is not an
+   * authority match and never becomes a `closeMatch`: it is this project citing
+   * its own corpus, which is exactly the kind of claim the Linked Places export
+   * must not dress up as external reconciliation.
+   */
+  cndPlaceId: z.string().optional(),
   essaySlugs: z.array(z.string()).default([]),
   mapIds: z.array(z.string()).default([]),
 });
@@ -97,11 +104,29 @@ const RAW: unknown[] = [
     mapIds: ['fra-mauro'],
     essaySlugs: ['venice-sicily'],
   },
+  // Two places, forty kilometres apart, that shared one entry until the Trench A
+  // inventory said so out loud: the Dacian royal seat in the Orăștie Mountains
+  // and the Roman colonia in Hațeg country. The single record carried Regia's
+  // coordinates while listing the colonia among its ancient names, which put the
+  // colonia's pin on the wrong mountain. A place record is one referent, never
+  // one name (KAN-339, retiring `sarmizegetusa`).
   {
-    id: 'sarmizegetusa',
+    id: 'sarmizegetusa-regia',
     modern: 'Grădiștea de Munte',
-    ancient: ['Sarmizegetusa Regia', 'Ulpia Traiana Sarmizegetusa'],
+    ancient: ['Sarmizegetusa Regia', 'Zarmizegethousa'],
+    variants: ['Grădiștea Muncelului'],
     coords: [23.31, 45.62],
+    cndPlaceId: 'plc-sarmizegetusa-regia',
+    essaySlugs: ['dacia'],
+  },
+  {
+    id: 'ulpia-traiana-sarmizegetusa',
+    modern: 'Sarmizegetusa',
+    ancient: ['Colonia Ulpia Traiana Sarmizegetusa', 'Sarmategte'],
+    medieval: ['Várhely'],
+    variants: ['Grădiște'],
+    coords: [22.78, 45.51],
+    cndPlaceId: 'plc-ulpia-traiana-sarmizegetusa',
     essaySlugs: ['dacia'],
   },
   {
@@ -111,6 +136,7 @@ const RAW: unknown[] = [
     medieval: ['Kolozsvár', 'Clus'],
     variants: ['Klausenburg'],
     coords: [23.6, 46.77],
+    cndPlaceId: 'plc-napoca',
     essaySlugs: ['dacia'],
   },
   {

@@ -1,0 +1,390 @@
+{
+  "_ccd": {
+    "layer": "dacia-roman-network",
+    "licence": "CC BY 4.0 for the compiled records; each source carries its own rights_statement.",
+    "note": "Roads are lines through attested stations and the limes are editorial corridors. No segment here is digitised from a survey.",
+    "ticket": "KAN-341"
+  },
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            24.48,
+            43.77
+          ],
+          [
+            24.4,
+            44.1
+          ],
+          [
+            24.35,
+            44.45
+          ],
+          [
+            24.3,
+            44.85
+          ],
+          [
+            24.3,
+            45.2
+          ],
+          [
+            24.28,
+            45.55
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "rd-limes-alutanus",
+      "properties": {
+        "citation": "Tabula Imperii Romani L-35: Romula, Durostorum, Tomis (1969)",
+        "confidence": "low",
+        "feature_type": "limes",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "rd-limes-alutanus",
+        "latin_name": "Limes Alvtanvs",
+        "name": "Limes Alutanus",
+        "note": "The Olt line, from the Danube to the Turnu Roșu pass. Schematic corridor, following the river's general course rather than any surveyed work.",
+        "repository": "Academia Republicii Socialiste România",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "source_url": "https://pleiades.stoa.org/places/207550",
+        "stations": 0,
+        "valid_from": 106,
+        "valid_to": 271,
+        "via_place_ids": ""
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            22.75,
+            46.78
+          ],
+          [
+            22.9,
+            46.9
+          ],
+          [
+            23.0,
+            47.05
+          ],
+          [
+            23.15,
+            47.18
+          ],
+          [
+            23.45,
+            47.3
+          ],
+          [
+            23.8,
+            47.35
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "rd-limes-porolissensis",
+      "properties": {
+        "citation": "Talbert (ed.), Barrington Atlas of the Greek and Roman World (2000), map 21",
+        "confidence": "low",
+        "feature_type": "limes",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "rd-limes-porolissensis",
+        "latin_name": "Limes Porolissensis",
+        "name": "Limes Porolissensis",
+        "note": "The north-western frontier system of forts, towers and earthworks. The line is a schematic corridor drawn to show where the frontier ran, not a mapped earthwork: no segment here has been digitised from a survey.",
+        "repository": "Princeton University Press",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "source_url": "https://pleiades.stoa.org/places/207487",
+        "stations": 0,
+        "valid_from": 106,
+        "valid_to": 271,
+        "via_place_ids": ""
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            24.95,
+            43.8
+          ],
+          [
+            25.0,
+            44.15
+          ],
+          [
+            25.05,
+            44.55
+          ],
+          [
+            25.05,
+            44.9
+          ],
+          [
+            25.02,
+            45.1
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "rd-limes-transalutanus",
+      "properties": {
+        "citation": "Tabula Imperii Romani L-35: Romula, Durostorum, Tomis (1969)",
+        "confidence": "low",
+        "feature_type": "limes",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "rd-limes-transalutanus",
+        "latin_name": "Limes Transalvtanvs",
+        "name": "Limes Transalutanus",
+        "note": "The forward line east of the Olt, abandoned in the mid-third century before the province itself was. Schematic corridor; its end date is earlier than the province's and is the reason this layer is filtered per feature rather than as a block.",
+        "repository": "Academia Republicii Socialiste România",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "source_url": "https://pleiades.stoa.org/places/207516",
+        "stations": 0,
+        "valid_from": 106,
+        "valid_to": 245,
+        "via_place_ids": ""
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            22.4,
+            44.72
+          ],
+          [
+            22.66,
+            44.63
+          ],
+          [
+            24.48,
+            43.77
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "rd-road-danube",
+      "properties": {
+        "citation": "Tabula Imperii Romani L-35: Romula, Durostorum, Tomis (1969)",
+        "confidence": "medium",
+        "feature_type": "road",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "rd-road-danube",
+        "latin_name": "Via ripae Danvvii",
+        "name": "The Danube bank road",
+        "note": "The river road along the left bank. Drawn straight between crossings; the actual road follows the river, which this line does not.",
+        "repository": "Academia Republicii Socialiste România",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "source_url": "https://pleiades.stoa.org/places/207382",
+        "stations": 3,
+        "valid_from": 106,
+        "valid_to": 271,
+        "via_place_ids": "plc-dierna|plc-drobeta|plc-sucidava"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            22.2,
+            45.45
+          ],
+          [
+            22.78,
+            45.51
+          ],
+          [
+            23.57,
+            46.07
+          ],
+          [
+            23.79,
+            46.57
+          ],
+          [
+            23.6,
+            46.77
+          ],
+          [
+            23.15,
+            47.18
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "rd-road-imperial",
+      "properties": {
+        "citation": "Talbert (ed.), Barrington Atlas of the Greek and Roman World (2000), map 21",
+        "confidence": "medium",
+        "feature_type": "road",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "rd-road-imperial",
+        "latin_name": "Via principalis Daciae",
+        "name": "The imperial road",
+        "note": "The province's spine, from the capital to the northern command. The line joins attested stations in order and generalises every bend of the Mureș and Someș valleys it actually followed.",
+        "repository": "Princeton University Press",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "source_url": "https://pleiades.stoa.org/places/207371",
+        "stations": 6,
+        "valid_from": 106,
+        "valid_to": 271,
+        "via_place_ids": "plc-tibiscum|plc-ulpia-traiana-sarmizegetusa|plc-apulum|plc-potaissa|plc-napoca|plc-porolissum"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            21.55,
+            45.02
+          ],
+          [
+            22.2,
+            45.45
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "rd-road-lederata-tibiscum",
+      "properties": {
+        "citation": "Talbert (ed.), Barrington Atlas of the Greek and Roman World (2000), map 21; Tabula Peutingeriana segm. VI-VII",
+        "confidence": "medium",
+        "feature_type": "road",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "rd-road-lederata-tibiscum",
+        "latin_name": "Via a Lederata ad Tibiscvm",
+        "name": "Lederata road",
+        "note": "One of the two invasion routes of 101-106 and a road of the Peutinger table. The drawn line joins attested stations in order; it is not a surveyed alignment and the intermediate stations are not plotted.",
+        "repository": "Princeton University Press",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "source_url": "https://pleiades.stoa.org/places/207362",
+        "stations": 2,
+        "valid_from": 106,
+        "valid_to": 271,
+        "via_place_ids": "plc-arcidava|plc-tibiscum"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            22.75,
+            45.9
+          ],
+          [
+            23.57,
+            46.07
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "rd-road-mures",
+      "properties": {
+        "citation": "Talbert (ed.), Barrington Atlas of the Greek and Roman World (2000), map 21",
+        "confidence": "low",
+        "feature_type": "road",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "rd-road-mures",
+        "latin_name": "Via ad Marisiam",
+        "name": "The Mureș valley road",
+        "note": "The customs road down the Mureș. Two stations only, so the drawn segment is a direction rather than a route.",
+        "repository": "Princeton University Press",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "source_url": "https://pleiades.stoa.org/places/207429",
+        "stations": 2,
+        "valid_from": 106,
+        "valid_to": 271,
+        "via_place_ids": "plc-micia|plc-apulum"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            24.48,
+            43.77
+          ],
+          [
+            24.42,
+            44.3
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "rd-road-olt",
+      "properties": {
+        "citation": "Tabula Imperii Romani L-35: Romula, Durostorum, Tomis (1969)",
+        "confidence": "medium",
+        "feature_type": "road",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "rd-road-olt",
+        "latin_name": "Via Alvtana",
+        "name": "The Olt corridor road",
+        "note": "The road up the Olt behind the limes Alutanus, from the Danube crossing to the corridor's principal town.",
+        "repository": "Academia Republicii Socialiste România",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "source_url": "https://pleiades.stoa.org/places/207516",
+        "stations": 2,
+        "valid_from": 106,
+        "valid_to": 271,
+        "via_place_ids": "plc-sucidava|plc-romula"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            23.6,
+            46.77
+          ],
+          [
+            22.9,
+            46.9
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "rd-road-resculum",
+      "properties": {
+        "citation": "Talbert (ed.), Barrington Atlas of the Greek and Roman World (2000), map 21",
+        "confidence": "low",
+        "feature_type": "road",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "rd-road-resculum",
+        "latin_name": "Via a Napoca ad Resculvm",
+        "name": "The Resculum road",
+        "note": "West from Napoca to the fort at Bologa and the passes beyond.",
+        "repository": "Princeton University Press",
+        "review_status": "candidate",
+        "rights_status": "in_copyright",
+        "source_url": "https://pleiades.stoa.org/places/207506",
+        "stations": 2,
+        "valid_from": 106,
+        "valid_to": 271,
+        "via_place_ids": "plc-napoca|plc-bologa"
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

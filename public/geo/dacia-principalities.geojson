@@ -1,0 +1,939 @@
+{
+  "_ccd": {
+    "layer": "dacia-principalities",
+    "licence": "CC BY 4.0 for the compiled records; each source carries its own rights_statement.",
+    "note": "Phases, not one timeless polygon. Every ring is an editorial envelope for temporal filtering and none is traced from a modern national boundary.",
+    "ticket": "KAN-342"
+  },
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              28.2,
+              47.5
+            ],
+            [
+              27.3,
+              48.3
+            ],
+            [
+              28.0,
+              48.5
+            ],
+            [
+              29.2,
+              48.2
+            ],
+            [
+              30.2,
+              47.3
+            ],
+            [
+              30.3,
+              46.4
+            ],
+            [
+              29.7,
+              45.6
+            ],
+            [
+              28.7,
+              45.3
+            ],
+            [
+              28.1,
+              45.6
+            ],
+            [
+              28.2,
+              46.4
+            ],
+            [
+              28.2,
+              47.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "pp-bessarabia-1812",
+      "properties": {
+        "citation": "Hertslet, The Map of Europe by Treaty, vol. I (1875)",
+        "confidence": "low",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "pp-bessarabia-1812",
+        "instrument": "Treaty of Bucharest",
+        "instrument_year": 1812,
+        "name": "Russian Bessarabia",
+        "note": "Between the Prut and the Dniester. The southern districts returned to Moldavia in 1856 and are not drawn as a separate phase; that omission is recorded as verification debt.",
+        "phase_label": "Ceded to Russia",
+        "polity_id": "pol-russian-bessarabia",
+        "review_status": "candidate",
+        "rights_status": "public_domain",
+        "source_url": "https://archive.org/details/mapofeuropebytre01hert",
+        "sovereignty": "russian_province",
+        "suzerain": "Russian Empire",
+        "valid_from": 1812,
+        "valid_to": 1859
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              25.3,
+              47.75
+            ],
+            [
+              26.0,
+              48.35
+            ],
+            [
+              26.6,
+              48.5
+            ],
+            [
+              27.3,
+              48.3
+            ],
+            [
+              26.6,
+              48.1
+            ],
+            [
+              26.3,
+              47.6
+            ],
+            [
+              25.6,
+              47.2
+            ],
+            [
+              25.3,
+              47.75
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "pp-bukovina-1775",
+      "properties": {
+        "citation": "Hertslet, The Map of Europe by Treaty, vol. I (1875)",
+        "confidence": "low",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "pp-bukovina-1775",
+        "instrument": "Habsburg annexation of Bukovina",
+        "instrument_year": 1775,
+        "name": "Habsburg Bukovina",
+        "note": "Detached from Moldavia and administered from Vienna; a duchy in its own right from 1849.",
+        "phase_label": "Ceded to the Habsburgs",
+        "polity_id": "pol-habsburg-bukovina",
+        "review_status": "candidate",
+        "rights_status": "public_domain",
+        "source_url": "https://archive.org/details/mapofeuropebytre01hert",
+        "sovereignty": "habsburg_province",
+        "suzerain": "Habsburg Monarchy",
+        "valid_from": 1775,
+        "valid_to": 1859
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              25.3,
+              47.75
+            ],
+            [
+              26.0,
+              48.35
+            ],
+            [
+              26.6,
+              48.5
+            ],
+            [
+              28.0,
+              48.5
+            ],
+            [
+              29.2,
+              48.2
+            ],
+            [
+              30.2,
+              47.3
+            ],
+            [
+              30.3,
+              46.4
+            ],
+            [
+              29.7,
+              45.6
+            ],
+            [
+              28.7,
+              45.3
+            ],
+            [
+              27.9,
+              45.3
+            ],
+            [
+              27.2,
+              45.6
+            ],
+            [
+              26.6,
+              46.2
+            ],
+            [
+              26.2,
+              46.8
+            ],
+            [
+              25.6,
+              47.2
+            ],
+            [
+              25.3,
+              47.75
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "pp-moldavia-1526",
+      "properties": {
+        "citation": "Hertslet, The Map of Europe by Treaty, vol. I (1875)",
+        "confidence": "low",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "pp-moldavia-1526",
+        "instrument": "Consolidation of Ottoman suzerainty after Mohács",
+        "instrument_year": 1526,
+        "name": "Moldavia",
+        "note": "Carpathians to the Dniester. Cetatea Albă and the Budjak had already been detached to direct Ottoman administration and are not separated here, which is a known simplification.",
+        "phase_label": "Under Ottoman suzerainty",
+        "polity_id": "pol-moldavia",
+        "review_status": "candidate",
+        "rights_status": "public_domain",
+        "source_url": "https://archive.org/details/mapofeuropebytre01hert",
+        "sovereignty": "autonomous_tributary",
+        "suzerain": "Ottoman Empire",
+        "valid_from": 1526,
+        "valid_to": 1774
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              25.6,
+              47.2
+            ],
+            [
+              26.3,
+              47.6
+            ],
+            [
+              26.6,
+              48.1
+            ],
+            [
+              28.0,
+              48.5
+            ],
+            [
+              29.2,
+              48.2
+            ],
+            [
+              30.2,
+              47.3
+            ],
+            [
+              30.3,
+              46.4
+            ],
+            [
+              29.7,
+              45.6
+            ],
+            [
+              28.7,
+              45.3
+            ],
+            [
+              27.9,
+              45.3
+            ],
+            [
+              27.2,
+              45.6
+            ],
+            [
+              26.6,
+              46.2
+            ],
+            [
+              26.2,
+              46.8
+            ],
+            [
+              25.6,
+              47.2
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "pp-moldavia-1775",
+      "properties": {
+        "citation": "Hertslet, The Map of Europe by Treaty, vol. I (1875)",
+        "confidence": "low",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "pp-moldavia-1775",
+        "instrument": "Habsburg annexation of Bukovina",
+        "instrument_year": 1775,
+        "name": "Moldavia",
+        "note": "The north-western districts, with the old capital at Suceava, pass to the Habsburgs.",
+        "phase_label": "Without Bukovina",
+        "polity_id": "pol-moldavia",
+        "review_status": "candidate",
+        "rights_status": "public_domain",
+        "source_url": "https://archive.org/details/mapofeuropebytre01hert",
+        "sovereignty": "autonomous_tributary",
+        "suzerain": "Ottoman Empire",
+        "valid_from": 1775,
+        "valid_to": 1811
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              25.6,
+              47.2
+            ],
+            [
+              26.3,
+              47.6
+            ],
+            [
+              26.6,
+              48.1
+            ],
+            [
+              27.3,
+              48.3
+            ],
+            [
+              28.2,
+              47.5
+            ],
+            [
+              28.2,
+              46.4
+            ],
+            [
+              28.1,
+              45.6
+            ],
+            [
+              27.9,
+              45.3
+            ],
+            [
+              27.2,
+              45.6
+            ],
+            [
+              26.6,
+              46.2
+            ],
+            [
+              26.2,
+              46.8
+            ],
+            [
+              25.6,
+              47.2
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "pp-moldavia-1812",
+      "properties": {
+        "citation": "Hertslet, The Map of Europe by Treaty, vol. I (1875)",
+        "confidence": "low",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "pp-moldavia-1812",
+        "instrument": "Treaty of Bucharest",
+        "instrument_year": 1812,
+        "name": "Moldavia",
+        "note": "The Prut becomes the eastern boundary. The phase runs to 1859.",
+        "phase_label": "Without Bessarabia",
+        "polity_id": "pol-moldavia",
+        "review_status": "candidate",
+        "rights_status": "public_domain",
+        "source_url": "https://archive.org/details/mapofeuropebytre01hert",
+        "sovereignty": "autonomous_tributary",
+        "suzerain": "Ottoman Empire",
+        "valid_from": 1812,
+        "valid_to": 1859
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              22.7,
+              44.62
+            ],
+            [
+              23.5,
+              44.1
+            ],
+            [
+              24.45,
+              43.75
+            ],
+            [
+              24.45,
+              45.4
+            ],
+            [
+              24.3,
+              45.45
+            ],
+            [
+              23.2,
+              45.0
+            ],
+            [
+              22.7,
+              44.62
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "pp-oltenia-1718",
+      "properties": {
+        "citation": "Hertslet, The Map of Europe by Treaty, vol. I (1875)",
+        "confidence": "low",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "pp-oltenia-1718",
+        "instrument": "Treaty of Passarowitz",
+        "instrument_year": 1718,
+        "name": "Habsburg Oltenia",
+        "note": "Twenty-one years of Habsburg administration west of the Olt, and the reason this layer models phases rather than one timeless Wallachia.",
+        "phase_label": "Banat of Craiova",
+        "polity_id": "pol-habsburg-oltenia",
+        "review_status": "candidate",
+        "rights_status": "public_domain",
+        "source_url": "https://archive.org/details/mapofeuropebytre01hert",
+        "sovereignty": "habsburg_administration",
+        "suzerain": "Habsburg Monarchy",
+        "valid_from": 1718,
+        "valid_to": 1738
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              22.3,
+              46.6
+            ],
+            [
+              22.6,
+              47.3
+            ],
+            [
+              23.5,
+              47.6
+            ],
+            [
+              24.5,
+              47.7
+            ],
+            [
+              25.3,
+              47.75
+            ],
+            [
+              25.6,
+              47.2
+            ],
+            [
+              26.2,
+              46.8
+            ],
+            [
+              26.2,
+              46.2
+            ],
+            [
+              25.8,
+              45.7
+            ],
+            [
+              25.2,
+              45.45
+            ],
+            [
+              24.3,
+              45.45
+            ],
+            [
+              23.2,
+              45.0
+            ],
+            [
+              22.6,
+              45.6
+            ],
+            [
+              22.3,
+              46.6
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "pp-transylvania-1526",
+      "properties": {
+        "citation": "Hertslet, The Map of Europe by Treaty, vol. I (1875)",
+        "confidence": "low",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "pp-transylvania-1526",
+        "instrument": "Mohács and the double election",
+        "instrument_year": 1526,
+        "name": "Transylvania",
+        "note": "Between Ferdinand of Habsburg and János Szapolyai. The Partium, held with Transylvania in this period, is not drawn; the ring is the Carpathian core only.",
+        "phase_label": "Contested succession",
+        "polity_id": "pol-transylvania",
+        "review_status": "candidate",
+        "rights_status": "public_domain",
+        "source_url": "https://archive.org/details/mapofeuropebytre01hert",
+        "sovereignty": "contested",
+        "suzerain": "",
+        "valid_from": 1526,
+        "valid_to": 1540
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              22.3,
+              46.6
+            ],
+            [
+              22.6,
+              47.3
+            ],
+            [
+              23.5,
+              47.6
+            ],
+            [
+              24.5,
+              47.7
+            ],
+            [
+              25.3,
+              47.75
+            ],
+            [
+              25.6,
+              47.2
+            ],
+            [
+              26.2,
+              46.8
+            ],
+            [
+              26.2,
+              46.2
+            ],
+            [
+              25.8,
+              45.7
+            ],
+            [
+              25.2,
+              45.45
+            ],
+            [
+              24.3,
+              45.45
+            ],
+            [
+              23.2,
+              45.0
+            ],
+            [
+              22.6,
+              45.6
+            ],
+            [
+              22.3,
+              46.6
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "pp-transylvania-1541",
+      "properties": {
+        "citation": "Hertslet, The Map of Europe by Treaty, vol. I (1875)",
+        "confidence": "low",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "pp-transylvania-1541",
+        "instrument": "Fall of Buda and the partition of Hungary",
+        "instrument_year": 1541,
+        "name": "Transylvania",
+        "note": "The principality of the Diet and the three nations. Same ring as the phases either side of it: what changes across 1541 and 1699 is who holds it, not where the mountains are.",
+        "phase_label": "Principality under Ottoman suzerainty",
+        "polity_id": "pol-transylvania",
+        "review_status": "candidate",
+        "rights_status": "public_domain",
+        "source_url": "https://archive.org/details/mapofeuropebytre01hert",
+        "sovereignty": "autonomous_tributary",
+        "suzerain": "Ottoman Empire",
+        "valid_from": 1541,
+        "valid_to": 1698
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              22.3,
+              46.6
+            ],
+            [
+              22.6,
+              47.3
+            ],
+            [
+              23.5,
+              47.6
+            ],
+            [
+              24.5,
+              47.7
+            ],
+            [
+              25.3,
+              47.75
+            ],
+            [
+              25.6,
+              47.2
+            ],
+            [
+              26.2,
+              46.8
+            ],
+            [
+              26.2,
+              46.2
+            ],
+            [
+              25.8,
+              45.7
+            ],
+            [
+              25.2,
+              45.45
+            ],
+            [
+              24.3,
+              45.45
+            ],
+            [
+              23.2,
+              45.0
+            ],
+            [
+              22.6,
+              45.6
+            ],
+            [
+              22.3,
+              46.6
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "pp-transylvania-1699",
+      "properties": {
+        "citation": "Hertslet, The Map of Europe by Treaty, vol. I (1875)",
+        "confidence": "low",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "pp-transylvania-1699",
+        "instrument": "Treaty of Karlowitz",
+        "instrument_year": 1699,
+        "name": "Transylvania",
+        "note": "Karlowitz confirms Habsburg possession; a Grand Principality from 1765. This is the state the Josephinian survey maps.",
+        "phase_label": "Habsburg rule",
+        "polity_id": "pol-transylvania",
+        "review_status": "candidate",
+        "rights_status": "public_domain",
+        "source_url": "https://archive.org/details/mapofeuropebytre01hert",
+        "sovereignty": "habsburg_province",
+        "suzerain": "Habsburg Monarchy",
+        "valid_from": 1699,
+        "valid_to": 1859
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              22.7,
+              44.62
+            ],
+            [
+              23.5,
+              44.1
+            ],
+            [
+              24.5,
+              43.75
+            ],
+            [
+              25.9,
+              43.9
+            ],
+            [
+              27.3,
+              44.0
+            ],
+            [
+              28.0,
+              44.2
+            ],
+            [
+              27.2,
+              45.1
+            ],
+            [
+              26.2,
+              45.3
+            ],
+            [
+              25.2,
+              45.45
+            ],
+            [
+              24.3,
+              45.45
+            ],
+            [
+              23.2,
+              45.0
+            ],
+            [
+              22.7,
+              44.62
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "pp-wallachia-1526",
+      "properties": {
+        "citation": "Hertslet, The Map of Europe by Treaty, vol. I (1875)",
+        "confidence": "low",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "pp-wallachia-1526",
+        "instrument": "Mohács and the collapse of the Hungarian kingdom",
+        "instrument_year": 1526,
+        "name": "Wallachia",
+        "note": "Danube in the south, Carpathian crest in the north, Oltenia included. The ring is a schematic envelope for temporal filtering, not a delimitation.",
+        "phase_label": "Under Ottoman suzerainty",
+        "polity_id": "pol-wallachia",
+        "review_status": "candidate",
+        "rights_status": "public_domain",
+        "source_url": "https://archive.org/details/mapofeuropebytre01hert",
+        "sovereignty": "autonomous_tributary",
+        "suzerain": "Ottoman Empire",
+        "valid_from": 1526,
+        "valid_to": 1717
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              24.4,
+              43.75
+            ],
+            [
+              25.9,
+              43.9
+            ],
+            [
+              27.3,
+              44.0
+            ],
+            [
+              28.0,
+              44.2
+            ],
+            [
+              27.2,
+              45.1
+            ],
+            [
+              26.2,
+              45.3
+            ],
+            [
+              25.2,
+              45.45
+            ],
+            [
+              24.45,
+              45.4
+            ],
+            [
+              24.4,
+              43.75
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "pp-wallachia-1718",
+      "properties": {
+        "citation": "Hertslet, The Map of Europe by Treaty, vol. I (1875)",
+        "confidence": "low",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "pp-wallachia-1718",
+        "instrument": "Treaty of Passarowitz",
+        "instrument_year": 1718,
+        "name": "Wallachia",
+        "note": "Passarowitz put Oltenia under Habsburg administration for twenty-one years; the principality east of the Olt is the phase drawn here.",
+        "phase_label": "Without Oltenia",
+        "polity_id": "pol-wallachia",
+        "review_status": "candidate",
+        "rights_status": "public_domain",
+        "source_url": "https://archive.org/details/mapofeuropebytre01hert",
+        "sovereignty": "autonomous_tributary",
+        "suzerain": "Ottoman Empire",
+        "valid_from": 1718,
+        "valid_to": 1738
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              22.7,
+              44.62
+            ],
+            [
+              23.5,
+              44.1
+            ],
+            [
+              24.5,
+              43.75
+            ],
+            [
+              25.9,
+              43.9
+            ],
+            [
+              27.3,
+              44.0
+            ],
+            [
+              28.0,
+              44.2
+            ],
+            [
+              27.2,
+              45.1
+            ],
+            [
+              26.2,
+              45.3
+            ],
+            [
+              25.2,
+              45.45
+            ],
+            [
+              24.3,
+              45.45
+            ],
+            [
+              23.2,
+              45.0
+            ],
+            [
+              22.7,
+              44.62
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "pp-wallachia-1739",
+      "properties": {
+        "citation": "Hertslet, The Map of Europe by Treaty, vol. I (1875)",
+        "confidence": "low",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "pp-wallachia-1739",
+        "instrument": "Treaty of Belgrade",
+        "instrument_year": 1739,
+        "name": "Wallachia",
+        "note": "Belgrade returned Oltenia. The phase runs to the double election of 1859, where this layer stops.",
+        "phase_label": "Oltenia restored",
+        "polity_id": "pol-wallachia",
+        "review_status": "candidate",
+        "rights_status": "public_domain",
+        "source_url": "https://archive.org/details/mapofeuropebytre01hert",
+        "sovereignty": "autonomous_tributary",
+        "suzerain": "Ottoman Empire",
+        "valid_from": 1739,
+        "valid_to": 1859
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

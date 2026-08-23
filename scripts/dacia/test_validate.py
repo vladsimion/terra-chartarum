@@ -409,7 +409,9 @@ def test_migrating_place_must_be_in_the_pilot(dataset):
 
 def test_planned_migration_whose_target_exists_is_stale(dataset):
     def mutate(rows):
-        find(rows, "datum_id", "inv-src-secret")["target_id"] = "src-ptolemy-geographia"
+        row = find(rows, "datum_id", "inv-src-secret")
+        row["migration_state"] = "planned"
+        row["target_id"] = "src-ptolemy-geographia"
 
     edit(dataset, "inventory", mutate)
     refuses("already exists; mark the migration done")
@@ -600,11 +602,49 @@ def test_transcription_must_resolve_to_an_attestation(dataset):
 
 
 def test_migrated_cell_count_must_match_its_state(dataset):
+    """A set with cells neither migrated nor declared local is not finished."""
+
     def mutate(rows):
-        find(rows, "datum_id", "inv-att-apulum")["migration_state"] = "done"
+        find(rows, "datum_id", "inv-att-apulum")["migrated_cells"] = "11"
 
     edit(dataset, "inventory", mutate)
-    refuses("cells migrated is 'partial'")
+    refuses("cells migrated (1 local) is 'partial'")
+
+
+def test_cells_kept_local_complete_a_migration(dataset):
+    """KAN-338: the Present Survey stratum is rhetorical and never migrates, so a
+    set is finished once every cell is either across or declared local."""
+    assert validate_inputs() == []
+
+    def mutate(rows):
+        find(rows, "datum_id", "inv-att-apulum")["local_cells"] = ""
+
+    edit(dataset, "inventory", mutate)
+    refuses("cells migrated (0 local) is 'partial'")
+
+
+def test_local_cells_require_a_recorded_reason(dataset):
+    def mutate(rows):
+        find(rows, "datum_id", "inv-att-drobeta")["note"] = ""
+
+    edit(dataset, "inventory", mutate)
+    refuses("cells kept local require a recorded reason")
+
+
+def test_cells_cannot_be_counted_twice(dataset):
+    def mutate(rows):
+        find(rows, "datum_id", "inv-att-napoca")["local_cells"] = "2"
+
+    edit(dataset, "inventory", mutate)
+    refuses("12 migrated and 2 local exceed cell_count 13")
+
+
+def test_only_an_attestation_set_counts_cells(dataset):
+    def mutate(rows):
+        find(rows, "datum_id", "inv-src-ptolemy")["local_cells"] = "1"
+
+    edit(dataset, "inventory", mutate)
+    refuses("only an attestation set counts cells")
 
 
 def test_manifest_place_count_must_match(dataset):
@@ -770,3 +810,155 @@ def test_research_package_is_hash_frozen(dataset):
 
     edit(dataset, "hiatus_timeline", mutate)
     refuses("package changed since it was frozen")
+
+
+# --- shared GIS layers (KAN-341, KAN-342, KAN-343) ---------------------------
+
+
+def edit_geojson(dataset: Path, name: str, mutate) -> None:
+    path = dataset / "gis" / f"{name}.geojson"
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    mutate(payload)
+    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+
+
+def test_roman_site_must_resolve_to_a_corpus_place(dataset):
+    """The baseline never authors a position the corpus already holds."""
+
+    def mutate(rows):
+        find(rows, "feature_id", "rd-site-apulum")["place_id"] = "plc-does-not-exist"
+
+    edit(dataset, "roman_dacia", mutate)
+    refuses("a site must resolve to a CND place")
+
+
+def test_roman_road_needs_two_stations(dataset):
+    def mutate(rows):
+        find(rows, "feature_id", "rd-road-mures")["via_place_ids"] = "plc-micia"
+
+    edit(dataset, "roman_dacia", mutate)
+    refuses("a road needs at least two stations")
+
+
+def test_roman_feature_cannot_claim_it_was_digitised(dataset):
+    """Nothing here is traced from a source sheet, and the rule says so."""
+
+    def mutate(rows):
+        find(rows, "feature_id", "rd-limes-alutanus")["geometry_provenance"] = "source_geometry"
+
+    edit(dataset, "roman_dacia", mutate)
+    refuses("would claim it is")
+
+
+def test_limes_without_drawn_geometry_is_rejected(dataset):
+    edit_geojson(
+        dataset,
+        "roman-dacia-lines",
+        lambda payload: payload["features"].clear(),
+    )
+    refuses("no drawn geometry for this corridor")
+
+
+def test_drawn_geometry_without_a_row_is_rejected(dataset):
+    def mutate(payload):
+        orphan = json.loads(json.dumps(payload["features"][0]))
+        orphan["id"] = "rd-limes-invented"
+        payload["features"].append(orphan)
+
+    edit_geojson(dataset, "roman-dacia-lines", mutate)
+    refuses("has no row in roman-dacia.csv")
+
+
+def test_drawn_geometry_must_admit_it_is_not_surveyed(dataset):
+    edit_geojson(
+        dataset,
+        "roman-dacia-lines",
+        lambda payload: payload["metadata"].update({"surveyedGeometry": True}),
+    )
+    refuses("surveyedGeometry must be explicitly false")
+
+
+def test_principality_phases_of_one_polity_cannot_overlap(dataset):
+    """An overlap means a boundary was moved on one side of a treaty only."""
+
+    def mutate(rows):
+        find(rows, "phase_id", "pp-wallachia-1526")["valid_to"] = "1750"
+
+    edit(dataset, "principalities", mutate)
+    refuses("overlap")
+
+
+def test_principality_phase_must_begin_at_its_instrument(dataset):
+    def mutate(rows):
+        find(rows, "phase_id", "pp-wallachia-1718")["instrument_year"] = "1700"
+
+    edit(dataset, "principalities", mutate)
+    refuses("must begin at the instrument that opened it")
+
+
+def test_contested_territory_cannot_name_one_suzerain(dataset):
+    def mutate(rows):
+        find(rows, "phase_id", "pp-transylvania-1526")["suzerain"] = "Habsburg Monarchy"
+
+    edit(dataset, "principalities", mutate)
+    refuses("cannot name a single suzerain")
+
+
+def test_principality_envelope_must_admit_it_is_editorial(dataset):
+    def mutate(rows):
+        find(rows, "phase_id", "pp-moldavia-1812")["geometry_provenance"] = "modern_reference"
+
+    edit(dataset, "principalities", mutate)
+    refuses("must say so")
+
+
+def test_principality_geometry_cannot_come_from_modern_borders(dataset):
+    edit_geojson(
+        dataset,
+        "principalities",
+        lambda payload: payload["metadata"].update({"derivedFromModernBorders": True}),
+    )
+    refuses("derivedFromModernBorders must be explicitly false")
+
+
+def test_principality_ring_must_be_closed(dataset):
+    def mutate(payload):
+        payload["features"][0]["geometry"]["coordinates"][0].pop()
+
+    edit_geojson(dataset, "principalities", mutate)
+    refuses("ring is not closed")
+
+
+def test_sheet_cannot_cover_a_place_outside_its_footprint(dataset):
+    """Whichever of the two is wrong, the claim is one the sheet cannot support."""
+
+    def mutate(rows):
+        find(rows, "sheet_id", "js-c05-s06")["covers_place_ids"] = "plc-drobeta"
+
+    edit(dataset, "josephinian_sheets", mutate)
+    refuses("lies outside the footprint")
+
+
+def test_sheet_index_redistributes_no_scan(dataset):
+    def mutate(rows):
+        find(rows, "sheet_id", "js-c05-s06")["scan_redistributed"] = "yes"
+
+    edit(dataset, "josephinian_sheets", mutate)
+    refuses("redistributes no scan")
+
+
+def test_reviewed_sheet_must_carry_its_archive_identifier(dataset):
+    def mutate(rows):
+        find(rows, "sheet_id", "js-c05-s06")["review_status"] = "reviewed"
+
+    edit(dataset, "josephinian_sheets", mutate)
+    refuses("must carry its archive identifier")
+
+
+def test_sheet_footprint_needs_extent(dataset):
+    def mutate(rows):
+        row = find(rows, "sheet_id", "js-c05-s06")
+        row["east"] = row["west"]
+
+    edit(dataset, "josephinian_sheets", mutate)
+    refuses("the footprint has no extent")

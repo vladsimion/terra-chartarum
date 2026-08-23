@@ -32,6 +32,7 @@ REPO = Path(__file__).resolve().parents[2]
 DATA = REPO / "data" / "dacia"
 RELEASE_DIR = DATA / "release" / "cnd-0.1"
 GEO_DIR = REPO / "public" / "geo"
+GENERATED_DIR = REPO / "src" / "data" / "dacia" / "generated"
 
 SCHEMA_VERSION = 1
 RELEASE_VERSION = "cnd-0.1"
@@ -45,6 +46,25 @@ PUBLIC_STATES = {"approved", "published"}
 OPEN_ENDED = 9999
 
 TABLES = ["places", "sources", "attestations", "transcriptions", "name-uses", "name-use-edges"]
+INVENTORY = DATA / "pilot" / "trench-a-inventory.csv"
+GIS = DATA / "gis"
+
+# The Atlas takes one render hint per layer, so the Roman baseline ships as
+# two assets - points and lines - compiled from one table (KAN-341).
+ROMAN_SITES = "dacia-roman-sites"
+ROMAN_NETWORK = "dacia-roman-network"
+PRINCIPALITIES = "dacia-principalities"
+JOSEPHINIAN = "dacia-josephinian-sheets"
+
+# Silences keep their point on the map, so the essay counts them separately
+# from readings rather than reporting one undifferentiated total.
+SILENT_CLASSES = {
+    "extra_muros",
+    "source_silent",
+    "not_applicable",
+    "survival_unknown",
+    "mapped_unlabelled",
+}
 KEY_COLUMN = {
     "places": "place_id",
     "sources": "source_id",
@@ -226,6 +246,302 @@ def feature_collection(features: list[dict], tier: str) -> dict:
     }
 
 
+def read_inventory() -> list[dict[str, str]]:
+    with INVENTORY.open(encoding="utf-8", newline="") as handle:
+        return [{k: (v or "").strip() for k, v in row.items()} for row in csv.DictReader(handle)]
+
+
+def trench_a_bridge(tables: dict[str, list[dict[str, str]]]) -> dict:
+    """The Trench A exhibition's own index into the corpus it migrated to (KAN-339).
+
+    Terra Sigillata is a native essay whose stelae and test pits were the corpus
+    before there was one. Rather than let the essay hard-code CND identifiers -
+    which would be a second copy of the migration, drifting from the first - the
+    bridge is compiled here from the inventory that recorded the migration, and
+    the essay reads only this file.
+
+    Rhetorical strata are carried too. A reader looking for the thirteenth stela
+    should find it named as local and non-canonical, not silently missing.
+    """
+    by_source = {row["source_id"]: row for row in tables["sources"]}
+    by_place = {row["place_id"]: row for row in tables["places"]}
+    attestations = tables["attestations"]
+
+    stelae, pits, local = [], [], []
+    for row in read_inventory():
+        ref = row["trench_a_ref"]
+        if row["disposition"] == "preserve_local":
+            local.append({
+                "ref": ref,
+                "label": row["label"],
+                "reason": row["note"],
+            })
+            continue
+        if row["datum_kind"] == "source" and ref.startswith("STONES[") and row["target_id"]:
+            source = by_source.get(row["target_id"])
+            if source is None:
+                continue
+            rows = [a for a in attestations if a["source_id"] == source["source_id"]]
+            stelae.append({
+                "stela": ref[len("STONES["):-1],
+                "sourceId": source["source_id"],
+                "shortTitle": source["short_title"],
+                "title": source["title"],
+                "sourceFamily": source["source_family"],
+                "dateLabel": source["date_label"],
+                "repository": source["repository"],
+                "reviewState": source["review_state"],
+                "attestations": len(rows),
+                "silences": sum(1 for a in rows if a["attestation_class"] in SILENT_CLASSES),
+            })
+        elif row["datum_kind"] == "attestation_set" and ref.startswith("PITS["):
+            place_ids = [p for p in row["target_id"].split("|") if p]
+            rows = [a for a in attestations if a["place_id"] in place_ids]
+            pits.append({
+                "pit": ref[len("PITS["):ref.index("]")],
+                "places": [
+                    {
+                        "placeId": place_id,
+                        "referenceName": by_place[place_id]["reference_name"],
+                        "placeType": by_place[place_id]["place_type"],
+                        "region": by_place[place_id]["region"],
+                        "locationStatus": by_place[place_id]["location_status"],
+                        # Carried so the site's own toponym concordance can be
+                        # checked against the corpus rather than trusted: the
+                        # conflation KAN-339 retired was two referents sharing
+                        # one pin, and only a coordinate comparison catches that.
+                        "lon": coordinate(by_place[place_id]["ref_lon"])
+                        if by_place[place_id]["ref_lon"]
+                        else None,
+                        "lat": coordinate(by_place[place_id]["ref_lat"])
+                        if by_place[place_id]["ref_lat"]
+                        else None,
+                    }
+                    for place_id in place_ids
+                    if place_id in by_place
+                ],
+                "attestations": len(rows),
+                "silences": sum(1 for a in rows if a["attestation_class"] in SILENT_CLASSES),
+                "cells": int(row["cell_count"]) if row["cell_count"].isdigit() else 0,
+                "localCells": int(row["local_cells"]) if row["local_cells"].isdigit() else 0,
+                # The feature the Atlas opens on: the pit's earliest record, which
+                # is stable because attestation ids are assigned in one order.
+                "feature": min((a["attestation_id"] for a in rows), default=""),
+            })
+
+    return {
+        "schemaVersion": SCHEMA_VERSION,
+        "generatedBy": "scripts/dacia/build.py",
+        "release": RELEASE_VERSION,
+        "kind": RELEASE_KIND,
+        "publicLayer": "dacia-attestations",
+        "researchLayer": "dacia-attestations-research",
+        "stelae": sorted(stelae, key=lambda s: s["stela"]),
+        "pits": sorted(pits, key=lambda p: p["pit"]),
+        "local": sorted(local, key=lambda l: l["ref"]),
+    }
+
+
+def read_gis(name: str) -> list[dict[str, str]]:
+    with (GIS / f"{name}.csv").open(encoding="utf-8", newline="") as handle:
+        return [{k: (v or "").strip() for k, v in row.items()} for row in csv.DictReader(handle)]
+
+
+def read_gis_geometry(name: str) -> dict[str, dict]:
+    payload = json.loads((GIS / f"{name}.geojson").read_text(encoding="utf-8"))
+    return {feature["id"]: feature["geometry"] for feature in payload["features"]}
+
+
+def roman_dacia_features(places: list[dict[str, str]]) -> tuple[list[dict], list[dict]]:
+    """The Roman baseline: sites from the corpus, roads joining them, limes drawn.
+
+    Site geometry is never authored here. A site is a CND place, so the layer
+    reads that place's reference location and carries its provenance forward -
+    which is what stops the baseline becoming a second, drifting copy of
+    coordinates the corpus already holds. A road is likewise not authored: it is
+    an ordered list of those same places, and the line is what you get by joining
+    them. Only the limes corridors have geometry of their own, because a frontier
+    system is not a sequence of attested towns.
+    """
+    by_place = {row["place_id"]: row for row in places}
+    drawn = read_gis_geometry("roman-dacia-lines")
+    sites, network = [], []
+
+    for row in read_gis("roman-dacia"):
+        shared = {
+            "id": row["feature_id"],
+            "name": row["name"],
+            "latin_name": row["latin_name"],
+            "feature_type": row["feature_type"],
+            "geometry_provenance": row["geometry_provenance"],
+            "confidence": row["confidence"],
+            "citation": row["citation"],
+            "repository": row["repository"],
+            "source_url": row["source_url"],
+            "rights_status": row["rights_status"],
+            "review_status": row["review_status"],
+            "note": row["notes"],
+            "valid_from": int(row["valid_from"]),
+            "valid_to": int(row["valid_to"]),
+        }
+
+        if row["feature_type"] == "site":
+            place = by_place.get(row["place_id"])
+            if place is None or place["location_status"] != "located":
+                continue
+            sites.append({
+                "type": "Feature",
+                "id": row["feature_id"],
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [coordinate(place["ref_lon"]), coordinate(place["ref_lat"])],
+                },
+                "properties": {
+                    **shared,
+                    "place_id": place["place_id"],
+                    "place_name": place["reference_name"],
+                    "region": place["region"],
+                    # The corpus's own account of where this point came from wins
+                    # over anything the baseline table says about it.
+                    "geometry_provenance": place["ref_geometry_provenance"],
+                },
+            })
+            continue
+
+        if row["feature_type"] == "road":
+            stations = [p for p in row["via_place_ids"].split("|") if p]
+            coords = [
+                [coordinate(by_place[p]["ref_lon"]), coordinate(by_place[p]["ref_lat"])]
+                for p in stations
+                if p in by_place and by_place[p]["location_status"] == "located"
+            ]
+            if len(coords) < 2:
+                continue
+            geometry = {"type": "LineString", "coordinates": coords}
+            extra = {"via_place_ids": "|".join(stations), "stations": len(coords)}
+        else:
+            geometry = drawn.get(row["feature_id"])
+            if geometry is None:
+                continue
+            extra = {"via_place_ids": "", "stations": 0}
+
+        network.append({
+            "type": "Feature",
+            "id": row["feature_id"],
+            "geometry": geometry,
+            "properties": {**shared, **extra},
+        })
+
+    return (
+        sorted(sites, key=lambda f: f["id"]),
+        sorted(network, key=lambda f: f["id"]),
+    )
+
+
+def principality_features() -> list[dict]:
+    """One feature per phase, never one timeless polygon (KAN-342)."""
+    geometry = read_gis_geometry("principalities")
+    features = []
+    for row in read_gis("principalities"):
+        shape = geometry.get(row["phase_id"])
+        if shape is None:
+            continue
+        features.append({
+            "type": "Feature",
+            "id": row["phase_id"],
+            "geometry": shape,
+            "properties": {
+                "id": row["phase_id"],
+                "polity_id": row["polity_id"],
+                "name": row["polity_name"],
+                "phase_label": row["phase_label"],
+                "sovereignty": row["sovereignty"],
+                "suzerain": row["suzerain"],
+                "instrument": row["instrument"],
+                "instrument_year": int(row["instrument_year"]),
+                "geometry_provenance": row["geometry_provenance"],
+                "confidence": row["confidence"],
+                "citation": row["citation"],
+                "source_url": row["source_url"],
+                "rights_status": row["rights_status"],
+                "review_status": row["review_status"],
+                "note": row["notes"],
+                "valid_from": int(row["valid_from"]),
+                "valid_to": int(row["valid_to"]),
+            },
+        })
+    return sorted(features, key=lambda f: f["id"])
+
+
+def josephinian_features(places: list[dict[str, str]]) -> list[dict]:
+    """Sheet footprints as rectangles, with the corpus places each one covers.
+
+    The coverage link is recomputed from the footprint rather than trusted from
+    the table: a sheet that claims a place outside its own bounds is a mistake
+    the build should catch, not carry.
+    """
+    located = [
+        row for row in places
+        if row["location_status"] == "located" and row["ref_lon"] and row["ref_lat"]
+    ]
+    features = []
+    for row in read_gis("josephinian-sheets"):
+        west, south = float(row["west"]), float(row["south"])
+        east, north = float(row["east"]), float(row["north"])
+        covered = sorted(
+            place["place_id"]
+            for place in located
+            if west <= float(place["ref_lon"]) < east and south <= float(place["ref_lat"]) < north
+        )
+        features.append({
+            "type": "Feature",
+            "id": row["sheet_id"],
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [[
+                    [west, south], [east, south], [east, north], [west, north], [west, south],
+                ]],
+            },
+            "properties": {
+                "id": row["sheet_id"],
+                "name": row["sheet_label"],
+                "archive_sheet_id": row["archive_sheet_id"],
+                "survey": row["survey"],
+                "scale": row["scale"],
+                "footprint_provenance": row["footprint_provenance"],
+                "geometry_provenance": row["footprint_provenance"],
+                "confidence": row["confidence"],
+                "covers_place_ids": "|".join(covered),
+                "covers": len(covered),
+                "citation": row["citation"],
+                "repository": row["repository"],
+                "source_url": row["source_url"],
+                "rights_status": row["rights_status"],
+                # No scan is served from this project; the layer carries a link
+                # to the repository that may show one, and nothing else.
+                "scan_redistributed": row["scan_redistributed"],
+                "review_status": row["review_status"],
+                "note": row["notes"],
+                "valid_from": int(row["survey_from"]),
+                "valid_to": OPEN_ENDED,
+            },
+        })
+    return sorted(features, key=lambda f: f["id"])
+
+
+def gis_collection(features: list[dict], layer: str, ticket: str, note: str) -> dict:
+    return {
+        "type": "FeatureCollection",
+        "features": features,
+        "_ccd": {
+            "layer": layer,
+            "ticket": ticket,
+            "licence": LICENCE,
+            "note": note,
+        },
+    }
+
+
 def build_outputs() -> dict[Path, bytes]:
     tables = {name: read_table(name) for name in TABLES}
     fieldnames = {
@@ -257,6 +573,29 @@ def build_outputs() -> dict[Path, bytes]:
     outputs[GEO_DIR / "dacia-attestations-research.geojson"] = canonical_json(
         feature_collection(research, "research")
     )
+    outputs[GENERATED_DIR / "trench-a.json"] = canonical_json(trench_a_bridge(tables))
+
+    sites, network = roman_dacia_features(tables["places"])
+    outputs[GEO_DIR / f"{ROMAN_SITES}.geojson"] = canonical_json(gis_collection(
+        sites, ROMAN_SITES, "KAN-341",
+        "Site positions are the corpus's own reference locations, carrying the corpus's "
+        "provenance; none is an excavated centroid.",
+    ))
+    outputs[GEO_DIR / f"{ROMAN_NETWORK}.geojson"] = canonical_json(gis_collection(
+        network, ROMAN_NETWORK, "KAN-341",
+        "Roads are lines through attested stations and the limes are editorial corridors. "
+        "No segment here is digitised from a survey.",
+    ))
+    outputs[GEO_DIR / f"{PRINCIPALITIES}.geojson"] = canonical_json(gis_collection(
+        principality_features(), PRINCIPALITIES, "KAN-342",
+        "Phases, not one timeless polygon. Every ring is an editorial envelope for temporal "
+        "filtering and none is traced from a modern national boundary.",
+    ))
+    outputs[GEO_DIR / f"{JOSEPHINIAN}.geojson"] = canonical_json(gis_collection(
+        josephinian_features(tables["places"]), JOSEPHINIAN, "KAN-343",
+        "Reconstructed sheet footprints over the corpus, linking to the repository. "
+        "No scan is redistributed.",
+    ))
     return outputs
 
 

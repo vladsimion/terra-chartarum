@@ -1,30 +1,30 @@
-datum_id,datum_kind,trench_a_ref,label,cell_count,migrated_cells,disposition,target_id,migration_state,target_table,jira_key,note
-inv-src-ptolemy,source,STONES[ptolemy],Ptolemy · Geographia III.8,,,migrate,src-ptolemy-geographia,done,data/dacia/sources.csv,KAN-338,"Creator, date, witness, repository and survival already recorded inline."
-inv-src-peutinger,source,STONES[peutinger],Tabula Peutingeriana segm. VII–VIII,,,migrate,src-tabula-peutingeriana,done,data/dacia/sources.csv,KAN-338,Content date and witness date differ; the trench's dating rule migrates with it.
-inv-src-hereford,source,STONES[hereford],Hereford Mappa Mundi,,,migrate,src-hereford-mappa,done,data/dacia/sources.csv,KAN-338,
-inv-src-vesconte,source,STONES[vesconte],Pietro Vesconte portolan 1311,,,migrate,src-vesconte-portolan,done,data/dacia/sources.csv,KAN-338,Scope statement is load-bearing for the absence taxonomy.
-inv-src-honterus,source,STONES[honterus],Honterus · Chorographia 1532,,,migrate,src-honterus-chorographia,done,data/dacia/sources.csv,KAN-338,Repository unconfirmed; carries two verification-debt entries.
-inv-src-ortelius,source,STONES[ortelius],Ortelius · Parergon 1595,,,migrate,src-ortelius-parergon,done,data/dacia/sources.csv,KAN-338,
-inv-src-cantacuzino,source,STONES[cantacuzino],Cantacuzino · Wallachia 1700,,,migrate,src-cantacuzino-wallachia,done,data/dacia/sources.csv,KAN-338,
-inv-src-cantemir,source,STONES[cantemir],Cantemir · Moldavia 1716,,,migrate,src-cantemir-moldavia,done,data/dacia/sources.csv,KAN-338,
-inv-src-josephine,source,STONES[josephine],Josephinische Landesaufnahme 1769–73,,,migrate,src-iosephina-survey,done,data/dacia/sources.csv,KAN-338,
-inv-src-russia,source,STONES[russia],Russian General Staff map 1835,,,migrate,src-russian-staff-1835,done,data/dacia/sources.csv,KAN-338,
-inv-src-szathmari,source,STONES[szathmari],Szathmári · Charta României 1864,,,migrate,src-szathmari-charta,done,data/dacia/sources.csv,KAN-338,Migrated with the pilot authorities (KAN-334).
-inv-src-secret,source,STONES[secret],The Secret Century 1916–1959,,,migrate,src-secret-century,planned,data/dacia/sources.csv,KAN-338,A series rather than one sheet; needs a series record with member witnesses.
-inv-src-satellite,source,STONES[satellite],The Present Survey 2026,,,preserve_local,,,,KAN-338,"A rhetorical stratum standing for continuous digital feeds, not a discrete witness."
-inv-plc-sarmizegetusa,place,PITS[sarmizegetusa],Sarmizegetusa test pit,,,migrate,plc-ulpia-traiana-sarmizegetusa,done,data/dacia/places.csv,KAN-338,Conflates two referents forty kilometres apart; splits into the colonia and Regia.
-inv-plc-sarmizegetusa-regia,place,PITS[sarmizegetusa].note,Sarmizegetusa Regia,,,migrate,plc-sarmizegetusa-regia,done,data/dacia/places.csv,KAN-338,Named only in the pit's note; becomes its own place record.
-inv-plc-apulum,place,PITS[apulum],Apulum test pit,,,migrate,plc-apulum,done,data/dacia/places.csv,KAN-338,
-inv-plc-napoca,place,PITS[napoca],Napoca test pit,,,migrate,plc-napoca,done,data/dacia/places.csv,KAN-338,
-inv-plc-drobeta,place,PITS[drobeta],Drobeta test pit,,,migrate,plc-drobeta,done,data/dacia/places.csv,KAN-338,
-inv-att-sarmizegetusa,attestation_set,PITS[sarmizegetusa].cells,Sarmizegetusa name cells,13,11,migrate,,partial,data/dacia/attestations.csv,KAN-338,"Cells split between the colonia and Regia by what each source actually names. Two strata remain: the Secret Century needs a series record, and the Present Survey stays local."
-inv-att-apulum,attestation_set,PITS[apulum].cells,Apulum name cells,13,11,migrate,,partial,data/dacia/attestations.csv,KAN-338,"Two strata remain: the Secret Century needs a series record, and the Present Survey stays local."
-inv-att-napoca,attestation_set,PITS[napoca].cells,Napoca name cells,13,11,migrate,,partial,data/dacia/attestations.csv,KAN-338,"Two strata remain: the Secret Century needs a series record, and the Present Survey stays local."
-inv-att-drobeta,attestation_set,PITS[drobeta].cells,Drobeta name cells,13,11,migrate,,partial,data/dacia/attestations.csv,KAN-338,"Two strata remain: the Secret Century needs a series record, and the Present Survey stays local."
-inv-toponyms-sarmizegetusa,place,src/lib/toponyms.ts#sarmizegetusa,Toponym concordance entry,,,retire,plc-sarmizegetusa-regia,,data/dacia/places.csv,KAN-339,Merges Regia and the colonia under one record with Regia's coordinates; superseded by two CND places.
-inv-toponyms-napoca,place,src/lib/toponyms.ts#napoca,Toponym concordance entry,,,link,plc-napoca,,data/dacia/places.csv,KAN-339,Stays as the Atlas overlay source and gains a corpus reference.
-inv-seals,interpretation,STONES[].seals,Five Seals scores,65,,preserve_local,,,,KAN-339,Interpretive scoring by the trench's own instrument; not corpus evidence.
-inv-reads,interpretation,STONES[].reads,Six Readings scores,78,,preserve_local,,,,KAN-339,Epigraphic readings offered to be argued with; not corpus evidence.
-inv-vignettes,illustration,STONES[].vig,Authored SVG vignettes,13,,preserve_local,,,,KAN-339,Authored reconstructions rather than reproductions; why the rights gate passes.
-inv-halls,structure,HALLS,Museum hall grouping,9,,preserve_local,,,,KAN-339,Exhibition structure.
-inv-depths,structure,STONES[].depth,Stratum depths,13,,preserve_local,,,,KAN-339,"One year to one millimetre; a rhetorical scale, not a measurement."
+datum_id,datum_kind,trench_a_ref,label,cell_count,migrated_cells,local_cells,disposition,target_id,migration_state,target_table,jira_key,note
+inv-src-ptolemy,source,STONES[ptolemy],Ptolemy · Geographia III.8,,,,migrate,src-ptolemy-geographia,done,data/dacia/sources.csv,KAN-338,"Creator, date, witness, repository and survival already recorded inline."
+inv-src-peutinger,source,STONES[peutinger],Tabula Peutingeriana segm. VII–VIII,,,,migrate,src-tabula-peutingeriana,done,data/dacia/sources.csv,KAN-338,Content date and witness date differ; the trench's dating rule migrates with it.
+inv-src-hereford,source,STONES[hereford],Hereford Mappa Mundi,,,,migrate,src-hereford-mappa,done,data/dacia/sources.csv,KAN-338,
+inv-src-vesconte,source,STONES[vesconte],Pietro Vesconte portolan 1311,,,,migrate,src-vesconte-portolan,done,data/dacia/sources.csv,KAN-338,Scope statement is load-bearing for the absence taxonomy.
+inv-src-honterus,source,STONES[honterus],Honterus · Chorographia 1532,,,,migrate,src-honterus-chorographia,done,data/dacia/sources.csv,KAN-338,Repository unconfirmed; carries two verification-debt entries.
+inv-src-ortelius,source,STONES[ortelius],Ortelius · Parergon 1595,,,,migrate,src-ortelius-parergon,done,data/dacia/sources.csv,KAN-338,
+inv-src-cantacuzino,source,STONES[cantacuzino],Cantacuzino · Wallachia 1700,,,,migrate,src-cantacuzino-wallachia,done,data/dacia/sources.csv,KAN-338,
+inv-src-cantemir,source,STONES[cantemir],Cantemir · Moldavia 1716,,,,migrate,src-cantemir-moldavia,done,data/dacia/sources.csv,KAN-338,
+inv-src-josephine,source,STONES[josephine],Josephinische Landesaufnahme 1769–73,,,,migrate,src-iosephina-survey,done,data/dacia/sources.csv,KAN-338,
+inv-src-russia,source,STONES[russia],Russian General Staff map 1835,,,,migrate,src-russian-staff-1835,done,data/dacia/sources.csv,KAN-338,
+inv-src-szathmari,source,STONES[szathmari],Szathmári · Charta României 1864,,,,migrate,src-szathmari-charta,done,data/dacia/sources.csv,KAN-338,Migrated with the pilot authorities (KAN-334).
+inv-src-secret,source,STONES[secret],The Secret Century 1916–1959,,,,migrate,src-secret-century,done,data/dacia/sources.csv,KAN-338,"A series rather than one sheet, so it migrates as one series record; member sheets are cited per attestation through locator_type sheet."
+inv-src-satellite,source,STONES[satellite],The Present Survey 2026,,,,preserve_local,,,,KAN-338,"A rhetorical stratum standing for continuous digital feeds, not a discrete witness."
+inv-plc-sarmizegetusa,place,PITS[sarmizegetusa],Sarmizegetusa test pit,,,,migrate,plc-ulpia-traiana-sarmizegetusa,done,data/dacia/places.csv,KAN-338,Conflates two referents forty kilometres apart; splits into the colonia and Regia.
+inv-plc-sarmizegetusa-regia,place,PITS[sarmizegetusa].note,Sarmizegetusa Regia,,,,migrate,plc-sarmizegetusa-regia,done,data/dacia/places.csv,KAN-338,Named only in the pit's note; becomes its own place record.
+inv-plc-apulum,place,PITS[apulum],Apulum test pit,,,,migrate,plc-apulum,done,data/dacia/places.csv,KAN-338,
+inv-plc-napoca,place,PITS[napoca],Napoca test pit,,,,migrate,plc-napoca,done,data/dacia/places.csv,KAN-338,
+inv-plc-drobeta,place,PITS[drobeta],Drobeta test pit,,,,migrate,plc-drobeta,done,data/dacia/places.csv,KAN-338,
+inv-att-sarmizegetusa,attestation_set,PITS[sarmizegetusa].cells,Sarmizegetusa name cells,13,12,1,migrate,plc-sarmizegetusa-regia|plc-ulpia-traiana-sarmizegetusa,done,data/dacia/attestations.csv,KAN-338,"Twelve strata migrated. Stratum 0, the Present Survey, is a rhetorical stratum and stays local."
+inv-att-apulum,attestation_set,PITS[apulum].cells,Apulum name cells,13,12,1,migrate,plc-apulum,done,data/dacia/attestations.csv,KAN-338,"Twelve strata migrated. Stratum 0, the Present Survey, is a rhetorical stratum and stays local."
+inv-att-napoca,attestation_set,PITS[napoca].cells,Napoca name cells,13,12,1,migrate,plc-napoca,done,data/dacia/attestations.csv,KAN-338,"Twelve strata migrated, the Josephinian sheet twice because it prints two names. Stratum 0, the Present Survey, stays local."
+inv-att-drobeta,attestation_set,PITS[drobeta].cells,Drobeta name cells,13,12,1,migrate,plc-drobeta,done,data/dacia/attestations.csv,KAN-338,"Twelve strata migrated. Stratum 0, the Present Survey, is a rhetorical stratum and stays local."
+inv-toponyms-sarmizegetusa,place,src/lib/toponyms.ts#sarmizegetusa,Toponym concordance entry,,,,retire,plc-sarmizegetusa-regia,,data/dacia/places.csv,KAN-339,Merges Regia and the colonia under one record with Regia's coordinates; superseded by two CND places.
+inv-toponyms-napoca,place,src/lib/toponyms.ts#napoca,Toponym concordance entry,,,,link,plc-napoca,,data/dacia/places.csv,KAN-339,Stays as the Atlas overlay source and gains a corpus reference.
+inv-seals,interpretation,STONES[].seals,Five Seals scores,65,,,preserve_local,,,,KAN-339,Interpretive scoring by the trench's own instrument; not corpus evidence.
+inv-reads,interpretation,STONES[].reads,Six Readings scores,78,,,preserve_local,,,,KAN-339,Epigraphic readings offered to be argued with; not corpus evidence.
+inv-vignettes,illustration,STONES[].vig,Authored SVG vignettes,13,,,preserve_local,,,,KAN-339,Authored reconstructions rather than reproductions; why the rights gate passes.
+inv-halls,structure,HALLS,Museum hall grouping,9,,,preserve_local,,,,KAN-339,Exhibition structure.
+inv-depths,structure,STONES[].depth,Stratum depths,13,,,preserve_local,,,,KAN-339,"One year to one millimetre; a rhetorical scale, not a measurement."

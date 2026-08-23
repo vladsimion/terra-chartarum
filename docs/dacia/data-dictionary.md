@@ -235,6 +235,14 @@ cuts both ways: a `done` target must resolve in its authority table, and a
 attestation set additionally counts `migrated_cells` against `cell_count`, and
 the state has to agree with the count rather than be asserted beside it.
 
+`local_cells` (KAN-338) counts the cells of a set that are rhetorical rather
+than evidential and so will never migrate - stratum 0 of every test pit is the
+Present Survey, which stands for continuous digital feeds and is not a witness.
+A set is `done` when `migrated_cells + local_cells == cell_count`, and a local
+cell without a recorded reason fails, so declaring a cell local is a stated
+editorial judgement rather than a way to close a migration quietly. Only an
+attestation set may count cells at all.
+
 `pilot-places.csv` is the frozen 40-place pilot; `pilot-manifest.json` records
 its version, freeze date, count and SHA-256. Editing the pilot without recording
 a new version and hash fails the gate. See
@@ -287,6 +295,28 @@ guessed position.
 [`README.md`](./README.md). `gates.csv`, `trench-gates.csv`, `campaigns.csv` and
 `verification-debt.csv` carry the Definition of Done; see
 [`definition-of-done.md`](./definition-of-done.md).
+
+## `gis/` shared layers (KAN-341, KAN-342, KAN-343)
+
+Three packages that compile to four Atlas layers: `roman-dacia`,
+`principalities` and `josephinian-sheets`. Attributes live in CSV and drawn
+geometry in a sibling GeoJSON, joined by id.
+
+The column that carries the argument is `geometry_provenance` (and
+`footprint_provenance` on a sheet). Nothing in this family is digitised from a
+source sheet, so the validator refuses any row claiming `source_geometry` or
+`georeferenced_source`, and each drawn GeoJSON must carry `surveyedGeometry:
+false` with a recorded justification. A Roman site authors no coordinates at all
+
+- it names a `place_id` and inherits the corpus's own location and provenance -
+  and a road authors none either, being an ordered list of those same places.
+
+A principality phase must begin in the year of the instrument that opened it,
+and two phases of one polity may not overlap. A Josephinian sheet's
+`covers_place_ids` is recomputed from its footprint at build time rather than
+trusted, may not redistribute a scan, and may keep `archive_sheet_id: pending`
+only while it is still unreviewed. See
+[`shared-gis-layers.md`](./shared-gis-layers.md).
 
 ## Research source ledgers (KAN-348, KAN-351)
 

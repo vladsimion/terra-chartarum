@@ -1,0 +1,753 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              28.2,
+              47.5
+            ],
+            [
+              27.3,
+              48.3
+            ],
+            [
+              28.0,
+              48.5
+            ],
+            [
+              29.2,
+              48.2
+            ],
+            [
+              30.2,
+              47.3
+            ],
+            [
+              30.3,
+              46.4
+            ],
+            [
+              29.7,
+              45.6
+            ],
+            [
+              28.7,
+              45.3
+            ],
+            [
+              28.1,
+              45.6
+            ],
+            [
+              28.2,
+              46.4
+            ],
+            [
+              28.2,
+              47.5
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "pp-bessarabia-1812",
+      "properties": {
+        "vertices": "editorial"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              25.3,
+              47.75
+            ],
+            [
+              26.0,
+              48.35
+            ],
+            [
+              26.6,
+              48.5
+            ],
+            [
+              27.3,
+              48.3
+            ],
+            [
+              26.6,
+              48.1
+            ],
+            [
+              26.3,
+              47.6
+            ],
+            [
+              25.6,
+              47.2
+            ],
+            [
+              25.3,
+              47.75
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "pp-bukovina-1775",
+      "properties": {
+        "vertices": "editorial"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              25.3,
+              47.75
+            ],
+            [
+              26.0,
+              48.35
+            ],
+            [
+              26.6,
+              48.5
+            ],
+            [
+              28.0,
+              48.5
+            ],
+            [
+              29.2,
+              48.2
+            ],
+            [
+              30.2,
+              47.3
+            ],
+            [
+              30.3,
+              46.4
+            ],
+            [
+              29.7,
+              45.6
+            ],
+            [
+              28.7,
+              45.3
+            ],
+            [
+              27.9,
+              45.3
+            ],
+            [
+              27.2,
+              45.6
+            ],
+            [
+              26.6,
+              46.2
+            ],
+            [
+              26.2,
+              46.8
+            ],
+            [
+              25.6,
+              47.2
+            ],
+            [
+              25.3,
+              47.75
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "pp-moldavia-1526",
+      "properties": {
+        "vertices": "editorial"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              25.6,
+              47.2
+            ],
+            [
+              26.3,
+              47.6
+            ],
+            [
+              26.6,
+              48.1
+            ],
+            [
+              28.0,
+              48.5
+            ],
+            [
+              29.2,
+              48.2
+            ],
+            [
+              30.2,
+              47.3
+            ],
+            [
+              30.3,
+              46.4
+            ],
+            [
+              29.7,
+              45.6
+            ],
+            [
+              28.7,
+              45.3
+            ],
+            [
+              27.9,
+              45.3
+            ],
+            [
+              27.2,
+              45.6
+            ],
+            [
+              26.6,
+              46.2
+            ],
+            [
+              26.2,
+              46.8
+            ],
+            [
+              25.6,
+              47.2
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "pp-moldavia-1775",
+      "properties": {
+        "vertices": "editorial"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              25.6,
+              47.2
+            ],
+            [
+              26.3,
+              47.6
+            ],
+            [
+              26.6,
+              48.1
+            ],
+            [
+              27.3,
+              48.3
+            ],
+            [
+              28.2,
+              47.5
+            ],
+            [
+              28.2,
+              46.4
+            ],
+            [
+              28.1,
+              45.6
+            ],
+            [
+              27.9,
+              45.3
+            ],
+            [
+              27.2,
+              45.6
+            ],
+            [
+              26.6,
+              46.2
+            ],
+            [
+              26.2,
+              46.8
+            ],
+            [
+              25.6,
+              47.2
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "pp-moldavia-1812",
+      "properties": {
+        "vertices": "editorial"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              22.7,
+              44.62
+            ],
+            [
+              23.5,
+              44.1
+            ],
+            [
+              24.45,
+              43.75
+            ],
+            [
+              24.45,
+              45.4
+            ],
+            [
+              24.3,
+              45.45
+            ],
+            [
+              23.2,
+              45.0
+            ],
+            [
+              22.7,
+              44.62
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "pp-oltenia-1718",
+      "properties": {
+        "vertices": "editorial"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              22.3,
+              46.6
+            ],
+            [
+              22.6,
+              47.3
+            ],
+            [
+              23.5,
+              47.6
+            ],
+            [
+              24.5,
+              47.7
+            ],
+            [
+              25.3,
+              47.75
+            ],
+            [
+              25.6,
+              47.2
+            ],
+            [
+              26.2,
+              46.8
+            ],
+            [
+              26.2,
+              46.2
+            ],
+            [
+              25.8,
+              45.7
+            ],
+            [
+              25.2,
+              45.45
+            ],
+            [
+              24.3,
+              45.45
+            ],
+            [
+              23.2,
+              45.0
+            ],
+            [
+              22.6,
+              45.6
+            ],
+            [
+              22.3,
+              46.6
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "pp-transylvania-1526",
+      "properties": {
+        "vertices": "editorial"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              22.3,
+              46.6
+            ],
+            [
+              22.6,
+              47.3
+            ],
+            [
+              23.5,
+              47.6
+            ],
+            [
+              24.5,
+              47.7
+            ],
+            [
+              25.3,
+              47.75
+            ],
+            [
+              25.6,
+              47.2
+            ],
+            [
+              26.2,
+              46.8
+            ],
+            [
+              26.2,
+              46.2
+            ],
+            [
+              25.8,
+              45.7
+            ],
+            [
+              25.2,
+              45.45
+            ],
+            [
+              24.3,
+              45.45
+            ],
+            [
+              23.2,
+              45.0
+            ],
+            [
+              22.6,
+              45.6
+            ],
+            [
+              22.3,
+              46.6
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "pp-transylvania-1541",
+      "properties": {
+        "vertices": "editorial"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              22.3,
+              46.6
+            ],
+            [
+              22.6,
+              47.3
+            ],
+            [
+              23.5,
+              47.6
+            ],
+            [
+              24.5,
+              47.7
+            ],
+            [
+              25.3,
+              47.75
+            ],
+            [
+              25.6,
+              47.2
+            ],
+            [
+              26.2,
+              46.8
+            ],
+            [
+              26.2,
+              46.2
+            ],
+            [
+              25.8,
+              45.7
+            ],
+            [
+              25.2,
+              45.45
+            ],
+            [
+              24.3,
+              45.45
+            ],
+            [
+              23.2,
+              45.0
+            ],
+            [
+              22.6,
+              45.6
+            ],
+            [
+              22.3,
+              46.6
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "pp-transylvania-1699",
+      "properties": {
+        "vertices": "editorial"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              22.7,
+              44.62
+            ],
+            [
+              23.5,
+              44.1
+            ],
+            [
+              24.5,
+              43.75
+            ],
+            [
+              25.9,
+              43.9
+            ],
+            [
+              27.3,
+              44.0
+            ],
+            [
+              28.0,
+              44.2
+            ],
+            [
+              27.2,
+              45.1
+            ],
+            [
+              26.2,
+              45.3
+            ],
+            [
+              25.2,
+              45.45
+            ],
+            [
+              24.3,
+              45.45
+            ],
+            [
+              23.2,
+              45.0
+            ],
+            [
+              22.7,
+              44.62
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "pp-wallachia-1526",
+      "properties": {
+        "vertices": "editorial"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              24.4,
+              43.75
+            ],
+            [
+              25.9,
+              43.9
+            ],
+            [
+              27.3,
+              44.0
+            ],
+            [
+              28.0,
+              44.2
+            ],
+            [
+              27.2,
+              45.1
+            ],
+            [
+              26.2,
+              45.3
+            ],
+            [
+              25.2,
+              45.45
+            ],
+            [
+              24.45,
+              45.4
+            ],
+            [
+              24.4,
+              43.75
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "pp-wallachia-1718",
+      "properties": {
+        "vertices": "editorial"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              22.7,
+              44.62
+            ],
+            [
+              23.5,
+              44.1
+            ],
+            [
+              24.5,
+              43.75
+            ],
+            [
+              25.9,
+              43.9
+            ],
+            [
+              27.3,
+              44.0
+            ],
+            [
+              28.0,
+              44.2
+            ],
+            [
+              27.2,
+              45.1
+            ],
+            [
+              26.2,
+              45.3
+            ],
+            [
+              25.2,
+              45.45
+            ],
+            [
+              24.3,
+              45.45
+            ],
+            [
+              23.2,
+              45.0
+            ],
+            [
+              22.7,
+              44.62
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "pp-wallachia-1739",
+      "properties": {
+        "vertices": "editorial"
+      },
+      "type": "Feature"
+    }
+  ],
+  "metadata": {
+    "compiledOn": "2026-08-22",
+    "crs": "EPSG:4326",
+    "derivedFromModernBorders": false,
+    "geometryProvenance": "editorial_reconstruction",
+    "justification": "Reusing a modern national boundary as a historical proxy is the failure this layer exists to avoid: it would make the Habsburg administration of Oltenia, or Moldavia before the Prut, invisible behind a line drawn in 1947. These rings are therefore drawn from the territorial record, declared editorial, given low confidence, and cut into phases at the instruments that actually moved the territory. They are envelopes for temporal filtering, not delimitations, and no vertex should be read as a claim about where a boundary ran on the ground.",
+    "schemaVersion": 1,
+    "surveyedGeometry": false,
+    "ticket": "KAN-342",
+    "version": "principalities-1.0"
+  },
+  "name": "principalities",
+  "type": "FeatureCollection"
+}

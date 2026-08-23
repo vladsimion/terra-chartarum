@@ -1,0 +1,126 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            22.75,
+            46.78
+          ],
+          [
+            22.9,
+            46.9
+          ],
+          [
+            23.0,
+            47.05
+          ],
+          [
+            23.15,
+            47.18
+          ],
+          [
+            23.45,
+            47.3
+          ],
+          [
+            23.8,
+            47.35
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "rd-limes-porolissensis",
+      "properties": {
+        "name": "Limes Porolissensis",
+        "notes": "From the Criș approach at Bologa north-east past Porolissum to the Someș.",
+        "vertices": "editorial"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            24.48,
+            43.77
+          ],
+          [
+            24.4,
+            44.1
+          ],
+          [
+            24.35,
+            44.45
+          ],
+          [
+            24.3,
+            44.85
+          ],
+          [
+            24.3,
+            45.2
+          ],
+          [
+            24.28,
+            45.55
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "rd-limes-alutanus",
+      "properties": {
+        "name": "Limes Alutanus",
+        "notes": "The Olt line from the Danube crossing at Sucidava to the Turnu Rosu pass.",
+        "vertices": "editorial"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            24.95,
+            43.8
+          ],
+          [
+            25.0,
+            44.15
+          ],
+          [
+            25.05,
+            44.55
+          ],
+          [
+            25.05,
+            44.9
+          ],
+          [
+            25.02,
+            45.1
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "rd-limes-transalutanus",
+      "properties": {
+        "name": "Limes Transalutanus",
+        "notes": "The forward line east of the Olt, from the Danube to the Carpathian foothills; abandoned c. 245.",
+        "vertices": "editorial"
+      },
+      "type": "Feature"
+    }
+  ],
+  "metadata": {
+    "compiledOn": "2026-08-22",
+    "crs": "EPSG:4326",
+    "geometryProvenance": "editorial_reconstruction",
+    "justification": "The frontier systems of Roman Dacia have no open, licensed line geometry this project can redistribute, and drawing them from a modern reconstruction map would launder somebody else's interpretation into an apparently surveyed line. These corridors are drawn here, declared editorial, and given low confidence, so that the Atlas can show where the frontier ran without implying that anyone has measured it.",
+    "schemaVersion": 1,
+    "surveyedGeometry": false,
+    "ticket": "KAN-341",
+    "version": "roman-dacia-lines-1.0"
+  },
+  "name": "roman-dacia-lines",
+  "type": "FeatureCollection"
+}

@@ -11,11 +11,11 @@
 | Map records          |    59 |
 | Cartographers        |    19 |
 | Bibliography entries |    37 |
-| Toponyms             |    11 |
+| Toponyms             |    12 |
 | Rooms                |     7 |
-| GIS layers           |    14 |
+| GIS layers           |    18 |
 
-Geo release: `geo-7be18e9dbc78928e`.
+Geo release: `geo-1ca5dcb4a7446143`.
 
 ## Live essays by primary room
 

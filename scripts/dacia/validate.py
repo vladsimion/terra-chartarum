@@ -92,6 +92,20 @@ TREATY_RECORD_TYPES = {
     "later_reconstruction",
 }
 TREATY_INTERPRETATION_STATES = {"uncontested", "ambiguous", "disputed"}
+ROMAN_FEATURE_TYPES = {"site", "road", "limes"}
+PRINCIPALITY_SOVEREIGNTY = {
+    "autonomous_tributary",
+    "habsburg_administration",
+    "habsburg_province",
+    "russian_province",
+    "contested",
+}
+# Nothing in the shared GIS family is digitised from a source sheet yet. Saying
+# so as a rule rather than a note means the first layer that *is* digitised has
+# to come with the change that permits it (KAN-341/342/343).
+GIS_UNAVAILABLE_PROVENANCE = {"source_geometry", "georeferenced_source"}
+PRINCIPALITY_FROM = 1526
+PRINCIPALITY_TO = 1859
 TREATY_GEOMETRY_STATES = {
     "no_geometry",
     "commission_geometry_required",
@@ -159,6 +173,7 @@ LAT_RANGE = (43.0, 49.0)
 
 REFERENCE = "reference"
 PILOT = "pilot"
+GIS = "gis"
 
 TABLES = {
     "programme_ids": f"{REFERENCE}/programme-ids.csv",
@@ -184,6 +199,9 @@ TABLES = {
     "name_use_edges": "name-use-edges.csv",
     "inventory": f"{PILOT}/trench-a-inventory.csv",
     "pilot_places": f"{PILOT}/pilot-places.csv",
+    "roman_dacia": f"{GIS}/roman-dacia.csv",
+    "principalities": f"{GIS}/principalities.csv",
+    "josephinian_sheets": f"{GIS}/josephinian-sheets.csv",
 }
 PILOT_MANIFEST = f"{PILOT}/pilot-manifest.json"
 SOURCE_LEDGER_MANIFEST = f"{REFERENCE}/source-ledger-manifest.json"
@@ -906,16 +924,27 @@ def validate_pilot(terms, places, sources, errors: list[str]) -> None:
                 errors.append(f"{label}: an attestation set needs cell_count and migrated_cells")
             else:
                 done, total = int(row["migrated_cells"]), int(row["cell_count"])
-                if done > total:
-                    errors.append(f"{label}: migrated_cells {done} exceeds cell_count {total}")
-                expected = "done" if done == total else "partial" if done else "planned"
+                # KAN-338: a cell that is rhetorical rather than evidential never
+                # migrates, and a set is finished once every cell is either across
+                # or declared local. Counting those cells as outstanding would
+                # leave the set permanently partial and hide the real remainder.
+                local = int(row["local_cells"]) if row["local_cells"].isdigit() else 0
+                if row["local_cells"] and not row["local_cells"].isdigit():
+                    errors.append(f"{label}: local_cells '{row['local_cells']}' is not a number")
+                if local and not row["note"]:
+                    errors.append(f"{label}: cells kept local require a recorded reason")
+                if done + local > total:
+                    errors.append(
+                        f"{label}: {done} migrated and {local} local exceed cell_count {total}"
+                    )
+                expected = "done" if done + local == total else "partial" if done else "planned"
                 if row["migration_state"] != expected:
                     errors.append(
-                        f"{label}: {done} of {total} cells migrated is '{expected}', "
-                        f"not '{row['migration_state']}'"
+                        f"{label}: {done} of {total} cells migrated ({local} local) is "
+                        f"'{expected}', not '{row['migration_state']}'"
                     )
-        elif row["migrated_cells"]:
-            errors.append(f"{label}: only an attestation set counts migrated_cells")
+        elif row["migrated_cells"] or row["local_cells"]:
+            errors.append(f"{label}: only an attestation set counts cells")
 
         if disposition != "migrate":
             if row["migration_state"]:
@@ -929,7 +958,24 @@ def validate_pilot(terms, places, sources, errors: list[str]) -> None:
         target, table = row["target_id"], row["target_table"]
         known = resolvers.get(table)
         if state == "done":
-            if not target:
+            # An attestation set migrates as counted rows in a named table rather
+            # than as one record, so its completion is the cell count above and
+            # the table it landed in; demanding a single target_id would mean
+            # picking one of its places arbitrarily (KAN-338).
+            if row["datum_kind"] == "attestation_set":
+                if not table:
+                    errors.append(f"{label}: a completed migration must name its target table")
+                # The set's target is the places its cells attest, named as a
+                # pipe list so the Trench A -> CND bridge is a row rather than
+                # something a consumer infers from capture strings (KAN-339).
+                if not target:
+                    errors.append(f"{label}: a completed set must name the places it attests")
+                for place_id in _pipe_set(target):
+                    if place_id not in places:
+                        errors.append(f"{label}: place '{place_id}' does not resolve")
+                    elif place_id not in pilot_ids:
+                        errors.append(f"{label}: place '{place_id}' is absent from the frozen pilot")
+            elif not target:
                 errors.append(f"{label}: a completed migration must name its target")
             elif known is not None and target not in known:
                 errors.append(f"{label}: target '{target}' does not resolve in {table}")
@@ -1436,6 +1482,291 @@ def validate_borroczyn_package(errors: list[str]) -> None:
         errors.append("borroczyn-seam: study area is not bounded tightly enough")
 
 
+def _check_gis_ring(ring, label: str, errors: list[str]) -> None:
+    """A closed ring inside the Dacia window, with enough vertices to be a shape."""
+    if len(ring) < 4:
+        errors.append(f"{label}: a ring needs at least four positions")
+        return
+    if ring[0] != ring[-1]:
+        errors.append(f"{label}: ring is not closed")
+    for lon, lat in ring:
+        if not (LON_RANGE[0] <= lon <= LON_RANGE[1] and LAT_RANGE[0] <= lat <= LAT_RANGE[1]):
+            errors.append(f"{label}: position {lon},{lat} is outside the Dacia window")
+            return
+
+
+def _load_gis_geojson(name: str, version_prefix: str, errors: list[str]) -> dict:
+    path = DATA / GIS / f"{name}.geojson"
+    if not path.exists():
+        errors.append(f"missing GIS geometry: {path.relative_to(REPO)}")
+        return {}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        errors.append(f"{name}: invalid GeoJSON: {exc}")
+        return {}
+    metadata = payload.get("metadata", {})
+    if metadata.get("schemaVersion") != 1:
+        errors.append(f"{name}: unsupported schemaVersion")
+    if not str(metadata.get("version", "")).startswith(version_prefix):
+        errors.append(f"{name}: version must start with {version_prefix}")
+    if metadata.get("crs") != "EPSG:4326":
+        errors.append(f"{name}: CRS must be EPSG:4326")
+    if not ISO_DATE.match(str(metadata.get("compiledOn", ""))):
+        errors.append(f"{name}: compiledOn must be an ISO date")
+    # The claim that nothing here is surveyed is the layer's whole epistemic
+    # position, so it is a field that must be present and false, not prose.
+    if metadata.get("surveyedGeometry") is not False:
+        errors.append(f"{name}: surveyedGeometry must be explicitly false")
+    if not metadata.get("justification"):
+        errors.append(f"{name}: drawn geometry requires a recorded justification")
+    return payload
+
+
+def validate_roman_dacia(terms, places, errors: list[str]) -> None:
+    """KAN-341: a baseline that never authors a coordinate the corpus already holds."""
+    rows = _read("roman_dacia", errors)
+    _check_unique(rows, "feature_id", "roman-dacia", errors)
+    payload = _load_gis_geojson("roman-dacia-lines", "roman-dacia-lines-", errors)
+    drawn = {feature.get("id") for feature in payload.get("features", [])}
+    drawn_used: set[str] = set()
+    types: set[str] = set()
+
+    for row in rows:
+        feature_id = row["feature_id"]
+        label = f"roman-dacia[{feature_id}]"
+        if not feature_id.startswith("rd-") or not SLUG.match(feature_id):
+            errors.append(f"{label}: feature_id must be an rd- slug")
+        feature_type = row["feature_type"]
+        types.add(feature_type)
+        if feature_type not in ROMAN_FEATURE_TYPES:
+            errors.append(f"{label}: feature_type '{feature_type}' is not recognised")
+        for field in ("name", "citation", "repository", "notes"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        _check_https(row["source_url"], label, "source_url", errors)
+        _check_vocab(
+            row["geometry_provenance"], "geometry_provenance", terms,
+            label, "geometry_provenance", errors,
+        )
+        if row["geometry_provenance"] in GIS_UNAVAILABLE_PROVENANCE:
+            errors.append(
+                f"{label}: no feature here is digitised from a source; "
+                f"'{row['geometry_provenance']}' would claim it is"
+            )
+        _check_vocab(row["confidence"], "confidence", terms, label, "confidence", errors)
+        _check_vocab(
+            row["rights_status"], "rights_statement", terms, label, "rights_status", errors
+        )
+        if row["review_status"] not in SOURCE_LEDGER_REVIEW_STATES:
+            errors.append(f"{label}: review_status '{row['review_status']}' is not recognised")
+        if not row["valid_from"].isdigit() or not row["valid_to"].isdigit():
+            errors.append(f"{label}: valid_from and valid_to must be years")
+        elif int(row["valid_from"]) > int(row["valid_to"]):
+            errors.append(f"{label}: valid_from is later than valid_to")
+
+        if feature_type == "site":
+            if row["place_id"] not in places:
+                errors.append(f"{label}: a site must resolve to a CND place")
+            if row["via_place_ids"]:
+                errors.append(f"{label}: a site does not run through stations")
+        elif feature_type == "road":
+            stations = _pipe_set(row["via_place_ids"])
+            if len(stations) < 2:
+                errors.append(f"{label}: a road needs at least two stations")
+            for station in stations:
+                if station not in places:
+                    errors.append(f"{label}: station '{station}' does not resolve")
+            if row["place_id"]:
+                errors.append(f"{label}: a road is a sequence of places, not one place")
+        elif feature_type == "limes":
+            if row["place_id"] or row["via_place_ids"]:
+                errors.append(f"{label}: a frontier corridor is drawn, not joined from places")
+            if feature_id not in drawn:
+                errors.append(f"{label}: no drawn geometry for this corridor")
+            drawn_used.add(feature_id)
+
+    for orphan in sorted(drawn - drawn_used):
+        errors.append(f"roman-dacia-lines: geometry '{orphan}' has no row in roman-dacia.csv")
+    for feature in payload.get("features", []):
+        geometry = feature.get("geometry", {})
+        if geometry.get("type") != "LineString":
+            errors.append(f"roman-dacia-lines[{feature.get('id')}]: expected a LineString")
+            continue
+        positions = geometry.get("coordinates", [])
+        if len(positions) < 2:
+            errors.append(f"roman-dacia-lines[{feature.get('id')}]: a corridor needs two positions")
+        for lon, lat in positions:
+            if not (LON_RANGE[0] <= lon <= LON_RANGE[1] and LAT_RANGE[0] <= lat <= LAT_RANGE[1]):
+                errors.append(
+                    f"roman-dacia-lines[{feature.get('id')}]: position outside the Dacia window"
+                )
+                break
+
+    if missing := ROMAN_FEATURE_TYPES - types:
+        errors.append(f"roman-dacia: baseline is missing feature types {sorted(missing)}")
+
+
+def validate_principalities(terms, errors: list[str]) -> None:
+    """KAN-342: phases, and no modern border standing in for a historical one."""
+    rows = _read("principalities", errors)
+    _check_unique(rows, "phase_id", "principalities", errors)
+    payload = _load_gis_geojson("principalities", "principalities-", errors)
+    metadata = payload.get("metadata", {})
+    if metadata.get("derivedFromModernBorders") is not False:
+        errors.append("principalities: derivedFromModernBorders must be explicitly false")
+    shapes = {feature.get("id"): feature for feature in payload.get("features", [])}
+    spans: dict[str, list[tuple[int, int, str]]] = {}
+
+    for row in rows:
+        phase_id = row["phase_id"]
+        label = f"principalities[{phase_id}]"
+        if not phase_id.startswith("pp-") or not SLUG.match(phase_id):
+            errors.append(f"{label}: phase_id must be a pp- slug")
+        if not row["polity_id"].startswith("pol-") or not SLUG.match(row["polity_id"]):
+            errors.append(f"{label}: polity_id must be a pol- slug")
+        for field in ("polity_name", "phase_label", "instrument", "citation", "notes"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        if row["sovereignty"] not in PRINCIPALITY_SOVEREIGNTY:
+            errors.append(f"{label}: sovereignty '{row['sovereignty']}' is not recognised")
+        # A tributary or a province has an overlord; contested territory is
+        # precisely the case where naming one would be the error.
+        if row["sovereignty"] == "contested":
+            if row["suzerain"]:
+                errors.append(f"{label}: contested territory cannot name a single suzerain")
+        elif not row["suzerain"]:
+            errors.append(f"{label}: {row['sovereignty']} requires a suzerain")
+        _check_https(row["source_url"], label, "source_url", errors)
+        _check_vocab(
+            row["geometry_provenance"], "geometry_provenance", terms,
+            label, "geometry_provenance", errors,
+        )
+        if row["geometry_provenance"] != "editorial_reconstruction":
+            errors.append(
+                f"{label}: these envelopes are drawn by this project and must say so"
+            )
+        _check_vocab(row["confidence"], "confidence", terms, label, "confidence", errors)
+        if row["review_status"] not in SOURCE_LEDGER_REVIEW_STATES:
+            errors.append(f"{label}: review_status '{row['review_status']}' is not recognised")
+
+        bounds = []
+        for field in ("valid_from", "valid_to", "instrument_year"):
+            if not row[field].isdigit():
+                errors.append(f"{label}: {field} must be a year")
+            else:
+                bounds.append(int(row[field]))
+        if len(bounds) == 3:
+            start, end, instrument = bounds
+            if start >= end:
+                errors.append(f"{label}: a phase must end after it starts")
+            if start < PRINCIPALITY_FROM or end > PRINCIPALITY_TO:
+                errors.append(
+                    f"{label}: {start}-{end} falls outside "
+                    f"{PRINCIPALITY_FROM}-{PRINCIPALITY_TO}"
+                )
+            if instrument != start:
+                errors.append(f"{label}: the phase must begin at the instrument that opened it")
+            spans.setdefault(row["polity_id"], []).append((start, end, phase_id))
+
+        shape = shapes.get(phase_id)
+        if shape is None:
+            errors.append(f"{label}: no polygon for this phase")
+        elif shape.get("geometry", {}).get("type") != "Polygon":
+            errors.append(f"{label}: expected a Polygon")
+        else:
+            for ring in shape["geometry"]["coordinates"]:
+                _check_gis_ring(ring, label, errors)
+
+    # One polity cannot hold two different extents at the same moment. Bounds are
+    # inclusive on both ends - the Atlas filter is valid_from <= year <= valid_to -
+    # so a phase must end the year *before* the instrument that replaced it, or
+    # both render on the changeover year.
+    for polity_id, entries in spans.items():
+        ordered = sorted(entries)
+        for (start, end, phase_id), (next_start, _, next_id) in zip(ordered, ordered[1:]):
+            if next_start <= end:
+                errors.append(
+                    f"principalities[{polity_id}]: phases {phase_id} and {next_id} overlap "
+                    f"in {next_start}; a phase ends the year before its successor begins"
+                )
+
+    for orphan in sorted(set(shapes) - {row["phase_id"] for row in rows}):
+        errors.append(f"principalities: polygon '{orphan}' has no phase row")
+
+
+def validate_josephinian_sheets(terms, places, place_points, errors: list[str]) -> None:
+    """KAN-343: footprints and links, and never a scan this project may not serve."""
+    rows = _read("josephinian_sheets", errors)
+    _check_unique(rows, "sheet_id", "josephinian-sheets", errors)
+    _check_unique(rows, "sheet_label", "josephinian-sheets", errors)
+
+    for row in rows:
+        sheet_id = row["sheet_id"]
+        label = f"josephinian-sheets[{sheet_id}]"
+        if not sheet_id.startswith("js-") or not SLUG.match(sheet_id):
+            errors.append(f"{label}: sheet_id must be a js- slug")
+        for field in ("sheet_label", "survey", "scale", "citation", "repository", "notes"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        _check_https(row["source_url"], label, "source_url", errors)
+        _check_vocab(
+            row["footprint_provenance"], "geometry_provenance", terms,
+            label, "footprint_provenance", errors,
+        )
+        if row["footprint_provenance"] in GIS_UNAVAILABLE_PROVENANCE:
+            errors.append(
+                f"{label}: the archive's own index geometry has not been obtained, so "
+                f"'{row['footprint_provenance']}' would overstate the footprint"
+            )
+        _check_vocab(row["confidence"], "confidence", terms, label, "confidence", errors)
+        _check_vocab(
+            row["rights_status"], "rights_statement", terms, label, "rights_status", errors
+        )
+        if row["review_status"] not in SOURCE_LEDGER_REVIEW_STATES:
+            errors.append(f"{label}: review_status '{row['review_status']}' is not recognised")
+        # The index exists to point at scans, not to hold them.
+        if row["scan_redistributed"] != "no":
+            errors.append(f"{label}: this index redistributes no scan")
+        # An archive identifier nobody has transcribed may stay pending, but only
+        # while the row still says it has not been checked.
+        if row["archive_sheet_id"] == PENDING and row["review_status"] == "reviewed":
+            errors.append(f"{label}: a reviewed sheet must carry its archive identifier")
+        if not row["archive_sheet_id"]:
+            errors.append(f"{label}: archive_sheet_id is required, pending if unknown")
+
+        for field in ("survey_from", "survey_to"):
+            if not row[field].isdigit():
+                errors.append(f"{label}: {field} must be a year")
+        if row["survey_from"].isdigit() and row["survey_to"].isdigit():
+            if int(row["survey_from"]) > int(row["survey_to"]):
+                errors.append(f"{label}: the survey cannot end before it starts")
+
+        try:
+            west, south = float(row["west"]), float(row["south"])
+            east, north = float(row["east"]), float(row["north"])
+        except ValueError:
+            errors.append(f"{label}: the footprint bounds are not numbers")
+            continue
+        if west >= east or south >= north:
+            errors.append(f"{label}: the footprint has no extent")
+        _check_gis_ring(
+            [[west, south], [east, south], [east, north], [west, north], [west, south]],
+            label, errors,
+        )
+        # A coverage link that does not fall inside the footprint is a claim the
+        # sheet cannot support, whichever of the two is wrong.
+        for place_id in _pipe_set(row["covers_place_ids"]):
+            if place_id not in places:
+                errors.append(f"{label}: covered place '{place_id}' does not resolve")
+                continue
+            point = place_points.get(place_id)
+            if point is None:
+                errors.append(f"{label}: covered place '{place_id}' has no location")
+            elif not (west <= point[0] < east and south <= point[1] < north):
+                errors.append(f"{label}: covered place '{place_id}' lies outside the footprint")
+
+
 def validate_research_package_manifest(errors: list[str]) -> None:
     """Hash-freeze the KAN-349/354/357 research packages and boundary."""
     path = DATA / RESEARCH_PACKAGE_MANIFEST
@@ -1554,6 +1885,14 @@ def validate_inputs() -> list[str]:
     validate_treaty_frontier_sources(errors)
     validate_carta_rubra_package(errors)
     validate_borroczyn_package(errors)
+    place_points = {
+        row["place_id"]: (float(row["ref_lon"]), float(row["ref_lat"]))
+        for row in _read("places", errors)
+        if row["location_status"] == "located" and row["ref_lon"] and row["ref_lat"]
+    }
+    validate_roman_dacia(terms, places, errors)
+    validate_principalities(terms, errors)
+    validate_josephinian_sheets(terms, places, place_points, errors)
     validate_source_ledger_manifest(errors)
     validate_research_package_manifest(errors)
     return errors
@@ -1575,6 +1914,9 @@ def readiness_lines() -> list[str]:
     carta_sources = _read("carta_rubra_sources", errors)
     carta_claims = _read("carta_rubra_claims", errors)
     borroczyn_sources = _read("borroczyn_seam_sources", errors)
+    roman = _read("roman_dacia", errors)
+    phases = _read("principalities", errors)
+    sheets = _read("josephinian_sheets", errors)
 
     transcriptions = _read("transcriptions", errors)
     from_witness = sum(
@@ -1603,6 +1945,11 @@ def readiness_lines() -> list[str]:
         f"  research packages: {len(hiatus_states)} Hiatus states, "
         f"{len(carta_sources)} Carta Rubra sources/{len(carta_claims)} claims, and "
         f"{len(borroczyn_sources)} Borroczyn seam sources",
+        f"  shared GIS: {len(roman)} Roman baseline features "
+        f"({sum(1 for row in roman if row['feature_type'] == 'site')} joined to CND places), "
+        f"{len(phases)} principality phases across "
+        f"{len({row['polity_id'] for row in phases})} polities, "
+        f"{len(sheets)} Josephinian sheets; 0 digitised from a source",
     ]
 
 
