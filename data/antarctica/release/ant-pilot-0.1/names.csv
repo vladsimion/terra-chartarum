@@ -1,0 +1,3 @@
+name_id,feature_id,name,language,name_kind,valid_from,valid_to,source_id,source_locator,review_state,notes
+ant-nam-terra-australis,ant-ftr-terra-australis-conjectured,Terra Australis Incognita,lat,cartographic_label,1531,1775,ant-src-hiatt-terra-incognita,pending,raw,The label under which the conjectured continent is most often engraved. Which maps use exactly this form and which use a variant has not been checked.
+ant-nam-terre-antartiche,ant-ftr-coronelli-southern-region,Terre Antartiche,ita,text_heading,1693,1693,ant-src-coronelli-epitome-1693,pending,raw,"Taken from the plate title as it appears in catalogue and search records, not from the plate itself."

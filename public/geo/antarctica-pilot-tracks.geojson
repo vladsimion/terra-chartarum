@@ -1,0 +1,197 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              -180.0,
+              -60.0
+            ],
+            [
+              -90.0,
+              -60.0
+            ],
+            [
+              0.0,
+              -60.0
+            ],
+            [
+              90.0,
+              -60.0
+            ],
+            [
+              180.0,
+              -60.0
+            ],
+            [
+              180.0,
+              -90.0
+            ],
+            [
+              -180.0,
+              -90.0
+            ],
+            [
+              -180.0,
+              -60.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "act": "act_i",
+        "confidence": "low",
+        "evidenceClass": "conjectured",
+        "expeditionId": null,
+        "featureType": "conjectured_landmass",
+        "geometryProvenance": "editorial_generalisation",
+        "historicName": "Terra Australis Incognita",
+        "id": "ant-ftr-terra-australis-conjectured",
+        "kind": "feature",
+        "laterStatus": "disproved",
+        "notes": "A latitude envelope standing for the region within which the conjectured continent was drawn. It is deliberately not a coastline: no map in the register has been examined, so there is nothing to digitise, and drawing a plausible outline would manufacture the very false precision the essay is about.",
+        "reviewState": "raw",
+        "sourceId": "ant-src-hiatt-terra-incognita",
+        "sourceLocator": "pending",
+        "title": "Terra Australis, schematic envelope (not a digitised coastline)",
+        "validFrom": 1531,
+        "validTo": 1775
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            39.6,
+            -60.0
+          ],
+          [
+            0.0,
+            -66.5
+          ],
+          [
+            -60.0,
+            -68.0
+          ],
+          [
+            -106.9,
+            -71.17
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "act": "act_iv",
+        "confidence": "low",
+        "dateFrom": "1773-01-17",
+        "dateTo": "1774-01-30",
+        "evidenceClass": "direct_observation",
+        "expeditionId": "ant-exp-cook-second",
+        "geometryProvenance": "editorial_generalisation",
+        "id": "ant-trk-cook-resolution",
+        "kind": "track",
+        "notes": "Four points standing for a two-year track. It is a sample that proves the schema carries a line, not a route anyone may measure. The real track is compiled at ANT-5 from the journals.",
+        "reviewState": "raw",
+        "sourceId": "ant-src-beaglehole-journals-ii",
+        "sourceLocator": "pending",
+        "title": "Resolution in the high southern latitudes, 1773-1774 (sample)",
+        "trackKind": "voyage",
+        "validFrom": 1773,
+        "validTo": 1774,
+        "vessel": "Resolution"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            -31.5,
+            -76.57
+          ],
+          [
+            -52.44,
+            -68.66
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "act": "act_viii",
+        "confidence": "low",
+        "dateFrom": "1915-01-19",
+        "dateTo": "1915-11-21",
+        "evidenceClass": "dead_reckoning",
+        "expeditionId": "ant-exp-ite",
+        "geometryProvenance": "editorial_interpolation",
+        "id": "ant-trk-endurance-drift",
+        "kind": "track",
+        "notes": "Two endpoints joined by a straight line, which the drift certainly was not. Present only to prove the schema can hold a drift distinct from a planned route; ANT-9 replaces it with dated positions.",
+        "reviewState": "raw",
+        "sourceId": "ant-src-worsley-endurance-1931",
+        "sourceLocator": "pending",
+        "title": "Endurance in the ice, besetment to loss (two-point sample)",
+        "trackKind": "drift",
+        "validFrom": 1915,
+        "validTo": 1915,
+        "vessel": "Endurance"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            -36.5,
+            -54.3
+          ],
+          [
+            -30.0,
+            -70.0
+          ],
+          [
+            -20.0,
+            -78.0
+          ],
+          [
+            0.0,
+            -90.0
+          ],
+          [
+            170.0,
+            -78.0
+          ],
+          [
+            166.7,
+            -77.85
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "act": "act_viii",
+        "confidence": "low",
+        "dateFrom": "1914-08-08",
+        "evidenceClass": "editorial_interpolation",
+        "expeditionId": "ant-exp-ite",
+        "geometryProvenance": "editorial_generalisation",
+        "id": "ant-trk-endurance-plan",
+        "kind": "track",
+        "notes": "A planned route is an intention, not an observation, and this drawing of it is ours. It is filed as editorial_interpolation so that no part of the pipeline can mistake it for evidence, which is the distinction Act VIII turns on.",
+        "reviewState": "raw",
+        "sourceId": "ant-src-shackleton-south-1919",
+        "sourceLocator": "pending",
+        "title": "Planned trans-Antarctic crossing, as announced",
+        "trackKind": "planned_route",
+        "validFrom": 1914,
+        "validTo": 1914,
+        "vessel": "Endurance"
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

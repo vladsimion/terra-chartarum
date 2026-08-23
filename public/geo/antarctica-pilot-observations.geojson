@@ -1,0 +1,157 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          -106.9,
+          -71.17
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "act": "act_iv",
+        "confidence": "medium",
+        "evidenceClass": "direct_observation",
+        "expeditionId": "ant-exp-cook-second",
+        "featureType": "observed_limit",
+        "geometryProvenance": "transcribed_from_coordinates",
+        "id": "ant-ftr-cook-southern-limit",
+        "kind": "feature",
+        "laterStatus": "confirmed",
+        "notes": "The furthest south of the second voyage, commonly given as 71 degrees 10 minutes south, 106 degrees 54 minutes west. Recorded from the general literature and not yet checked against Beaglehole, which is why it stays raw.",
+        "reviewState": "raw",
+        "sourceId": "ant-src-beaglehole-journals-ii",
+        "sourceLocator": "pending",
+        "title": "Southern limit reached by Resolution, 30 January 1774",
+        "validFrom": 1774,
+        "validTo": 1774
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -2.23,
+          -69.35
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "act": "act_v",
+        "confidence": "contested",
+        "datePrecision": "day",
+        "evidenceClass": "reported_not_observed",
+        "expeditionId": "ant-exp-bellingshausen",
+        "geometryProvenance": "transcribed_from_coordinates",
+        "id": "ant-obs-1820-sighting",
+        "kind": "observation",
+        "laterStatus": "unresolved",
+        "notes": "Filed as reported_not_observed rather than direct_observation on purpose: what was seen, and whether it counts as a sighting of the mainland, is the disputed question the terminology table exists to keep open. The position is approximate and taken from the general literature.",
+        "observationKind": "sighting",
+        "observedDate": "1820-01-27",
+        "observer": "Fabian Gottlieb von Bellingshausen",
+        "reviewState": "raw",
+        "sourceId": "ant-src-debenham-bellingshausen",
+        "sourceLocator": "pending",
+        "title": "Reported sighting of an ice front, Vostok and Mirny",
+        "validFrom": 1820,
+        "validTo": 1820
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -106.9,
+          -71.17
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "act": "act_iv",
+        "confidence": "medium",
+        "datePrecision": "day",
+        "evidenceClass": "instrumental_fix",
+        "expeditionId": "ant-exp-cook-second",
+        "geometryProvenance": "transcribed_from_coordinates",
+        "id": "ant-obs-cook-farthest-south",
+        "kind": "observation",
+        "laterStatus": "confirmed",
+        "notes": "Recorded from the general literature. The figure is stable across accounts but has not been read in the edition, so it stays raw.",
+        "observationKind": "position",
+        "observedDate": "1774-01-30",
+        "observer": "James Cook",
+        "reviewState": "raw",
+        "sourceId": "ant-src-beaglehole-journals-ii",
+        "sourceLocator": "pending",
+        "title": "Farthest south, Resolution",
+        "validFrom": 1774,
+        "validTo": 1774
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -31.5,
+          -76.57
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "act": "act_viii",
+        "confidence": "low",
+        "datePrecision": "day",
+        "evidenceClass": "dead_reckoning",
+        "expeditionId": "ant-exp-ite",
+        "geometryProvenance": "editorial_interpolation",
+        "id": "ant-obs-endurance-beset",
+        "kind": "observation",
+        "laterStatus": "unresolved",
+        "notes": "Approximate, recorded from the general literature and unverified. Whether the position was fixed or reckoned is unknown until the navigational records are found.",
+        "observationKind": "position",
+        "observedDate": "1915-01-19",
+        "observer": "Frank Arthur Worsley",
+        "reviewState": "raw",
+        "sourceId": "ant-src-shackleton-south-1919",
+        "sourceLocator": "pending",
+        "title": "Endurance beset in the pack",
+        "validFrom": 1915,
+        "validTo": 1915
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -52.4417,
+          -68.6583
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "act": "act_viii",
+        "confidence": "low",
+        "datePrecision": "day",
+        "evidenceClass": "instrumental_fix",
+        "expeditionId": "ant-exp-ite",
+        "geometryProvenance": "transcribed_from_coordinates",
+        "id": "ant-obs-endurance-fix",
+        "kind": "observation",
+        "laterStatus": "unresolved",
+        "notes": "The figure usually given as 68 degrees 39 minutes 30 seconds south, 52 degrees 26 minutes 30 seconds west. It is recorded at the precision the literature reports and at low confidence, because the whole point of the Coda is that this coordinate is a calculated result with an error nobody here has yet established.",
+        "observationKind": "reported_sinking_position",
+        "observedDate": "1915-11-21",
+        "observer": "Frank Arthur Worsley",
+        "reviewState": "raw",
+        "sourceId": "ant-src-worsley-endurance-1931",
+        "sourceLocator": "pending",
+        "title": "Position recorded for the loss of Endurance",
+        "validFrom": 1915,
+        "validTo": 1915
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

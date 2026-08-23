@@ -4,7 +4,7 @@
 # out-of-band data pipelines that are not part of the Astro build - currently the
 # Venetian Maritime Network (VMN) GIS dataset compilation (KAN-145).
 
-.PHONY: vmn vmn-venv vmn-validate hanseatic hanseatic-validate hanseatic-test crusades-validate crusades-test dacia dacia-validate dacia-test
+.PHONY: vmn vmn-venv vmn-validate hanseatic hanseatic-validate hanseatic-test crusades-validate crusades-test dacia dacia-validate dacia-test antarctica antarctica-validate antarctica-test
 
 VMN_VENV := .venv
 VMN_PY := $(VMN_VENV)/bin/python
@@ -75,3 +75,19 @@ crusades-validate:
 
 crusades-test:
 	python3 -m pytest scripts/crusades -q
+
+# KAN-423 Antarctic pilot compile. Standard-library only - the pilot emits
+# GeoJSON rather than FlatGeobuf, so it needs no venv and no GDAL. Deliberately
+# timestamp-free: identical inputs must produce identical bytes, because the
+# release manifest hashes its own outputs and the validator checks them back.
+antarctica:
+	python3 scripts/antarctica/build.py
+
+# KAN-420..423 Antarctic QA: the source and rights audit, the claim ledger, the
+# Coronelli package, the pilot tables and the compiled release against the
+# hashes the manifest recorded.
+antarctica-validate:
+	python3 scripts/antarctica/validate.py
+
+antarctica-test:
+	python3 -m pytest scripts/antarctica -q
