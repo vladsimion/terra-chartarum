@@ -41,6 +41,28 @@ export type DocumentDisposition =
 
 export type LayerCoverage = 'covered' | 'partial' | 'gap' | 'exempt' | 'exempt-with-warning';
 
+/**
+ * What actually happened at cutover (ATLAS-1222 / KAN-418).
+ *
+ * The audit recorded an intention; this records the result. Every inventoried
+ * entry carries one, so "the documentation was migrated" is a checkable claim
+ * rather than an assertion.
+ */
+export type MigrationOutcome =
+  | 'replaced-by-public-route'
+  | 'split-public-and-technical'
+  | 'repointed-to-existing-owner'
+  | 'retained-technical'
+  | 'internal-only'
+  | 'deprecated';
+
+/** Outcomes that must resolve to a public route on Terra Chartarum. */
+export const PUBLIC_OUTCOMES: readonly MigrationOutcome[] = [
+  'replaced-by-public-route',
+  'split-public-and-technical',
+  'repointed-to-existing-owner',
+];
+
 export interface InventoryDocument {
   id: string;
   title: string;
@@ -55,6 +77,11 @@ export interface InventoryDocument {
   retainTechnicalLink: boolean;
   citedByLayers: string[];
   notes: string;
+  /** Cutover result (KAN-418). */
+  migrationOutcome: MigrationOutcome;
+  implementedPattern: DocumentPattern;
+  implementedRoute: string | null;
+  outcomeNote: string;
 }
 
 export interface InventoryLink {
@@ -100,6 +127,13 @@ export function coverageForLayer(layerId: string): LayerCoverageRow | undefined 
 /** Layers that cannot meet the publication contract as they stand (KAN-418 gate). */
 export function layersMissingPublicDocumentation(): LayerCoverageRow[] {
   return COVERAGE.filter((row) => row.coverage === 'gap' || row.coverage === 'partial');
+}
+
+/** Entries still awaiting a public destination, if any. Empty is the release condition. */
+export function unmigratedDocuments(): InventoryDocument[] {
+  return DOCUMENTS.filter(
+    (doc) => PUBLIC_OUTCOMES.includes(doc.migrationOutcome) && !doc.implementedRoute,
+  );
 }
 
 /** Documents cited by more than one layer: the per-layer duplication hazards. */

@@ -15,12 +15,14 @@ interface Props {
   eyebrow?: string;
   breadcrumbs: { label: string; href?: string }[];
   headings?: { slug: string; text: string }[];
+  /** JSON-LD for this page - Dataset and BreadcrumbList (KAN-417). */
+  schema?: object | object[];
 }
 
-const { title, description, eyebrow, breadcrumbs, headings = [] } = Astro.props;
+const { title, description, eyebrow, breadcrumbs, headings = [], schema } = Astro.props;
 ---
 
-<PortalLayout title={title} description={description}>
+<PortalLayout title={title} description={description} schema={schema}>
   <main class="shell handbook">
     <nav class="crumbs" aria-label="Breadcrumb">
       <ol>

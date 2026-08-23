@@ -90,7 +90,15 @@ if (availabilityDefects.length > 0) {
       'Compile the asset, or move the layer to lifecycle in-preparation.',
   );
 }
-const documentationRoutes = (await loadHandbook()).routes;
+const handbook = await loadHandbook();
+const documentationRoutes = handbook.routes;
+// A one-line reader-facing statement per documented layer, so the inspector
+// summarises the claim instead of duplicating the record (KAN-415).
+const documentationSummaries: Record<string, string> = Object.fromEntries(
+  handbook.docs
+    .filter((entry) => entry.doc.docType === 'layer' && entry.doc.layerId)
+    .map((entry) => [entry.doc.layerId!, entry.doc.summary]),
+);
 // Facets and documentation now belong to the inspector (KAN-402), so the
 // browser needs only the layers it will actually list.
 const browsable = layerMeta.filter((l) => catalogue.layers.some((row) => row.id === l.id));
@@ -369,10 +377,17 @@ const payload = {
                   </div>
                 )}
               </dl>
+              {documentationSummaries[l.id] && (
+                <p class="am-dossier-claim">{documentationSummaries[l.id]}</p>
+              )}
               <p class="am-dossier-links">
                 {documentationRoutes[l.id] && (
-                  <a class="am-dossier-handbook" href={documentationRoutes[l.id]}>
-                    Read the layer record →
+                  <a
+                    class="am-dossier-handbook"
+                    href={documentationRoutes[l.id]}
+                    data-about-sources={l.id}
+                  >
+                    About &amp; sources →
                   </a>
                 )}
                 {l.essayLinks.map((link) => (
@@ -2223,6 +2238,21 @@ const payload = {
         document.dispatchEvent(new CustomEvent('atlas:layer-focus', { detail: { layerId: id } }));
       }
       if (inspectorClose) inspectorClose.hidden = id === null;
+      // Carry the current view onto the About & sources link, so the layer
+      // page's "Open in Atlas" can hand back the composition and year the
+      // reader left rather than a default (KAN-415). Deterministic, and it
+      // reuses the existing share parameters rather than inventing a return
+      // token nobody else understands.
+      if (id) {
+        const about = root.querySelector<HTMLAnchorElement>(`[data-about-sources="${id}"]`);
+        if (about) {
+          const base = about.getAttribute('href')!.split('?')[0];
+          const params = new URLSearchParams({ year: String(yearIn.value) });
+          const active = [...activeLayers].sort();
+          if (active.length > 0) params.set('layers', active.join(','));
+          about.setAttribute('href', `${base}?${params}`);
+        }
+      }
       updateCatalogueUrlState();
     };
 
@@ -2904,6 +2934,14 @@ const payload = {
   }
   .am-dossier-facts dd {
     margin: 0;
+  }
+  .am-dossier-claim {
+    font-size: 0.8rem;
+    margin: 0 0 0.5rem;
+    color: var(--muted, #8a8171);
+  }
+  .am-dossier-handbook {
+    font-weight: 600;
   }
   .am-dossier-links {
     display: grid;

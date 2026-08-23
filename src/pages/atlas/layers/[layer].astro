@@ -18,8 +18,10 @@ import { loadHandbook } from '../../../lib/handbook-content';
 import { renderHandbookMarkdown } from '../../../lib/handbook-render';
 import { GEO_LAYERS } from '../../../lib/geo';
 import { collectionsForLayer } from '../../../lib/geo-collections';
-import { versionedGeoUrl } from '../../../lib/geo-release';
-import { HANDBOOK_ROOT } from '../../../lib/handbook';
+import { GEO_RELEASE, geoReleaseAsset, versionedGeoUrl } from '../../../lib/geo-release';
+import type { CiteInput } from '../../../lib/cite';
+import { HANDBOOK_ROOT, handbookRoute } from '../../../lib/handbook';
+import { breadcrumbSchema, datasetSchema } from '../../../lib/structured-data';
 
 export async function getStaticPaths() {
   const projection = await loadHandbook();
@@ -34,19 +36,88 @@ const layer = GEO_LAYERS.find((candidate) => candidate.id === doc.layerId)!;
 const { html, headings } = await renderHandbookMarkdown(entry.body);
 const collections = collectionsForLayer(layer.id);
 
-let assetUrl: string | undefined;
+// The dataset offer (KAN-416). A layer whose asset is not in the release
+// manifest still documents fine; it simply has nothing to hand over.
+let dataset:
+  | {
+      input: CiteInput;
+      format: string;
+      featureCount?: number;
+      bytes: number;
+      url: string;
+      release: string;
+    }
+  | undefined;
 try {
-  assetUrl = versionedGeoUrl(layer);
+  const asset = geoReleaseAsset(layer.id);
+  dataset = {
+    input: {
+      id: `${layer.id}-${asset.version}`,
+      kind: 'dataset',
+      title: layer.title,
+      author: layer.attribution,
+      publisher: 'Terra Chartarum',
+      version: asset.version,
+      license: layer.license,
+      url: new URL(asset.url, Astro.site).toString(),
+      release: GEO_RELEASE,
+      checksum: asset.sha256,
+    },
+    format: asset.format,
+    featureCount: asset.featureCount,
+    bytes: asset.bytes,
+    url: versionedGeoUrl(layer),
+    release: GEO_RELEASE,
+  };
 } catch {
-  // A layer whose asset is not in the release manifest still documents fine;
-  // it simply has nothing to offer for download.
-  assetUrl = undefined;
+  dataset = undefined;
 }
 
 const span = `${layer.yearFrom < 0 ? `${Math.abs(layer.yearFrom)} BC` : layer.yearFrom}–${layer.yearTo}`;
 // Deep link through the existing Atlas share contract (atlas-share.ts), not a
 // second URL scheme invented for the Handbook.
 const openInAtlas = `/atlas/?layers=${layer.id}&year=${Math.max(layer.yearFrom, 0)}`;
+
+// Related navigation by canonical ID (KAN-417), so a reader can move between a
+// layer, the method it shares and the layers that share it without going back
+// to the catalogue.
+const projection = await loadHandbook();
+const byId = new Map(projection.docs.map((candidate) => [candidate.doc.id, candidate]));
+const references = doc.referencesDocIds
+  .map((id) => byId.get(id))
+  .filter((candidate): candidate is NonNullable<typeof candidate> => Boolean(candidate));
+const relatedLayers = doc.relatedLayerIds
+  .map((id) => projection.docs.find((c) => c.doc.docType === 'layer' && c.doc.layerId === id))
+  .filter((candidate): candidate is NonNullable<typeof candidate> => Boolean(candidate));
+
+const schema = [
+  datasetSchema(
+    {
+      layerId: layer.id,
+      title: doc.title,
+      description: doc.summary,
+      licence: doc.citation?.licence ?? layer.license,
+      version: doc.citation?.version,
+      attribution: layer.attribution,
+      temporalFrom: layer.yearFrom,
+      temporalTo: layer.yearTo,
+      keywords: layer.tags,
+      distribution: dataset
+        ? { url: dataset.url, format: dataset.format, bytes: dataset.bytes }
+        : undefined,
+    },
+    Astro.site!,
+  ),
+  breadcrumbSchema(
+    [
+      { name: 'Atlas', path: '/atlas/' },
+      { name: 'Handbook', path: HANDBOOK_ROOT },
+      { name: 'Layers', path: `${HANDBOOK_ROOT}layers/` },
+      { name: doc.title, path: `/atlas/layers/${layer.id}/` },
+    ],
+    Astro.site!,
+  ),
+];
 ---
 
 <HandbookShell
@@ -60,6 +131,7 @@ const openInAtlas = `/atlas/?layers=${layer.id}&year=${Math.max(layer.yearFrom, 
     { label: doc.title },
   ]}
   headings={headings}
+  schema={schema}
 >
   <Fragment slot="header">
     <p class="lede">{doc.summary}</p>
@@ -87,7 +159,7 @@ const openInAtlas = `/atlas/?layers=${layer.id}&year=${Math.max(layer.yearFrom, 
       )
     }
     <p class="actions">
-      <a class="open-atlas" href={openInAtlas}>Open in Atlas &rarr;</a>
+      <a class="open-atlas" data-open-atlas href={openInAtlas}>Open in Atlas &rarr;</a>
     </p>
     {
       collections.length > 0 && (
@@ -107,6 +179,28 @@ const openInAtlas = `/atlas/?layers=${layer.id}&year=${Math.max(layer.yearFrom, 
   <div class="prose" set:html={html} />
 
   {
+    (references.length > 0 || relatedLayers.length > 0) && (
+      <section class="related" aria-labelledby="related-records">
+        <h2 id="related-records">Related records</h2>
+        <ul>
+          {references.map((entry) => (
+            <li>
+              <a href={handbookRoute(entry.doc)}>{entry.doc.title}</a>
+              <span class="related-kind"> · {entry.doc.docType.replace(/-/g, ' ')}</span>
+            </li>
+          ))}
+          {relatedLayers.map((entry) => (
+            <li>
+              <a href={handbookRoute(entry.doc)}>{entry.doc.title}</a>
+              <span class="related-kind"> · layer</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  {
     doc.relatedEssaySlugs.length > 0 && (
       <section class="related" aria-labelledby="related-title">
         <h2 id="related-title">Related essays</h2>
@@ -124,9 +218,10 @@ const openInAtlas = `/atlas/?layers=${layer.id}&year=${Math.max(layer.yearFrom, 
   <CitationPanel
     route={`/atlas/layers/${layer.id}/`}
     citation={doc.citation}
-    assetUrl={assetUrl}
+    dataset={dataset}
     attribution={layer.attribution}
     lastReviewed={doc.lastReviewed}
+    dataRestriction={doc.dataRestriction}
   />
 
   <TechnicalLinks links={doc.technicalLinks} />
@@ -180,4 +275,35 @@ const openInAtlas = `/atlas/?layers=${layer.id}&year=${Math.max(layer.yearFrom, 
   .related h2 {
     font-size: 1rem;
   }
+  .related-kind {
+    font-size: 0.78rem;
+    color: var(--muted, #8a8171);
+  }
 </style>
+
+<script>
+  /**
+   * Restore the view the reader arrived from (KAN-415).
+   *
+   * The Atlas puts its current year and composition on the About & sources
+   * link. If they are on this page's own URL, hand them back rather than
+   * dropping the reader into a default view of a layer they were already
+   * looking at. Absent them - arriving from search, or a bare link - the
+   * server-rendered default stands.
+   */
+  function restoreReturnState() {
+    const link = document.querySelector<HTMLAnchorElement>('[data-open-atlas]');
+    if (!link) return;
+    const here = new URLSearchParams(location.search);
+    const year = here.get('year');
+    const layers = here.get('layers');
+    if (!year && !layers) return;
+
+    const target = new URL(link.href, location.origin);
+    if (year && /^-?\d+$/.test(year)) target.searchParams.set('year', year);
+    if (layers && /^[a-z0-9,_-]+$/i.test(layers)) target.searchParams.set('layers', layers);
+    link.href = `${target.pathname}${target.search}`;
+  }
+  restoreReturnState();
+  document.addEventListener('astro:page-load', restoreReturnState);
+</script>

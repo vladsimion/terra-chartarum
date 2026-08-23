@@ -222,10 +222,19 @@ const haystack = (row: CatalogueLayer, ...context: (string | undefined)[]) =>
                             type="button"
                             class="alb-info"
                             data-inspect={row.id}
-                            aria-label={`About ${row.title}`}
+                            aria-label={`Inspect ${row.title}`}
                           >
                             i
                           </button>
+                          {documentationRoutes[row.id] && (
+                            <a
+                              class="alb-row-doc"
+                              href={documentationRoutes[row.id]}
+                              aria-label={`About and sources: ${row.title}`}
+                            >
+                              About
+                            </a>
+                          )}
                         </div>
                       );
                     })}
@@ -260,11 +269,6 @@ const haystack = (row: CatalogueLayer, ...context: (string | undefined)[]) =>
                             <input type="checkbox" data-layer={row.id} />
                             <span class="alb-row-title">{row.title}</span>
                             <span class="alb-row-meta">{span(row)}</span>
-                            {documentationRoutes[row.id] && (
-                              <span class="alb-row-doc" aria-hidden="true">
-                                ✓
-                              </span>
-                            )}
                           </label>
                           <button
                             type="button"
@@ -459,10 +463,19 @@ const haystack = (row: CatalogueLayer, ...context: (string | undefined)[]) =>
   .alb-row-title {
     flex: 1;
   }
-  .alb-row-meta,
+  .alb-row-meta {
+    font-size: 0.72rem;
+    color: var(--muted, #8a8171);
+  }
+  /* A real link, not a JavaScript affordance: this is how a layer's public
+     record is reached when scripting or WebGL is unavailable. */
   .alb-row-doc {
     font-size: 0.72rem;
     color: var(--muted, #8a8171);
+    border: 1px solid var(--rule, #3a352b);
+    border-radius: 3px;
+    padding: 0.1rem 0.4rem;
+    text-decoration: none;
   }
   .alb-info {
     font: inherit;
@@ -508,6 +521,7 @@ const haystack = (row: CatalogueLayer, ...context: (string | undefined)[]) =>
   /* Icon-sized controls are fine under a mouse and not under a thumb. */
   @media (pointer: coarse) {
     .alb-info,
+    .alb-row-doc,
     .alb-lens,
     .alb-activate,
     .alb-group-toggle,

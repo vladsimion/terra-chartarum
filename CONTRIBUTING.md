@@ -146,3 +146,10 @@ honestly.
   Playwright + axe, and Lighthouse - are green before requesting review.
 
 Thank you for helping the atlas grow.
+
+## Adding an Atlas layer or collection
+
+See [docs/adding-a-layer.md](docs/adding-a-layer.md) for the end-to-end workflow:
+canonical ID, asset, taxonomy registration, collection membership, the public
+documentation record and the validation chain. A published layer without a
+public record fails `npm run build`.

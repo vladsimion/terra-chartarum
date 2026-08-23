@@ -78,9 +78,15 @@ test('VMN release screenshot scrub: 3 zooms × 6 slider years', async ({ page },
 
       const map = page.locator('.am-map');
       await expect(map.locator('.maplibregl-canvas')).toBeVisible();
-      // The external base style can initialize more slowly under a fully
-      // parallel suite; this changes only after the Atlas load hook applies the
-      // requested URL state and attaches all three overlays.
+      // Wait on the island's own readiness signal (KAN-400) rather than on a
+      // hand-tuned allowance for a slow base style. `data-map-ready` is set in
+      // MapLibre's load hook, after the requested URL state has been applied and
+      // the overlays attached - which is exactly the condition the next
+      // assertions depend on. The Build Log carried adopting it here as open
+      // debt from the batch-2 work.
+      await expect(page.locator('[data-atlasmap][data-map-ready="true"]')).toBeAttached({
+        timeout: 30_000,
+      });
       await expect(page.locator('.am-year-out')).toHaveText(`AD ${year}`, {
         timeout: 20_000,
       });

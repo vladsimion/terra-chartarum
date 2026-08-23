@@ -161,6 +161,14 @@ export const HandbookDocFields = z.object({
    */
   minimalContext: z.boolean().default(false),
   anachronismNote: z.string().min(1).optional(),
+  /**
+   * Why this layer's data cannot be offered for download (ATLAS-1220 / KAN-416).
+   *
+   * Present means withheld, and the page states the reason instead of quietly
+   * omitting a link. A rights restriction a reader cannot see looks like an
+   * oversight, and the next person to touch the page removes it.
+   */
+  dataRestriction: z.string().min(1).optional(),
 });
 
 export const HandbookDocSchema = HandbookDocFields.superRefine((doc, ctx) => {
