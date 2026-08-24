@@ -1,0 +1,72 @@
+{
+  "authorityConsumers": {
+    "hiatus": "candidate_ledger_pending_cnd_source_migration",
+    "nomenErrans": "resolves",
+    "nomenErransUnresolvedIds": []
+  },
+  "automatedValidation": {
+    "command": "npm run dacia:validate",
+    "enforces": [
+      "identifiers",
+      "foreign_keys",
+      "controlled_vocabularies",
+      "date_precision",
+      "geometry_provenance",
+      "release_hashes"
+    ]
+  },
+  "blockers": [
+    "coverage_target_not_reached",
+    "scholarly_spot_check_not_recorded",
+    "no_publishable_attestations",
+    "hiatus_authority_reconciliation_pending"
+  ],
+  "candidate": "cnd-1.0-rc1",
+  "coverage": {
+    "places": {
+      "current": 40,
+      "shortfall": 80,
+      "target": 120
+    },
+    "sources": {
+      "current": 14,
+      "shortfall": 11,
+      "target": 25
+    }
+  },
+  "doi": {
+    "reason": "A DOI requires an authenticated external repository deposit. No repository credential or legal deposit decision is stored in this repository; the deterministic local candidate is therefore built without a DOI.",
+    "status": "deferred"
+  },
+  "evidenceRegimes": {
+    "missingSourceIds": {},
+    "required": [
+      "ancient",
+      "early-modern",
+      "medieval",
+      "modern",
+      "survey-cadastral"
+    ]
+  },
+  "releaseStatus": "blocked",
+  "rights": {
+    "incompletePublicSourceIds": [],
+    "metadataLicence": "CC BY 4.0",
+    "publicSourceIds": [],
+    "sourceImageryRedistributed": false
+  },
+  "schemaVersion": 1,
+  "scholarlyReview": {
+    "attestationsReviewedOrAbove": 0,
+    "capturesFromWitnessOrEdition": 0,
+    "lowConfidencePendingReview": 3,
+    "publishableAttestations": 0,
+    "reconstructedPlaceGeometry": 10,
+    "sourceSilentPendingReview": 5
+  },
+  "stableIdAudit": {
+    "migrationRegister": "data/dacia/reference/cnd-id-migrations.csv",
+    "missingPublishedIds": {},
+    "pilot": "cnd-0.1"
+  }
+}

@@ -141,7 +141,13 @@ test.describe('the legacy presentation is gone', () => {
     const lede = page.locator('.atlas-head');
     await expect(lede).toContainText(/reconstructed territories, routes, frontiers/i);
     await expect(lede).not.toContainText(/Regime A|serverless/i);
-    await expect(lede.locator('a[href="/atlas/handbook/"]')).toBeVisible();
+    // At least one route to the Handbook, not exactly one. The introduction now
+    // carries the link twice - once in the prose and once in the "New to the
+    // Atlas?" callout added with the Campaign III work - and a strict-mode
+    // locator turned that into a failure on `main`. The claim being defended is
+    // that the introduction points at the Handbook; a second way to get there
+    // is not a regression of it.
+    await expect(lede.locator('a[href="/atlas/handbook/"]').first()).toBeVisible();
   });
 
   test('the migration report covers every registered layer', async ({ request }) => {

@@ -49,8 +49,9 @@ hanseatic-validate:
 hanseatic-test:
 	python3 -m pytest scripts/hanseatic -q
 
-# CND 0.1 compile (KAN-337). Writes the research release under
-# data/dacia/release/cnd-0.1 and the two Atlas tiers into public/geo. Needs
+# CND compile (KAN-337 / KAN-364..366). Preserves the research pilot under
+# data/dacia/release/cnd-0.1, writes the fail-closed v1 release candidate under
+# data/dacia/release/cnd-1.0-rc1 and the two Atlas tiers into public/geo. Needs
 # pyarrow from the venv for the Parquet twins; everything else in scripts/dacia
 # stays standard-library only, so validate and test still run on a bare python3.
 # Deliberately timestamp-free: identical inputs must produce identical bytes.

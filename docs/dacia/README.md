@@ -18,6 +18,11 @@ tiers in `public/geo`. The build is deterministic - no timestamps, sorted keys,
 stable row order - so identical inputs produce identical bytes and the only
 thing that can move a hash is the data.
 
+The same command now emits the complete, fail-closed
+[CND v1.0 release candidate](./cnd-v1-release.md). Its QA report makes the
+coverage, scholarly-review, rights, authority-reconciliation and DOI state
+machine-readable; it cannot silently relabel the pilot as a citable v1.0.
+
 **CND 0.1 is a pilot release.** The distinction is carried in the outputs rather
 than in a caveat: the **public** tier holds only records cleared by human review
 and is what the Atlas shows by default, and the **research** tier holds
@@ -42,6 +47,12 @@ the seam GeoJSON are hash-frozen in
 [`research-package-manifest.json`](../../data/dacia/reference/research-package-manifest.json).
 These are candidate research packages: a valid table is not a substitute for a
 named scholarly review or a production reuse grant.
+
+Campaign III adds a fail-closed
+[Borroczyn georeferencing contract](./borroczyn-georeferencing.md) and the
+[In Manibus physical-object evidence chain](./in-manibus-inventory.md). Their
+generated packages may be built and tested while held; neither a research-only
+raster nor a catalogue description can cross the production gate by implication.
 
 ## The trench roster
 

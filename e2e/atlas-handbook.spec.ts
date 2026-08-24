@@ -55,9 +55,9 @@ test.describe('Atlas to Handbook and back', () => {
       await expect(dossier.locator('.am-dossier-claim')).not.toBeEmpty();
       await expect(row.locator('input[data-layer]')).not.toBeChecked();
 
-      // About & sources is the primary action and stays on Terra Chartarum.
+      // The contextual reading action stays on Terra Chartarum.
       const about = dossier.locator(`[data-about-sources="${programme.layer}"]`);
-      await expect(about).toHaveText(/About & sources/i);
+      await expect(about).toHaveText(/How to read this layer/i);
       await expect(about).toBeVisible();
       await about.click();
 
@@ -103,6 +103,20 @@ test.describe('Atlas to Handbook and back', () => {
     const link = page.locator('[data-row-wrap="dacia-treaty-frontiers"] .alb-row-doc').first();
     await expect(link).toHaveAttribute('href', '/atlas/layers/dacia-treaty-frontiers/');
     await context.close();
+  });
+
+  test('newcomers can reach the Handbook before manipulating the map', async ({ page }) => {
+    await page.goto('/atlas/');
+    await expect(page.getByRole('link', { name: 'Read the Handbook →' })).toBeVisible();
+    await expect(page.locator('[data-atlasmap] .am-handbook')).toHaveAccessibleName('Handbook');
+
+    await page.goto('/');
+    await expect(page.getByRole('link', { name: 'Read the handbook' })).toBeVisible();
+    await expect(
+      page.getByRole('navigation', { name: 'Footer' }).getByRole('link', {
+        name: 'Atlas Handbook',
+      }),
+    ).toBeVisible();
   });
 });
 

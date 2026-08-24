@@ -66,6 +66,8 @@ export type GeoLayerLifecycle = (typeof GEO_LAYER_LIFECYCLES)[number];
 /** Roles that make a historical/evidential claim and therefore need a category. */
 const CATEGORISED_ROLES: readonly GeoLayerRole[] = ['historical', 'evidence', 'map-overlay'];
 
+const GeoPointSchema = z.tuple([z.number().min(-180).max(180), z.number().min(-90).max(90)]);
+
 const BaseGeoLayerSchema = z.object({
   id: z.string(),
   title: z.string(),
@@ -100,6 +102,10 @@ const BaseGeoLayerSchema = z.object({
   crs: z.string().default('EPSG:4326'),
   yearFrom: z.number(),
   yearTo: z.number(),
+  /** Canonical time-slider date on activation; ranges otherwise use their midpoint. */
+  revealYear: z.number().optional(),
+  /** Authored viewport for non-GeoJSON or intentionally empty layers. */
+  fitBounds: z.tuple([GeoPointSchema, GeoPointSchema]).optional(),
   source: z.string(),
   license: z.string(),
   attribution: z.string(),
@@ -169,6 +175,36 @@ const BaseGeoLayerSchema = z.object({
  * a union so the inferred type stays one flat `GeoLayer` for every consumer.
  */
 export const GeoLayerSchema = BaseGeoLayerSchema.superRefine((layer, ctx) => {
+  if (layer.yearFrom > layer.yearTo) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['yearTo'],
+      message: `Layer "${layer.id}" ends before it begins`,
+    });
+  }
+
+  if (
+    layer.revealYear !== undefined &&
+    (layer.revealYear < layer.yearFrom || layer.revealYear > layer.yearTo)
+  ) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['revealYear'],
+      message: `Layer "${layer.id}" revealYear must fall inside its temporal envelope`,
+    });
+  }
+
+  if (
+    layer.fitBounds &&
+    (layer.fitBounds[0][0] > layer.fitBounds[1][0] || layer.fitBounds[0][1] > layer.fitBounds[1][1])
+  ) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['fitBounds'],
+      message: `Layer "${layer.id}" fitBounds must run south-west to north-east`,
+    });
+  }
+
   if (CATEGORISED_ROLES.includes(layer.role) && !layer.category) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
@@ -236,6 +272,7 @@ const RAW: unknown[] = [
     url: '/geo/ne_110m_coastline.geojson',
     yearFrom: -6000,
     yearTo: 2024,
+    revealYear: 2024,
     source: 'Natural Earth',
     license: 'Public Domain',
     attribution: 'Made with Natural Earth',
@@ -257,6 +294,7 @@ const RAW: unknown[] = [
     url: '/geo/ne_110m_land.geojson',
     yearFrom: -6000,
     yearTo: 2024,
+    revealYear: 2024,
     source: 'Natural Earth',
     license: 'Public Domain',
     attribution: 'Made with Natural Earth',
@@ -286,6 +324,7 @@ const RAW: unknown[] = [
     url: '/geo/ne_110m_rivers_lake_centerlines.geojson',
     yearFrom: -6000,
     yearTo: 2024,
+    revealYear: 2024,
     source: 'Natural Earth',
     license: 'Public Domain',
     attribution: 'Made with Natural Earth',
@@ -316,6 +355,7 @@ const RAW: unknown[] = [
     url: '/geo/ne_110m_admin_0_boundary_lines_land.geojson',
     yearFrom: 1949,
     yearTo: 2024,
+    revealYear: 2024,
     source: 'Natural Earth',
     license: 'Public Domain',
     attribution: 'Made with Natural Earth',
@@ -373,6 +413,7 @@ const RAW: unknown[] = [
     url: '/geo/roman-empire-117.geojson',
     yearFrom: 106,
     yearTo: 271,
+    revealYear: 117,
     source: 'Ancient World Mapping Center (AWMC), UNC Chapel Hill - roman_empire_ce_117_extent',
     license: 'ODbL 1.0',
     attribution:
@@ -403,6 +444,11 @@ const RAW: unknown[] = [
     url: '/geo/venetian-ports.fgb',
     yearFrom: 1200,
     yearTo: 1500,
+    revealYear: 1400,
+    fitBounds: [
+      [12.277, 31.2],
+      [39.723, 47.112],
+    ],
     source: "Terra Chartarum (compiled) - Lane 1973; O'Connell 2009",
     license: 'CC BY',
     attribution: "Terra Chartarum; after Lane and O'Connell",
@@ -474,6 +520,11 @@ const RAW: unknown[] = [
     url: '/geo/venetian-routes.fgb',
     yearFrom: 1200,
     yearTo: 1500,
+    revealYear: 1400,
+    fitBounds: [
+      [12.335, 31.2],
+      [39.723, 47.1133],
+    ],
     source: 'Terra Chartarum (compiled) - Lane 1973',
     license: 'CC BY',
     attribution: 'Terra Chartarum; after Lane',
@@ -535,6 +586,11 @@ const RAW: unknown[] = [
     url: '/geo/venetian-possessions.fgb',
     yearFrom: 1200,
     yearTo: 1500,
+    revealYear: 1400,
+    fitBounds: [
+      [13.2909, 34.5685],
+      [34.5926, 45.8],
+    ],
     source: "Terra Chartarum (compiled) - Lane 1973; O'Connell 2009",
     license: 'CC BY',
     attribution: "Terra Chartarum; after Lane and O'Connell",
@@ -761,6 +817,10 @@ const RAW: unknown[] = [
     url: '/geo/dacia-attestations.geojson',
     yearFrom: 150,
     yearTo: 1959,
+    fitBounds: [
+      [19, 43],
+      [30, 49],
+    ],
     source: 'Terra Chartarum (compiled) - Corpus Nominum Daciae 0.1, KAN-337',
     license: 'CC BY 4.0',
     attribution: 'Terra Chartarum; each source carries its own rights statement',
@@ -1268,6 +1328,10 @@ const RAW: unknown[] = [
     url: '/geo/antarctica-ghost-geographies.geojson',
     yearFrom: 1531,
     yearTo: 1916,
+    fitBounds: [
+      [-180, -85],
+      [180, -60],
+    ],
     source: 'Terra Chartarum (compiled) - Antarctic ghost geographies, KAN-426',
     license: 'CC BY 4.0',
     attribution: 'Terra Chartarum; each ghost feature retains its original claimant and source',

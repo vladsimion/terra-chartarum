@@ -31,6 +31,9 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[2]
 DATA = REPO / "data" / "dacia"
 RELEASE_DIR = DATA / "release" / "cnd-0.1"
+V1_CONTRACT = DATA / "reference" / "cnd-v1-release.json"
+V1_MIGRATIONS = DATA / "reference" / "cnd-id-migrations.csv"
+V1_RELEASE_DIR = DATA / "release" / "cnd-1.0-rc1"
 GEO_DIR = REPO / "public" / "geo"
 GENERATED_DIR = REPO / "src" / "data" / "dacia" / "generated"
 
@@ -229,13 +232,18 @@ def build_features(places, sources, attestations, public_only: bool) -> list[dic
     return sorted(features, key=lambda f: f["id"])
 
 
-def feature_collection(features: list[dict], tier: str) -> dict:
+def feature_collection(
+    features: list[dict],
+    tier: str,
+    release: str = RELEASE_VERSION,
+    kind: str = RELEASE_KIND,
+) -> dict:
     return {
         "type": "FeatureCollection",
         "features": features,
         "_cnd": {
-            "release": RELEASE_VERSION,
-            "kind": RELEASE_KIND,
+            "release": release,
+            "kind": kind,
             "tier": tier,
             "licence": LICENCE,
             "note": (
@@ -777,6 +785,325 @@ def hiatus_timeline() -> dict:
     }
 
 
+def _read_csv(path: Path) -> list[dict[str, str]]:
+    with path.open(encoding="utf-8", newline="") as handle:
+        return [{k: (v or "").strip() for k, v in row.items()} for row in csv.DictReader(handle)]
+
+
+def borroczyn_package() -> dict:
+    """Compile the KAN-357/358/359 seam without weakening its release hold."""
+    georeferencing = json.loads(
+        (REFERENCE / "borroczyn-georeferencing.json").read_text(encoding="utf-8")
+    )
+    seam = json.loads((REFERENCE / "borroczyn-seam.geojson").read_text(encoding="utf-8"))
+    sources = _read_csv(REFERENCE / "borroczyn-seam-sources.csv")
+    urban = _read_csv(DATA / "urban-features.csv")
+    source_by_id = {row["source_id"]: row for row in sources}
+    layers = [
+        {
+            **layer,
+            "title": source_by_id.get(layer["sourceId"], {}).get("title", ""),
+            "rightsStatus": source_by_id.get(layer["sourceId"], {}).get("rights_status", ""),
+            "productionRole": source_by_id.get(layer["sourceId"], {}).get("production_role", ""),
+        }
+        for layer in georeferencing["evidenceLayers"]
+    ]
+    return {
+        "schemaVersion": SCHEMA_VERSION,
+        "generatedBy": "scripts/dacia/build.py",
+        "tickets": ["KAN-357", "KAN-358", "KAN-359"],
+        "studyArea": {
+            "id": seam["metadata"]["studyAreaId"],
+            "version": seam["metadata"]["version"],
+            "completeCityCoverage": seam["metadata"]["completeCityCoverage"],
+            "justification": seam["metadata"]["justification"],
+            "geometry": seam["features"][0]["geometry"],
+        },
+        "status": georeferencing["status"],
+        "publicReady": georeferencing["status"] == "released" and bool(urban),
+        "targetCrs": georeferencing["targetCrs"],
+        "webCrs": georeferencing["webCrs"],
+        "transformationMethod": georeferencing["transformationMethod"],
+        "controlPoints": georeferencing["controlPoints"],
+        "residualMetrics": georeferencing["residualMetrics"],
+        "layers": layers,
+        "urbanAuthority": {
+            "recordCount": len(urban),
+            "featureTypes": sorted({row["feature_type"] for row in urban}),
+            "schemaDecision": georeferencing["schemaDecision"],
+            "geometryPolicy": georeferencing["geometryPolicy"],
+        },
+        "blockers": georeferencing["blockers"],
+    }
+
+
+def in_manibus_package() -> dict:
+    """Compile only records that have crossed the physical-inspection gate."""
+    inspections = _read_csv(REFERENCE / "in-manibus-inspections.csv")
+    objects = _read_csv(DATA / "objects.csv")
+    evidence = _read_csv(DATA / "object-evidence.csv")
+    return {
+        "schemaVersion": SCHEMA_VERSION,
+        "generatedBy": "scripts/dacia/build.py",
+        "tickets": ["KAN-360", "KAN-361"],
+        "status": "reviewed" if objects else "pending_physical_inspection",
+        "publicReady": bool(objects) and all(row["review_state"] in {"approved", "published"} for row in objects),
+        "counts": {
+            "inspections": len(inspections),
+            "reviewedInspections": sum(1 for row in inspections if row["inspection_status"] == "reviewed"),
+            "objects": len(objects),
+            "evidence": len(evidence),
+        },
+        "inspections": sorted(inspections, key=lambda row: row["inspection_id"]),
+        "objects": sorted(objects, key=lambda row: row["object_id"]),
+        "evidence": sorted(evidence, key=lambda row: row["evidence_id"]),
+        "holdReason": (
+            "No sheet enters the corpus until its direct physical inspection has been recorded and reviewed."
+            if not objects
+            else ""
+        ),
+    }
+
+
+def v1_qa(tables: dict[str, list[dict[str, str]]]) -> dict:
+    """Separate a reproducible candidate from the human claim that it is citable."""
+    contract = json.loads(V1_CONTRACT.read_text(encoding="utf-8"))
+    ids = {
+        "places": {row["place_id"] for row in tables["places"]},
+        "sources": {row["source_id"] for row in tables["sources"]},
+    }
+    stable_missing: dict[str, list[str]] = {}
+    for table, key in (("places", "place_id"), ("sources", "source_id")):
+        pilot = _read_csv(RELEASE_DIR / f"{table}.csv")
+        missing = sorted({row[key] for row in pilot} - ids[table])
+        if missing:
+            stable_missing[table] = missing
+
+    attestations = tables["attestations"]
+    transcriptions = tables["transcriptions"]
+    publishable = [row for row in attestations if row["review_state"] in PUBLIC_STATES]
+    reviewed = [
+        row for row in attestations
+        if row["review_state"] in {"reviewed", "approved", "published"}
+    ]
+    checked_captures = [
+        row for row in transcriptions
+        if row["capture_method"] in {"from_witness", "from_edition"}
+    ]
+    missing_regimes = {
+        regime: sorted(set(source_ids) - ids["sources"])
+        for regime, source_ids in contract["requiredRegimes"].items()
+        if set(source_ids) - ids["sources"]
+    }
+    targets = contract["targetCoverage"]
+    coverage = {
+        name: {
+            "current": len(tables[name]),
+            "target": target,
+            "shortfall": max(0, target - len(tables[name])),
+        }
+        for name, target in targets.items()
+    }
+    coverage_ready = all(row["current"] >= row["target"] * 0.9 for row in coverage.values())
+
+    uses = tables["name-uses"]
+    unresolved_nomen = sorted({
+        row["source_id"] for row in uses if row["source_id"] and row["source_id"] not in ids["sources"]
+    } | {
+        row["referent_place_id"] for row in uses
+        if row["referent_place_id"] and row["referent_place_id"] not in ids["places"]
+    })
+    public_source_ids = {row["source_id"] for row in publishable}
+    sources_by_id = {row["source_id"]: row for row in tables["sources"]}
+    public_rights_incomplete = sorted(
+        source_id for source_id in public_source_ids
+        if sources_by_id[source_id]["rights_statement"] in {"", "rights_unknown"}
+    )
+
+    blockers = []
+    if not coverage_ready:
+        blockers.append("coverage_target_not_reached")
+    if missing_regimes:
+        blockers.append("required_evidence_regime_missing")
+    if stable_missing:
+        blockers.append("published_identifier_missing")
+    if not reviewed or not checked_captures:
+        blockers.append("scholarly_spot_check_not_recorded")
+    if len(publishable) < contract["minimumPublishableAttestations"]:
+        blockers.append("no_publishable_attestations")
+    if public_rights_incomplete:
+        blockers.append("public_source_rights_incomplete")
+    # Hiatus deliberately remains in its bounded candidate ledger. Until those
+    # witnesses migrate to source IDs it is not allowed to masquerade as a CND consumer.
+    blockers.append("hiatus_authority_reconciliation_pending")
+
+    return {
+        "schemaVersion": contract["schemaVersion"],
+        "candidate": contract["candidate"],
+        "releaseStatus": "ready" if not blockers else "blocked",
+        "blockers": blockers,
+        "coverage": coverage,
+        "evidenceRegimes": {
+            "required": sorted(contract["requiredRegimes"]),
+            "missingSourceIds": missing_regimes,
+        },
+        "stableIdAudit": {
+            "pilot": "cnd-0.1",
+            "missingPublishedIds": stable_missing,
+            "migrationRegister": str(V1_MIGRATIONS.relative_to(REPO)),
+        },
+        "scholarlyReview": {
+            "attestationsReviewedOrAbove": len(reviewed),
+            "publishableAttestations": len(publishable),
+            "capturesFromWitnessOrEdition": len(checked_captures),
+            "sourceSilentPendingReview": sum(
+                1 for row in attestations
+                if row["attestation_class"] == "source_silent"
+                and row["review_state"] not in {"reviewed", "approved", "published"}
+            ),
+            "lowConfidencePendingReview": sum(
+                1 for row in attestations
+                if row["confidence"] == "low"
+                and row["review_state"] not in {"reviewed", "approved", "published"}
+            ),
+            "reconstructedPlaceGeometry": sum(
+                1 for row in tables["places"]
+                if row["ref_geometry_provenance"] == "editorial_reconstruction"
+            ),
+        },
+        "rights": {
+            "publicSourceIds": sorted(public_source_ids),
+            "incompletePublicSourceIds": public_rights_incomplete,
+            "sourceImageryRedistributed": False,
+            "metadataLicence": "CC BY 4.0",
+        },
+        "authorityConsumers": {
+            "nomenErrans": "resolves" if not unresolved_nomen else "blocked",
+            "nomenErransUnresolvedIds": unresolved_nomen,
+            "hiatus": "candidate_ledger_pending_cnd_source_migration",
+        },
+        "automatedValidation": {
+            "command": "npm run dacia:validate",
+            "enforces": [
+                "identifiers",
+                "foreign_keys",
+                "controlled_vocabularies",
+                "date_precision",
+                "geometry_provenance",
+                "release_hashes",
+            ],
+        },
+        "doi": contract["doi"],
+    }
+
+
+def v1_schema_markdown(fieldnames: dict[str, list[str]]) -> bytes:
+    lines = [
+        "# Corpus Nominum Daciae v1.0 schema",
+        "",
+        "The canonical field order for every release-candidate table follows.",
+        "Controlled values and cross-field rules are defined in `docs/dacia/data-dictionary.md`",
+        "and enforced by `scripts/dacia/validate.py`.",
+        "",
+    ]
+    for name in TABLES:
+        lines.extend([f"## `{name}.csv`", "", ", ".join(f"`{field}`" for field in fieldnames[name]), ""])
+    return ("\n".join(lines).rstrip() + "\n").encode("utf-8")
+
+
+def build_v1_outputs() -> dict[Path, bytes]:
+    """Build the complete local v1 candidate without bypassing its scholarly gate."""
+    tables = {name: read_table(name) for name in TABLES}
+    fieldnames = {
+        name: list(csv.DictReader((DATA / f"{name}.csv").open(encoding="utf-8")).fieldnames or [])
+        for name in TABLES
+    }
+    qa = v1_qa(tables)
+    outputs: dict[Path, bytes] = {}
+    for name, rows in tables.items():
+        outputs[V1_RELEASE_DIR / f"{name}.csv"] = csv_bytes(rows, fieldnames[name])
+        outputs[V1_RELEASE_DIR / f"{name}.parquet"] = parquet_bytes(rows, fieldnames[name])
+
+    outputs[V1_RELEASE_DIR / "cnd.jsonld"] = canonical_json({
+        "@context": CONTEXT,
+        "@id": "https://terra-chartarum.pages.dev/data/cnd-1.0-rc1",
+        "@type": "Dataset",
+        "dcterms:title": "Corpus Nominum Daciae 1.0 release candidate",
+        "dcterms:license": "CC BY 4.0 for Terra Chartarum metadata and annotations",
+        "release": qa["candidate"],
+        "releaseStatus": qa["releaseStatus"],
+        "records": {name: [dict(sorted(row.items())) for row in rows] for name, rows in tables.items()},
+    })
+    outputs[V1_RELEASE_DIR / "atlas-publishable.geojson"] = canonical_json(
+        feature_collection(
+            build_features(tables["places"], tables["sources"], tables["attestations"], True),
+            "public",
+            qa["candidate"],
+            "release_candidate",
+        )
+    )
+    outputs[V1_RELEASE_DIR / "atlas-research.geojson"] = canonical_json(
+        feature_collection(
+            build_features(tables["places"], tables["sources"], tables["attestations"], False),
+            "research",
+            qa["candidate"],
+            "release_candidate",
+        )
+    )
+    outputs[V1_RELEASE_DIR / "qa.json"] = canonical_json(qa)
+    outputs[V1_RELEASE_DIR / "SCHEMA.md"] = v1_schema_markdown(fieldnames)
+    outputs[V1_RELEASE_DIR / "METHODOLOGY.md"] = (
+        "# Methodology\n\n"
+        "CND models places as referents, sources as bounded witnesses or series, and attestations "
+        "as source-located claims. Names are never join keys. Silences remain typed claims and "
+        "cannot carry readings. Machine normalization may reach `normalized`; only a named human "
+        "reviewer checking a witness or edition may promote a record further. The public spatial "
+        "output contains only approved or published attestations. See `qa.json` before citation.\n"
+    ).encode("utf-8")
+    outputs[V1_RELEASE_DIR / "LICENSE.md"] = (
+        "# Licence\n\nTerra Chartarum metadata and original annotations in this candidate are "
+        "licensed CC BY 4.0. Upstream works and repository images retain the rights stated on "
+        "their source rows. No source imagery is redistributed in this package.\n"
+    ).encode("utf-8")
+    outputs[V1_RELEASE_DIR / "CITATION.cff"] = (
+        "cff-version: 1.2.0\nmessage: >-\n  This is a blocked release candidate; consult qa.json before citation.\n"
+        "title: Corpus Nominum Daciae\ntype: dataset\nversion: cnd-1.0-rc1\n"
+        "authors:\n  - family-names: Simion\n    given-names: Vlad\n"
+        "license: CC-BY-4.0\n"
+    ).encode("utf-8")
+    return outputs
+
+
+def build_v1_manifest(outputs: dict[Path, bytes]) -> bytes:
+    qa = json.loads(outputs[V1_RELEASE_DIR / "qa.json"])
+    inputs = [*(DATA / f"{name}.csv" for name in TABLES), V1_CONTRACT, V1_MIGRATIONS]
+    return canonical_json({
+        "schemaVersion": 1,
+        "release": qa["candidate"],
+        "releaseStatus": qa["releaseStatus"],
+        "counts": {name: len(read_table(name)) for name in TABLES},
+        "coverage": qa["coverage"],
+        "blockers": qa["blockers"],
+        "licenceSummary": {
+            "metadata": "CC BY 4.0",
+            "upstream": "Per-source rights_statement; source imagery is not redistributed",
+        },
+        "doi": qa["doi"],
+        "reproducibleBuild": {
+            "command": "make dacia",
+            "generator": "scripts/dacia/build.py",
+            "timestamped": False,
+        },
+        "inputs": {
+            str(path.relative_to(REPO)): sha256_bytes(path.read_bytes()) for path in inputs
+        },
+        "outputs": {
+            str(path.relative_to(REPO)): {"sha256": sha256_bytes(payload), "bytes": len(payload)}
+            for path, payload in sorted(outputs.items())
+        },
+    })
+
+
 def build_outputs() -> dict[Path, bytes]:
     tables = {name: read_table(name) for name in TABLES}
     fieldnames = {
@@ -811,6 +1138,8 @@ def build_outputs() -> dict[Path, bytes]:
     outputs[GENERATED_DIR / "trench-a.json"] = canonical_json(trench_a_bridge(tables))
     outputs[GENERATED_DIR / "hiatus-timeline.json"] = canonical_json(hiatus_timeline())
     outputs[GENERATED_DIR / "programme.json"] = canonical_json(programme_graph(tables))
+    outputs[GENERATED_DIR / "borroczyn.json"] = canonical_json(borroczyn_package())
+    outputs[GENERATED_DIR / "in-manibus.json"] = canonical_json(in_manibus_package())
 
     sites, network = roman_dacia_features(tables["places"])
     outputs[GEO_DIR / f"{ROMAN_SITES}.geojson"] = canonical_json(gis_collection(
@@ -881,6 +1210,9 @@ def main() -> int:
     RELEASE_DIR.mkdir(parents=True, exist_ok=True)
     outputs = build_outputs()
     outputs[RELEASE_DIR / "manifest.json"] = build_manifest(outputs)
+    v1_outputs = build_v1_outputs()
+    v1_outputs[V1_RELEASE_DIR / "manifest.json"] = build_v1_manifest(v1_outputs)
+    outputs.update(v1_outputs)
 
     for path, payload in sorted(outputs.items()):
         path.parent.mkdir(parents=True, exist_ok=True)

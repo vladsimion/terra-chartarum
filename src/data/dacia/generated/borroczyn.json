@@ -1,0 +1,93 @@
+{
+  "blockers": [
+    "A production-resolution Borroczyn reproduction with production-wide reuse terms has not been secured.",
+    "No licensed source raster is present, so pixel control points and residual metrics cannot be measured without fabrication."
+  ],
+  "controlPoints": [],
+  "generatedBy": "scripts/dacia/build.py",
+  "layers": [
+    {
+      "id": "borroczyn-source-raster",
+      "productionRole": "research_only",
+      "rightsStatus": "teaching_use_only",
+      "role": "historical_source",
+      "sourceId": "br-borroczyn-1852-uauim",
+      "status": "research_only",
+      "title": "Plan of Bucharest, 1852"
+    },
+    {
+      "id": "borroczyn-georeferenced",
+      "productionRole": "research_only",
+      "rightsStatus": "teaching_use_only",
+      "role": "georeferenced_derived",
+      "sourceId": "br-borroczyn-1852-uauim",
+      "status": "not_generated",
+      "title": "Plan of Bucharest, 1852"
+    },
+    {
+      "id": "bucharest-osm-current",
+      "productionRole": "production_primary",
+      "rightsStatus": "odbl_1_0",
+      "role": "modern_reference",
+      "sourceId": "br-osm-current",
+      "status": "production_ready",
+      "title": "OpenStreetMap database"
+    }
+  ],
+  "publicReady": false,
+  "residualMetrics": {
+    "independentCheckPointCount": 0,
+    "maximum": null,
+    "rmse": null,
+    "unit": "metres"
+  },
+  "schemaVersion": 1,
+  "status": "blocked_pending_witness",
+  "studyArea": {
+    "completeCityCoverage": false,
+    "geometry": {
+      "coordinates": [
+        [
+          [
+            26.075,
+            44.417
+          ],
+          [
+            26.102,
+            44.417
+          ],
+          [
+            26.102,
+            44.437
+          ],
+          [
+            26.075,
+            44.437
+          ],
+          [
+            26.075,
+            44.417
+          ]
+        ]
+      ],
+      "type": "Polygon"
+    },
+    "id": "br-seam-uranus-antim",
+    "justification": "A compact research envelope spanning the former Uranus and Antim fabric, the Palace of Parliament site, and surviving eastern streets. It is large enough to compare erased, relocated, and surviving fabric across the 1844-1852, 1911, and modern witnesses while excluding any claim to complete-city coverage.",
+    "version": "borroczyn-seam-0.1"
+  },
+  "targetCrs": "EPSG:3844",
+  "tickets": [
+    "KAN-357",
+    "KAN-358",
+    "KAN-359"
+  ],
+  "transformationMethod": "Compare projective and thin-plate-spline fits; retain the simpler model unless the independently checked residuals justify TPS.",
+  "urbanAuthority": {
+    "featureTypes": [],
+    "geometryPolicy": "Every urban feature retains its source ID, evidence-layer role, source feature reference, geometry provenance and review state.",
+    "recordCount": 0,
+    "schemaDecision": "Urban parcels, streets and buildings use a dedicated urb- authority. They may link to CND places, but are not CND places and may never be inserted into the place authority merely to obtain an identifier."
+  },
+  "webCrs": "EPSG:3857"
+}

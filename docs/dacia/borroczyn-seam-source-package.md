@@ -54,3 +54,9 @@ written reuse terms, or an equivalent rights-cleared witness is documented.
 The 1962-1978 bundle also needs a file-level inventory before it can support a
 pre-demolition claim. KAN-357 therefore remains in progress rather than
 claiming acceptance from research-only access.
+
+The downstream KAN-358 transform and KAN-359 held interaction are implemented
+against this explicit state. See the
+[georeferencing contract](./borroczyn-georeferencing.md). Changing the generated
+package to public-ready requires resolving this debt; presentation code cannot
+override it.

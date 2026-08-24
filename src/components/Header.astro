@@ -70,10 +70,10 @@ const path = Astro.url.pathname;
     color: var(--gold);
     font-size: 0.8em;
   }
-  /* All seven links stay visible (KAN-65). The list used to be pinned to
+  /* All seven links stay visible (KAN-65 / KAN-435). The list used to be pinned to
      width: max-content inside an overflow-x: auto box with the scrollbar hidden,
      so it overflowed at every viewport - including the widest desktop - and the
-     last two items (About, Colophon) read as missing rather than scrolled. It now
+     last two items read as missing rather than scrolled. It now
      shrinks and, once a single row no longer fits, wraps; the footer nav has done
      the same since the scaffold. */
   nav {

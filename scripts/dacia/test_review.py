@@ -144,3 +144,41 @@ def test_unknown_identifier_is_rejected(dataset):
 def test_show_reports_blockers(dataset, capsys):
     assert review.main(["show", "att-0002"]) == 0
     assert "blocking promotion from raw" in capsys.readouterr().out
+
+
+def test_coverage_separates_a_missing_name_from_a_missing_source(dataset, capsys):
+    """CCD-C1's criterion, reported at the cost of closing it (KAN-344).
+
+    A class whose best row is ready to promote needs somebody to put their name
+    to it. A class whose every row still has a pending locator needs somebody to
+    find a citation first. Collapsing those into one "not reviewed" number is
+    what makes the ticket look like a single unit of work when it is two.
+    """
+    assert review.main(["coverage"]) == 0
+    out = capsys.readouterr().out
+
+    assert "fate-class coverage" in out
+    # Both outcomes must be reachable in the committed corpus, or the report is
+    # only ever telling half the story.
+    assert "needs a name:" in out
+    assert "needs a source:" in out
+    assert "ready to promote" in out
+    assert "still needs a locator" in out
+
+
+def test_coverage_reports_every_fate_class_in_the_corpus(dataset, capsys):
+    with (validate.DATA / TABLES["name_uses"]).open(encoding="utf-8", newline="") as handle:
+        classes = {row["fate_class"] for row in csv.DictReader(handle)}
+
+    review.main(["coverage"])
+    out = capsys.readouterr().out
+    for fate_class in classes:
+        assert fate_class in out, fate_class
+
+
+def test_coverage_does_not_fail_the_build_on_outstanding_work(dataset, capsys):
+    # It is a report about work still to do. A non-zero exit would make a corpus
+    # nobody has reviewed yet impossible to commit, which is every corpus at the
+    # point this tool is most useful.
+    assert review.main(["coverage", "--verbose"]) == 0
+    assert "ready" in capsys.readouterr().out

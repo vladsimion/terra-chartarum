@@ -1,0 +1,20 @@
+{
+  "counts": {
+    "evidence": 0,
+    "inspections": 0,
+    "objects": 0,
+    "reviewedInspections": 0
+  },
+  "evidence": [],
+  "generatedBy": "scripts/dacia/build.py",
+  "holdReason": "No sheet enters the corpus until its direct physical inspection has been recorded and reviewed.",
+  "inspections": [],
+  "objects": [],
+  "publicReady": false,
+  "schemaVersion": 1,
+  "status": "pending_physical_inspection",
+  "tickets": [
+    "KAN-360",
+    "KAN-361"
+  ]
+}
