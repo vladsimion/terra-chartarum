@@ -41,6 +41,115 @@ const openCollections = async (page: Page) => {
 };
 
 test.describe('atlas layer browser', () => {
+  test('the Atlas introduction uses the same page width as the map below it', async ({ page }) => {
+    for (const viewport of [
+      { width: 1280, height: 860 },
+      { width: 375, height: 812 },
+    ]) {
+      await page.setViewportSize(viewport);
+      await openAtlas(page);
+      const widths = await page.evaluate(() => ({
+        introduction: document.querySelector('.atlas-head')!.getBoundingClientRect().width,
+        atlas: document.querySelector('[data-atlasmap]')!.getBoundingClientRect().width,
+        overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      }));
+      expect(
+        Math.abs(widths.introduction - widths.atlas),
+        `${viewport.width}px viewport`,
+      ).toBeLessThan(1);
+      expect(widths.overflow, `${viewport.width}px viewport`).toBe(0);
+    }
+  });
+
+  test('activating a layer fits its bounds and selects its canonical reveal year', async ({
+    page,
+  }) => {
+    await openAtlas(page);
+    const atlas = page.locator('[data-atlasmap]');
+    await expect(atlas).toHaveAttribute('data-map-ready', 'true', { timeout: MAP_READY });
+
+    // The default base layer goes through the same activation path. Its authored
+    // date is newer than the corpus slider, so the UI clamps it to the slider max.
+    await expect(atlas).toHaveAttribute('data-atlas-fitted-layer', 'ne-coastline');
+    const year = page.getByRole('slider', { name: 'Reveal through' });
+    await expect(year).toHaveValue((await year.getAttribute('max'))!);
+
+    await page.locator('[data-layer-search]').fill('galley routes');
+    const venetian = page.locator(
+      '[data-lens-panel="themes"] [data-row-wrap="venetian-routes"] input[data-layer]',
+    );
+    await venetian.check();
+    await expect(atlas).toHaveAttribute('data-atlas-fitted-layer', 'venetian-routes');
+    await expect(atlas).toHaveAttribute('data-atlas-reveal-year', '1400');
+    await expect(year).toHaveValue('1400');
+    expect(JSON.parse((await atlas.getAttribute('data-atlas-fitted-bounds'))!)).toEqual([
+      [12.335, 31.2],
+      [39.723, 47.1133],
+    ]);
+
+    // A second activation replaces both where and when, rather than retaining
+    // the Venetian camera/date.
+    await page.locator('[data-layer-search]').fill('roman empire');
+    await page
+      .locator('[data-lens-panel="themes"] [data-row-wrap="roman-empire-117"] input[data-layer]')
+      .check();
+    await expect(atlas).toHaveAttribute('data-atlas-fitted-layer', 'roman-empire-117');
+    await expect(atlas).toHaveAttribute('data-atlas-reveal-year', '117');
+    await expect(year).toHaveValue('117');
+  });
+
+  test('an info button scrolls and moves focus to the visible context panel', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 860 });
+    await openAtlas(page);
+    await page.locator('[data-layer-search]').fill('treaty frontiers');
+    const row = page.locator('[data-lens-panel="themes"] [data-row-wrap="dacia-treaty-frontiers"]');
+    await row.locator('[data-inspect]').click();
+
+    const context = page.locator('[data-atlas-context-region]');
+    await expect(page.locator('[data-dossier-for="dacia-treaty-frontiers"]')).toBeVisible();
+    await expect(context).toBeFocused();
+    await expect
+      .poll(async () =>
+        context.evaluate((element) => {
+          const header = document.querySelector<HTMLElement>('.site-header');
+          return Math.round(element.getBoundingClientRect().top - (header?.offsetHeight ?? 0));
+        }),
+      )
+      .toBeGreaterThanOrEqual(0);
+    expect(
+      await context.evaluate((element) => {
+        const header = document.querySelector<HTMLElement>('.site-header');
+        return element.getBoundingClientRect().top - (header?.offsetHeight ?? 0);
+      }),
+    ).toBeLessThan(40);
+  });
+
+  test('info navigation closes the mobile sheet and respects reduced motion', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.setViewportSize({ width: 375, height: 812 });
+    await openAtlas(page);
+
+    const context = page.locator('[data-atlas-context-region]');
+    await context.evaluate((element) => {
+      const original = element.scrollIntoView.bind(element);
+      element.scrollIntoView = (options?: boolean | ScrollIntoViewOptions) => {
+        if (typeof options === 'object') element.dataset.scrollBehavior = options.behavior ?? '';
+        original(options);
+      };
+    });
+
+    await page.locator('[data-browser-drawer]').click();
+    await page.locator('[data-layer-search]').fill('treaty frontiers');
+    await page
+      .locator('[data-lens-panel="themes"] [data-row-wrap="dacia-treaty-frontiers"] [data-inspect]')
+      .click();
+
+    await expect(page.locator('[data-browser-sheet]')).toBeHidden();
+    await expect(context).toBeFocused();
+    await expect(context).toHaveAttribute('data-scroll-behavior', 'auto');
+    await expect(context).toBeInViewport();
+  });
+
   test('the flat pending list is gone and context is separated from history', async ({ page }) => {
     await openAtlas(page);
 

@@ -21,6 +21,11 @@ import { getToponyms, toponymAuthorityLinks, toponymNames } from '../../lib/topo
 import { getEssays, formatYear } from '../../lib/registry';
 import { getVmnAtlasLinks } from '../../lib/vmn-atlas-links';
 import { auditCatalogueAvailability, projectCatalogue } from '../../lib/atlas-catalogue';
+import {
+  resolveLayerBounds,
+  resolveLayerRevealYear,
+  type AtlasBounds,
+} from '../../lib/atlas-layer-navigation';
 import { loadHandbook } from '../../lib/handbook-content';
 import AtlasLayerBrowser from './AtlasLayerBrowser.astro';
 import AtlasActiveLayers from './AtlasActiveLayers.astro';
@@ -68,6 +73,32 @@ const layerMeta = layers.map((l) => ({
   essayLinks: l.essayLinks.filter((link) => isEssayReleased(link.slug)),
   available: existsSync(join(publicDir, l.url.replace(/^\//, ''))),
 }));
+
+// Camera metadata is resolved at build time. Authored bounds cover binary or
+// intentionally empty layers; ordinary GeoJSON layers derive their envelope
+// from the committed geometry instead of making the browser fetch it twice.
+const layerNavigation: Record<string, { fitBounds: AtlasBounds | null; revealYear: number }> =
+  Object.fromEntries(
+    layerMeta.map((layer) => {
+      let geometry: unknown;
+      if (layer.available && layer.format === 'geojson' && !layer.fitBounds) {
+        try {
+          geometry = JSON.parse(
+            readFileSync(join(publicDir, layer.url.replace(/^\//, '')), 'utf8'),
+          );
+        } catch {
+          geometry = undefined;
+        }
+      }
+      return [
+        layer.id,
+        {
+          fitBounds: resolveLayerBounds(layer, geometry),
+          revealYear: resolveLayerRevealYear(layer),
+        },
+      ];
+    }),
+  );
 
 // The scalable catalogue (KAN-399), and the release gate that replaces the old
 // `pending` row (KAN-404).
@@ -221,6 +252,8 @@ const payload = {
     color: l.color,
     yearFrom: l.yearFrom,
     yearTo: l.yearTo,
+    revealYear: layerNavigation[l.id].revealYear,
+    fitBounds: layerNavigation[l.id].fitBounds,
     sourceLayer: l.sourceLayer ?? null,
     perFeatureTime: l.perFeatureTime,
     graduate: l.graduate ?? null,
@@ -318,7 +351,13 @@ const payload = {
         </p>
       </noscript>
     </div>
-    <aside class="am-context" aria-live="polite" aria-atomic="true">
+    <aside
+      class="am-context"
+      data-atlas-context-region
+      aria-live="polite"
+      aria-atomic="true"
+      tabindex="-1"
+    >
       <p class="am-context-kicker">Atlas context</p>
       <h3 class="am-context-title">Space and time, held together</h3>
       <p class="am-context-summary">
@@ -551,6 +590,8 @@ const payload = {
     color: string;
     yearFrom: number;
     yearTo: number;
+    revealYear: number;
+    fitBounds: [[number, number], [number, number]] | null;
     sourceLayer: string | null;
     perFeatureTime: boolean;
     graduate: GraduateHint | null;
@@ -644,6 +685,7 @@ const payload = {
     const contextMeta = root.querySelector<HTMLElement>('.am-context-meta')!;
     const contextLink = root.querySelector<HTMLAnchorElement>('.am-context-link')!;
     const contextDocs = root.querySelector<HTMLElement>('.am-context-docs')!;
+    const contextRegion = root.querySelector<HTMLElement>('[data-atlas-context-region]')!;
     const gazetteer = root.querySelector<HTMLElement>('.am-gazetteer')!;
     const gazetteerList = root.querySelector<HTMLElement>('.am-gazetteer-list')!;
     const layerToggles = Array.from(root.querySelectorAll<HTMLInputElement>('input[data-layer]'));
@@ -733,6 +775,16 @@ const payload = {
     // history entry the reader has to press Back through.
     let activeLens = 'themes';
     let collectionContext: string | null = null;
+    let inspectorInvoker: HTMLButtonElement | null = null;
+    // The catalogue becomes interactive before the remote base style finishes.
+    // A late default-layer load must never overwrite a choice made in that gap.
+    let readerChangedYear = false;
+    let readerActivatedLayer = false;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const urlParams = new URLSearchParams(location.search);
+    const hasFeatureTarget = ['beat', 'port', 'route', 'territory', 'feature'].some((key) =>
+      urlParams.has(key),
+    );
 
     const updateCatalogueUrlState = () => {
       const url = new URL(location.href);
@@ -753,6 +805,40 @@ const payload = {
     };
     const layerId = (id: string) => `geolyr-${id}`;
     const sourceId = (id: string) => `geosrc-${id}`;
+
+    const fitLayerView = (layer: LayerMeta) => {
+      if (!map || !layer.fitBounds) return;
+      const padding = Math.max(24, Math.min(72, Math.round(mapEl.clientWidth * 0.08)));
+      map.fitBounds(layer.fitBounds, {
+        padding,
+        maxZoom: 7,
+        duration: reduceMotion ? 0 : 800,
+      });
+      root.dataset.atlasFittedLayer = layer.id;
+      root.dataset.atlasFittedBounds = JSON.stringify(layer.fitBounds);
+    };
+
+    const synchroniseLayerChronology = (layer: LayerMeta) => {
+      const year = Math.max(Number(yearIn.min), Math.min(Number(yearIn.max), layer.revealYear));
+      yearIn.value = String(year);
+      root.dataset.atlasRevealLayer = layer.id;
+      root.dataset.atlasRevealYear = String(year);
+      apply();
+      announceTime();
+      if (yearRelevance?.checked) applyBrowserFilter();
+      renderActiveLayers();
+    };
+
+    /** The one path for default, restored and reader-requested activation. */
+    const activateLayer = async (layer: LayerMeta, navigate: boolean) => {
+      activeLayers.add(layer.id);
+      if (navigate) {
+        synchroniseLayerChronology(layer);
+        fitLayerView(layer);
+      }
+      await addGeoLayer(layer);
+      if (activeLayers.has(layer.id)) syncLayerTime(Number(yearIn.value));
+    };
 
     // One GeoLayer can expand into several MapLibre layers (a dashed-by-field line
     // splits into a filtered sub-layer per value). We track the created ids plus
@@ -920,7 +1006,10 @@ const payload = {
       if (essaySel.value) showEssayContext(essaySel.value);
       else updateUrlState(undefined, Number(yearIn.value));
     });
-    yearIn.addEventListener('input', announceTime);
+    yearIn.addEventListener('input', () => {
+      readerChangedYear = true;
+      announceTime();
+    });
 
     shareButton.addEventListener('click', async () => {
       const base = new URL(location.href);
@@ -1679,15 +1768,22 @@ const payload = {
         topoMarkers.push({ topo, marker });
       }
 
-      map.on('load', () => {
+      map.on('load', async () => {
         styleReady = true;
         // Honour any default-on / already-checked layer toggles.
         for (const cb of layerToggles) {
           if (cb.checked && !cb.disabled) {
             const l = geoLayers.find((x) => x.id === cb.dataset.layer);
             if (l) {
-              activeLayers.add(l.id);
-              addGeoLayer(l);
+              const navigate =
+                !l.defaultOn ||
+                (!readerChangedYear &&
+                  !readerActivatedLayer &&
+                  !sharedState.layers?.length &&
+                  sharedState.year === undefined &&
+                  sharedState.zoom === undefined &&
+                  !hasFeatureTarget);
+              await activateLayer(l, navigate);
             }
           }
         }
@@ -1976,6 +2072,8 @@ const payload = {
         );
       }
       const wanted = new Set([...(sharedState.layers ?? []), ...(state.layers ?? [])]);
+      const preserveSharedView =
+        state.year !== undefined || state.zoom !== undefined || hasFeatureTarget;
       if (state.port) wanted.add('venetian-ports');
       if (state.route) wanted.add('venetian-routes');
       if (state.territory) wanted.add('venetian-possessions');
@@ -1983,9 +2081,8 @@ const payload = {
         const cb = layerToggles.find((toggle) => toggle.dataset.layer === id);
         if (cb && !cb.disabled && !cb.checked) {
           cb.checked = true;
-          activeLayers.add(id);
           const l = geoLayers.find((x) => x.id === id);
-          if (l) await addGeoLayer(l);
+          if (l) await activateLayer(l, !preserveSharedView);
         }
         syncFacetPanel(id);
       }
@@ -2145,13 +2242,12 @@ const payload = {
     }
 
     for (const cb of layerToggles) {
-      cb.addEventListener('change', () => {
+      cb.addEventListener('change', async () => {
         const l = geoLayers.find((x) => x.id === cb.dataset.layer);
         if (!l) return;
         if (cb.checked) {
-          activeLayers.add(l.id);
-          addGeoLayer(l);
-          syncLayerTime(Number(yearIn.value));
+          readerActivatedLayer = true;
+          await activateLayer(l, true);
         } else {
           activeLayers.delete(l.id);
           removeGeoLayer(l.id);
@@ -2216,8 +2312,13 @@ const payload = {
       }
     };
 
-    const setInspected = (id: string | null) => {
+    const setInspected = (
+      id: string | null,
+      moveToContext = false,
+      invoker: HTMLButtonElement | null = null,
+    ) => {
       inspectedLayer = id;
+      if (id && moveToContext) inspectorInvoker = invoker;
       for (const dossier of root.querySelectorAll<HTMLElement>('[data-dossier-for]')) {
         dossier.hidden = dossier.dataset.dossierFor !== id;
       }
@@ -2254,6 +2355,16 @@ const payload = {
         }
       }
       updateCatalogueUrlState();
+      if (id && moveToContext) {
+        if (drawerToggle?.getAttribute('aria-expanded') === 'true') setDrawer(false, false);
+        requestAnimationFrame(() => {
+          contextRegion.focus({ preventScroll: true });
+          contextRegion.scrollIntoView({
+            behavior: reduceMotion ? 'auto' : 'smooth',
+            block: 'start',
+          });
+        });
+      }
     };
 
     /**
@@ -2292,7 +2403,7 @@ const payload = {
           inspect.className = 'aal-inspect';
           inspect.textContent = 'About';
           inspect.setAttribute('aria-label', `About ${title}`);
-          inspect.addEventListener('click', () => setInspected(id));
+          inspect.addEventListener('click', () => setInspected(id, true, inspect));
           item.append(inspect);
 
           if (!isBaseLayer(id)) {
@@ -2380,7 +2491,7 @@ const payload = {
 
     // --- Inspect affordances on the rows.
     for (const button of root.querySelectorAll<HTMLButtonElement>('[data-inspect]')) {
-      button.addEventListener('click', () => setInspected(button.dataset.inspect!));
+      button.addEventListener('click', () => setInspected(button.dataset.inspect!, true, button));
     }
 
     /**
@@ -2469,14 +2580,17 @@ const payload = {
     const drawerClose = root.querySelector<HTMLButtonElement>('[data-browser-close]');
     const inspectorClose = root.querySelector<HTMLButtonElement>('[data-inspector-close]');
 
-    const setDrawer = (open: boolean) => {
+    const setDrawer = (open: boolean, restoreFocus = true) => {
       if (!drawerToggle || !drawerSheet) return;
       drawerToggle.setAttribute('aria-expanded', String(open));
       drawerSheet.dataset.open = String(open);
       // Closing preserves everything: active layers, year, search text and the
       // lens are all state, not view, and none of them belong to the sheet.
-      if (!open) drawerToggle.focus();
-      else drawerSheet.querySelector<HTMLElement>('input, button')?.focus();
+      if (!open) {
+        if (restoreFocus) drawerToggle.focus();
+      } else {
+        drawerSheet.querySelector<HTMLElement>('input, button')?.focus();
+      }
     };
 
     drawerToggle?.addEventListener('click', () => {
@@ -2486,11 +2600,14 @@ const payload = {
 
     inspectorClose?.addEventListener('click', () => {
       const previous = inspectedLayer;
+      const savedInvoker = inspectorInvoker;
       setInspected(null);
-      const invoker = previous
+      const rowInvoker = previous
         ? root.querySelector<HTMLButtonElement>(`[data-inspect="${previous}"]`)
         : null;
-      (invoker ?? drawerToggle)?.focus();
+      const invoker = savedInvoker ?? rowInvoker;
+      (invoker && invoker.offsetParent !== null ? invoker : drawerToggle)?.focus();
+      inspectorInvoker = null;
     });
 
     root.addEventListener('keydown', (event) => {
@@ -2704,6 +2821,7 @@ const payload = {
     display: flex;
     flex-direction: column;
     min-height: 100%;
+    scroll-margin-top: calc(var(--header-h) + 1rem);
   }
   .am-context-kicker {
     margin: 0 0 0.65rem;
