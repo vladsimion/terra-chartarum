@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
+import { previewPort } from './e2e/preview-port';
+
 /**
  * Held-essay preview QA (ANT-13 / KAN-432).
  *
@@ -21,7 +23,11 @@ import { defineConfig, devices } from '@playwright/test';
  * `playwright.config.ts` ignores this spec so the ordinary suite - which proves
  * the hold is real - is never run against a build that lifts it.
  */
-const PORT = Number(process.env.PLAYWRIGHT_HELD_PORT ?? 4331);
+// Derived per checkout, for the reasons in e2e/preview-port.ts: 4331 is the port
+// the mobile-QA instructions run a manual `astro preview` on, and reusing that
+// would check the held pages against a build made without SHOW_UNRELEASED=1 -
+// the exact hold this suite exists to prove.
+const PORT = previewPort('held', process.env.PLAYWRIGHT_HELD_PORT);
 
 export default defineConfig({
   testDir: './e2e',

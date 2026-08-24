@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
+import { previewPort } from './e2e/preview-port';
+
 // End-to-end tests (KAN-176). Playwright builds the static site and serves the
 // production `dist/` (matching what ships), then runs smoke + axe a11y checks.
 //
@@ -7,9 +9,11 @@ import { defineConfig, devices } from '@playwright/test';
 // `flows.spec.ts` run on every engine and on two mobile viewports; the heavier
 // axe + keyboard-focus suite in `smoke.spec.ts` stays chromium-only (a11y and
 // focus semantics are engine-independent and needn't pay the ×5 cost).
-// A developer may already have the normal preview port open. Release scrubs use
-// PLAYWRIGHT_PORT to guarantee they build and inspect this checkout's own dist/.
-const PORT = Number(process.env.PLAYWRIGHT_PORT ?? 4321);
+// The port is derived per checkout so a server from another worktree - or the
+// dev server on 4321 - can never be reused in place of this one's build. See
+// e2e/preview-port.ts. Release scrubs still set PLAYWRIGHT_PORT to force a fresh
+// build on a port they name.
+const PORT = previewPort('default', process.env.PLAYWRIGHT_PORT);
 
 // Non-chromium projects only run the browser-agnostic core-flow spec.
 const CROSS_BROWSER_TESTS = /flows\.spec\.ts/;
