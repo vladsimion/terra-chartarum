@@ -54,6 +54,29 @@ const metaRows: [string, string | undefined][] = [
 ];
 const rows = metaRows.filter(([, v]) => v);
 
+// Physical observation and open questions (TC-CAT-2 / KAN-391).
+//
+// These render as their own sections rather than as more rows in the table
+// above, because the table mixes what the literature says the object is with
+// what somebody saw when they held it, and the whole point of the observation
+// record is that those are different kinds of claim. A reader who cannot tell
+// them apart on the page gains nothing from their being apart in the schema.
+const observation = map.physicalObservation;
+const observationRows: [string, string | undefined][] = observation
+  ? [
+      ['Verso', observation.verso],
+      ['Colour', observation.colour],
+      ['Folds', observation.folds],
+      ['Condition', observation.conditionNotes],
+    ]
+  : [];
+const observedRows = observationRows.filter(([, value]) => value);
+const OBSERVATION_BASIS: Record<string, string> = {
+  object_in_hand: 'the object in hand',
+  high_resolution_image: 'a high-resolution reproduction',
+  institutional_record: 'an institutional record',
+};
+
 const relatedMaps = map.relatedMapIds
   .map((id) => getMapById(id))
   .filter((m): m is HistoricalMap => Boolean(m));
@@ -193,6 +216,51 @@ const tileSource = cover?.dziTileSource ?? cover?.iiif;
     }
 
     {
+      observation && observedRows.length > 0 && (
+        <section class="card">
+          <h2>Observed</h2>
+          <p class="observed-basis">
+            Examined by {observation.observedBy} on {observation.observedOn}, from{' '}
+            {OBSERVATION_BASIS[observation.basis] ?? observation.basis}. These are notes on this
+            copy, not statements about the edition.
+          </p>
+          <table>
+            <tbody>
+              {observedRows.map(([label, value]) => (
+                <tr>
+                  <th scope="row">{label}</th>
+                  <td>{value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      )
+    }
+
+    {
+      map.uncertainties.length > 0 && (
+        <section class="card">
+          <h2>Open questions</h2>
+          <p class="observed-basis">
+            Looked at and unresolved. Listed so the gap reads as a question somebody asked rather
+            than a field nobody reached.
+          </p>
+          <dl class="uncertainties">
+            {map.uncertainties.map((item) => (
+              <>
+                <dt>{item.field}</dt>
+                <dd>
+                  {item.question} <span class="would-resolve">{item.wouldResolve}</span>
+                </dd>
+              </>
+            ))}
+          </dl>
+        </section>
+      )
+    }
+
+    {
       map.tags.length > 0 && (
         <section class="detail-block">
           <h2>Tags</h2>
@@ -257,6 +325,28 @@ const tileSource = cover?.dziTileSource ?? cover?.iiif;
 </PortalLayout>
 
 <style>
+  /* Observation and open questions (KAN-391). Deliberately quieter than the
+     metadata table: they are notes on one copy, not the record of the edition. */
+  .observed-basis {
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+    margin: 0 0 0.75rem;
+  }
+  .uncertainties dt {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    text-transform: capitalize;
+    color: var(--ink-muted);
+  }
+  .uncertainties dd {
+    margin: 0 0 0.75rem;
+  }
+  .would-resolve {
+    display: block;
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+  }
+
   .detail {
     padding-block: clamp(2.5rem, 6vw, 4rem);
     max-width: var(--prose-max);

@@ -51,6 +51,63 @@ export const MapImageSchema = z.object({
 });
 
 /**
+ * What somebody saw when they had the object in front of them (TC-CAT-2 /
+ * KAN-391).
+ *
+ * The catalogue already carries `dimensions`, `edition`, `state`, `publisher`
+ * and `condition` in one flat list, which quietly puts two different kinds of
+ * claim on the same footing. An edition is an inference from a bibliography; a
+ * fold is something a person looked at. When they sit in the same shape,
+ * a record cannot say which of its facts would survive the object being
+ * reattributed.
+ *
+ * So observations live here, and `observedBy` and `observedOn` are **required**.
+ * An observation nobody made on no particular day is not an observation, it is
+ * an assumption with better formatting - and the usual source of one is dealer
+ * copy, which the ticket is explicit may not be the sole authority.
+ *
+ * Nothing populates this yet. That is the same pattern as `dacia-attestations`:
+ * the contract ships ahead of the evidence, so that the day somebody does
+ * handle a sheet there is somewhere to put what they saw, and so the audit can
+ * report a real gap instead of a hardcoded one.
+ */
+export const PhysicalObservationSchema = z.object({
+  /** What is on the back: blank, letterpress text, a collector's mark, a stamp. */
+  verso: z.string().optional(),
+  /** Colour as observed, and whether it is original or later. */
+  colour: z.string().optional(),
+  /** Folds, as an atlas or a folded map carries them. */
+  folds: z.string().optional(),
+  /** Tears, repairs, backing, trimming - what has been done to the sheet. */
+  conditionNotes: z.string().optional(),
+  /** Who examined the object. Required: see above. */
+  observedBy: z.string().min(1),
+  /** ISO date of the examination. Required. */
+  observedOn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  /** Whether the object itself was handled, or only a reproduction of it. */
+  basis: z.enum(['object_in_hand', 'high_resolution_image', 'institutional_record']),
+});
+
+export type PhysicalObservation = z.infer<typeof PhysicalObservationSchema>;
+
+/**
+ * A question this record cannot currently answer (KAN-391 / KAN-392).
+ *
+ * Both tickets require unresolved state, colour and provenance uncertainty to
+ * be *explicit*. An absent field is not explicit - it reads as "nobody got to
+ * it yet" whether or not anyone tried. This is how a record says it was looked
+ * at and remains open.
+ */
+export const CatalogueUncertaintySchema = z.object({
+  field: z.enum(['edition', 'state', 'colour', 'provenance', 'attribution', 'date']),
+  question: z.string().min(1),
+  /** What would settle it: a catalogue, a collation, an institution to write to. */
+  wouldResolve: z.string().min(1),
+});
+
+export type CatalogueUncertainty = z.infer<typeof CatalogueUncertaintySchema>;
+
+/**
  * The full catalogue record. `MapCoreSchema` below picks the atlas-critical
  * subset; everything outside that subset is optional and defaults to empty so
  * the existing seed data (core fields only) parses without modification.
@@ -86,6 +143,14 @@ export const HistoricalMapSchema = z.object({
   rightsStatement: z.string().optional(),
   attribution: z.string().optional(),
   publicationStatus: z.enum(['published_witness', 'reference_only']).optional(),
+  /**
+   * Physical observation, kept apart from the bibliographic fields above
+   * (KAN-391). `dimensions`, `edition`, `state` and `publisher` are what the
+   * literature says the object is; this is what somebody saw.
+   */
+  physicalObservation: PhysicalObservationSchema.optional(),
+  /** Questions this record has been looked at and still cannot answer. */
+  uncertainties: z.array(CatalogueUncertaintySchema).default([]),
   bibliography: z.array(MapBibRefSchema).default([]),
   relatedMapIds: z.array(z.string()).default([]),
   relatedEssaySlugs: z.array(z.string()).default([]),

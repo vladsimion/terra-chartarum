@@ -152,15 +152,26 @@ function objectAuditFor(map: HistoricalMap): Record<ObjectAuditCriterion, Object
   const referenceOnlyWithoutImage =
     map.publicationStatus === 'reference_only' && !map.images.length;
   const medium = map.medium?.toLowerCase() ?? '';
+  const observed = map.physicalObservation;
   return {
     editionState: auditStatus(Boolean(map.edition || map.state)),
     atlasContext: auditStatus(Boolean(map.edition || map.publisher)),
     dimensions: auditStatus(Boolean(map.dimensions || map.scale)),
-    // The current catalogue has no first-class verso field. Keeping the gap explicit
-    // is safer than inferring a physical observation from a folio locator.
-    verso: 'not_yet_verified',
-    colour: auditStatus(/colour|color|pigment|mosaic|photograph/.test(medium)),
-    conditionProvenance: auditStatus(Boolean(map.condition || map.provenance || map.acquisition)),
+    // Verso is recorded only from an actual examination (KAN-391). It used to be
+    // hardcoded `not_yet_verified` because the schema had nowhere to put the
+    // observation, which meant the criterion could never be satisfied by any
+    // amount of work - a gap the report could not tell apart from neglect.
+    verso: auditStatus(Boolean(observed?.verso)),
+    // Colour, likewise. Reading it off `medium` inferred a physical fact from a
+    // catalogue phrase: "hand-coloured" in a dealer description is a claim about
+    // the object, not a look at it. That inference is kept as a fallback only
+    // where nobody has examined the sheet, and an examination always wins.
+    colour: auditStatus(
+      Boolean(observed?.colour) || /colour|color|pigment|mosaic|photograph/.test(medium),
+    ),
+    conditionProvenance: auditStatus(
+      Boolean(observed?.conditionNotes || map.condition || map.provenance || map.acquisition),
+    ),
     imageSource: auditStatus(
       map.images.some((image) => Boolean(image.src && image.credit)),
       referenceOnlyWithoutImage,
