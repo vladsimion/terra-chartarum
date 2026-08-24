@@ -153,24 +153,39 @@ function objectAuditFor(map: HistoricalMap): Record<ObjectAuditCriterion, Object
     map.publicationStatus === 'reference_only' && !map.images.length;
   const medium = map.medium?.toLowerCase() ?? '';
   const observed = map.physicalObservation;
+  // An object this project does not hold is one nobody here can turn over
+  // (KAN-391). Reporting its verso as `not_yet_verified` describes work that is
+  // never going to be done, and the enrichment queue ranks by exactly this
+  // number - so an unreachable object outranks a sheet in a drawer upstairs.
+  // An examination still wins where one exists: an institution that photographs
+  // versos, or a loan, records the observation and the criterion goes green.
+  const examinable = (map.custody ?? 'held') === 'held';
+  // A projection or a modern reconstruction has no edition, no plate state and
+  // no verso (KAN-392). Scoring those as outstanding put work that cannot be
+  // done at the top of an enrichment queue meant to rank work that can. A
+  // `work` record is deliberately not exempt: an object exists, this record has
+  // not yet said which one, and choosing a witness is real outstanding work.
+  const physical = (map.recordScope ?? 'object') !== 'concept';
   return {
-    editionState: auditStatus(Boolean(map.edition || map.state)),
-    atlasContext: auditStatus(Boolean(map.edition || map.publisher)),
-    dimensions: auditStatus(Boolean(map.dimensions || map.scale)),
+    editionState: auditStatus(Boolean(map.edition || map.state), !physical),
+    atlasContext: auditStatus(Boolean(map.edition || map.publisher), !physical),
+    dimensions: auditStatus(Boolean(map.dimensions || map.scale), !physical),
     // Verso is recorded only from an actual examination (KAN-391). It used to be
     // hardcoded `not_yet_verified` because the schema had nowhere to put the
     // observation, which meant the criterion could never be satisfied by any
     // amount of work - a gap the report could not tell apart from neglect.
-    verso: auditStatus(Boolean(observed?.verso)),
+    verso: auditStatus(Boolean(observed?.verso), (!examinable || !physical) && !observed?.verso),
     // Colour, likewise. Reading it off `medium` inferred a physical fact from a
     // catalogue phrase: "hand-coloured" in a dealer description is a claim about
     // the object, not a look at it. That inference is kept as a fallback only
     // where nobody has examined the sheet, and an examination always wins.
     colour: auditStatus(
       Boolean(observed?.colour) || /colour|color|pigment|mosaic|photograph/.test(medium),
+      !physical,
     ),
     conditionProvenance: auditStatus(
       Boolean(observed?.conditionNotes || map.condition || map.provenance || map.acquisition),
+      !physical,
     ),
     imageSource: auditStatus(
       map.images.some((image) => Boolean(image.src && image.credit)),

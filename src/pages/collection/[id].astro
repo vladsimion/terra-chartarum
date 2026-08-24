@@ -31,6 +31,22 @@ const sourceEssayTitle = essayMeta[map.essaySlug]?.title ?? null;
 const cartographer = map.cartographerId ? getCartographerById(map.cartographerId) : undefined;
 const cartographerName = cartographer?.name ?? map.cartographer;
 
+// Custody says whether an examination is available to this project at all
+// (KAN-391), which is what makes an empty "Observed" section legible: for an
+// institutional object there is nothing to wait for.
+const CUSTODY_LABELS: Record<string, string> = {
+  held: 'In this collection',
+  institutional: 'Held by the repository named above',
+  unlocated: 'No specific impression traced',
+};
+
+// What the record stands for (KAN-392). `object` is the default and says
+// nothing a reader needs, so only the two departures from it are shown.
+const RECORD_SCOPE_LABELS: Record<string, string> = {
+  work: 'A work or series, not one witness',
+  concept: 'A projection or reconstruction, not an artefact',
+};
+
 // Metadata rows - only rendered when a value is present, so the sparse seed
 // records don't show a table full of blanks (KAN-68). Cartographer is handled
 // separately so it can render as a link to the profile.
@@ -48,6 +64,8 @@ const metaRows: [string, string | undefined][] = [
   ['Object type', map.objectType],
   ['Repository', map.repository],
   ['Repository ID', map.repositoryId],
+  ['Custody', map.custody && CUSTODY_LABELS[map.custody]],
+  ['Record stands for', map.recordScope && RECORD_SCOPE_LABELS[map.recordScope]],
   ['Rights', map.rightsStatement],
   ['Attribution', map.attribution],
   ['Publication status', map.publicationStatus?.replaceAll('_', ' ')],

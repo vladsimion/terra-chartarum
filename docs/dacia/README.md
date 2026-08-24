@@ -223,7 +223,7 @@ blocked for no stated reason.
 python3 scripts/dacia/review.py blocked
 ```
 
-Fourteen open items across six tickets. Grouping by ticket rather than by debt
+Seventeen open items across nine tickets. Grouping by ticket rather than by debt
 is the point: one item blocking four tickets and four items blocking one ticket
 are different situations, and only the ticket-shaped view tells you which you
 have.
@@ -238,6 +238,36 @@ For the Campaign II trenches specifically:
 
 KAN-350 and KAN-356 carry no debt of their own. They are the release tickets for
 those trenches and wait on the ones above.
+
+Trench G was added to the register the same way (KAN-362). It had carried no
+debt at all, so its three tickets read as blocked for no stated reason:
+
+| Ticket  | Blocked by                                                | What closes it                                                                         |
+| ------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| KAN-360 | `vd-in-manibus-inspection`, `vd-in-manibus-object-rights` | A named inspector examines the candidate sheets; a rights basis for their reproduction |
+| KAN-361 | `vd-in-manibus-inspection`                                | The same inspections - an object row requires a `reviewed` one                         |
+| KAN-362 | `vd-in-manibus-essay-claims`                              | The two above; the essay is downstream of both and cannot precede them                 |
+
+## Whether the cycle closes (KAN-371)
+
+`blocked` answers _why can this ticket not close_. The programme's own closing
+ticket asks the question one level up, and it gets its own command:
+
+```bash
+python3 scripts/dacia/review.py reconcile
+```
+
+It prints each of KAN-371's acceptance criteria with a verdict and a count
+against its target, then the per-trench state. It is expected to report OPEN for
+most of this programme's life, and failing usefully is the point: _one of seven
+trenches has passed its release gate_ says something a bare "not ready" does not.
+
+Two of the five criteria - every index reference resolving, every trench
+recording all six gates - are already refusals in `validate.py`, which
+`reconcile` runs first and stops on. Reaching the report is the check, so the
+command attributes them rather than carrying a second copy of the rules. It
+exits 0 either way: an unfinished cycle is the normal state here, and a command
+that failed CI for saying so would be out of CI within a week.
 
 **Two open items block no recorded gate at all** - `vd-roman-baseline-geometry`
 and `vd-principality-envelopes` have an empty `blocks` column, so no gate-driven

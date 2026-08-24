@@ -108,6 +108,65 @@ export const CatalogueUncertaintySchema = z.object({
 export type CatalogueUncertainty = z.infer<typeof CatalogueUncertaintySchema>;
 
 /**
+ * Whether anybody working on this project can put the object on a table
+ * (TC-CAT-2 / KAN-391).
+ *
+ * `PhysicalObservationSchema` above fixed half of a problem. It gave an
+ * examination somewhere to live, so a recorded verso stopped being impossible.
+ * It did not give the audit any way to say that an examination is *not going to
+ * happen*, and the audit's only two answers are `recorded` and
+ * `not_yet_verified`. So the Hereford Mappa Mundi - a cathedral treasure in a
+ * case in Hereford - reports its verso as "not yet verified", which reads as
+ * work outstanding. Nobody is going to turn it over. The Madaba map is a church
+ * floor and has no verso at all.
+ *
+ * That is the same conflation the observation schema was written to end, one
+ * level up: a gap that cannot be closed looks exactly like a gap nobody got to,
+ * and an enrichment queue built on the difference ranks them identically.
+ *
+ * - `held` - in this collection. An examination is available; until somebody
+ *   makes one the observation fields are genuinely outstanding.
+ * - `institutional` - belongs to a named repository, which `repository` must
+ *   record. Reachable through that institution, not from here.
+ * - `unlocated` - no impression or witness has been traced. The Honterus
+ *   Chorographia is the standing example: "likely Budapest", unconfirmed.
+ */
+export const CustodySchema = z.enum(['held', 'institutional', 'unlocated']);
+
+export type Custody = z.infer<typeof CustodySchema>;
+
+/**
+ * What this record stands for (TC-CAT-3 / KAN-392).
+ *
+ * `custody` answers "where is it". This answers the prior question the object
+ * audit assumes and never asks: is there an *it*.
+ *
+ * The KAN-392 queue is what forced this. It ranks `mercator` - the Mercator
+ * projection - by how much of its edition, state, dimensions, verso and colour
+ * have been recorded. A projection has no verso. `eratosthenes` is a map known
+ * from Strabo's description and reconstructed by modern scholars; there is no
+ * artefact to catalogue and never was. Both sat near the bottom of the queue,
+ * which is to say the queue was recommending work that cannot be done, ahead of
+ * work that can.
+ *
+ * The third case is different and must not be folded into the other two.
+ * `cassini` and `idrisi` name a *work* - a 182-sheet survey, a treatise
+ * surviving in later copies - where real objects exist but this record has not
+ * said which one it means. That is genuinely outstanding, and the resolution is
+ * to choose a witness, so it stays outstanding rather than becoming exempt.
+ *
+ * - `object` - a specific artefact. The default, and the only scope the object
+ *   audit was written for.
+ * - `work` - a work, edition or survey with no witness yet chosen. Physical
+ *   criteria stay outstanding; picking a witness is what closes them.
+ * - `concept` - a projection, method or modern reconstruction. There is no
+ *   artefact, so the physical criteria are a category error rather than a gap.
+ */
+export const RecordScopeSchema = z.enum(['object', 'work', 'concept']);
+
+export type RecordScope = z.infer<typeof RecordScopeSchema>;
+
+/**
  * The full catalogue record. `MapCoreSchema` below picks the atlas-critical
  * subset; everything outside that subset is optional and defaults to empty so
  * the existing seed data (core fields only) parses without modification.
@@ -149,6 +208,17 @@ export const HistoricalMapSchema = z.object({
    * literature says the object is; this is what somebody saw.
    */
   physicalObservation: PhysicalObservationSchema.optional(),
+  /**
+   * Whether an examination is available to this project at all (KAN-391).
+   * Absent means unclassified, which the audit treats as `held` would be -
+   * outstanding - so declaring it is what moves a record, never omitting it.
+   */
+  custody: CustodySchema.optional(),
+  /**
+   * Whether there is an artefact behind this record at all (KAN-392). Absent
+   * means `object`, so the audit's demands stand until a record says otherwise.
+   */
+  recordScope: RecordScopeSchema.optional(),
   /** Questions this record has been looked at and still cannot answer. */
   uncertainties: z.array(CatalogueUncertaintySchema).default([]),
   bibliography: z.array(MapBibRefSchema).default([]),
@@ -198,6 +268,21 @@ const RAW: unknown[] = [
     coords: [44.42, 32.54],
     blurb: 'The Imago Mundi - earth as a disc ringed by the bitter river.',
     bibliography: ['harley-2001', 'brotton-2012'],
+    // A surviving clay tablet in the British Museum. A specific object, but this
+    // record carries no registration number, so it cannot yet be joined to the
+    // museum's own record (KAN-392).
+    recordScope: 'object',
+    custody: 'institutional',
+    repository: 'British Museum, London',
+    uncertainties: [
+      {
+        field: 'provenance',
+        question:
+          'No registration number is recorded, so nothing here resolves to the museum record for the tablet, and the excavation history behind it is not carried.',
+        wouldResolve:
+          'The British Museum collection record for the Imago Mundi tablet, which supplies the registration number, the findspot as recorded and the reuse terms.',
+      },
+    ],
   },
   {
     id: 'eratosthenes',
@@ -209,6 +294,19 @@ const RAW: unknown[] = [
     region: 'Alexandria',
     coords: [29.92, 31.2],
     blurb: 'A measured earth: the first grid of parallels and meridians.',
+    // No artefact (KAN-392). Eratosthenes' map is known from Strabo's account
+    // of it; every image under this title is a modern reconstruction, and the
+    // audit was asking this record for its plate state.
+    recordScope: 'concept',
+    uncertainties: [
+      {
+        field: 'attribution',
+        question:
+          'Nothing drawn by Eratosthenes survives. What this record stands for is the reconstructed geography reported by later writers, not a document.',
+        wouldResolve:
+          'Nothing can: the resolution is editorial, naming which modern reconstruction the essay follows and citing the ancient testimony it rests on.',
+      },
+    ],
   },
   {
     id: 'hereford',
@@ -226,8 +324,22 @@ const RAW: unknown[] = [
     cartographer: 'Richard of Haldingham (traditional attribution)',
     dimensions: 'Approximately 158 × 133 cm; geographic circle 132 cm in diameter',
     medium: 'Ink and pigments on a single sheet of vellum',
-    provenance: 'Hereford Cathedral',
+    // `repository` rather than `provenance` (KAN-391): the cathedral is where
+    // the map is, and provenance is how it got there. The record knows the
+    // first and not the second, and saying so in the provenance field claimed
+    // an ownership history it does not have.
+    custody: 'institutional',
+    repository: 'Hereford Cathedral',
     bibliography: ['woodward-1987-mappaemundi', 'edson-1997', 'hereford-cathedral'],
+    uncertainties: [
+      {
+        field: 'attribution',
+        question:
+          'The map names "Richard de Haldingham e de Lafford" as the author of its making, but whether that names the designer, the scribe or the donor, and which Richard he was, is not settled.',
+        wouldResolve:
+          'The Hereford Cathedral scholarly literature on the legend and the Lincoln prebendary records behind the two candidate identifications.',
+      },
+    ],
     relatedMapIds: ['religion-ebstorf', 'religion-psalter', 'religion-matthew-paris'],
     relatedEssaySlugs: ['cartography'],
     images: [
@@ -253,9 +365,23 @@ const RAW: unknown[] = [
       'A sixth-century church-floor mosaic enlarges Jerusalem into a legible sacred city and destination.',
     cartographer: 'Unknown Byzantine mosaicists',
     medium: 'Floor mosaic',
-    provenance: 'Church of Saint George, Madaba',
+    // A church floor. Not held, not moveable, and the one audit criterion that
+    // asks what is on the back is a category error here rather than an
+    // outstanding task - which is precisely what `custody` now lets the report
+    // say (KAN-391).
+    custody: 'institutional',
+    repository: 'Church of Saint George, Madaba',
     bibliography: ['woodward-1987-mappaemundi', 'edson-1997'],
     relatedMapIds: ['hereford', 'religion-matthew-paris'],
+    uncertainties: [
+      {
+        field: 'date',
+        question:
+          'The mosaic is dated to the second half of the sixth century on stylistic and topographical grounds; the year recorded here is a midpoint of that range and not a documented date.',
+        wouldResolve:
+          'The excavation and epigraphic literature on the Church of Saint George pavement, which argues the bounds from the buildings the mosaic does and does not depict.',
+      },
+    ],
     images: [
       {
         src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Madaba%20map.jpg?width=1600',
@@ -357,9 +483,33 @@ const RAW: unknown[] = [
     cartographer: 'Matthew Paris',
     cartographerId: 'matthew-paris',
     medium: 'Ink and pigments on parchment',
-    provenance: 'British Library, Royal MS 14 C VII, fol. 2',
+    // Shelfmark and folio are repository identity, not provenance (KAN-391).
+    // They are also the join to `data/crusades/source-audit.csv`, where this
+    // same manuscript is `cru-mp-royal-14-c-vii` and is still `candidate` /
+    // `unverified` - so the catalogue must not read as more settled than the
+    // audit row it points at.
+    custody: 'institutional',
+    repository: 'British Library, London',
+    repositoryId: 'Royal MS 14 C VII',
+    sourceObjectId: 'cru-mp-royal-14-c-vii',
     bibliography: ['bl-royal-14-c-vii', 'edson-1997'],
     relatedMapIds: ['religion-madaba', 'hereford'],
+    uncertainties: [
+      {
+        field: 'state',
+        question:
+          'Which folios carry the itinerary in this witness is recorded here as fol. 2 and has not been checked against the manuscript; the Crusades source audit carries the same volume with its locator still marked pending.',
+        wouldResolve:
+          'The British Library catalogue entry and digitised foliation for Royal MS 14 C VII, which would settle the locator for both records at once.',
+      },
+      {
+        field: 'attribution',
+        question:
+          'Matthew Paris left more than one itinerary copy, and the Corpus Christi College manuscripts carry versions that differ from this one. Which witness this record should stand on is a choice the essay has not yet had to make.',
+        wouldResolve:
+          'Collation of Royal MS 14 C VII against CCCC MS 26 and CCCC MS 16, both already registered in the Crusades source audit.',
+      },
+    ],
     images: [
       {
         src: '/images/invisible-maps-religion/matthew-paris.jpg',
@@ -431,8 +581,23 @@ const RAW: unknown[] = [
     cartographerId: 'heinrich-bunting',
     edition: 'Itinerarium Sacrae Scripturae, 1581 edition',
     medium: 'Woodcut in a printed book',
+    // `unlocated`, not `institutional`: the record names no holding institution
+    // because no particular impression has been traced. The image below is a
+    // Commons reproduction of *an* impression, and the Itinerarium was reprinted
+    // for decades, so the edition line is a statement about the work and not
+    // about the sheet reproduced here (KAN-391).
+    custody: 'unlocated',
     bibliography: ['woodward-1987-mappaemundi', 'harley-2001'],
     relatedMapIds: ['religion-to-1472', 'religion-rudimentum', 'hereford'],
+    uncertainties: [
+      {
+        field: 'edition',
+        question:
+          'The reproduction used here is not tied to an identified copy, and the clover-leaf woodcut recurs across the Itinerarium reprints. Whether it comes from the 1581 edition this record names is untested.',
+        wouldResolve:
+          'Matching the reproduction to a specific copy in an institutional collection, then collating the woodcut against the edition census.',
+      },
+    ],
     images: [
       {
         src: 'https://commons.wikimedia.org/wiki/Special:FilePath/1581%20Clover%20Leaf%20World%20Map%20by%20Heinrich%20Buenting.jpg?width=1600',
@@ -456,6 +621,20 @@ const RAW: unknown[] = [
     cartographer: 'Gerardus Mercator',
     cartographerId: 'mercator',
     bibliography: ['snyder-1993', 'brotton-2012'],
+    // A projection, not a sheet (KAN-392). The 1569 wall map that first carried
+    // it is an object and a small number of impressions survive, but this
+    // record is titled and written as the projection, and the two should not be
+    // silently merged - the essay argues about the projection's properties.
+    recordScope: 'concept',
+    uncertainties: [
+      {
+        field: 'edition',
+        question:
+          'The year given is that of the Nova et Aucta wall map, but this record describes the projection rather than that object. Whether the catalogue should also carry the wall map as its own record is undecided.',
+        wouldResolve:
+          'An editorial decision, and if the wall map is added, a chosen impression among the few that survive.',
+      },
+    ],
   },
   {
     id: 'cassini',
@@ -470,6 +649,19 @@ const RAW: unknown[] = [
     cartographer: 'César-François Cassini de Thury',
     cartographerId: 'cassini',
     bibliography: ['edney-2019'],
+    // A multi-sheet survey published over decades, not a sheet (KAN-392). The
+    // date recorded is the start of the undertaking; asking this record for its
+    // dimensions asks for the dimensions of 182 different objects.
+    recordScope: 'work',
+    uncertainties: [
+      {
+        field: 'edition',
+        question:
+          'The Carte de Cassini is a sheet series issued across the second half of the eighteenth century. No sheet is named here, so the year, the scale and any physical description belong to the undertaking rather than to anything that can be measured.',
+        wouldResolve:
+          'Naming the sheet or sheets the essay actually uses and cataloguing those as their own records, each with its own state and holding institution.',
+      },
+    ],
   },
   {
     id: 'blue-marble',
@@ -482,6 +674,21 @@ const RAW: unknown[] = [
     region: 'Global',
     coords: [0, 0],
     blurb: 'Earth seen whole, from outside - the photographic map.',
+    // A real object - a frame of film exposed by the Apollo 17 crew - held by
+    // the agency that flew it. The record does not say which frame, so it names
+    // a work rather than a witness (KAN-392).
+    recordScope: 'work',
+    custody: 'institutional',
+    repository: 'NASA',
+    uncertainties: [
+      {
+        field: 'edition',
+        question:
+          'The record identifies no frame number and no version. The photograph circulates in several orientations and crops, and the one this project reproduces is not pinned to any of them.',
+        wouldResolve:
+          'The NASA image catalogue entry for the Apollo 17 frame, which would fix the identifier, the original orientation and the reuse terms together.',
+      },
+    ],
   },
 
   // La Rotta e il Catasto (Venice vs Sicily)
@@ -552,6 +759,20 @@ const RAW: unknown[] = [
         author: 'Ahmad, S. Maqbul',
         year: 1992,
         title: 'Cartography of al-Sharīf al-Idrīsī',
+      },
+    ],
+    // The work, not a witness (KAN-392). What was made at Palermo in 1154 does
+    // not survive; the Tabula Rogeriana is known through later manuscript
+    // copies, and this record has not chosen one. That is outstanding work
+    // rather than a category error, so the physical criteria stay open.
+    recordScope: 'work',
+    uncertainties: [
+      {
+        field: 'date',
+        question:
+          'The year recorded is that of the lost original. Every surviving witness is a later copy, and the record does not say which copy stands behind it or how much later that copy is.',
+        wouldResolve:
+          'Choosing a manuscript witness and recording its repository, shelfmark and date, after which the year on this record has to be read against it.',
       },
     ],
   },
@@ -797,8 +1018,23 @@ const RAW: unknown[] = [
       'A bird’s-eye woodcut tradition makes early modern London searchable as streets, gates, buildings and river traffic.',
     cartographer: 'Anonymous woodcut-map tradition',
     medium: 'Woodcut-derived bird’s-eye city view',
-    provenance: 'London Metropolitan Archives; scholarly edition at University of Victoria',
+    // The record's own maker field says "tradition", which is the admission
+    // that this is a work and not a witness (KAN-392). The surviving
+    // impressions are later than the date recorded here, and the digital
+    // edition the essay actually uses is a third thing again.
+    recordScope: 'work',
+    custody: 'institutional',
+    repository: 'London Metropolitan Archives',
     bibliography: ['moeml-agas'],
+    uncertainties: [
+      {
+        field: 'date',
+        question:
+          'The year recorded is for the lost original state of the woodcut. The impressions that survive are later, and the essay works from the University of Victoria digital edition rather than from any of them.',
+        wouldResolve:
+          'Recording the impression the digital edition was made from, and dating this record to that impression instead of to the conjectured first state.',
+      },
+    ],
     relatedMapIds: ['city-civitates-1572', 'city-turgot-paris'],
     tags: ['London', 'bird’s-eye view', 'wall', 'digital edition', 'city view'],
   },
@@ -1461,7 +1697,8 @@ const RAW: unknown[] = [
       'A sixty-four-article rule text makes Peterhof’s internal discipline visible without turning the merchant compound into territory.',
     edition: 'Riga copy dated before 1298; selected documentary phase AD 1295',
     medium: 'Manuscript ordinance',
-    provenance: 'Latvian State Historical Archives, Fonds 673, Directory 4, Box 18, no. 7',
+    recordScope: 'object',
+    custody: 'institutional',
     objectType: 'documentary',
     sourceObjectId: 'hse-obj-novgorod-peterhof',
     repository: 'Latvian State Historical Archives',
@@ -1487,7 +1724,8 @@ const RAW: unknown[] = [
     blurb:
       'Nine court books record internal jurisdiction, fees, fire safety, office holders and price lists across Bryggen’s long afterlife.',
     medium: 'Manuscript court books',
-    provenance: 'Archive of the Hanseatic City of Lübeck, 5.1-1.4 Bergenfahrer, 1039–1047',
+    recordScope: 'work',
+    custody: 'institutional',
     objectType: 'documentary',
     sourceObjectId: 'hse-obj-bergen-court-books',
     repository: 'Archive of the Hanseatic City of Lübeck',
@@ -1513,7 +1751,8 @@ const RAW: unknown[] = [
     blurb:
       'Thirty leaves regulate elections, jurisdiction, finance, conduct and training inside the Steelyard community.',
     medium: 'Manuscript ordinance',
-    provenance: 'Archive of the Hanseatic City of Lübeck, 1.1-3.2 ASA Externa Anglicana, 728',
+    recordScope: 'object',
+    custody: 'institutional',
     objectType: 'documentary',
     sourceObjectId: 'hse-obj-london-ordinance-1554',
     repository: 'Archive of the Hanseatic City of Lübeck',
@@ -1539,8 +1778,8 @@ const RAW: unknown[] = [
     blurb:
       'A charter group records building, staple and excise privileges as negotiated access inside a host city.',
     medium: 'Privilege charters',
-    provenance:
-      'City Archives of Bruges, Political charters, 1st series 1016, 1160, 1434; 2nd series 1617',
+    recordScope: 'work',
+    custody: 'institutional',
     objectType: 'charter',
     sourceObjectId: 'hse-obj-bruges-charters',
     repository: 'City Archives of Bruges',

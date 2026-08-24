@@ -181,6 +181,91 @@ describe('physical observation is separated from bibliographic inference (KAN-39
     ).toThrow();
   });
 
+  it('stops promising an examination of an object nobody here can reach', () => {
+    // The observation schema gave a verso somewhere to live. It left the audit
+    // with no way to say an examination is not going to happen, so a cathedral
+    // treasure and a sheet in a drawer upstairs both reported "not yet
+    // verified" - and the enrichment queue ranks on that number.
+    const held = analyseCollectionCompleteness([{ ...base, custody: 'held' }], new Set());
+    expect(held.records[0].audit.verso).toBe('not_yet_verified');
+
+    for (const custody of ['institutional', 'unlocated'] as const) {
+      const unreachable = analyseCollectionCompleteness([{ ...base, custody }], new Set());
+      expect(unreachable.records[0].audit.verso, custody).toBe('not_applicable');
+    }
+
+    // Unclassified must not buy the exemption: omitting the field is how a
+    // record would otherwise launder an unreachable object into a closed one.
+    const unclassified = analyseCollectionCompleteness([{ ...base }], new Set());
+    expect(unclassified.records[0].audit.verso).toBe('not_yet_verified');
+  });
+
+  it('lets an institution that did examine the object record it anyway', () => {
+    // `not_applicable` is a statement about access, not a lock. A loan, or an
+    // institution that photographs versos, still produces a real observation.
+    const observed = analyseCollectionCompleteness(
+      [
+        {
+          ...base,
+          custody: 'institutional' as const,
+          physicalObservation: {
+            verso: 'Letterpress text in two columns.',
+            observedBy: 'A Cataloguer',
+            observedOn: '2026-08-24',
+            basis: 'institutional_record' as const,
+          },
+        },
+      ],
+      new Set(),
+    );
+    expect(observed.records[0].audit.verso).toBe('recorded');
+  });
+
+  it('excludes an unreachable criterion from the score instead of scoring it zero', () => {
+    // not_applicable leaves the denominator, so an institutional record is not
+    // punished for a criterion it can never satisfy.
+    const institutional = analyseCollectionCompleteness(
+      [{ ...base, custody: 'institutional' as const }],
+      new Set(),
+    );
+    expect(institutional.records[0].auditApplicable).toBe(OBJECT_AUDIT_CRITERIA.length - 1);
+  });
+
+  it('stops asking a projection for its plate state (KAN-392)', () => {
+    // The queue ranked `mercator` by how much of its edition, verso and colour
+    // had been recorded. A projection has none of those, so the queue was
+    // recommending impossible work ahead of possible work.
+    const concept = analyseCollectionCompleteness(
+      [{ ...base, recordScope: 'concept' as const }],
+      new Set(),
+    );
+    const audit = concept.records[0].audit;
+    for (const criterion of [
+      'editionState',
+      'atlasContext',
+      'dimensions',
+      'verso',
+      'colour',
+      'conditionProvenance',
+    ] as const) {
+      expect(audit[criterion], criterion).toBe('not_applicable');
+    }
+    // Bibliography and cross-links are still owed: a concept record still has
+    // to say what it rests on and what it connects to.
+    expect(audit.bibliography).toBe('not_yet_verified');
+  });
+
+  it('keeps a work record outstanding rather than exempt (KAN-392)', () => {
+    // `cassini` names a 182-sheet survey. Real objects exist and none has been
+    // chosen, which is work somebody can do - unlike a projection's verso.
+    const work = analyseCollectionCompleteness(
+      [{ ...base, recordScope: 'work' as const }],
+      new Set(),
+    );
+    expect(work.records[0].audit.editionState).toBe('not_yet_verified');
+    expect(work.records[0].audit.dimensions).toBe('not_yet_verified');
+  });
+
   it('keeps an unresolved question as a statement rather than an absence', () => {
     const parsed = CatalogueUncertaintySchema.parse({
       field: 'state',

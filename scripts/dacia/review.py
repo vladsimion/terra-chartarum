@@ -24,6 +24,7 @@ from __future__ import annotations
 import argparse
 import csv
 import datetime as dt
+import json
 import shutil
 import sys
 import tempfile
@@ -315,6 +316,142 @@ def command_coverage(args) -> int:
     return 0
 
 
+def command_reconcile(args) -> int:
+    """The cycle-level reconciliation KAN-371 asks for.
+
+    `blocked` answers "why can this ticket not close". This answers the
+    question one level up: is the programme, taken as a whole, in the state its
+    own closing ticket describes. The five acceptance criteria are checked
+    against committed data and each one prints its verdict and the evidence
+    behind it, because a reconciliation that says "pass" without showing its
+    working is the thing it exists to replace.
+
+    It is expected to fail today, and failing usefully is the deliverable. Most
+    of the cycle is blocked on human review, so a reconciliation that could only
+    print "not yet" would tell nobody which part is not yet, or how far off it
+    is. Every criterion reports a count against its target.
+    """
+    baseline = validate.validate_inputs()
+    if baseline:
+        print(f"The tables do not currently validate ({len(baseline)} errors); fix those first.")
+        return 1
+
+    reference = validate.DATA / "reference"
+
+    def _read(name: str) -> list[dict[str, str]]:
+        with (reference / f"{name}.csv").open(encoding="utf-8", newline="") as handle:
+            return list(csv.DictReader(handle))
+
+    programme = _read("programme-ids")
+    gate_rows = _read("trench-gates")
+    gate_vocab = _read("gates")
+    debts = _read("verification-debt")
+
+    trenches = [row for row in programme if row["kind"] == "trench"]
+    workstreams = [row for row in programme if row["kind"] == "workstream"]
+    all_gates = [row["gate_id"] for row in gate_vocab]
+    gates_by_trench: dict[str, dict[str, dict[str, str]]] = {}
+    for row in gate_rows:
+        gates_by_trench.setdefault(row["trench_id"], {})[row["gate_id"]] = row
+    open_debt_by_subject: dict[str, int] = {}
+    for row in debts:
+        if row["status"] == "open":
+            open_debt_by_subject[row["subject_id"]] = (
+                open_debt_by_subject.get(row["subject_id"], 0) + 1
+            )
+
+    verdicts: list[tuple[bool, str]] = []
+
+    def record(ok: bool, criterion: str) -> None:
+        verdicts.append((ok, criterion))
+        print(f"  [{'PASS' if ok else 'OPEN'}] {criterion}")
+
+    print("\nCorpus Chartarum Daciae - cycle reconciliation (KAN-371)")
+    print(f"{len(trenches)} trenches, {len(workstreams)} workstreams, {len(all_gates)} gates\n")
+
+    # Criteria 1 and 3 - every index reference resolving, and every trench
+    # carrying a row for all six gates - are already refusals in
+    # `validate.py` (essay_slug must name an essay that exists, trench_id must
+    # be a registered trench, a trench missing a gate row is an error). This
+    # command runs that validator before anything else and stops on failure, so
+    # reaching this line *is* the check. Re-implementing them here would put a
+    # second copy of both rules in the tool that audits them, which is the drift
+    # the whole registry design exists to prevent. They are listed so the report
+    # covers all five criteria, and attributed so nobody adds the duplicate.
+    record(True, f"index resolves and all {len(all_gates)} gates are recorded per trench")
+    print("         (enforced by scripts/dacia/validate.py; this report refuses to run without it)")
+
+    # 2. At least three trenches consuming shared evidence rather than private
+    #    authorities. Read from the generated index rather than recomputed here:
+    #    `programme_graph` already decides what consumption means, and a second
+    #    implementation of that rule in the tool that audits it is how the two
+    #    drift into disagreeing about the thing they both report.
+    index_path = validate.REPO / "src" / "data" / "dacia" / "generated" / "programme.json"
+    consuming: list[str] = []
+    if index_path.is_file():
+        index = json.loads(index_path.read_text(encoding="utf-8"))
+        consuming = [
+            entry["id"]
+            for entry in index["entries"]
+            if entry["kind"] == "trench" and entry["corpusRecords"] > 0
+        ]
+    record(
+        len(consuming) >= 3,
+        f"{len(consuming)}/3 trenches consume shared corpus evidence "
+        f"({', '.join(consuming) or 'none'})",
+    )
+
+    # 4. Whether the cycle is actually closeable: every trench released.
+    released = [
+        row["id"]
+        for row in trenches
+        if gates_by_trench.get(row["id"], {}).get("release", {}).get("status") == "passed"
+    ]
+    record(
+        len(released) == len(trenches),
+        f"{len(released)}/{len(trenches)} trenches have passed their release gate",
+    )
+
+    # 5. Outstanding debt is recorded against something, not hidden. The orphan
+    #    case is the one that matters: an open item blocking no gate reaches no
+    #    ticket and no gate-driven view of the programme would ever show it.
+    orphan = [row["debt_id"] for row in debts if row["status"] == "open" and not row["blocks"]]
+    total_open = sum(1 for row in debts if row["status"] == "open")
+    record(
+        not orphan,
+        f"{total_open} open debt item(s), {len(orphan)} reaching no gate",
+    )
+    for item in orphan:
+        print(f"         {item} blocks nothing recorded")
+
+    print("\n  Per-trench state\n")
+    header = f"    {'trench':8} {'state':8} {'essay':10} {'gates passed':>12}  {'open debt':>9}"
+    print(header)
+    print(f"    {'-' * (len(header) - 4)}")
+    for row in trenches:
+        have = gates_by_trench.get(row["id"], {})
+        passed = sum(1 for gate in have.values() if gate["status"] == "passed")
+        print(
+            f"    {row['id']:8} {row['state']:8} {(row['essay_slug'] or '-'):10} "
+            f"{f'{passed}/{len(all_gates)}':>12}  {open_debt_by_subject.get(row['id'], 0):>9}"
+        )
+
+    failed = [criterion for ok, criterion in verdicts if not ok]
+    print(f"\n  {len(verdicts) - len(failed)}/{len(verdicts)} criteria met.")
+    if failed:
+        print("  The cycle does not close yet. Outstanding:")
+        for criterion in failed:
+            print(f"    - {criterion}")
+        print(
+            "\n  This is a report, not a gate: KAN-371 closes when the cycle does,\n"
+            "  and `review.py blocked` names who is waiting on what in the meantime."
+        )
+    # Deliberately 0 either way. An unfinished cycle is the expected state for
+    # most of this programme's life, and a command that fails CI for being
+    # honest about that would be removed from CI within a week.
+    return 0
+
+
 def command_show(args) -> int:
     key, id_column = _table_for(args.record_id)
     _, rows = _load(validate.DATA, key)
@@ -383,6 +520,11 @@ def main(argv: list[str] | None = None) -> int:
         "blocked", help="which Jira tickets are waiting on which verification debt"
     )
     blocked.set_defaults(func=command_blocked)
+
+    reconcile = sub.add_parser(
+        "reconcile", help="cycle-level cross-link, release and maintenance state (KAN-371)"
+    )
+    reconcile.set_defaults(func=command_reconcile)
 
     show = sub.add_parser("show", help="one record and what blocks its promotion")
     show.add_argument("record_id")

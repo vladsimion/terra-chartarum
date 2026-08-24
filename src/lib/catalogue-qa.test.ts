@@ -3,6 +3,8 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { CORPUS } from './corpus';
 import { CARTOGRAPHERS } from './cartographers';
+import { formatCitation } from './cite';
+import type { CiteInput } from './cite';
 
 /**
  * Catalogue cross-link, imagery and rights QA (TC-CAT-4 / KAN-393).
@@ -156,6 +158,129 @@ describe('nothing private reaches a public record', () => {
       }
     }
     expect(leaks).toEqual([]);
+  });
+});
+
+describe('an exemption from the object standard has to be earned', () => {
+  /**
+   * KAN-391 and KAN-392 let a record step out of criteria it can never satisfy:
+   * `custody` says nobody here can examine the object, `recordScope` says there
+   * is no object. Both lower what the audit asks for, which makes them the two
+   * fields in the catalogue worth lying to.
+   *
+   * The pattern is `scripts/dacia/review.py`, where a promotion that cannot
+   * show its evidence writes nothing. An exemption here has to point at the
+   * thing that justifies it, or it is just a lower score with better manners.
+   */
+  it('makes an institutional record name the institution', () => {
+    const unjustified = CORPUS.filter(
+      (map) => map.custody === 'institutional' && !map.repository,
+    ).map((map) => map.id);
+    expect(unjustified).toEqual([]);
+  });
+
+  it('makes an unlocated or conceptual record say what is unresolved', () => {
+    // `unlocated` and `concept` claim the strongest exemptions and name no
+    // institution, so the open question is the only thing standing behind them.
+    const silent = CORPUS.filter(
+      (map) =>
+        (map.custody === 'unlocated' || map.recordScope === 'concept') &&
+        map.uncertainties.length === 0,
+    ).map((map) => map.id);
+    expect(silent).toEqual([]);
+  });
+
+  it('refuses a plate state on a record that says it has no artefact', () => {
+    // A projection with an edition, a state or dimensions is a record arguing
+    // with itself, and whichever half is wrong, the audit is reading the other.
+    const contradictory: string[] = [];
+    for (const map of CORPUS) {
+      if (map.recordScope !== 'concept') continue;
+      for (const [field, value] of [
+        ['edition', map.edition],
+        ['state', map.state],
+        ['dimensions', map.dimensions],
+        ['physicalObservation', map.physicalObservation],
+      ] as const) {
+        if (value) contradictory.push(`${map.id}: concept record carries ${field}`);
+      }
+    }
+    expect(contradictory).toEqual([]);
+  });
+
+  it('does not let a record claim both that it is held here and held elsewhere', () => {
+    const conflicting = CORPUS.filter((map) => map.custody === 'held' && map.repository).map(
+      (map) => `${map.id} -> ${map.repository}`,
+    );
+    expect(conflicting).toEqual([]);
+  });
+});
+
+describe('citation export survives the enriched records', () => {
+  /**
+   * KAN-393 requires citation export to keep working for enriched records. The
+   * enrichment moved facts between fields - `provenance` to `repository`, a
+   * shelfmark out of free text - and `citeInput` on the detail page reads a
+   * fixed handful of them, so a move is exactly what would quietly empty a
+   * citation.
+   */
+  const citeInputFor = (map: (typeof CORPUS)[number]): CiteInput => ({
+    id: map.id,
+    title: map.title,
+    year: map.year,
+    author: map.cartographer,
+    publisher: map.publisher,
+    place: map.region,
+    url: `https://terra-chartarum.pages.dev/collection/${map.id}/`,
+  });
+
+  it('renders all three formats for every record without throwing or emptying', () => {
+    for (const map of CORPUS) {
+      const input = citeInputFor(map);
+      for (const format of ['bibtex', 'ris', 'chicago'] as const) {
+        const citation = formatCitation(input, format);
+        expect(citation, `${map.id} ${format}`).toBeTruthy();
+        // The title is the one field a citation cannot be useful without, and
+        // the one most likely to be lost to a refactor of the record shape.
+        expect(citation, `${map.id} ${format}`).toContain(map.title);
+      }
+    }
+  });
+
+  it('keeps every record reachable by the search text the catalogue indexes', () => {
+    // Search matches on title, region and tags. A record that supplies none of
+    // them is in the catalogue and cannot be found in it.
+    const unfindable = CORPUS.filter(
+      (map) => !map.title.trim() && !map.region.trim() && map.tags.length === 0,
+    ).map((map) => map.id);
+    expect(unfindable).toEqual([]);
+  });
+});
+
+describe('Dacia joins this QA path without changing owner', () => {
+  /**
+   * KAN-393 must cover In Manibus outputs without taking ownership from
+   * KAN-360/KAN-361. So this asserts the Dacia records obey the same graph and
+   * rights rules as everything else, and asserts nothing about how complete
+   * they are - completeness is the other tickets' business, and those are
+   * blocked on somebody physically inspecting the sheets.
+   */
+  const daciaIds = ['specht', 'peutinger', 'honterus'];
+
+  it('has the Dacia records this path is meant to cover', () => {
+    for (const id of daciaIds) expect(byId.has(id), id).toBe(true);
+  });
+
+  it('holds them to the same link and rights rules as every other record', () => {
+    for (const id of daciaIds) {
+      const map = byId.get(id)!;
+      for (const related of map.relatedMapIds)
+        expect(byId.has(related), `${id} -> ${related}`).toBe(true);
+      for (const image of map.images) {
+        expect(image.credit, `${id} image credit`).toBeTruthy();
+        expect(image.license, `${id} image licence`).toBeTruthy();
+      }
+    }
   });
 });
 
