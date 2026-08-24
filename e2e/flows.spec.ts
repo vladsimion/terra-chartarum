@@ -483,3 +483,54 @@ test.describe('flow: Cities Remember publication', () => {
     }
   });
 });
+
+test.describe('flow: adaptive timeline reflow', () => {
+  // Every published essay that renders an AdaptiveTimeline. The component
+  // centred each label on its node, so the last node's label hung half its
+  // width past the right edge of the track and the page scrolled sideways -
+  // 27px on dacia, 63px on maps-that-age - while the first node's label was
+  // cut off on the left, where no scroll could reach it (KAN-432). Labels are
+  // now anchored by where their node sits on the band. This runs on the mobile
+  // viewports too, which is where it failed.
+  const TIMELINE_ESSAYS = [
+    'dacia',
+    'invisible-maps-religion',
+    'maps-that-age',
+    'the-shape-of-a-civilization',
+    'venice-sicily',
+  ];
+
+  for (const slug of TIMELINE_ESSAYS) {
+    test(`/essays/${slug}/ reflows without a horizontal scroll (WCAG 1.4.10)`, async ({ page }) => {
+      await page.goto(`/essays/${slug}/`);
+
+      const track = page.locator('.atl-track').first();
+      await expect(track).toBeVisible();
+
+      const pageOverflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      );
+      expect(pageOverflow).toBeLessThanOrEqual(1);
+
+      // Contained, not clipped: every label and tick label sits inside the
+      // track it belongs to, and its text sits inside the label box.
+      const escapees = await page.evaluate(() => {
+        const out: string[] = [];
+        for (const el of document.querySelectorAll('.atl-track')) {
+          const t = el.getBoundingClientRect();
+          for (const label of el.querySelectorAll('.atl-label, .atl-tick-label')) {
+            const l = label.getBoundingClientRect();
+            const text = (label.textContent ?? '').trim();
+            if (l.left < t.left - 1 || l.right > t.right + 1) out.push(`outside track: ${text}`);
+            for (const kid of label.children) {
+              const k = kid.getBoundingClientRect();
+              if (k.left < l.left - 1 || k.right > l.right + 1) out.push(`clipped: ${text}`);
+            }
+          }
+        }
+        return out;
+      });
+      expect(escapees).toEqual([]);
+    });
+  }
+});
