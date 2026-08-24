@@ -1,0 +1,41 @@
+place_id,reference_name,place_type,region,location_status,ref_lon,ref_lat,ref_geometry_provenance,pleiades_id,whg_id,external_verified,review_state,normalization_method,reviewer,review_date,note
+plc-ampelum,Ampelum,settlement,transylvania,located,23.23,46.12,modern_reference,,,no,normalized,llm_assisted,,,Seat of the gold administration; an administrative rather than military centre.
+plc-apulum,Apulum,settlement,transylvania,located,23.57,46.07,modern_reference,,,no,normalized,llm_assisted,,,Modern Alba Iulia. One hill above the Mureș carrying five successive names.
+plc-arcidava,Arcidava,archaeological_site,banat,located,21.55,45.02,editorial_reconstruction,,,no,normalized,llm_assisted,,,On the Lederata road; a -dava name carried into Latin sources.
+plc-bistrita,Bistrița,settlement,transylvania,located,24.5,47.13,modern_reference,,,no,normalized,llm_assisted,,,Nösen and Bistritz over a Slavic hydronym.
+plc-bologa,Bologa,archaeological_site,transylvania,located,22.9,46.9,editorial_reconstruction,,,no,normalized,llm_assisted,,,Limes Porolissensis fort attested chiefly by inscription and excavation.
+plc-braila,Brăila,settlement,muntenia,located,27.98,45.27,modern_reference,,,no,normalized,llm_assisted,,,Ibrail under Ottoman administration; a Danube port with a long charter record.
+plc-brasov,Brașov,settlement,transylvania,located,25.6,45.65,modern_reference,,,no,normalized,llm_assisted,,,"Corona, Kronstadt, Brassó, Brașov; Honterus's own town."
+plc-bucuresti,București,settlement,muntenia,located,26.1,44.44,modern_reference,,,no,normalized,llm_assisted,,,Late to the maps and central to them afterwards; the seam Trench E excavates.
+plc-callatis,Callatis,settlement,dobrogea,located,28.58,43.82,modern_reference,,,no,normalized,llm_assisted,,,Callatis and Mangalia over the same harbour.
+plc-campulung,Câmpulung,settlement,muntenia,located,25.05,45.27,modern_reference,,,no,normalized,llm_assisted,,,Langenau and Dlugopole beside the Romanian name.
+plc-cetatea-alba,Cetatea Albă,settlement,moldavia,located,30.35,46.19,modern_reference,,,no,normalized,llm_assisted,,,"Moncastro, Akkerman, Bilhorod: the most name-variant fortress on the littoral."
+plc-chilia,Chilia,crossing,moldavia,located,29.27,45.45,modern_reference,,,no,normalized,llm_assisted,,,Licostomo and Kilia contested between charts and chronicles.
+plc-craiova,Craiova,settlement,oltenia,located,23.8,44.32,modern_reference,,,no,normalized,llm_assisted,,,The Oltenian centre; covered by the Habsburg occupation survey of 1718–39.
+plc-curtea-de-arges,Curtea de Argeș,settlement,muntenia,located,24.68,45.14,modern_reference,,,no,normalized,llm_assisted,,,The first Wallachian seat; textual evidence far outruns cartographic.
+plc-dierna,Dierna,crossing,banat,located,22.4,44.72,modern_reference,,,no,normalized,llm_assisted,,,Danube crossing at the Iron Gates approach.
+plc-drobeta,Drobeta,crossing,oltenia,located,22.66,44.63,modern_reference,,,no,normalized,llm_assisted,,,Modern Drobeta-Turnu Severin at the Danube crossing of Trajan's bridge.
+plc-giurgiu,Giurgiu,crossing,muntenia,located,25.97,43.9,modern_reference,,,no,normalized,llm_assisted,,,"Genoese San Giorgio, Ottoman Yergöğü, Romanian Giurgiu on one crossing."
+plc-histria,Histria,archaeological_site,dobrogea,located,28.77,44.55,editorial_reconstruction,,,no,normalized,llm_assisted,,,Greek foundation on the littoral; silted out of use and out of the charts.
+plc-hotin,Hotin,settlement,moldavia,located,26.49,48.51,modern_reference,,,no,normalized,llm_assisted,,,"Chocim, Khotyn, Hotin: a frontier fortress passed between three states."
+plc-hunedoara,Hunedoara,settlement,transylvania,located,22.9,45.75,modern_reference,,,no,normalized,llm_assisted,,,Vajdahunyad and Eisenmarkt; a castle name and a trade name for one place.
+plc-iasi,Iași,settlement,moldavia,located,27.6,47.16,modern_reference,,,no,normalized,llm_assisted,,,Jassy and Iași; the later Moldavian capital across two record traditions.
+plc-isaccea,Isaccea,crossing,dobrogea,located,28.46,45.27,modern_reference,,,no,normalized,llm_assisted,,,"Noviodunum, later Vicina's neighbour; a delta crossing with layered names."
+plc-medias,Mediaș,settlement,transylvania,located,24.35,46.16,modern_reference,,,no,normalized,llm_assisted,,,A Saxon seat with a compact and well-dated charter record.
+plc-micia,Micia,archaeological_site,transylvania,located,22.75,45.9,editorial_reconstruction,,,no,normalized,llm_assisted,,,Auxiliary fort and customs point on the Mureș.
+plc-napoca,Napoca,settlement,transylvania,located,23.6,46.77,modern_reference,,,no,normalized,llm_assisted,,,Modern Cluj-Napoca. The Roman name was re-attached by decree in 1974.
+plc-oradea,Oradea,settlement,crisana,located,21.93,47.06,modern_reference,,,no,normalized,llm_assisted,,,"Varadinum, Nagyvárad, Grosswardein on the western approach."
+plc-porolissum,Porolissum,archaeological_site,transylvania,located,23.15,47.18,editorial_reconstruction,,,no,normalized,llm_assisted,,,The northern limes command; the terminus of the road through Napoca.
+plc-potaissa,Potaissa,settlement,transylvania,located,23.79,46.57,modern_reference,,,no,normalized,llm_assisted,,,Legionary base under a living town; tests continuity of occupation against naming.
+plc-romula,Romula,archaeological_site,oltenia,located,24.42,44.3,editorial_reconstruction,,,no,normalized,llm_assisted,,,The Malva administrative centre south of the Carpathians.
+plc-sarmizegetusa-regia,Sarmizegetusa Regia,archaeological_site,transylvania,located,23.31,45.62,editorial_reconstruction,,,no,normalized,llm_assisted,,,The Dacian royal seat in the Orăștie Mountains. Distinct referent from the Roman colonia forty kilometres away.
+plc-sibiu,Sibiu,settlement,transylvania,located,24.15,45.79,modern_reference,,,no,normalized,llm_assisted,,,"Cibinium, Hermannstadt, Nagyszeben, Sibiu across four record traditions."
+plc-sighisoara,Sighișoara,settlement,transylvania,located,24.79,46.22,modern_reference,,,no,normalized,llm_assisted,,,"Castrum Sex, Schässburg, Segesvár; a name attested first as a number."
+plc-suceava,Suceava,settlement,moldavia,located,26.25,47.65,modern_reference,,,no,normalized,llm_assisted,,,Moldavian princely seat named in Cantemir and in the charters before him.
+plc-sucidava,Sucidava,archaeological_site,oltenia,located,24.48,43.77,editorial_reconstruction,,,no,normalized,llm_assisted,,,Constantine's bridgehead; a crossing that outlived the province.
+plc-targoviste,Târgoviște,settlement,muntenia,located,25.46,44.93,modern_reference,,,no,normalized,llm_assisted,,,Wallachian princely seat with a dense internal charter record.
+plc-tibiscum,Tibiscum,archaeological_site,banat,located,22.2,45.45,editorial_reconstruction,,,no,normalized,llm_assisted,,,Road junction named on the Peutinger strip; tests itinerary-only attestation.
+plc-timisoara,Timișoara,settlement,banat,located,21.23,45.75,modern_reference,,,no,normalized,llm_assisted,,,Temesvár and Temeschwar; an Ottoman eyalet seat then a Habsburg fortress.
+plc-tomis,Tomis,settlement,dobrogea,located,28.65,44.18,modern_reference,,,no,normalized,llm_assisted,,,"Tomis, Constantia, Küstence, Constanța: continuous occupation, discontinuous naming."
+plc-ulpia-traiana-sarmizegetusa,Colonia Ulpia Traiana Sarmizegetusa,archaeological_site,transylvania,located,22.78,45.51,editorial_reconstruction,,,no,normalized,llm_assisted,,,The Roman colonia in Hațeg country. Trench A sinks its Sarmizegetusa test pit here.
+plc-vicina,Vicina,settlement,dobrogea,unlocated,,,,,,no,normalized,llm_assisted,,,Well attested and unlocated: the candidates are defended in the literature and this project takes none of them. See verification debt vd-vicina-site.

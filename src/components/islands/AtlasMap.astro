@@ -332,6 +332,7 @@ const payload = {
       <button type="button" class="am-share-button">Copy this view</button>
       <output class="am-share-status" aria-live="polite"></output>
     </div>
+    <a class="am-handbook" href="/atlas/handbook/">Handbook</a>
   </div>
 
   <!-- Hanseatic gazetteer matches (KAN-311). The corpus search above indexes maps
@@ -426,7 +427,7 @@ const payload = {
                     href={documentationRoutes[l.id]}
                     data-about-sources={l.id}
                   >
-                    About &amp; sources →
+                    How to read this layer →
                   </a>
                 )}
                 {l.essayLinks.map((link) => (
@@ -1776,13 +1777,12 @@ const payload = {
             const l = geoLayers.find((x) => x.id === cb.dataset.layer);
             if (l) {
               const navigate =
-                !l.defaultOn ||
-                (!readerChangedYear &&
-                  !readerActivatedLayer &&
-                  !sharedState.layers?.length &&
-                  sharedState.year === undefined &&
-                  sharedState.zoom === undefined &&
-                  !hasFeatureTarget);
+                !readerChangedYear &&
+                !sharedState.layers?.length &&
+                sharedState.year === undefined &&
+                sharedState.zoom === undefined &&
+                !hasFeatureTarget &&
+                (!l.defaultOn || !readerActivatedLayer);
               await activateLayer(l, navigate);
             }
           }
@@ -2339,7 +2339,7 @@ const payload = {
         document.dispatchEvent(new CustomEvent('atlas:layer-focus', { detail: { layerId: id } }));
       }
       if (inspectorClose) inspectorClose.hidden = id === null;
-      // Carry the current view onto the About & sources link, so the layer
+      // Carry the current view onto the contextual Handbook link, so the layer
       // page's "Open in Atlas" can hand back the composition and year the
       // reader left rather than a default (KAN-415). Deterministic, and it
       // reuses the existing share parameters rather than inventing a return
@@ -2955,6 +2955,17 @@ const payload = {
   .am-topo-toggle input {
     accent-color: #7fa8c9;
     cursor: pointer;
+  }
+  .am-handbook {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2rem;
+    padding-inline: 0.65rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--gold);
   }
 
   :global(.am-topo-names) {

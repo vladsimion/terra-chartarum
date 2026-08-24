@@ -1,0 +1,26 @@
+{
+  "candidate": "cnd-1.0-rc1",
+  "citationTitle": "Corpus Nominum Daciae",
+  "doi": {
+    "reason": "A DOI requires an authenticated external repository deposit. No repository credential or legal deposit decision is stored in this repository; the deterministic local candidate is therefore built without a DOI.",
+    "status": "deferred"
+  },
+  "minimumPublishableAttestations": 1,
+  "requiredRegimes": {
+    "ancient": ["src-ptolemy-geographia", "src-tabula-peutingeriana", "src-notitia-dignitatum"],
+    "early-modern": [
+      "src-honterus-chorographia",
+      "src-ortelius-parergon",
+      "src-cantacuzino-wallachia",
+      "src-cantemir-moldavia"
+    ],
+    "medieval": ["src-hereford-mappa", "src-vesconte-portolan"],
+    "modern": ["src-secret-century"],
+    "survey-cadastral": ["src-iosephina-survey", "src-russian-staff-1835", "src-szathmari-charta"]
+  },
+  "schemaVersion": 1,
+  "targetCoverage": {
+    "places": 120,
+    "sources": 25
+  }
+}

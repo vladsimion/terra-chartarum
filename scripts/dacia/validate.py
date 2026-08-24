@@ -1105,6 +1105,7 @@ def validate_pilot_manifest(rows, errors: list[str]) -> None:
 
 
 RELEASE_MANIFEST = DATA_RELATIVE_MANIFEST = "release/cnd-0.1/manifest.json"
+V1_MANIFEST = "release/cnd-1.0-rc1/manifest.json"
 PUBLIC_STATES = {"approved", "published"}
 
 
@@ -1154,6 +1155,63 @@ def validate_release(ranks, errors: list[str]) -> None:
             f"release: manifest claims {manifest.get('publicRecords')} public records, "
             f"the tables hold {public}"
         )
+
+
+def validate_v1_candidate(errors: list[str]) -> None:
+    """KAN-364..366: a complete candidate may build; a blocked one may not claim release."""
+    path = DATA / V1_MANIFEST
+    if not path.exists():
+        errors.append(f"missing CND v1 candidate manifest: {path.relative_to(REPO)}; run make dacia")
+        return
+    manifest = json.loads(path.read_text(encoding="utf-8"))
+    release_dir = path.parent
+    required = {
+        *(f"{name}.{suffix}" for name in ("places", "sources", "attestations", "transcriptions", "name-uses", "name-use-edges") for suffix in ("csv", "parquet")),
+        "cnd.jsonld",
+        "atlas-publishable.geojson",
+        "atlas-research.geojson",
+        "qa.json",
+        "CITATION.cff",
+        "LICENSE.md",
+        "METHODOLOGY.md",
+        "SCHEMA.md",
+    }
+    missing = sorted(name for name in required if not (release_dir / name).exists())
+    if missing:
+        errors.append(f"CND v1 candidate: missing required artifacts {', '.join(missing)}")
+
+    for name, recorded in sorted(manifest.get("inputs", {}).items()):
+        source = REPO / name
+        if not source.exists():
+            errors.append(f"CND v1 candidate: manifest records a missing input {name}")
+        elif hashlib.sha256(source.read_bytes()).hexdigest() != recorded:
+            errors.append(f"CND v1 candidate: {name} changed since the last build; run make dacia")
+    for name, entry in sorted(manifest.get("outputs", {}).items()):
+        output = REPO / name
+        if not output.exists():
+            errors.append(f"CND v1 candidate: manifest records a missing output {name}")
+            continue
+        payload = output.read_bytes()
+        if hashlib.sha256(payload).hexdigest() != entry.get("sha256"):
+            errors.append(f"CND v1 candidate: {name} does not match its manifest hash")
+        if len(payload) != entry.get("bytes"):
+            errors.append(f"CND v1 candidate: {name} does not match its manifest byte length")
+
+    qa_path = release_dir / "qa.json"
+    if not qa_path.exists():
+        return
+    qa = json.loads(qa_path.read_text(encoding="utf-8"))
+    if qa.get("releaseStatus") != manifest.get("releaseStatus"):
+        errors.append("CND v1 candidate: QA and manifest releaseStatus disagree")
+    blockers = qa.get("blockers", [])
+    if qa.get("releaseStatus") == "ready" and blockers:
+        errors.append("CND v1 candidate: a ready release may not carry blockers")
+    if qa.get("releaseStatus") == "blocked" and not blockers:
+        errors.append("CND v1 candidate: a blocked release must name its blockers")
+    if qa.get("doi", {}).get("status") == "deferred" and not qa.get("doi", {}).get("reason"):
+        errors.append("CND v1 candidate: DOI deferral requires a reason")
+    if qa.get("rights", {}).get("sourceImageryRedistributed") is not False:
+        errors.append("CND v1 candidate: this metadata package may not imply source-image rights")
 
 
 def validate_debt(trenches, errors: list[str]) -> None:
@@ -2835,6 +2893,7 @@ def validate_inputs() -> list[str]:
     validate_pilot(terms, places, sources, errors)
     validate_debt(trenches, errors)
     validate_release(ranks, errors)
+    validate_v1_candidate(errors)
     validate_hiatus_witness_families(errors)
     validate_hiatus_timeline(errors)
     validate_treaty_frontier_sources(errors)

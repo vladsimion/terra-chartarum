@@ -9,8 +9,8 @@ describe('primary navigation', () => {
       ['Atlas', '/atlas/'],
       ['Collection', '/collection/'],
       ['Cartographers', '/cartographers/'],
+      ['Bibliography', '/bibliography/'],
       ['About', '/about/'],
-      ['Colophon', '/colophon/'],
     ]);
   });
 
@@ -18,5 +18,11 @@ describe('primary navigation', () => {
     expect(isPrimaryNavActive('/rooms/', '/rooms/')).toBe(true);
     expect(isPrimaryNavActive('/rooms/city/', '/rooms/')).toBe(true);
     expect(isPrimaryNavActive('/essays/cities-remember/', '/rooms/')).toBe(false);
+  });
+
+  it('marks Bibliography active without promoting Colophon', () => {
+    expect(PRIMARY_NAV).toHaveLength(7);
+    expect(isPrimaryNavActive('/bibliography/', '/bibliography/')).toBe(true);
+    expect(PRIMARY_NAV.some(({ href }) => href === '/colophon/')).toBe(false);
   });
 });

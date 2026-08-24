@@ -20,3 +20,18 @@ directly; it is an integrity overlay, not a replacement data store.
 Specialist contracts remain authoritative inside their domains where they are
 stricter. In particular, the CND review rule, the VMN source ledger and the HSE
 promotion rules are not weakened by these common minimums.
+
+## Public information architecture
+
+The seven primary destinations are **Essays · Rooms · Atlas · Collection ·
+Cartographers · Bibliography · About**. Bibliography is the global scholarly
+evidence lens; Colophon remains available from the footer.
+
+### Atlas Handbook discoverability
+
+The Atlas Handbook is a first-class companion beneath Atlas, not an eighth
+primary destination. The Atlas introduction and live controls link to the
+Handbook, layer dossiers deep-link to their canonical Handbook records, the
+homepage pairs its Atlas route with a Handbook route, and the footer provides a
+global fallback. “Handbook” is retained because this is the Atlas's scholarly
+and interpretive manual, not generic product help.
