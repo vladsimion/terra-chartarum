@@ -7,15 +7,15 @@
 | Content type         | Count |
 | -------------------- | ----: |
 | Live essays          |     8 |
-| Held essays          |    11 |
+| Held essays          |    12 |
 | Map records          |    59 |
 | Cartographers        |    19 |
 | Bibliography entries |    37 |
 | Toponyms             |    12 |
 | Rooms                |     7 |
-| GIS layers           |    23 |
+| GIS layers           |    26 |
 
-Geo release: `geo-e8bc36deffbb924c`.
+Geo release: `geo-40f732f7c12fd04e`.
 
 ## Live essays by primary room
 
@@ -36,6 +36,7 @@ Geo release: `geo-e8bc36deffbb924c`.
 | Classification Is Cartography                      | theatre      | unscheduled |
 | Invisible Maps of Migration                        | road         | unscheduled |
 | Invisible Maps of Trade                            | road         | unscheduled |
+| Maps for a Crusade                                 | road         | unscheduled |
 | Palimpsest Landscapes                              | archive      | unscheduled |
 | Projection and Perspective                         | map          | unscheduled |
 | Speculum Chartarum                                 | theatre      | unscheduled |

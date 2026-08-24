@@ -142,6 +142,9 @@ describe('taxonomy is additive: no stable contract changes', () => {
       'antarctica-expedition-tracks',
       'antarctica-observations',
       'antarctica-ghost-geographies',
+      'crusades-itinerary',
+      'crusades-fourth-crusade-routes',
+      'crusades-fourth-crusade-events',
     ]);
   });
 

@@ -4,7 +4,7 @@
 # out-of-band data pipelines that are not part of the Astro build - currently the
 # Venetian Maritime Network (VMN) GIS dataset compilation (KAN-145).
 
-.PHONY: vmn vmn-venv vmn-validate hanseatic hanseatic-validate hanseatic-test crusades-validate crusades-test dacia dacia-validate dacia-test antarctica antarctica-validate antarctica-test
+.PHONY: vmn vmn-venv vmn-validate hanseatic hanseatic-validate hanseatic-test crusades crusades-validate crusades-test dacia dacia-validate dacia-test antarctica antarctica-validate antarctica-test
 
 VMN_VENV := .venv
 VMN_PY := $(VMN_VENV)/bin/python
@@ -68,8 +68,14 @@ dacia-validate:
 dacia-test:
 	python3 -m pytest scripts/dacia -q
 
-# KAN-384 Crusades flagship source and rights audit. Standard-library only, like
-# the other audits; pytest is the single test-time dependency.
+# KAN-388 Crusades pilot compile. Standard-library only: the pilot emits GeoJSON
+# rather than FlatGeobuf, so it needs no venv. Deterministic by construction -
+# the release manifest hashes its own outputs and the validator checks them back.
+crusades:
+	python3 scripts/crusades/build.py
+
+# KAN-384/386/387/388 Crusades QA: the source and rights audit, the itinerary
+# stages, the six Fourth Crusade states and the compiled release.
 crusades-validate:
 	python3 scripts/crusades/validate.py
 

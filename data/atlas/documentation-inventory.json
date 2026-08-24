@@ -465,6 +465,24 @@
         "coverage": "covered",
         "missing": [],
         "note": "Born after the KAN-418 cutover rather than migrated through it: the layer shipped with a public Handbook record already in place, so it has no legacy documentationLinks to classify and nothing to migrate. Covered by /atlas/layers/antarctica-ghost-geographies/ and the shared Antarctic data fields."
+      },
+      {
+        "layerId": "crusades-itinerary",
+        "coverage": "covered",
+        "missing": [],
+        "note": "Born after the KAN-418 cutover rather than migrated through it: the layer shipped with a public Handbook record already in place, so it has no legacy documentationLinks to classify and nothing to migrate. Covered by /atlas/layers/crusades-itinerary/ and the shared Crusades data fields."
+      },
+      {
+        "layerId": "crusades-fourth-crusade-routes",
+        "coverage": "covered",
+        "missing": [],
+        "note": "Born after the KAN-418 cutover rather than migrated through it: the layer shipped with a public Handbook record already in place, so it has no legacy documentationLinks to classify and nothing to migrate. Covered by /atlas/layers/crusades-fourth-crusade-routes/ and the shared Crusades data fields."
+      },
+      {
+        "layerId": "crusades-fourth-crusade-events",
+        "coverage": "covered",
+        "missing": [],
+        "note": "Born after the KAN-418 cutover rather than migrated through it: the layer shipped with a public Handbook record already in place, so it has no legacy documentationLinks to classify and nothing to migrate. Covered by /atlas/layers/crusades-fourth-crusade-events/ and the shared Crusades data fields."
       }
     ]
   },

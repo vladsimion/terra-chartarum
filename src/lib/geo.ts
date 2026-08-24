@@ -1272,6 +1272,125 @@ const RAW: unknown[] = [
     facets: ['evidenceClass', 'geometryProvenance', 'confidence', 'reviewState', 'act'],
     defaultOn: false,
   },
+  {
+    // CRU-5 / KAN-388. The Road proof. What this layer draws is NOT the
+    // itinerary: Matthew Paris's itinerary is a strip diagram with no
+    // projection, and it has no positions to draw. Each point is the modern
+    // reference coordinate of the place a stage refers to, carrying the stage's
+    // sequence, its manuscript label and the day-marks the diagram gives it.
+    // The property names keep the two apart, and the layer record says so in
+    // its first paragraph.
+    id: 'crusades-itinerary',
+    role: 'evidence',
+    category: 'cartographic-evidence',
+    subcategory: 'itinerary-stages',
+    collectionIds: ['maps-for-a-crusade'],
+    tags: [
+      'crusades',
+      'matthew paris',
+      'itinerary',
+      'pilgrimage',
+      'london to otranto',
+      'strip map',
+      'unreviewed',
+    ],
+    sortWeight: 620,
+    lifecycle: 'in-review',
+    room: 'road',
+    secondaryRooms: ['archive'],
+    title: 'Matthew Paris itinerary: stages at modern positions (unreviewed)',
+    description:
+      'Fourteen stages of the drawn road from London to Otranto, placed at the modern coordinates of the towns they name. The manuscript gives no coordinates at all, so the positions are reference context and the labels and day-marks are the evidence.',
+    kind: 'vector',
+    format: 'geojson',
+    url: '/geo/crusades-itinerary.geojson',
+    yearFrom: 1250,
+    yearTo: 1259,
+    source: 'Terra Chartarum (compiled) - Crusades pilot cru-pilot-0.1, KAN-386',
+    license: 'CC BY 4.0',
+    attribution:
+      'Terra Chartarum; witnesses held by the British Library and the Parker Library, none cleared for publication',
+    essaySlugs: [],
+    geometry: 'circle',
+    color: '#b0563f',
+    perFeatureTime: false,
+    facets: ['mode', 'evidenceClass', 'confidence', 'reviewState'],
+    defaultOn: false,
+  },
+  {
+    // The Sea proof, lines. Only the two travelled routes are here: the
+    // intended destination, the partition claim and the durable control are
+    // states without geometry, and the reason is in their layer record.
+    id: 'crusades-fourth-crusade-routes',
+    role: 'historical',
+    category: 'networks-circulation',
+    subcategory: 'campaign-routes',
+    collectionIds: ['maps-for-a-crusade'],
+    tags: [
+      'crusades',
+      'fourth crusade',
+      'venice',
+      'zara',
+      'constantinople',
+      'diversion',
+      'unreviewed',
+    ],
+    sortWeight: 621,
+    lifecycle: 'in-review',
+    room: 'road',
+    secondaryRooms: ['border'],
+    title: 'Fourth Crusade: the routes travelled (unreviewed)',
+    description:
+      'Venice to Zara, and Zara through Corfu to Constantinople. Two generalisations between ports, because no source in the corpus gives a track. What the crusade intended, what it claimed and what it eventually held are separate records with no geometry at all.',
+    kind: 'vector',
+    format: 'geojson',
+    url: '/geo/crusades-fourth-crusade-routes.geojson',
+    yearFrom: 1202,
+    yearTo: 1203,
+    source: 'Terra Chartarum (compiled) - Crusades pilot cru-pilot-0.1, KAN-387',
+    license: 'CC BY 4.0',
+    attribution: 'Terra Chartarum; all linework editorial generalisation between named ports',
+    essaySlugs: [],
+    geometry: 'line',
+    color: '#4f7f8b',
+    perFeatureTime: false,
+    facets: ['stateKind', 'held', 'evidenceClass', 'confidence', 'reviewState'],
+    dash: { field: 'geometryProvenance', patterns: { editorial_generalisation: [4, 2] } },
+    defaultOn: false,
+  },
+  {
+    // Events at places: the diversion and the two assaults. Their positions come
+    // from the place records, which is why every feature declares
+    // modern_reference rather than claiming the state had a position.
+    id: 'crusades-fourth-crusade-events',
+    role: 'historical',
+    category: 'conflict-campaigns-frontiers',
+    subcategory: 'campaign-events',
+    collectionIds: ['maps-for-a-crusade'],
+    tags: ['crusades', 'fourth crusade', 'zara', 'constantinople', '1204', 'sack', 'unreviewed'],
+    sortWeight: 622,
+    lifecycle: 'in-review',
+    room: 'border',
+    secondaryRooms: ['road'],
+    title: 'Fourth Crusade: diversion and assaults (unreviewed)',
+    description:
+      'Three events at two places: the diversion to Zara in 1202, and the assaults on Constantinople in 1203 and 1204. An event is not a territory, and the position is the place, not the state.',
+    kind: 'vector',
+    format: 'geojson',
+    url: '/geo/crusades-fourth-crusade-events.geojson',
+    yearFrom: 1202,
+    yearTo: 1204,
+    source: 'Terra Chartarum (compiled) - Crusades pilot cru-pilot-0.1, KAN-387',
+    license: 'CC BY 4.0',
+    attribution:
+      'Terra Chartarum; positions are modern reference context, and no witness is cleared',
+    essaySlugs: [],
+    geometry: 'circle',
+    color: '#c9a227',
+    perFeatureTime: false,
+    facets: ['stateKind', 'held', 'evidenceClass', 'confidence', 'reviewState'],
+    defaultOn: false,
+  },
 ];
 
 export const GEO_LAYERS: GeoLayer[] = RAW.map((l) => GeoLayerSchema.parse(l));

@@ -1,0 +1,101 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          15.23,
+          44.12
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "confidence": "medium",
+        "dateFrom": "1202-11",
+        "datePrecision": "month",
+        "dateTo": "1202-11",
+        "evidenceClass": "primary_narrative",
+        "geometryProvenance": "modern_reference",
+        "held": "not_applicable",
+        "id": "cru-fcs-zara",
+        "notes": "The first diversion, and the one that turned a debt into a campaign against a Christian city. Held as a state rather than as a point because what changed was the terms, not the position.",
+        "placeId": "cru-plc-zara",
+        "placeIds": [
+          "cru-plc-zara"
+        ],
+        "reviewState": "raw",
+        "sequence": 3,
+        "sourceId": "cru-fc-villehardouin",
+        "sourceLocator": "pending",
+        "stateKind": "negotiated_diversion",
+        "title": "The diversion to Zara",
+        "vmnReference": null
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          28.98,
+          41.01
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "confidence": "medium",
+        "dateFrom": "1203-07",
+        "datePrecision": "month",
+        "dateTo": "1203-07",
+        "evidenceClass": "primary_narrative",
+        "geometryProvenance": "modern_reference",
+        "held": "not_applicable",
+        "id": "cru-fcs-attack-1203",
+        "notes": "An event at a place, not a territory. The place record carries the position; this row carries what happened there and when.",
+        "placeId": "cru-plc-constantinople",
+        "placeIds": [
+          "cru-plc-constantinople"
+        ],
+        "reviewState": "raw",
+        "sequence": 5,
+        "sourceId": "cru-fc-clari",
+        "sourceLocator": "pending",
+        "stateKind": "attack",
+        "title": "The first assault on Constantinople",
+        "vmnReference": null
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          28.98,
+          41.01
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "confidence": "medium",
+        "dateFrom": "1204-04",
+        "datePrecision": "month",
+        "dateTo": "1204-04",
+        "evidenceClass": "primary_narrative",
+        "geometryProvenance": "modern_reference",
+        "held": "not_applicable",
+        "id": "cru-fcs-attack-1204",
+        "notes": "Choniates writes from inside the city, which is why he is in the corpus: the sack has a victim's account and it is not the crusaders'.",
+        "placeId": "cru-plc-constantinople",
+        "placeIds": [
+          "cru-plc-constantinople"
+        ],
+        "reviewState": "raw",
+        "sequence": 6,
+        "sourceId": "cru-fc-choniates",
+        "sourceLocator": "pending",
+        "stateKind": "attack",
+        "title": "The second assault and the sack",
+        "vmnReference": null
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

@@ -13,12 +13,15 @@ Run with `npm run crusades:validate`; it also runs inside `npm run build`.
 from __future__ import annotations
 
 import csv
+import hashlib
+import json
 import re
 import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 DATA = REPO / "data" / "crusades"
+RELEASE = DATA / "release" / "cru-pilot-0.1"
 
 PENDING = "pending"
 SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
@@ -53,6 +56,36 @@ REQUIRED_STAGES = {
 
 TABLE = "source-audit.csv"
 PLACES = "places.csv"
+STAGES = "itinerary-stages.csv"
+STATES = "fourth-crusade-states.csv"
+
+# CRU-3. A stage of the itinerary is a cell in a strip diagram, not a point on a
+# map, and `manuscript_depiction` is the only class it can have. The distinction
+# is the prototype's whole subject.
+STAGE_MODES = {"road", "sea", "pass"}
+STAGE_EVIDENCE = {"manuscript_depiction"}
+
+# CRU-4. Six states a single route line would destroy.
+STATE_KINDS = {
+    "intended_destination",
+    "negotiated_diversion",
+    "travelled_route",
+    "attack",
+    "partition_claim",
+    "durable_control",
+}
+STATE_EVIDENCE = {
+    "documented_intent",
+    "documented_claim",
+    "primary_narrative",
+    "scholarly_reconstruction",
+}
+GEOMETRY_PROVENANCE = {"editorial_generalisation", "modern_reference", "not_spatial"}
+HELD = {"held", "claimed_not_held", "not_applicable"}
+CONFIDENCE = {"high", "medium", "low", "contested", "unresolved"}
+# Layers the VMN programme already publishes. A Crusades row may point at one;
+# it may not re-author what is behind it.
+VMN_LAYERS = {"venetian-ports", "venetian-routes", "venetian-possessions"}
 
 # 15-25 core places is the pilot's own bound (KAN-385): enough to carry both
 # proofs, few enough that every one can be argued for.
@@ -84,9 +117,9 @@ def pipe(value: str) -> list[str]:
     return [part for part in (piece.strip() for piece in value.split("|")) if part]
 
 
-def validate_inputs() -> list[str]:
+def validate_inputs(*, include_release: bool = True) -> list[str]:
     errors: list[str] = []
-    validate_places(errors)
+    place_ids = validate_places(errors)
     rows = read(TABLE)
     seen: set[str] = set()
     stages: set[str] = set()
@@ -170,10 +203,14 @@ def validate_inputs() -> list[str]:
                 "publication source"
             )
 
+    validate_stages(errors, place_ids)
+    validate_states(errors, place_ids, seen)
+    if include_release:
+        validate_release(errors)
     return errors
 
 
-def validate_places(errors: list[str]) -> None:
+def validate_places(errors: list[str]) -> set[str]:
     """KAN-385: the shared authority both prototypes read, and its limits.
 
     Two rules carry the weight. A modern coordinate is reference context and is
@@ -250,6 +287,171 @@ def validate_places(errors: list[str]) -> None:
     for proof in sorted(PROOFS):
         if not proofs.get(proof):
             errors.append(f"places: the '{proof}' proof has no places")
+    return seen
+
+
+def validate_stages(errors: list[str], places: set[str]) -> None:
+    """The Road proof (KAN-386).
+
+    One rule carries the prototype. Matthew Paris's itinerary is a strip diagram:
+    a vertical sequence of stages with day-marks between them, and no projection
+    of any kind. A stage therefore has no coordinates, and the schema gives it
+    nowhere to put one. The modern reference position lives on the place record,
+    where it is already declared `modern_reference`.
+
+    Comparing the two is the point of the interaction. Merging them would answer
+    the question the prototype exists to ask.
+    """
+    rows = read(STAGES)
+    seen: set[str] = set()
+    sequences: set[int] = set()
+
+    for row in rows:
+        stage_id = row["stage_id"]
+        label = f"itinerary-stages[{stage_id}]"
+        if not stage_id.startswith("cru-itn-") or not SLUG.match(stage_id):
+            errors.append(f"{label}: stage_id must be a cru-itn- slug")
+        if stage_id in seen:
+            errors.append(f"{label}: duplicate stage_id")
+        seen.add(stage_id)
+
+        if row["place_id"] not in places:
+            errors.append(f"{label}: place_id '{row['place_id']}' does not resolve")
+        if row["mode"] not in STAGE_MODES:
+            errors.append(f"{label}: mode '{row['mode']}' is not recognised")
+        if row["evidence_class"] not in STAGE_EVIDENCE:
+            errors.append(f"{label}: a stage is a manuscript depiction and nothing else")
+        if row["confidence"] not in CONFIDENCE:
+            errors.append(f"{label}: confidence '{row['confidence']}' is not recognised")
+        if row["review_state"] not in REVIEW_STATES:
+            errors.append(f"{label}: review_state '{row['review_state']}' is not recognised")
+        for field in ("manuscript_label", "notes", "folio", "source_locator"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required, pending if untranscribed")
+        if not row["sequence"].isdigit():
+            errors.append(f"{label}: sequence must be a number")
+        else:
+            value = int(row["sequence"])
+            if value in sequences:
+                errors.append(f"{label}: duplicate sequence {value}")
+            sequences.add(value)
+        # A day-mark is what the diagram draws between stages. It is the
+        # manuscript's own claim about the journey, not a measurement, and it is
+        # recorded as depicted rather than converted into anything.
+        if row["depicted_days"] and not row["depicted_days"].isdigit():
+            errors.append(f"{label}: depicted_days must be a whole number of day-marks")
+        # The rule the whole proof rests on.
+        if any(key in row for key in ("lon", "lat", "geometry")):
+            errors.append(f"{label}: an itinerary stage may not carry a position")
+        if row["review_state"] != "raw" and row["source_locator"] == PENDING:
+            errors.append(f"{label}: a stage above raw needs the folio it was read from")
+
+    if sequences and sequences != set(range(1, len(rows) + 1)):
+        errors.append("itinerary-stages: the sequence must run 1..n with no gaps")
+
+
+def validate_states(errors: list[str], places: set[str], sources: set[str]) -> None:
+    """The Sea proof (KAN-387).
+
+    Six states, and the rule that keeps them apart: a claim is not a possession.
+    The Partitio Romaniae assigned an empire among people who held very little of
+    it, and a map that draws the assignment and the occupation the same way is
+    republishing the document's wishful thinking as geography.
+    """
+    rows = read(STATES)
+    seen: set[str] = set()
+    kinds: set[str] = set()
+
+    for row in rows:
+        state_id = row["state_id"]
+        label = f"fourth-crusade-states[{state_id}]"
+        if not state_id.startswith("cru-fcs-") or not SLUG.match(state_id):
+            errors.append(f"{label}: state_id must be a cru-fcs- slug")
+        if state_id in seen:
+            errors.append(f"{label}: duplicate state_id")
+        seen.add(state_id)
+
+        kind = row["state_kind"]
+        if kind not in STATE_KINDS:
+            errors.append(f"{label}: state_kind '{kind}' is not recognised")
+        kinds.add(kind)
+        if row["evidence_class"] not in STATE_EVIDENCE:
+            errors.append(f"{label}: evidence_class '{row['evidence_class']}' is not recognised")
+        if row["geometry_provenance"] not in GEOMETRY_PROVENANCE:
+            errors.append(f"{label}: geometry_provenance is not recognised")
+        if row["held"] not in HELD:
+            errors.append(f"{label}: held '{row['held']}' is not recognised")
+        if row["confidence"] not in CONFIDENCE:
+            errors.append(f"{label}: confidence '{row['confidence']}' is not recognised")
+        if row["review_state"] not in REVIEW_STATES:
+            errors.append(f"{label}: review_state '{row['review_state']}' is not recognised")
+        if row["source_id"] not in sources:
+            errors.append(f"{label}: source_id '{row['source_id']}' does not resolve")
+        for place_id in pipe(row["place_ids"]):
+            if place_id not in places:
+                errors.append(f"{label}: place '{place_id}' does not resolve")
+        if not row["notes"]:
+            errors.append(f"{label}: notes is required")
+
+        if row["geometry_provenance"] == "not_spatial":
+            if row["geometry"]:
+                errors.append(f"{label}: a not_spatial state must not carry geometry")
+        elif not row["geometry"].startswith("LINESTRING ("):
+            errors.append(f"{label}: a spatial state needs LINESTRING geometry")
+
+        # The two rules that stop the Sea proof lying.
+        if kind == "partition_claim" and row["held"] != "claimed_not_held":
+            errors.append(f"{label}: a partition claim must be recorded as claimed and not held")
+        if kind == "partition_claim" and row["geometry"]:
+            errors.append(
+                f"{label}: the partition's boundaries are disputed; drawing them publishes a "
+                "claim as a map"
+            )
+        if kind == "durable_control" and row["held"] != "held":
+            errors.append(f"{label}: durable control means it was held")
+        # No route in this corpus survives as a track, so none may be drawn as one.
+        if row["geometry"] and row["geometry_provenance"] != "editorial_generalisation":
+            errors.append(f"{label}: no source gives a track, so any line here is a generalisation")
+        if row["vmn_reference"] and row["vmn_reference"] not in VMN_LAYERS:
+            errors.append(f"{label}: vmn_reference '{row['vmn_reference']}' is not a VMN layer")
+
+    # A Sea proof missing any of these is not the argument the ticket asks for.
+    for missing in sorted(STATE_KINDS - kinds):
+        errors.append(f"fourth-crusade-states: no record for the '{missing}' state")
+
+
+def validate_release(errors: list[str]) -> None:
+    """Check the compiled pilot against the hashes it recorded (KAN-388).
+
+    The rule that catches a table edited but never rebuilt. Without it every
+    other check here would pass against inputs the published assets no longer
+    describe.
+    """
+    manifest_path = RELEASE / "manifest.json"
+    if not manifest_path.exists():
+        errors.append("release: manifest.json is missing; run `make crusades`")
+        return
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+
+    for relative, recorded in sorted(manifest.get("inputs", {}).items()):
+        path = REPO / relative
+        if not path.exists():
+            errors.append(f"release: input {relative} is in the manifest but not on disk")
+        elif hashlib.sha256(path.read_bytes()).hexdigest() != recorded:
+            errors.append(f"release: {relative} has changed since the last build")
+
+    for relative, recorded in sorted(manifest.get("outputs", {}).items()):
+        path = REPO / relative
+        if not path.exists():
+            errors.append(f"release: output {relative} is missing; run `make crusades`")
+        elif hashlib.sha256(path.read_bytes()).hexdigest() != recorded["sha256"]:
+            errors.append(f"release: {relative} does not match its recorded hash")
+
+    if manifest.get("clearedWitnesses", 0) != 0:
+        errors.append(
+            "release: a witness is marked cleared for publication, but no folio in this corpus "
+            "has been transcribed"
+        )
 
 
 def readiness(rows: list[dict[str, str]], places: list[dict[str, str]]) -> list[str]:
@@ -265,6 +467,11 @@ def readiness(rows: list[dict[str, str]], places: list[dict[str, str]]) -> list[
         f"  places: {len(places)} core places, "
         f"{sum(1 for r in places if r['name_greek'])} carrying a Greek form; "
         f"all coordinates modern reference context",
+        f"  Road proof: {len(read(STAGES))} itinerary stages, none with a position of its own; "
+        f"{sum(1 for r in read(STAGES) if r['folio'] == PENDING)} folios untranscribed",
+        f"  Sea proof: {len(read(STATES))} states across "
+        f"{len({r['state_kind'] for r in read(STATES)})} kinds; "
+        f"{sum(1 for r in read(STATES) if r['held'] == 'claimed_not_held')} claimed but not held",
     ]
 
 

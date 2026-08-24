@@ -197,6 +197,33 @@ const RAW: unknown[] = [
     featured: false,
     sortWeight: 50,
   },
+  {
+    id: 'maps-for-a-crusade',
+    title: 'Maps for a Crusade',
+    summary:
+      'A drawn road that is not a map, and a sea campaign whose intention, diversion, claim and possession were four different things.',
+    description:
+      'The two bounded proofs of the Crusades flagship, held together because the argument runs between them: a thirteenth-century itinerary organises the world as a sequence of days, and fifty years earlier a fleet had already organised it as ports, contracts and control. No member has a default, because no witness in this corpus is cleared for publication and no folio has been transcribed.',
+    layerIds: [
+      'crusades-itinerary',
+      'crusades-fourth-crusade-routes',
+      'crusades-fourth-crusade-events',
+    ],
+    defaultLayerIds: [],
+    room: 'road',
+    secondaryRooms: ['border'],
+    tags: [
+      'crusades',
+      'matthew paris',
+      'fourth crusade',
+      'venice',
+      'constantinople',
+      'itinerary',
+      'pilgrimage',
+    ],
+    featured: false,
+    sortWeight: 60,
+  },
 ];
 
 /**

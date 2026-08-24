@@ -1,0 +1,397 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          -0.09,
+          51.51
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "confidence": "low",
+        "depictedDays": 1,
+        "evidenceClass": "manuscript_depiction",
+        "folio": "pending",
+        "geometryProvenance": "modern_reference",
+        "id": "cru-itn-01",
+        "manuscriptLabel": "London",
+        "mode": "road",
+        "modernName": "London",
+        "notes": "The itinerary's own starting point, and the abbey's horizon rather than a traveller's. Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+        "placeId": "cru-plc-london",
+        "reviewState": "raw",
+        "sequence": 1,
+        "sourceId": "cru-mp-royal-14-c-vii",
+        "sourceLocator": "pending",
+        "variantNote": ""
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          1.31,
+          51.13
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "confidence": "low",
+        "depictedDays": 1,
+        "evidenceClass": "manuscript_depiction",
+        "folio": "pending",
+        "geometryProvenance": "modern_reference",
+        "id": "cru-itn-02",
+        "manuscriptLabel": "Dover",
+        "mode": "road",
+        "modernName": "Dover",
+        "notes": "The last English stage before the sea. Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+        "placeId": "cru-plc-dover",
+        "reviewState": "raw",
+        "sequence": 2,
+        "sourceId": "cru-mp-royal-14-c-vii",
+        "sourceLocator": "pending",
+        "variantNote": ""
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          1.66,
+          50.89
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "confidence": "low",
+        "depictedDays": 1,
+        "evidenceClass": "manuscript_depiction",
+        "folio": "pending",
+        "geometryProvenance": "modern_reference",
+        "id": "cru-itn-03",
+        "manuscriptLabel": "Wissant",
+        "mode": "sea",
+        "modernName": "Wissant",
+        "notes": "A sea passage rendered in the same units as a day's walk, which is the diagram's most revealing simplification. Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+        "placeId": "cru-plc-wissant",
+        "reviewState": "raw",
+        "sequence": 3,
+        "sourceId": "cru-mp-royal-14-c-vii",
+        "sourceLocator": "pending",
+        "variantNote": "The crossing is drawn as a stage like any other."
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          2.08,
+          49.43
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "confidence": "low",
+        "depictedDays": 2,
+        "evidenceClass": "manuscript_depiction",
+        "folio": "pending",
+        "geometryProvenance": "modern_reference",
+        "id": "cru-itn-04",
+        "manuscriptLabel": "Beauvais",
+        "mode": "road",
+        "modernName": "Beauvais",
+        "notes": "Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+        "placeId": "cru-plc-beauvais",
+        "reviewState": "raw",
+        "sequence": 4,
+        "sourceId": "cru-mp-royal-14-c-vii",
+        "sourceLocator": "pending",
+        "variantNote": ""
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          2.35,
+          48.86
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "confidence": "low",
+        "depictedDays": 1,
+        "evidenceClass": "manuscript_depiction",
+        "folio": "pending",
+        "geometryProvenance": "modern_reference",
+        "id": "cru-itn-05",
+        "manuscriptLabel": "Paris",
+        "mode": "road",
+        "modernName": "Paris",
+        "notes": "Drawn larger than its neighbours, as the itinerary's cities generally are when they matter. Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+        "placeId": "cru-plc-paris",
+        "reviewState": "raw",
+        "sequence": 5,
+        "sourceId": "cru-mp-royal-14-c-vii",
+        "sourceLocator": "pending",
+        "variantNote": ""
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          4.84,
+          47.02
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "confidence": "low",
+        "depictedDays": 4,
+        "evidenceClass": "manuscript_depiction",
+        "folio": "pending",
+        "geometryProvenance": "modern_reference",
+        "id": "cru-itn-06",
+        "manuscriptLabel": "Beaune",
+        "mode": "road",
+        "modernName": "Beaune",
+        "notes": "Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+        "placeId": "cru-plc-beaune",
+        "reviewState": "raw",
+        "sequence": 6,
+        "sourceId": "cru-mp-royal-14-c-vii",
+        "sourceLocator": "pending",
+        "variantNote": ""
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          4.84,
+          45.76
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "confidence": "low",
+        "depictedDays": 2,
+        "evidenceClass": "manuscript_depiction",
+        "folio": "pending",
+        "geometryProvenance": "modern_reference",
+        "id": "cru-itn-07",
+        "manuscriptLabel": "Lyon",
+        "mode": "road",
+        "modernName": "Lyon",
+        "notes": "Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+        "placeId": "cru-plc-lyon",
+        "reviewState": "raw",
+        "sequence": 7,
+        "sourceId": "cru-mp-royal-14-c-vii",
+        "sourceLocator": "pending",
+        "variantNote": ""
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          6.9,
+          45.25
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "confidence": "low",
+        "depictedDays": 3,
+        "evidenceClass": "manuscript_depiction",
+        "folio": "pending",
+        "geometryProvenance": "modern_reference",
+        "id": "cru-itn-08",
+        "manuscriptLabel": "Mont Cenis",
+        "mode": "pass",
+        "modernName": "Mont Cenis",
+        "notes": "The one stage that is an obstacle rather than a destination, and the diagram treats it as a stage anyway. Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+        "placeId": "cru-plc-mont-cenis",
+        "reviewState": "raw",
+        "sequence": 8,
+        "sourceId": "cru-mp-royal-14-c-vii",
+        "sourceLocator": "pending",
+        "variantNote": "A pass, not a settlement."
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.69,
+          45.07
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "confidence": "low",
+        "depictedDays": 2,
+        "evidenceClass": "manuscript_depiction",
+        "folio": "pending",
+        "geometryProvenance": "modern_reference",
+        "id": "cru-itn-09",
+        "manuscriptLabel": "Turin",
+        "mode": "road",
+        "modernName": "Torino",
+        "notes": "Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+        "placeId": "cru-plc-turin",
+        "reviewState": "raw",
+        "sequence": 9,
+        "sourceId": "cru-mp-royal-14-c-vii",
+        "sourceLocator": "pending",
+        "variantNote": ""
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          9.19,
+          45.46
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "confidence": "low",
+        "depictedDays": 3,
+        "evidenceClass": "manuscript_depiction",
+        "folio": "pending",
+        "geometryProvenance": "modern_reference",
+        "id": "cru-itn-10",
+        "manuscriptLabel": "Milan",
+        "mode": "road",
+        "modernName": "Milano",
+        "notes": "Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+        "placeId": "cru-plc-milan",
+        "reviewState": "raw",
+        "sequence": 10,
+        "sourceId": "cru-mp-royal-14-c-vii",
+        "sourceLocator": "pending",
+        "variantNote": ""
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          9.69,
+          45.05
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "confidence": "low",
+        "depictedDays": 2,
+        "evidenceClass": "manuscript_depiction",
+        "folio": "pending",
+        "geometryProvenance": "modern_reference",
+        "id": "cru-itn-11",
+        "manuscriptLabel": "Piacenza",
+        "mode": "road",
+        "modernName": "Piacenza",
+        "notes": "Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+        "placeId": "cru-plc-piacenza",
+        "reviewState": "raw",
+        "sequence": 11,
+        "sourceId": "cru-mp-royal-14-c-vii",
+        "sourceLocator": "pending",
+        "variantNote": ""
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          11.34,
+          44.49
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "confidence": "low",
+        "depictedDays": 2,
+        "evidenceClass": "manuscript_depiction",
+        "folio": "pending",
+        "geometryProvenance": "modern_reference",
+        "id": "cru-itn-12",
+        "manuscriptLabel": "Bologna",
+        "mode": "road",
+        "modernName": "Bologna",
+        "notes": "Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+        "placeId": "cru-plc-bologna",
+        "reviewState": "raw",
+        "sequence": 12,
+        "sourceId": "cru-mp-royal-14-c-vii",
+        "sourceLocator": "pending",
+        "variantNote": ""
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          12.5,
+          41.9
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "confidence": "low",
+        "depictedDays": 6,
+        "evidenceClass": "manuscript_depiction",
+        "folio": "pending",
+        "geometryProvenance": "modern_reference",
+        "id": "cru-itn-13",
+        "manuscriptLabel": "Rome",
+        "mode": "road",
+        "modernName": "Roma",
+        "notes": "Rome is a destination in its own right as well as a stage, and the itinerary handles that by drawing it twice as large. Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+        "placeId": "cru-plc-rome",
+        "reviewState": "raw",
+        "sequence": 13,
+        "sourceId": "cru-mp-royal-14-c-vii",
+        "sourceLocator": "pending",
+        "variantNote": "Some witnesses branch here."
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          18.49,
+          40.15
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "confidence": "low",
+        "depictedDays": 8,
+        "evidenceClass": "manuscript_depiction",
+        "folio": "pending",
+        "geometryProvenance": "modern_reference",
+        "id": "cru-itn-14",
+        "manuscriptLabel": "Otranto",
+        "mode": "road",
+        "modernName": "Otranto",
+        "notes": "The end of the drawn road. What lies beyond is sea, and the itinerary stops. Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+        "placeId": "cru-plc-otranto",
+        "reviewState": "raw",
+        "sequence": 14,
+        "sourceId": "cru-mp-royal-14-c-vii",
+        "sourceLocator": "pending",
+        "variantNote": ""
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

@@ -147,7 +147,12 @@ describe('grouping supports all three lenses', () => {
       'ne-boundaries',
     ]);
     const frontiers = themes.find((g) => g.id === 'conflict-campaigns-frontiers')!;
-    expect(frontiers.layerIds).toEqual(['dacia-treaty-frontiers']);
+    // Treaty lines and campaign assaults are the same theme: both are claims
+    // about where force decided a boundary.
+    expect(frontiers.layerIds).toEqual([
+      'dacia-treaty-frontiers',
+      'crusades-fourth-crusade-events',
+    ]);
   });
 
   it('places a layer in every room that claims it, primary or secondary', () => {
