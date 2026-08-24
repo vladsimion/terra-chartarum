@@ -163,3 +163,78 @@
   text-transform: uppercase;
   color: var(--ink-muted);
 }
+
+/* Prose tables (KAN-437) ------------------------------------------------------
+   The scroll container that rehype-prose-tables.ts wraps around every authored
+   Markdown table. A data table's min-content width is fixed by its longest
+   words and regularly exceeds a 320px prose column; without this the excess
+   scrolls the page sideways, which is the WCAG 1.4.10 reflow failure. The
+   scroll belongs to the table instead, so the prose around it still reflows.
+
+   Two-dimensional content is exempt from 1.4.10 for the reason this styling
+   keeps in view: the columns are the argument, so they are not allowed to be
+   stacked, truncated or broken mid-word to fit.
+
+   Only tables inside this wrapper are styled. The components that hand-write
+   their own tables (colophon, the Hanseatic pair, EnduranceDrift) keep their
+   scoped rules. */
+.prose-table {
+  overflow-x: auto;
+  margin-block: 1.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  /* Scroll shadows. The two `local` layers scroll with the content and are
+     painted over the two `scroll` layers, so a glow shows at an edge only
+     while there is content hidden past it - the affordance appears exactly
+     when there is something to scroll to, and macOS overlay scrollbars (which
+     stay invisible until a scroll is already under way) are not the only cue. */
+  background-color: var(--panel);
+  background-image:
+    linear-gradient(to right, var(--panel) 60%, transparent),
+    linear-gradient(to left, var(--panel) 60%, transparent),
+    linear-gradient(to right, color-mix(in srgb, var(--gold) 26%, transparent), transparent),
+    linear-gradient(to left, color-mix(in srgb, var(--gold) 26%, transparent), transparent);
+  background-repeat: no-repeat;
+  background-position:
+    left center,
+    right center,
+    left center,
+    right center;
+  background-size:
+    1.75rem 100%,
+    1.75rem 100%,
+    0.75rem 100%,
+    0.75rem 100%;
+  background-attachment: local, local, scroll, scroll;
+}
+
+.prose-table table {
+  /* `width: 100%` rather than `max-content`: the table takes the column when it
+     fits and settles at its own minimum when it does not, which is the least
+     scrolling that keeps every column. No cell is `nowrap` - long cells still
+     wrap, so only single words set the floor. */
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--step--1);
+  /* Transparent so the wrapper's scroll shadows read through the cells. */
+  background: transparent;
+}
+.prose-table :is(th, td) {
+  text-align: left;
+  vertical-align: top;
+  /* Cell padding is part of the table's min-content width, so five columns of
+     generous padding are five columns of extra scrolling on a phone. It scales
+     with the viewport: comfortable at reading width, frugal at 320px. */
+  padding: 0.5rem clamp(0.45rem, 2.4vw, 0.85rem);
+  border-bottom: 1px solid var(--line);
+}
+.prose-table tbody tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+.prose-table thead th {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}

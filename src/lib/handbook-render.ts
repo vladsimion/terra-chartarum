@@ -8,6 +8,7 @@
  * footnote and a heading anchor behaving the same here as in an essay.
  */
 import { createMarkdownProcessor } from '@astrojs/markdown-remark';
+import rehypeProseTables from './rehype-prose-tables';
 
 type Processor = Awaited<ReturnType<typeof createMarkdownProcessor>>;
 
@@ -20,7 +21,14 @@ export interface RenderedDocument {
 }
 
 export async function renderHandbookMarkdown(body: string): Promise<RenderedDocument> {
-  processor ??= await createMarkdownProcessor({ gfm: true, smartypants: true });
+  // This processor is built here rather than inherited from astro.config.mjs,
+  // so the table wrapper has to be passed in explicitly or a Handbook table
+  // would scroll the page where an essay's does not.
+  processor ??= await createMarkdownProcessor({
+    gfm: true,
+    smartypants: true,
+    rehypePlugins: [rehypeProseTables],
+  });
   const result = await processor.render(body);
   const headings = (result.metadata?.headings ?? []) as RenderedDocument['headings'];
   return { html: result.code, headings: headings.filter((heading) => heading.depth === 2) };
