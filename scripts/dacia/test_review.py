@@ -12,6 +12,7 @@ Run with `make dacia-test` (or `.venv/bin/python -m pytest scripts/dacia`).
 from __future__ import annotations
 
 import csv
+import re
 import shutil
 import sys
 from pathlib import Path
@@ -182,3 +183,67 @@ def test_coverage_does_not_fail_the_build_on_outstanding_work(dataset, capsys):
     # point this tool is most useful.
     assert review.main(["coverage", "--verbose"]) == 0
     assert "ready" in capsys.readouterr().out
+
+
+def test_blocked_joins_debt_to_the_ticket_that_owns_the_gate(dataset, capsys):
+    """The join that already existed in the data and nowhere in the tooling.
+
+    `verification-debt.csv` names the gate a debt blocks as `<trench>:<gate>`;
+    `trench-gates.csv` maps that pair to a Jira key. Everything needed to say
+    "KAN-349 is waiting on a named researcher" is committed, and reading it
+    meant opening three files and joining by eye.
+    """
+    assert review.main(["blocked"]) == 0
+    out = capsys.readouterr().out
+
+    assert "open debt item(s) across" in out
+    # Every reported ticket must look like a Jira key, or the join silently
+    # degraded into printing trench ids again.
+    tickets = re.findall(r"^  (KAN-\d+)  \(\d+ blocking\)$", out, re.MULTILINE)
+    assert tickets, out
+    assert tickets == sorted(tickets)
+
+    # A resolution path is the point of the report: a blocker with no route out
+    # is a complaint.
+    assert "->" in out
+
+
+def test_blocked_reports_every_open_debt_item(dataset, capsys):
+    with (validate.DATA / "reference" / "verification-debt.csv").open(
+        encoding="utf-8", newline=""
+    ) as handle:
+        open_debts = [row for row in csv.DictReader(handle) if row["status"] == "open"]
+
+    review.main(["blocked"])
+    out = capsys.readouterr().out
+    for debt in open_debts:
+        # Attributed to a ticket, listed as naming no ticket yet, or listed as
+        # blocking no gate at all. Dropping one silently is the failure this
+        # guards against - and it caught two: vd-roman-baseline-geometry and
+        # vd-principality-envelopes are open with an empty `blocks` column, so
+        # no gate-driven view of the programme would ever have shown them.
+        assert debt["debt_id"] in out, debt["debt_id"]
+
+
+def test_blocked_surfaces_open_debt_that_blocks_no_gate(dataset, capsys):
+    review.main(["blocked"])
+    out = capsys.readouterr().out
+    assert "block no recorded gate" in out
+
+
+def test_blocked_ignores_resolved_debt(dataset, capsys):
+    path = validate.DATA / "reference" / "verification-debt.csv"
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        fieldnames = list(reader.fieldnames or [])
+        rows = list(reader)
+
+    target = rows[0]["debt_id"]
+    rows[0]["status"] = "resolved"
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
+    review.main(["blocked"])
+    assert target not in capsys.readouterr().out

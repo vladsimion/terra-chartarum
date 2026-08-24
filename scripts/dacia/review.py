@@ -160,6 +160,92 @@ def command_queue(args) -> int:
     return 0
 
 
+def command_blocked(args) -> int:
+    """Which Jira tickets are waiting on which piece of verification debt.
+
+    The three registries needed to answer this already exist and have never
+    been joined. `verification-debt.csv` records what is outstanding and names
+    the gate it blocks, as `<trench>:<gate>`. `trench-gates.csv` maps a trench
+    and a gate to the Jira key that owns it. So the chain from "a repository
+    has not been confirmed" to "KAN-349 cannot close" is fully determined by
+    committed data - and reading it required opening three CSVs and doing the
+    join by eye, which nobody does, so the tickets look blocked for no stated
+    reason.
+
+    Grouping by ticket rather than by debt is the point. A debt item blocking
+    four tickets and four items blocking one ticket are different situations,
+    and only the ticket-shaped view tells you which you have.
+    """
+    baseline = validate.validate_inputs()
+    if baseline:
+        print(f"The tables do not currently validate ({len(baseline)} errors); fix those first.")
+        return 1
+
+    reference = validate.DATA / "reference"
+    with (reference / "verification-debt.csv").open(encoding="utf-8", newline="") as handle:
+        debts = list(csv.DictReader(handle))
+    with (reference / "trench-gates.csv").open(encoding="utf-8", newline="") as handle:
+        gates = list(csv.DictReader(handle))
+
+    # (trench, gate) -> the ticket that owns that gate.
+    owner = {(row["trench_id"], row["gate_id"]): row for row in gates}
+
+    by_ticket: dict[str, list[tuple[dict[str, str], str]]] = {}
+    unmapped: list[str] = []
+    ungated: list[dict[str, str]] = []
+    for debt in debts:
+        if debt["status"] != "open":
+            continue
+        targets = [t.strip() for t in debt["blocks"].split("|") if t.strip()]
+        if not targets:
+            # Open debt that blocks nothing recorded. It would vanish from any
+            # gate-driven view of the programme, which is the one way an
+            # outstanding item can be forgotten while still sitting in the
+            # register marked open.
+            ungated.append(debt)
+            continue
+        for target in targets:
+            trench, _, gate = target.partition(":")
+            row = owner.get((trench, gate))
+            if row is None or not row.get("jira_key"):
+                unmapped.append(f"{debt['debt_id']} -> {target}")
+                continue
+            by_ticket.setdefault(row["jira_key"], []).append((debt, target))
+
+    open_count = sum(1 for d in debts if d["status"] == "open")
+    print(f"\n{open_count} open debt item(s) across {len(by_ticket)} ticket(s)\n")
+
+    for ticket in sorted(by_ticket):
+        items = by_ticket[ticket]
+        print(f"  {ticket}  ({len(items)} blocking)")
+        for debt, target in items:
+            print(f"    {debt['debt_id']}  [{target}]")
+            print(f"      {debt['statement']}")
+            print(f"      -> {debt['resolution_path']}")
+        print()
+
+    if ungated:
+        print(f"  {len(ungated)} open item(s) block no recorded gate:")
+        for debt in ungated:
+            print(f"    {debt['debt_id']}")
+            print(f"      {debt['statement']}")
+            print(f"      -> {debt['resolution_path']}")
+        print(
+            "    These reach no ticket. Either name the gate they block, or\n"
+            "    close them - open debt nothing points at is how an item is lost."
+        )
+        print()
+
+    if unmapped:
+        # Not an error: a debt may name a gate before the trench row exists.
+        # Saying so is better than dropping it from the report in silence.
+        print(f"  {len(unmapped)} debt target(s) name no ticket yet:")
+        for entry in unmapped:
+            print(f"    {entry}")
+
+    return 0
+
+
 def command_coverage(args) -> int:
     """Fate-class coverage against the CCD-C1 acceptance criterion (KAN-344).
 
@@ -292,6 +378,11 @@ def main(argv: list[str] | None = None) -> int:
     )
     coverage.add_argument("--verbose", "-v", action="store_true", help="list every row")
     coverage.set_defaults(func=command_coverage)
+
+    blocked = sub.add_parser(
+        "blocked", help="which Jira tickets are waiting on which verification debt"
+    )
+    blocked.set_defaults(func=command_blocked)
 
     show = sub.add_parser("show", help="one record and what blocks its promotion")
     show.add_argument("record_id")
