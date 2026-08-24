@@ -27,8 +27,15 @@ import {
 type AtlasFeature = { properties: Record<string, unknown>; geometry: { type: string } };
 
 /** Both Atlas assets read back as one list: the split is a render constraint. */
+const ATLAS_LAYERS = [
+  'antarctica-conjectured-south',
+  'antarctica-expedition-tracks',
+  'antarctica-observations',
+  'antarctica-ghost-geographies',
+];
+
 const atlas = {
-  features: ['antarctica-pilot-tracks', 'antarctica-pilot-observations'].flatMap(
+  features: ATLAS_LAYERS.flatMap(
     (layer) =>
       (
         JSON.parse(readFileSync(`public/geo/${layer}.geojson`, 'utf8')) as {
@@ -185,7 +192,7 @@ describe('expeditions', () => {
   it('reports the release the layer was compiled from', () => {
     expect(getAntarcticRelease()).toEqual({
       release: 'ant-pilot-0.1',
-      layerIds: ['antarctica-pilot-tracks', 'antarctica-pilot-observations'],
+      layerIds: ATLAS_LAYERS,
       schemaVersion: 1,
     });
   });
@@ -295,5 +302,42 @@ describe('the cumulative chart was itself revised', () => {
     const towson = chartRevision().dropped[0];
     expect(towson.contributionKind).toBe('compiled_analysis');
     expect(towson.expeditionId).toBeNull();
+  });
+});
+
+describe('the Atlas family partitions the mappable records', () => {
+  it('assigns every mappable record to exactly one layer', () => {
+    const counts = new Map<string, number>();
+    for (const layer of ATLAS_LAYERS) {
+      const payload = JSON.parse(readFileSync(`public/geo/${layer}.geojson`, 'utf8')) as {
+        features: AtlasFeature[];
+      };
+      for (const feature of payload.features) {
+        const id = feature.properties.id as string;
+        counts.set(id, (counts.get(id) ?? 0) + 1);
+      }
+    }
+    for (const [id, count] of counts) expect(count, id).toBe(1);
+    expect(counts.size).toBe(getMappableRecords().length);
+  });
+
+  it('leaves the ghost layer empty, because no disputed position has been located', () => {
+    // Not a placeholder assertion. Every ghost record is non-spatial on purpose,
+    // and a point appearing here would mean one had been invented.
+    const ghosts = JSON.parse(
+      readFileSync('public/geo/antarctica-ghost-geographies.geojson', 'utf8'),
+    ) as { features: AtlasFeature[] };
+    expect(ghosts.features).toEqual([]);
+    expect(getGhostRecords().length).toBeGreaterThan(0);
+    for (const ghost of getGhostRecords()) expect(ghost.geometry).toBeNull();
+  });
+
+  it('keeps the conjectured envelope out of the observation layer', () => {
+    const observations = JSON.parse(
+      readFileSync('public/geo/antarctica-observations.geojson', 'utf8'),
+    ) as { features: AtlasFeature[] };
+    const ids = observations.features.map((f) => f.properties.id as string);
+    expect(ids).not.toContain('ant-ftr-terra-australis-conjectured');
+    expect(observations.features.every((f) => f.geometry.type === 'Point')).toBe(true);
   });
 });

@@ -57,6 +57,12 @@
     "data/antarctica/tracks.csv": "2c1400201b2916a0ac6028eca6d171bc562eed194796f92cd811fb09ca0d0fc7"
   },
   "kind": "pilot_research_release",
+  "layerCounts": {
+    "antarctica-conjectured-south": 1,
+    "antarctica-expedition-tracks": 5,
+    "antarctica-ghost-geographies": 0,
+    "antarctica-observations": 19
+  },
   "licence": "CC BY 4.0 for the compiled records; every source and map object carries its own rights status, and no object in this release is cleared for reproduction.",
   "mappableRecords": 25,
   "objectsClearedForReproduction": 0,
@@ -138,17 +144,25 @@
       "bytes": 2751,
       "sha256": "2c1400201b2916a0ac6028eca6d171bc562eed194796f92cd811fb09ca0d0fc7"
     },
-    "public/geo/antarctica-pilot-observations.geojson": {
+    "public/geo/antarctica-conjectured-south.geojson": {
+      "bytes": 1767,
+      "sha256": "c74025cce9b909313691c76d1e49d4781d7441019770c572de5ccea3ddbb9960"
+    },
+    "public/geo/antarctica-expedition-tracks.geojson": {
+      "bytes": 6485,
+      "sha256": "7f4315b65398069a334d43a3508bcb11eec8bf34652ae9441bad18f4ff96dcb4"
+    },
+    "public/geo/antarctica-ghost-geographies.geojson": {
+      "bytes": 52,
+      "sha256": "a55b431e78049bb7fdc7330ffdf2c9f8e87712545ebba199445408d48694225a"
+    },
+    "public/geo/antarctica-observations.geojson": {
       "bytes": 21247,
       "sha256": "e0b9a97439f1b8320ea47827f2d472ac819aa4b43bd7ebb6c90f8b4868ed8af9"
     },
-    "public/geo/antarctica-pilot-tracks.geojson": {
-      "bytes": 8198,
-      "sha256": "2f67d2e622ad92c4ece8a8c25fce86b30475a7de20a4ee46b784e71841c4e2a9"
-    },
     "src/data/antarctica/generated/pilot.json": {
-      "bytes": 60451,
-      "sha256": "a25541bc3f55c893edbbb0223be5ff52a1ef7c2fa2cde87c0ba31805006c3988"
+      "bytes": 60522,
+      "sha256": "79a6011c72275d3e912dee26c829a9efce0420db6e712b201c916bea812d4225"
     }
   },
   "pilotByReviewState": {

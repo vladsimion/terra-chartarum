@@ -9,8 +9,12 @@ routeSlug: antarctica
 lifecycle: in-review
 lastReviewed: '2026-08-23'
 relatedLayerIds:
-  - antarctica-pilot-tracks
-  - antarctica-pilot-observations
+  - antarctica-conjectured-south
+  - antarctica-expedition-tracks
+  - antarctica-observations
+  - antarctica-ghost-geographies
+relatedCollectionIds:
+  - terra-incognita
 technicalLinks:
   - label: Antarctic data dictionary (full machine schema)
     href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/antarctica/data-dictionary.md'

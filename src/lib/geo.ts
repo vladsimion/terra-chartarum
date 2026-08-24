@@ -1076,45 +1076,91 @@ const RAW: unknown[] = [
     defaultOn: false,
   },
   {
-    // KAN-423. The pilot ships as two layers because the Atlas takes one render
-    // hint per layer, not because it is two datasets: both are compiled from the
-    // same projection by scripts/antarctica/build.py, and the essay reads that
-    // same projection. `in-review` is the plain fact - not one record here has
-    // been read against its source, so nothing is on by default and nothing may
-    // be cited as established.
-    id: 'antarctica-pilot-tracks',
+    // ANT-11 / KAN-430. The Antarctic family: four layers split by the argument
+    // each one carries, all compiled from one projection by
+    // scripts/antarctica/build.py, which the essay also reads. `in-review` is
+    // the plain fact throughout - not one record has been read against its
+    // source - so nothing is on by default and nothing may be cited as
+    // established. The two KAN-423 pilot IDs are retired here; the migration is
+    // recorded in docs/antarctica/atlas-family.md.
+    id: 'antarctica-conjectured-south',
     role: 'historical',
-    category: 'networks-circulation',
-    subcategory: 'voyage-tracks',
+    category: 'territories-boundaries',
+    subcategory: 'conjectured-land',
+    collectionIds: ['terra-incognita'],
     tags: [
       'antarctica',
       'terra incognita',
       'terra australis',
-      'cook',
-      'endurance',
-      'shackleton',
-      'drift',
-      'polar',
-      'southern ocean',
-      'pilot',
+      'conjecture',
+      'cosmography',
+      'southern continent',
       'unreviewed',
     ],
     sortWeight: 600,
     lifecycle: 'in-review',
     room: 'theatre',
     secondaryRooms: ['map'],
-    title: 'Antarctic knowledge pilot: tracks and extents (unreviewed)',
+    title: 'Terra Australis, the conjectured south (unreviewed)',
     description:
-      'Lines and outlines from the Antarctic pilot: a schematic Terra Australis envelope, a sampled Cook track, the approach, planned crossing and drift of Endurance, and the James Caird passage. Every line declares where it came from, and most of them are Terra Chartarum linework rather than a source geometry.',
+      'The region within which early modern maps drew a southern continent, as a schematic envelope rather than a coastline. No map in the register has been examined, so there is nothing to digitise, and drawing a plausible outline would manufacture the confidence this layer exists to question.',
     kind: 'vector',
     format: 'geojson',
-    url: '/geo/antarctica-pilot-tracks.geojson',
+    url: '/geo/antarctica-conjectured-south.geojson',
     yearFrom: 1531,
-    yearTo: 1916,
+    yearTo: 1775,
     source: 'Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-423',
     license: 'CC BY 4.0',
+    attribution: 'Terra Chartarum; schematic envelope, declared editorial generalisation',
+    essaySlugs: [],
+    geometry: 'line',
+    color: '#8a8070',
+    perFeatureTime: true,
+    facets: ['evidenceClass', 'geometryProvenance', 'confidence', 'reviewState', 'act'],
+    dash: {
+      field: 'geometryProvenance',
+      patterns: { editorial_generalisation: [4, 2], editorial_interpolation: [1, 2] },
+    },
+    defaultOn: false,
+  },
+  {
+    // Everything that moved: a sampled Cook track, the Endurance approach, the
+    // crossing that was announced and never sailed, the drift, and the James
+    // Caird. The dash pattern is driven from geometry provenance, so a route we
+    // drew can never be rendered as one a source gave.
+    id: 'antarctica-expedition-tracks',
+    role: 'historical',
+    category: 'networks-circulation',
+    subcategory: 'voyage-tracks',
+    collectionIds: ['terra-incognita'],
+    tags: [
+      'antarctica',
+      'terra incognita',
+      'cook',
+      'endurance',
+      'shackleton',
+      'worsley',
+      'james caird',
+      'drift',
+      'southern ocean',
+      'unreviewed',
+    ],
+    sortWeight: 601,
+    lifecycle: 'in-review',
+    room: 'theatre',
+    secondaryRooms: ['road'],
+    title: 'Antarctic expedition tracks (unreviewed)',
+    description:
+      'Where ships went, and how they got there. A planned crossing, a voyage under sail and a drift with the ice are three different kinds of line, and the encoding says which is which: nothing here that Terra Chartarum drew is rendered as though a source had given it.',
+    kind: 'vector',
+    format: 'geojson',
+    url: '/geo/antarctica-expedition-tracks.geojson',
+    yearFrom: 1773,
+    yearTo: 1916,
+    source: 'Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-428',
+    license: 'CC BY 4.0',
     attribution:
-      'Terra Chartarum; each source and map object carries its own rights status; no object is cleared for reproduction',
+      'Terra Chartarum; sampled and generalised linework, each segment declaring its provenance',
     essaySlugs: [],
     geometry: 'line',
     color: '#7d93ad',
@@ -1126,20 +1172,21 @@ const RAW: unknown[] = [
         transcribed_from_coordinates: [],
         derived_from_log: [],
         digitised_from_map: [],
-        editorial_interpolation: [1, 2],
         editorial_generalisation: [4, 2],
+        editorial_interpolation: [1, 2],
       },
     },
     defaultOn: false,
   },
   {
-    // The dated half of the same slice. Graduated by confidence rather than by
-    // importance: a reader should be able to see at a glance that the 1820
-    // sighting and the Endurance positions are not the same kind of record.
-    id: 'antarctica-pilot-observations',
+    // Dated positions, graduated by confidence rather than by importance: a
+    // reader should see at a glance that a contested 1820 sighting and a
+    // transcribed farthest south are not the same kind of record.
+    id: 'antarctica-observations',
     role: 'historical',
     category: 'places-settlements',
     subcategory: 'observations-and-fixes',
+    collectionIds: ['terra-incognita'],
     tags: [
       'antarctica',
       'terra incognita',
@@ -1148,25 +1195,24 @@ const RAW: unknown[] = [
       'navigation',
       'fixes',
       'bellingshausen',
-      'cook',
-      'worsley',
-      'polar',
-      'pilot',
+      'bransfield',
+      'ross',
+      'wilkes',
       'unreviewed',
     ],
-    sortWeight: 601,
+    sortWeight: 602,
     lifecycle: 'in-review',
     room: 'theatre',
     secondaryRooms: ['map'],
-    title: 'Antarctic knowledge pilot: observations and fixes (unreviewed)',
+    title: 'Antarctic observations and fixes (unreviewed)',
     description:
-      'Dated positions from the same pilot slice: farthest souths, the contested sightings of 1820 and 1840, the nineteenth-century survey landfalls and the Endurance sequence from besetment to South Georgia. A sighting is filed as a report rather than an observation wherever what was seen is still argued over.',
+      'Dated positions from Cook to the loss of Endurance: farthest souths, the contested sightings of 1820 and 1840, the nineteenth-century landfalls and the Endurance sequence. A sighting is filed as a report rather than an observation wherever what was seen is still argued over.',
     kind: 'vector',
     format: 'geojson',
-    url: '/geo/antarctica-pilot-observations.geojson',
+    url: '/geo/antarctica-observations.geojson',
     yearFrom: 1774,
     yearTo: 1916,
-    source: 'Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-423',
+    source: 'Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-425',
     license: 'CC BY 4.0',
     attribution:
       'Terra Chartarum; positions recorded from the general literature and not yet checked against an edition',
@@ -1180,6 +1226,50 @@ const RAW: unknown[] = [
       radius: { high: 7, medium: 6, low: 4.5, contested: 4.5, unresolved: 4 },
       fallback: 4,
     },
+    defaultOn: false,
+  },
+  {
+    // The asset is empty and should be. Every ghost feature in the corpus is
+    // non-spatial, because none of the disputed positions has been located, and
+    // giving one a point would repeat the original error in our own voice. The
+    // contract ships ahead of the positions, as dacia-attestations ships ahead
+    // of its review: a reader can find the layer and read why it holds nothing.
+    id: 'antarctica-ghost-geographies',
+    role: 'historical',
+    category: 'territories-boundaries',
+    subcategory: 'disproved-geography',
+    collectionIds: ['terra-incognita'],
+    tags: [
+      'antarctica',
+      'terra incognita',
+      'ghost geography',
+      'phantom islands',
+      'disproved',
+      'error',
+      'morrell',
+      'wilkes',
+      'unreviewed',
+    ],
+    sortWeight: 603,
+    lifecycle: 'in-review',
+    room: 'theatre',
+    secondaryRooms: ['archive'],
+    title: 'Ghost geographies (contract only, no positions located)',
+    description:
+      'Features claimed, mapped and later removed, held with their original evidence rather than as a list of mistakes. The layer is currently empty: five ghost features are recorded and not one of their disputed positions has been located, so none carries geometry.',
+    kind: 'vector',
+    format: 'geojson',
+    url: '/geo/antarctica-ghost-geographies.geojson',
+    yearFrom: 1531,
+    yearTo: 1916,
+    source: 'Terra Chartarum (compiled) - Antarctic ghost geographies, KAN-426',
+    license: 'CC BY 4.0',
+    attribution: 'Terra Chartarum; each ghost feature retains its original claimant and source',
+    essaySlugs: [],
+    geometry: 'circle',
+    color: '#b0563f',
+    perFeatureTime: true,
+    facets: ['evidenceClass', 'geometryProvenance', 'confidence', 'reviewState', 'act'],
     defaultOn: false,
   },
 ];

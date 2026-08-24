@@ -42,12 +42,22 @@ LICENCE = (
     "CC BY 4.0 for the compiled records; every source and map object carries its own "
     "rights status, and no object in this release is cleared for reproduction."
 )
-# The Atlas takes one render hint per layer, so the pilot ships as two assets
-# compiled from one projection - lines and outlines in one, dated positions in
-# the other. This is the same split the Dacia Roman baseline makes, and for the
-# same reason: it is a rendering constraint, not two datasets.
-LAYER_LINES = "antarctica-pilot-tracks"
-LAYER_POINTS = "antarctica-pilot-observations"
+# The Atlas family (ANT-11 / KAN-430). Four layers, split by the argument each
+# one carries rather than by convenience, and all four compiled from the single
+# projection below. The line/point division inside that split is a MapLibre
+# constraint - one render hint per layer - not a second dataset.
+#
+# `antarctica-pilot-tracks` and `antarctica-pilot-observations` were the two
+# pilot IDs registered at KAN-423. They are retired here rather than kept: they
+# were `in-review`, never public, and one day old, and ANT-11 is the ticket whose
+# job is to register the real family. The decision is recorded in
+# docs/antarctica/atlas-family.md so the rename is a migration and not a quiet
+# renumbering of a stable scholarly identifier.
+LAYER_CONJECTURED = "antarctica-conjectured-south"
+LAYER_TRACKS = "antarctica-expedition-tracks"
+LAYER_OBSERVATIONS = "antarctica-observations"
+LAYER_GHOSTS = "antarctica-ghost-geographies"
+ATLAS_LAYERS = [LAYER_CONJECTURED, LAYER_TRACKS, LAYER_OBSERVATIONS, LAYER_GHOSTS]
 
 PUBLIC_STATES = {"approved", "published"}
 
@@ -186,15 +196,39 @@ def base(row: dict[str, str], record_id: str, kind: str, title: str, act: str,
     return record
 
 
-def to_geojson(records: list[dict[str, object]], geometry_types: set[str]) -> dict[str, object]:
+def to_geojson(records: list[dict[str, object]], keep) -> dict[str, object]:
     features = []
     for record in records:
-        geometry = record["geometry"]
-        if geometry is None or geometry["type"] not in geometry_types:  # type: ignore[index]
+        if record["geometry"] is None or not keep(record):
             continue
         properties = {k: v for k, v in record.items() if k != "geometry"}
-        features.append({"type": "Feature", "properties": properties, "geometry": geometry})
+        features.append(
+            {"type": "Feature", "properties": properties, "geometry": record["geometry"]}
+        )
     return {"type": "FeatureCollection", "features": features}
+
+
+def layer_members(records: list[dict[str, object]]) -> dict[str, dict[str, object]]:
+    """Assign every mappable record to exactly one layer.
+
+    The ghost layer is expected to come out empty, and that is the point: the
+    contract ships ahead of the positions, exactly as `dacia-attestations` ships
+    ahead of its review. A reader can find the layer, read what it will hold and
+    read why it holds nothing, which is better than the layer appearing on the
+    day the first disputed position is finally located.
+    """
+    return {
+        LAYER_CONJECTURED: to_geojson(
+            records, lambda r: r["kind"] == "feature" and r["evidenceClass"] == "conjectured"
+        ),
+        LAYER_TRACKS: to_geojson(records, lambda r: r["kind"] == "track"),
+        LAYER_OBSERVATIONS: to_geojson(
+            records,
+            lambda r: r["kind"] == "observation"
+            or (r["kind"] == "feature" and r["evidenceClass"] != "conjectured"),
+        ),
+        LAYER_GHOSTS: to_geojson(records, lambda r: r["kind"] == "ghost"),
+    }
 
 
 def build_outputs() -> dict[Path, bytes]:
@@ -203,19 +237,18 @@ def build_outputs() -> dict[Path, bytes]:
 
     # The Atlas reads the spatial subset; records without geometry are not
     # mappable and are deliberately absent rather than given a placeholder point.
-    # A polygon rides in the line asset because the schematic envelope is honest
-    # as an outline and dishonest as a filled territory.
-    outputs[GEO_DIR / f"{LAYER_LINES}.geojson"] = canonical_json(
-        to_geojson(records, {"LineString", "Polygon"})
-    )
-    outputs[GEO_DIR / f"{LAYER_POINTS}.geojson"] = canonical_json(to_geojson(records, {"Point"}))
+    # The conjectured envelope rides in a line layer because it is honest as an
+    # outline and dishonest as a filled territory: filling it would draw a
+    # continent where the whole argument is that nobody had seen one.
+    for layer, collection in layer_members(records).items():
+        outputs[GEO_DIR / f"{layer}.geojson"] = canonical_json(collection)
 
     # The essay reads everything, including the records that have no geometry,
     # because a claim about Coronelli's plate is still part of the argument.
     outputs[GENERATED_DIR / "pilot.json"] = canonical_json({
         "schemaVersion": SCHEMA_VERSION,
         "release": RELEASE_VERSION,
-        "layerIds": [LAYER_LINES, LAYER_POINTS],
+        "layerIds": ATLAS_LAYERS,
         "records": records,
         "expeditions": [
             {
@@ -329,6 +362,10 @@ def build_manifest(outputs: dict[Path, bytes], records: list[dict[str, object]])
         "pilotByReviewState": dict(sorted(by_state.items())),
         "publicRecords": sum(1 for r in records if r["reviewState"] in PUBLIC_STATES),
         "mappableRecords": sum(1 for r in records if r["geometry"] is not None),
+        "layerCounts": {
+            layer: len(collection["features"])
+            for layer, collection in sorted(layer_members(records).items())
+        },
         "verifiedObjects": sum(1 for r in objects if r["verification_state"] == "verified"),
         "objectsClearedForReproduction": sum(
             1 for r in objects if r["reproduction_use"] in {"thumbnail", "full_reproduction", "deepzoom"}

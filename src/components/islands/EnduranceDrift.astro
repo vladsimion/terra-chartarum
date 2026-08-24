@@ -1,0 +1,395 @@
+---
+/**
+ * Endurance: Plan / Drift / Navigation (ANT-10 / KAN-429)
+ *
+ * Act VIII and the Coda in eight steps. Static first, like Cook's Blank: every
+ * step, caption, phase row and position is in the server-rendered markup, and
+ * the script only hides what is already there. With no JavaScript the figure is
+ * a sequence of eight drawings followed by a phase table, and the argument
+ * arrives intact.
+ *
+ * The styling rule that matters: a line the ice made and a line a crew steered
+ * are drawn differently, and the difference comes from the phase record's
+ * `underOwnPower` and from each geometry's provenance rather than from a
+ * decision taken here. The plan is never deleted once the drift begins - it is
+ * subordinated, because it remains the thing the expedition meant to do.
+ */
+import {
+  driftFrameHeight,
+  driftGeometries,
+  driftPositions,
+  driftSteps,
+  driftTranscript,
+} from '../../lib/endurance-drift';
+
+interface Props {
+  caption?: string;
+}
+const { caption } = Astro.props;
+
+const WIDTH = 1000;
+const HEIGHT = driftFrameHeight(WIDTH);
+const steps = driftSteps();
+const geometries = driftGeometries(WIDTH);
+const transcript = driftTranscript();
+const positions = driftPositions();
+---
+
+<figure class="endurance" data-endurance>
+  <div class="ed-frame">
+    <svg
+      class="ed-plate"
+      viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
+      role="img"
+      aria-label="Eight steps from the planned crossing of Antarctica to the loss of Endurance and the boat journey to South Georgia"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      {
+        steps.map((step) => (
+          <g class="ed-step" data-step={step.id} data-ordinal={step.ordinal}>
+            {step.subordinates.map((id) => (
+              <path class="ed-subordinate" d={geometries.get(id)!.path}>
+                <title>{geometries.get(id)!.record.title} - context, no longer the route</title>
+              </path>
+            ))}
+            {step.shows.map((id) =>
+              geometries.get(id)!.isPoint ? (
+                <g class="ed-mark">
+                  <path
+                    class="ed-point"
+                    d={`${geometries.get(id)!.path} m-8 0 a8 8 0 1 0 16 0 a8 8 0 1 0 -16 0`}
+                  />
+                  <title>{geometries.get(id)!.record.title}</title>
+                </g>
+              ) : (
+                <path
+                  class:list={['ed-shown', geometries.get(id)!.isOurs && 'ed-ours']}
+                  d={geometries.get(id)!.path}
+                >
+                  <title>
+                    {geometries.get(id)!.record.title}
+                    {geometries.get(id)!.isOurs
+                      ? ' - drawn by Terra Chartarum, not taken from a source'
+                      : ''}
+                  </title>
+                </path>
+              ),
+            )}
+          </g>
+        ))
+      }
+    </svg>
+
+    <div class="ed-readout">
+      {
+        steps.map((step) => (
+          <div class="ed-caption" data-caption-for={step.id}>
+            <p class="ed-when">{step.when}</p>
+            <p>
+              <strong>{step.title}.</strong> {step.caption}
+            </p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="ed-controls" role="group" aria-label="Steps">
+    {
+      steps.map((step) => (
+        <button
+          type="button"
+          class="ed-button"
+          data-goto={step.id}
+          aria-pressed={step.ordinal === 1 ? 'true' : 'false'}
+        >
+          <span class="ed-ordinal">{step.ordinal}</span>
+          <span class="ed-button-label">{step.title}</span>
+        </button>
+      ))
+    }
+  </div>
+
+  <details class="ed-transcript">
+    <summary>Read this as text</summary>
+
+    <h4>What happened, phase by phase</h4>
+    <table>
+      <caption>
+        Every phase of the Imperial Trans-Antarctic Expedition, with whether the ship was under her
+        own power.
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col">Phase</th>
+          <th scope="col">When</th>
+          <th scope="col">Power</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          transcript.map((row) => (
+            <tr>
+              <th scope="row">{row.phase.displayName}</th>
+              <td>{row.span}</td>
+              <td>{row.power}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+
+    <h4>How each position was arrived at</h4>
+    <table>
+      <caption>
+        Positions marked in this sequence. An observed position and a reckoned one are different
+        kinds of record.
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col">Position</th>
+          <th scope="col">Date</th>
+          <th scope="col">Method</th>
+          <th scope="col">Confidence</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          positions.map((position) => (
+            <tr>
+              <th scope="row">{position.title}</th>
+              <td>{position.date}</td>
+              <td>{position.method}</td>
+              <td>{position.confidence}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+
+    <p class="ed-note">
+      A dotted line is linework Terra Chartarum drew to join records the sources leave apart. The
+      drift in particular is currently two endpoints joined by a straight line, which the drift
+      certainly was not, and it may not be measured.
+    </p>
+  </details>
+
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<script>
+  function initEndurance(root: HTMLElement) {
+    if (root.dataset.enduranceReady) return;
+    root.dataset.enduranceReady = '1';
+    root.classList.add('ed-interactive');
+
+    const steps = Array.from(root.querySelectorAll<SVGGElement>('.ed-step'));
+    const captions = Array.from(root.querySelectorAll<HTMLElement>('.ed-caption'));
+    const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>('.ed-button'));
+    if (!steps.length || !buttons.length) return;
+
+    const show = (next: number) => {
+      const index = Math.max(0, Math.min(steps.length - 1, next));
+      steps.forEach((step, i) => step.classList.toggle('ed-on', i === index));
+      captions.forEach((caption, i) => caption.classList.toggle('ed-on', i === index));
+      buttons.forEach((button, i) => button.setAttribute('aria-pressed', String(i === index)));
+    };
+
+    buttons.forEach((button, i) => {
+      button.addEventListener('click', () => show(i));
+      button.addEventListener('keydown', (event) => {
+        const delta =
+          event.key === 'ArrowRight' || event.key === 'ArrowDown'
+            ? 1
+            : event.key === 'ArrowLeft' || event.key === 'ArrowUp'
+              ? -1
+              : event.key === 'Home'
+                ? -steps.length
+                : event.key === 'End'
+                  ? steps.length
+                  : 0;
+        if (!delta) return;
+        event.preventDefault();
+        const target = Math.max(0, Math.min(steps.length - 1, i + delta));
+        buttons[target].focus();
+        show(target);
+      });
+    });
+
+    show(0);
+  }
+
+  const boot = () =>
+    document.querySelectorAll<HTMLElement>('[data-endurance]').forEach(initEndurance);
+  boot();
+  document.addEventListener('astro:page-load', boot);
+</script>
+
+<style>
+  .endurance {
+    margin: 2.5rem 0;
+  }
+
+  .ed-plate {
+    width: 100%;
+    max-width: 26rem;
+    margin-inline: auto;
+    display: block;
+    background: var(--surface-2, #f5f1e8);
+    border: 1px solid var(--rule, #cfc6b3);
+  }
+
+  .ed-shown,
+  .ed-subordinate {
+    fill: none;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+
+  .ed-shown {
+    stroke: var(--ink, #2b2620);
+    stroke-width: 3;
+  }
+
+  /* Our own linework: dotted, always, whatever else is true of it. */
+  .ed-ours {
+    stroke-dasharray: 3 5;
+  }
+
+  /* The plan, once the ice has taken over. Present, and clearly no longer the
+     route the expedition is on. */
+  .ed-subordinate {
+    stroke: var(--text-muted, #8a8070);
+    stroke-width: 1.25;
+    stroke-dasharray: 3 5;
+    opacity: 0.6;
+  }
+
+  .ed-point {
+    fill: var(--ink, #2b2620);
+    stroke: var(--surface-2, #f5f1e8);
+    stroke-width: 3;
+  }
+
+  .ed-caption {
+    margin: 0 auto 0.75rem;
+    max-width: 44rem;
+  }
+
+  .ed-when {
+    margin: 0;
+    color: var(--text-muted, #8a8070);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ed-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    justify-content: center;
+  }
+
+  .ed-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.9rem;
+    background: transparent;
+    border: 1px solid var(--rule, #cfc6b3);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .ed-button:focus-visible {
+    outline: 2px solid var(--ink, #2b2620);
+    outline-offset: 2px;
+  }
+
+  .ed-button[aria-pressed='true'] {
+    border-color: var(--ink, #2b2620);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .ed-ordinal {
+    font-variant-numeric: tabular-nums;
+    color: var(--text-muted, #8a8070);
+  }
+
+  .endurance:not(.ed-interactive) .ed-controls {
+    display: none;
+  }
+
+  .ed-interactive .ed-step,
+  .ed-interactive .ed-caption {
+    display: none;
+  }
+
+  .ed-interactive .ed-step.ed-on,
+  .ed-interactive .ed-caption.ed-on {
+    display: revert;
+  }
+
+  .ed-transcript {
+    margin-top: 1.25rem;
+    border-top: 1px solid var(--rule, #cfc6b3);
+    padding-top: 0.75rem;
+  }
+
+  .ed-transcript summary {
+    cursor: pointer;
+    min-height: 2.75rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .ed-transcript table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.5rem 0 1.5rem;
+    font-size: 0.95em;
+  }
+
+  .ed-transcript caption {
+    text-align: left;
+    color: var(--text-muted, #8a8070);
+    padding-bottom: 0.4rem;
+  }
+
+  .ed-transcript th,
+  .ed-transcript td {
+    text-align: left;
+    padding: 0.35rem 0.6rem 0.35rem 0;
+    border-bottom: 1px solid var(--rule, #cfc6b3);
+    vertical-align: top;
+  }
+
+  .ed-note {
+    color: var(--text-muted, #8a8070);
+    font-size: 0.9em;
+  }
+
+  @media (max-width: 40rem) {
+    .ed-button {
+      flex: 1 1 100%;
+    }
+
+    /* Evidence tables stay usable rather than being crushed. */
+    .ed-transcript table {
+      display: block;
+      overflow-x: auto;
+    }
+  }
+
+  /* The step change is a swap, not an animation, so reduced-motion readers get
+     the same figure rather than a lesser variant. */
+  @media (prefers-reduced-motion: reduce) {
+    .ed-step,
+    .ed-caption {
+      transition: none;
+    }
+  }
+</style>

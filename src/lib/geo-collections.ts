@@ -168,6 +168,35 @@ const RAW: unknown[] = [
     featured: false,
     sortWeight: 40,
   },
+  {
+    id: 'terra-incognita',
+    title: 'Terra Incognita',
+    summary:
+      'A continent that was drawn before it was seen, and the tracks, sightings and removals that slowly replaced the drawing with a coastline.',
+    description:
+      'There is no default composition. Every layer here is in review and not one record has been read against its source, so a reader who opens this collection is shown nothing as established: the layers have to be switched on deliberately. The ghost layer is a member although its asset is empty, because a reader looking for the disproved features should find the record of why none of them can yet be placed.',
+    layerIds: [
+      'antarctica-conjectured-south',
+      'antarctica-expedition-tracks',
+      'antarctica-observations',
+      'antarctica-ghost-geographies',
+    ],
+    defaultLayerIds: [],
+    room: 'theatre',
+    secondaryRooms: ['map'],
+    tags: [
+      'antarctica',
+      'terra australis',
+      'polar',
+      'southern ocean',
+      'cook',
+      'endurance',
+      'ghost geography',
+      'discovery',
+    ],
+    featured: false,
+    sortWeight: 50,
+  },
 ];
 
 /**
@@ -203,6 +232,24 @@ function validateAgainstLayers(collections: GeoCollection[]): void {
     }
 
     const members = collection.layerIds.map((id) => layers.get(id)).filter(Boolean) as GeoLayer[];
+
+    // The other half of the same rule. A collection whose every member is still
+    // in review has no legitimate default composition, and must declare none:
+    // there is nothing it could activate that a reader has not been warned
+    // about. Any collection with at least one published member owes a default,
+    // because "Activate defaults" that does nothing is a broken control.
+    const publishable = members.filter((layer) => layer.lifecycle === 'published');
+    if (publishable.length > 0 && collection.defaultLayerIds.length === 0) {
+      errors.push(
+        `Collection "${collection.id}" has published members but declares no default composition`,
+      );
+    }
+    if (publishable.length === 0 && collection.defaultLayerIds.length > 0) {
+      errors.push(
+        `Collection "${collection.id}" defaults to something although no member is published`,
+      );
+    }
+
     if (members.length > 0 && collection.yearFrom !== undefined) {
       const derivedFrom = Math.min(...members.map((l) => l.yearFrom));
       const derivedTo = Math.max(...members.map((l) => l.yearTo));

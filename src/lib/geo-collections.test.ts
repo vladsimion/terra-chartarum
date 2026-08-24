@@ -24,12 +24,13 @@ function rawCollection(overrides: Record<string, unknown> = {}) {
 }
 
 describe('the seed collections validate against published layers', () => {
-  it('registers the four seed collections in deterministic order', () => {
+  it('registers the collections in deterministic order', () => {
     expect(GEO_COLLECTIONS.map((c) => c.id)).toEqual([
       'venetian-maritime-network',
       'hanseatic-world',
       'corpus-chartarum-daciae',
       'roman-geography',
+      'terra-incognita',
     ]);
   });
 
@@ -47,7 +48,18 @@ describe('the seed collections validate against published layers', () => {
       for (const layerId of collection.defaultLayerIds) {
         expect(collection.layerIds, collection.id).toContain(layerId);
       }
-      expect(collection.defaultLayerIds.length, collection.id).toBeGreaterThan(0);
+    }
+  });
+
+  it('gives a collection a default only when it has something published to show', () => {
+    // A collection of layers that are all still in review has no legitimate
+    // default: activating one would put unreviewed material in front of a
+    // reader who merely opened the collection. A collection with a published
+    // member owes a default, because a control that does nothing is broken.
+    const lifecycles = new Map(GEO_LAYERS.map((l) => [l.id, l.lifecycle]));
+    for (const collection of GEO_COLLECTIONS) {
+      const hasPublished = collection.layerIds.some((id) => lifecycles.get(id) === 'published');
+      expect(collection.defaultLayerIds.length > 0, collection.id).toBe(hasPublished);
     }
   });
 
