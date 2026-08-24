@@ -29,6 +29,9 @@ src/data/hanseatic/generated/
 # `make antarctica` writes this from Python, for the same reason.
 src/data/antarctica/generated/
 
+# `make crusades` likewise.
+src/data/crusades/generated/
+
 # `make dacia` writes the CND release from Python. Its bytes are hashed into the
 # release manifest, so reformatting them here would put the committed tree
 # permanently at odds with the manifest that describes it.
@@ -37,6 +40,9 @@ data/dacia/release/
 # `make antarctica` writes the pilot release from Python and hashes its own
 # bytes into the manifest; reformatting them here would break that check.
 data/antarctica/release/
+
+# `make crusades` writes its pilot release the same way, with the same hazard.
+data/crusades/release/
 
 # Lockfiles and data dumps
 package-lock.json

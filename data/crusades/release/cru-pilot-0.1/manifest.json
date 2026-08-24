@@ -1,0 +1,68 @@
+{
+  "clearedWitnesses": 0,
+  "counts": {
+    "fourth-crusade-states": 8,
+    "itinerary-stages": 14,
+    "places": 20,
+    "source-audit": 9
+  },
+  "inputs": {
+    "data/crusades/fourth-crusade-states.csv": "30a9d12ea5b75e6d8320f471d92a6ba1ac00934e65fc4ec1980b9fd244df02b4",
+    "data/crusades/itinerary-stages.csv": "1930ad66f926ea7ecaa177b8506f348be350b05163418e28f22ea1e2927d9ac0",
+    "data/crusades/places.csv": "314557f4dc062214beaca40344b6691e4a552686070fe7c9303e8b96cfd942d1",
+    "data/crusades/source-audit.csv": "52f122784794d2c34a0930ec5ba2b3fdb219348cd5e79db2032d816e79e207b2"
+  },
+  "kind": "pilot_research_release",
+  "licence": "CC BY 4.0 for the compiled records; every witness carries its own rights status, and no witness in this release is cleared for publication.",
+  "outputs": {
+    "data/crusades/release/cru-pilot-0.1/fourth-crusade-states.csv": {
+      "bytes": 3417,
+      "sha256": "30a9d12ea5b75e6d8320f471d92a6ba1ac00934e65fc4ec1980b9fd244df02b4"
+    },
+    "data/crusades/release/cru-pilot-0.1/itinerary-stages.csv": {
+      "bytes": 4300,
+      "sha256": "1930ad66f926ea7ecaa177b8506f348be350b05163418e28f22ea1e2927d9ac0"
+    },
+    "data/crusades/release/cru-pilot-0.1/places.csv": {
+      "bytes": 5491,
+      "sha256": "314557f4dc062214beaca40344b6691e4a552686070fe7c9303e8b96cfd942d1"
+    },
+    "data/crusades/release/cru-pilot-0.1/source-audit.csv": {
+      "bytes": 5452,
+      "sha256": "52f122784794d2c34a0930ec5ba2b3fdb219348cd5e79db2032d816e79e207b2"
+    },
+    "public/geo/crusades-fourth-crusade-events.geojson": {
+      "bytes": 3052,
+      "sha256": "33e5199247efa618ae863a07b3cc285a2a2dad106c6699ff39ce1f4079c53149"
+    },
+    "public/geo/crusades-fourth-crusade-routes.geojson": {
+      "bytes": 2657,
+      "sha256": "639e286b45f5bc26c14ad8d67dfc2b37acf75e395f74f49042e326b9f422e4f8"
+    },
+    "public/geo/crusades-itinerary.geojson": {
+      "bytes": 12563,
+      "sha256": "b9a61ee12ba7538f1853f8e961e9c9d7ecf1193f4c8c2fcb39e377a98b53c5da"
+    },
+    "src/data/crusades/generated/pilot.json": {
+      "bytes": 17952,
+      "sha256": "670276bd422dff6f615541e15a0b57b5321cde3e97130adba14caeddfc2d8dc0"
+    }
+  },
+  "publicRecords": 0,
+  "release": "cru-pilot-0.1",
+  "schemaVersion": 1,
+  "stateKinds": [
+    "attack",
+    "durable_control",
+    "intended_destination",
+    "negotiated_diversion",
+    "partition_claim",
+    "travelled_route"
+  ],
+  "statesWithoutGeometry": [
+    "cru-fcs-durable",
+    "cru-fcs-intent",
+    "cru-fcs-partitio"
+  ],
+  "untranscribedFolios": 9
+}

@@ -1,0 +1,552 @@
+{
+  "itinerary": [
+    {
+      "confidence": "low",
+      "depictedDays": 1,
+      "evidenceClass": "manuscript_depiction",
+      "folio": "pending",
+      "geometryProvenance": "modern_reference",
+      "id": "cru-itn-01",
+      "manuscriptLabel": "London",
+      "mode": "road",
+      "modernName": "London",
+      "modernReference": [
+        -0.09,
+        51.51
+      ],
+      "notes": "The itinerary's own starting point, and the abbey's horizon rather than a traveller's. Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+      "placeId": "cru-plc-london",
+      "reviewState": "raw",
+      "sequence": 1,
+      "sourceId": "cru-mp-royal-14-c-vii",
+      "sourceLocator": "pending",
+      "variantNote": ""
+    },
+    {
+      "confidence": "low",
+      "depictedDays": 1,
+      "evidenceClass": "manuscript_depiction",
+      "folio": "pending",
+      "geometryProvenance": "modern_reference",
+      "id": "cru-itn-02",
+      "manuscriptLabel": "Dover",
+      "mode": "road",
+      "modernName": "Dover",
+      "modernReference": [
+        1.31,
+        51.13
+      ],
+      "notes": "The last English stage before the sea. Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+      "placeId": "cru-plc-dover",
+      "reviewState": "raw",
+      "sequence": 2,
+      "sourceId": "cru-mp-royal-14-c-vii",
+      "sourceLocator": "pending",
+      "variantNote": ""
+    },
+    {
+      "confidence": "low",
+      "depictedDays": 1,
+      "evidenceClass": "manuscript_depiction",
+      "folio": "pending",
+      "geometryProvenance": "modern_reference",
+      "id": "cru-itn-03",
+      "manuscriptLabel": "Wissant",
+      "mode": "sea",
+      "modernName": "Wissant",
+      "modernReference": [
+        1.66,
+        50.89
+      ],
+      "notes": "A sea passage rendered in the same units as a day's walk, which is the diagram's most revealing simplification. Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+      "placeId": "cru-plc-wissant",
+      "reviewState": "raw",
+      "sequence": 3,
+      "sourceId": "cru-mp-royal-14-c-vii",
+      "sourceLocator": "pending",
+      "variantNote": "The crossing is drawn as a stage like any other."
+    },
+    {
+      "confidence": "low",
+      "depictedDays": 2,
+      "evidenceClass": "manuscript_depiction",
+      "folio": "pending",
+      "geometryProvenance": "modern_reference",
+      "id": "cru-itn-04",
+      "manuscriptLabel": "Beauvais",
+      "mode": "road",
+      "modernName": "Beauvais",
+      "modernReference": [
+        2.08,
+        49.43
+      ],
+      "notes": "Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+      "placeId": "cru-plc-beauvais",
+      "reviewState": "raw",
+      "sequence": 4,
+      "sourceId": "cru-mp-royal-14-c-vii",
+      "sourceLocator": "pending",
+      "variantNote": ""
+    },
+    {
+      "confidence": "low",
+      "depictedDays": 1,
+      "evidenceClass": "manuscript_depiction",
+      "folio": "pending",
+      "geometryProvenance": "modern_reference",
+      "id": "cru-itn-05",
+      "manuscriptLabel": "Paris",
+      "mode": "road",
+      "modernName": "Paris",
+      "modernReference": [
+        2.35,
+        48.86
+      ],
+      "notes": "Drawn larger than its neighbours, as the itinerary's cities generally are when they matter. Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+      "placeId": "cru-plc-paris",
+      "reviewState": "raw",
+      "sequence": 5,
+      "sourceId": "cru-mp-royal-14-c-vii",
+      "sourceLocator": "pending",
+      "variantNote": ""
+    },
+    {
+      "confidence": "low",
+      "depictedDays": 4,
+      "evidenceClass": "manuscript_depiction",
+      "folio": "pending",
+      "geometryProvenance": "modern_reference",
+      "id": "cru-itn-06",
+      "manuscriptLabel": "Beaune",
+      "mode": "road",
+      "modernName": "Beaune",
+      "modernReference": [
+        4.84,
+        47.02
+      ],
+      "notes": "Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+      "placeId": "cru-plc-beaune",
+      "reviewState": "raw",
+      "sequence": 6,
+      "sourceId": "cru-mp-royal-14-c-vii",
+      "sourceLocator": "pending",
+      "variantNote": ""
+    },
+    {
+      "confidence": "low",
+      "depictedDays": 2,
+      "evidenceClass": "manuscript_depiction",
+      "folio": "pending",
+      "geometryProvenance": "modern_reference",
+      "id": "cru-itn-07",
+      "manuscriptLabel": "Lyon",
+      "mode": "road",
+      "modernName": "Lyon",
+      "modernReference": [
+        4.84,
+        45.76
+      ],
+      "notes": "Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+      "placeId": "cru-plc-lyon",
+      "reviewState": "raw",
+      "sequence": 7,
+      "sourceId": "cru-mp-royal-14-c-vii",
+      "sourceLocator": "pending",
+      "variantNote": ""
+    },
+    {
+      "confidence": "low",
+      "depictedDays": 3,
+      "evidenceClass": "manuscript_depiction",
+      "folio": "pending",
+      "geometryProvenance": "modern_reference",
+      "id": "cru-itn-08",
+      "manuscriptLabel": "Mont Cenis",
+      "mode": "pass",
+      "modernName": "Mont Cenis",
+      "modernReference": [
+        6.9,
+        45.25
+      ],
+      "notes": "The one stage that is an obstacle rather than a destination, and the diagram treats it as a stage anyway. Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+      "placeId": "cru-plc-mont-cenis",
+      "reviewState": "raw",
+      "sequence": 8,
+      "sourceId": "cru-mp-royal-14-c-vii",
+      "sourceLocator": "pending",
+      "variantNote": "A pass, not a settlement."
+    },
+    {
+      "confidence": "low",
+      "depictedDays": 2,
+      "evidenceClass": "manuscript_depiction",
+      "folio": "pending",
+      "geometryProvenance": "modern_reference",
+      "id": "cru-itn-09",
+      "manuscriptLabel": "Turin",
+      "mode": "road",
+      "modernName": "Torino",
+      "modernReference": [
+        7.69,
+        45.07
+      ],
+      "notes": "Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+      "placeId": "cru-plc-turin",
+      "reviewState": "raw",
+      "sequence": 9,
+      "sourceId": "cru-mp-royal-14-c-vii",
+      "sourceLocator": "pending",
+      "variantNote": ""
+    },
+    {
+      "confidence": "low",
+      "depictedDays": 3,
+      "evidenceClass": "manuscript_depiction",
+      "folio": "pending",
+      "geometryProvenance": "modern_reference",
+      "id": "cru-itn-10",
+      "manuscriptLabel": "Milan",
+      "mode": "road",
+      "modernName": "Milano",
+      "modernReference": [
+        9.19,
+        45.46
+      ],
+      "notes": "Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+      "placeId": "cru-plc-milan",
+      "reviewState": "raw",
+      "sequence": 10,
+      "sourceId": "cru-mp-royal-14-c-vii",
+      "sourceLocator": "pending",
+      "variantNote": ""
+    },
+    {
+      "confidence": "low",
+      "depictedDays": 2,
+      "evidenceClass": "manuscript_depiction",
+      "folio": "pending",
+      "geometryProvenance": "modern_reference",
+      "id": "cru-itn-11",
+      "manuscriptLabel": "Piacenza",
+      "mode": "road",
+      "modernName": "Piacenza",
+      "modernReference": [
+        9.69,
+        45.05
+      ],
+      "notes": "Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+      "placeId": "cru-plc-piacenza",
+      "reviewState": "raw",
+      "sequence": 11,
+      "sourceId": "cru-mp-royal-14-c-vii",
+      "sourceLocator": "pending",
+      "variantNote": ""
+    },
+    {
+      "confidence": "low",
+      "depictedDays": 2,
+      "evidenceClass": "manuscript_depiction",
+      "folio": "pending",
+      "geometryProvenance": "modern_reference",
+      "id": "cru-itn-12",
+      "manuscriptLabel": "Bologna",
+      "mode": "road",
+      "modernName": "Bologna",
+      "modernReference": [
+        11.34,
+        44.49
+      ],
+      "notes": "Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+      "placeId": "cru-plc-bologna",
+      "reviewState": "raw",
+      "sequence": 12,
+      "sourceId": "cru-mp-royal-14-c-vii",
+      "sourceLocator": "pending",
+      "variantNote": ""
+    },
+    {
+      "confidence": "low",
+      "depictedDays": 6,
+      "evidenceClass": "manuscript_depiction",
+      "folio": "pending",
+      "geometryProvenance": "modern_reference",
+      "id": "cru-itn-13",
+      "manuscriptLabel": "Rome",
+      "mode": "road",
+      "modernName": "Roma",
+      "modernReference": [
+        12.5,
+        41.9
+      ],
+      "notes": "Rome is a destination in its own right as well as a stage, and the itinerary handles that by drawing it twice as large. Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+      "placeId": "cru-plc-rome",
+      "reviewState": "raw",
+      "sequence": 13,
+      "sourceId": "cru-mp-royal-14-c-vii",
+      "sourceLocator": "pending",
+      "variantNote": "Some witnesses branch here."
+    },
+    {
+      "confidence": "low",
+      "depictedDays": 8,
+      "evidenceClass": "manuscript_depiction",
+      "folio": "pending",
+      "geometryProvenance": "modern_reference",
+      "id": "cru-itn-14",
+      "manuscriptLabel": "Otranto",
+      "mode": "road",
+      "modernName": "Otranto",
+      "modernReference": [
+        18.49,
+        40.15
+      ],
+      "notes": "The end of the drawn road. What lies beyond is sea, and the itinerary stops. Recorded from the itinerary's published description, not from the folio. The manuscript label and the day-mark are untranscribed.",
+      "placeId": "cru-plc-otranto",
+      "reviewState": "raw",
+      "sequence": 14,
+      "sourceId": "cru-mp-royal-14-c-vii",
+      "sourceLocator": "pending",
+      "variantNote": ""
+    }
+  ],
+  "layerIds": [
+    "crusades-itinerary",
+    "crusades-fourth-crusade-routes",
+    "crusades-fourth-crusade-events"
+  ],
+  "release": "cru-pilot-0.1",
+  "schemaVersion": 1,
+  "states": [
+    {
+      "confidence": "medium",
+      "dateFrom": "1201",
+      "datePrecision": "year",
+      "dateTo": "1202",
+      "evidenceClass": "documented_intent",
+      "geometry": null,
+      "geometryProvenance": "not_spatial",
+      "held": "not_applicable",
+      "id": "cru-fcs-intent",
+      "notes": "Egypt, in the 1201 agreement. It is deliberately non-spatial: the crusade's destination was a clause in a contract, and drawing an arrow to a coast it never approached would make an intention look like a movement.",
+      "placeIds": [
+        "cru-plc-venice"
+      ],
+      "reviewState": "raw",
+      "sequence": 1,
+      "sourceId": "cru-fc-treaty-1201",
+      "sourceLocator": "pending",
+      "stateKind": "intended_destination",
+      "title": "The destination the crusade contracted for",
+      "vmnReference": null
+    },
+    {
+      "confidence": "low",
+      "dateFrom": "1202-10",
+      "datePrecision": "month",
+      "dateTo": "1202-11",
+      "evidenceClass": "primary_narrative",
+      "geometry": {
+        "coordinates": [
+          [
+            12.34,
+            45.44
+          ],
+          [
+            13.5,
+            45.0
+          ],
+          [
+            14.5,
+            44.5
+          ],
+          [
+            15.23,
+            44.12
+          ]
+        ],
+        "type": "LineString"
+      },
+      "geometryProvenance": "editorial_generalisation",
+      "held": "not_applicable",
+      "id": "cru-fcs-contract",
+      "notes": "The fleet Venice built and the army could not pay for. The line is a generalisation between two ports, not a track: no source gives one.",
+      "placeIds": [
+        "cru-plc-venice"
+      ],
+      "reviewState": "raw",
+      "sequence": 2,
+      "sourceId": "cru-fc-villehardouin",
+      "sourceLocator": "pending",
+      "stateKind": "travelled_route",
+      "title": "Assembly and embarkation at Venice",
+      "vmnReference": "venetian-ports"
+    },
+    {
+      "confidence": "medium",
+      "dateFrom": "1202-11",
+      "datePrecision": "month",
+      "dateTo": "1202-11",
+      "evidenceClass": "primary_narrative",
+      "geometry": null,
+      "geometryProvenance": "not_spatial",
+      "held": "not_applicable",
+      "id": "cru-fcs-zara",
+      "notes": "The first diversion, and the one that turned a debt into a campaign against a Christian city. Held as a state rather than as a point because what changed was the terms, not the position.",
+      "placeIds": [
+        "cru-plc-zara"
+      ],
+      "reviewState": "raw",
+      "sequence": 3,
+      "sourceId": "cru-fc-villehardouin",
+      "sourceLocator": "pending",
+      "stateKind": "negotiated_diversion",
+      "title": "The diversion to Zara",
+      "vmnReference": null
+    },
+    {
+      "confidence": "low",
+      "dateFrom": "1203-04",
+      "datePrecision": "month",
+      "dateTo": "1203-06",
+      "evidenceClass": "primary_narrative",
+      "geometry": {
+        "coordinates": [
+          [
+            15.23,
+            44.12
+          ],
+          [
+            18.0,
+            42.6
+          ],
+          [
+            19.45,
+            41.32
+          ],
+          [
+            19.92,
+            39.62
+          ],
+          [
+            23.5,
+            39.5
+          ],
+          [
+            26.2,
+            40.1
+          ],
+          [
+            28.98,
+            41.01
+          ]
+        ],
+        "type": "LineString"
+      },
+      "geometryProvenance": "editorial_generalisation",
+      "held": "not_applicable",
+      "id": "cru-fcs-corfu",
+      "notes": "A coastwise generalisation through waters the VMN route layer already publishes at a later date. Linked rather than re-authored.",
+      "placeIds": [
+        "cru-plc-zara",
+        "cru-plc-corfu",
+        "cru-plc-durazzo"
+      ],
+      "reviewState": "raw",
+      "sequence": 4,
+      "sourceId": "cru-fc-villehardouin",
+      "sourceLocator": "pending",
+      "stateKind": "travelled_route",
+      "title": "Zara to Corfu and the Aegean approach",
+      "vmnReference": "venetian-routes"
+    },
+    {
+      "confidence": "medium",
+      "dateFrom": "1203-07",
+      "datePrecision": "month",
+      "dateTo": "1203-07",
+      "evidenceClass": "primary_narrative",
+      "geometry": null,
+      "geometryProvenance": "not_spatial",
+      "held": "not_applicable",
+      "id": "cru-fcs-attack-1203",
+      "notes": "An event at a place, not a territory. The place record carries the position; this row carries what happened there and when.",
+      "placeIds": [
+        "cru-plc-constantinople"
+      ],
+      "reviewState": "raw",
+      "sequence": 5,
+      "sourceId": "cru-fc-clari",
+      "sourceLocator": "pending",
+      "stateKind": "attack",
+      "title": "The first assault on Constantinople",
+      "vmnReference": null
+    },
+    {
+      "confidence": "medium",
+      "dateFrom": "1204-04",
+      "datePrecision": "month",
+      "dateTo": "1204-04",
+      "evidenceClass": "primary_narrative",
+      "geometry": null,
+      "geometryProvenance": "not_spatial",
+      "held": "not_applicable",
+      "id": "cru-fcs-attack-1204",
+      "notes": "Choniates writes from inside the city, which is why he is in the corpus: the sack has a victim's account and it is not the crusaders'.",
+      "placeIds": [
+        "cru-plc-constantinople"
+      ],
+      "reviewState": "raw",
+      "sequence": 6,
+      "sourceId": "cru-fc-choniates",
+      "sourceLocator": "pending",
+      "stateKind": "attack",
+      "title": "The second assault and the sack",
+      "vmnReference": null
+    },
+    {
+      "confidence": "low",
+      "dateFrom": "1204",
+      "datePrecision": "year",
+      "dateTo": "1204",
+      "evidenceClass": "documented_claim",
+      "geometry": null,
+      "geometryProvenance": "not_spatial",
+      "held": "claimed_not_held",
+      "id": "cru-fcs-partitio",
+      "notes": "A document dividing an empire among people who did not hold most of it. It carries no geometry on purpose: the partition's own boundaries are disputed in the scholarship, and drawing them would publish a claim as a map.",
+      "placeIds": [
+        "cru-plc-constantinople",
+        "cru-plc-adrianople"
+      ],
+      "reviewState": "raw",
+      "sequence": 7,
+      "sourceId": "cru-fc-partitio",
+      "sourceLocator": "pending",
+      "stateKind": "partition_claim",
+      "title": "Territory assigned by the Partitio Romaniae",
+      "vmnReference": null
+    },
+    {
+      "confidence": "low",
+      "dateFrom": "1204",
+      "datePrecision": "year",
+      "dateTo": "1261",
+      "evidenceClass": "scholarly_reconstruction",
+      "geometry": null,
+      "geometryProvenance": "not_spatial",
+      "held": "held",
+      "id": "cru-fcs-durable",
+      "notes": "Far less than the Partitio assigned, and contested throughout. The VMN possessions layer already models Venetian holdings with phased extents and evidence; this row points at it rather than duplicating it.",
+      "placeIds": [
+        "cru-plc-constantinople"
+      ],
+      "reviewState": "raw",
+      "sequence": 8,
+      "sourceId": "cru-fc-choniates",
+      "sourceLocator": "pending",
+      "stateKind": "durable_control",
+      "title": "What was actually held after 1204",
+      "vmnReference": "venetian-possessions"
+    }
+  ]
+}

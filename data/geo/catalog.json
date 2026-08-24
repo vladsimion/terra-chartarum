@@ -299,6 +299,45 @@
       "source": "Terra Chartarum (compiled) - Antarctic ghost geographies, KAN-426",
       "license": "CC BY 4.0",
       "attribution": "Terra Chartarum; each ghost feature retains its original claimant and source"
+    },
+    {
+      "id": "crusades-itinerary",
+      "file": "crusades-itinerary.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": ["Point"],
+      "featureCount": 14,
+      "yearFrom": 1250,
+      "yearTo": 1259,
+      "source": "Terra Chartarum (compiled) - Crusades pilot cru-pilot-0.1, KAN-386",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; witnesses held by the British Library and the Parker Library, none cleared for publication"
+    },
+    {
+      "id": "crusades-fourth-crusade-routes",
+      "file": "crusades-fourth-crusade-routes.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": ["LineString"],
+      "featureCount": 2,
+      "yearFrom": 1202,
+      "yearTo": 1203,
+      "source": "Terra Chartarum (compiled) - Crusades pilot cru-pilot-0.1, KAN-387",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; all linework editorial generalisation between named ports"
+    },
+    {
+      "id": "crusades-fourth-crusade-events",
+      "file": "crusades-fourth-crusade-events.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": ["Point"],
+      "featureCount": 3,
+      "yearFrom": 1202,
+      "yearTo": 1204,
+      "source": "Terra Chartarum (compiled) - Crusades pilot cru-pilot-0.1, KAN-387",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; positions are modern reference context, and no witness is cleared"
     }
   ]
 }

@@ -31,6 +31,7 @@ describe('the seed collections validate against published layers', () => {
       'corpus-chartarum-daciae',
       'roman-geography',
       'terra-incognita',
+      'maps-for-a-crusade',
     ]);
   });
 

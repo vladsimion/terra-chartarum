@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "geo-e8bc36deffbb924c",
+  "release": "geo-40f732f7c12fd04e",
   "generatedBy": "scripts/geo-release.mjs",
   "assets": [
     {
@@ -440,6 +440,63 @@
       "sha256": "a55b431e78049bb7fdc7330ffdf2c9f8e87712545ebba199445408d48694225a",
       "version": "a55b431e7804",
       "url": "/geo/antarctica-ghost-geographies.geojson?v=a55b431e7804"
+    },
+    {
+      "id": "crusades-itinerary",
+      "file": "crusades-itinerary.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": [
+        "Point"
+      ],
+      "featureCount": 14,
+      "yearFrom": 1250,
+      "yearTo": 1259,
+      "source": "Terra Chartarum (compiled) - Crusades pilot cru-pilot-0.1, KAN-386",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; witnesses held by the British Library and the Parker Library, none cleared for publication",
+      "bytes": 12563,
+      "sha256": "b9a61ee12ba7538f1853f8e961e9c9d7ecf1193f4c8c2fcb39e377a98b53c5da",
+      "version": "b9a61ee12ba7",
+      "url": "/geo/crusades-itinerary.geojson?v=b9a61ee12ba7"
+    },
+    {
+      "id": "crusades-fourth-crusade-routes",
+      "file": "crusades-fourth-crusade-routes.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": [
+        "LineString"
+      ],
+      "featureCount": 2,
+      "yearFrom": 1202,
+      "yearTo": 1203,
+      "source": "Terra Chartarum (compiled) - Crusades pilot cru-pilot-0.1, KAN-387",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; all linework editorial generalisation between named ports",
+      "bytes": 2657,
+      "sha256": "639e286b45f5bc26c14ad8d67dfc2b37acf75e395f74f49042e326b9f422e4f8",
+      "version": "639e286b45f5",
+      "url": "/geo/crusades-fourth-crusade-routes.geojson?v=639e286b45f5"
+    },
+    {
+      "id": "crusades-fourth-crusade-events",
+      "file": "crusades-fourth-crusade-events.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": [
+        "Point"
+      ],
+      "featureCount": 3,
+      "yearFrom": 1202,
+      "yearTo": 1204,
+      "source": "Terra Chartarum (compiled) - Crusades pilot cru-pilot-0.1, KAN-387",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; positions are modern reference context, and no witness is cleared",
+      "bytes": 3052,
+      "sha256": "33e5199247efa618ae863a07b3cc285a2a2dad106c6699ff39ce1f4079c53149",
+      "version": "33e5199247ef",
+      "url": "/geo/crusades-fourth-crusade-events.geojson?v=33e5199247ef"
     }
   ]
 }

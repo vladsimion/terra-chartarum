@@ -1,0 +1,109 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            12.34,
+            45.44
+          ],
+          [
+            13.5,
+            45.0
+          ],
+          [
+            14.5,
+            44.5
+          ],
+          [
+            15.23,
+            44.12
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "confidence": "low",
+        "dateFrom": "1202-10",
+        "datePrecision": "month",
+        "dateTo": "1202-11",
+        "evidenceClass": "primary_narrative",
+        "geometryProvenance": "editorial_generalisation",
+        "held": "not_applicable",
+        "id": "cru-fcs-contract",
+        "notes": "The fleet Venice built and the army could not pay for. The line is a generalisation between two ports, not a track: no source gives one.",
+        "placeIds": [
+          "cru-plc-venice"
+        ],
+        "reviewState": "raw",
+        "sequence": 2,
+        "sourceId": "cru-fc-villehardouin",
+        "sourceLocator": "pending",
+        "stateKind": "travelled_route",
+        "title": "Assembly and embarkation at Venice",
+        "vmnReference": "venetian-ports"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            15.23,
+            44.12
+          ],
+          [
+            18.0,
+            42.6
+          ],
+          [
+            19.45,
+            41.32
+          ],
+          [
+            19.92,
+            39.62
+          ],
+          [
+            23.5,
+            39.5
+          ],
+          [
+            26.2,
+            40.1
+          ],
+          [
+            28.98,
+            41.01
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "confidence": "low",
+        "dateFrom": "1203-04",
+        "datePrecision": "month",
+        "dateTo": "1203-06",
+        "evidenceClass": "primary_narrative",
+        "geometryProvenance": "editorial_generalisation",
+        "held": "not_applicable",
+        "id": "cru-fcs-corfu",
+        "notes": "A coastwise generalisation through waters the VMN route layer already publishes at a later date. Linked rather than re-authored.",
+        "placeIds": [
+          "cru-plc-zara",
+          "cru-plc-corfu",
+          "cru-plc-durazzo"
+        ],
+        "reviewState": "raw",
+        "sequence": 4,
+        "sourceId": "cru-fc-villehardouin",
+        "sourceLocator": "pending",
+        "stateKind": "travelled_route",
+        "title": "Zara to Corfu and the Aegean approach",
+        "vmnReference": "venetian-routes"
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

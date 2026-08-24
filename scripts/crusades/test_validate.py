@@ -17,7 +17,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import validate  # noqa: E402
-from validate import TABLE, validate_inputs  # noqa: E402
+from validate import STAGES, STATES, TABLE, validate_inputs  # noqa: E402
 
 
 @pytest.fixture()
@@ -28,8 +28,8 @@ def dataset(tmp_path, monkeypatch):
     return root
 
 
-def edit(dataset: Path, mutate) -> None:
-    path = dataset / TABLE
+def edit(dataset: Path, mutate, table: str = TABLE) -> None:
+    path = dataset / table
     with path.open(encoding="utf-8", newline="") as handle:
         reader = csv.DictReader(handle)
         fieldnames, rows = list(reader.fieldnames or []), list(reader)
@@ -49,14 +49,14 @@ def find(rows, source_id):
 
 
 def refuses(fragment: str) -> None:
-    errors = validate_inputs()
+    errors = validate_inputs(include_release=False)
     assert any(fragment in error for error in errors), (
         f"expected an error containing {fragment!r}, got: {errors}"
     )
 
 
 def test_committed_audit_is_valid(dataset):
-    assert validate_inputs() == []
+    assert validate_inputs(include_release=False) == []
 
 
 def test_a_manuscript_must_carry_its_shelfmark(dataset):
@@ -167,3 +167,110 @@ def test_a_place_window_cannot_end_before_it_starts(dataset):
 def test_both_proofs_need_places(dataset):
     edit_places(dataset, lambda rows: [r for r in rows if r["proof"] != "fourth_crusade"])
     refuses("the 'fourth_crusade' proof has no places")
+
+
+# --- The Road proof: a diagram is not a map (KAN-386) --------------------------
+
+def row_at(dataset, table, key, value):
+    with (dataset / table).open(encoding="utf-8", newline="") as handle:
+        for row in csv.DictReader(handle):
+            if row[key] == value:
+                return row
+    raise AssertionError(f"no {key}={value}")
+
+
+def edit_stage(dataset, stage_id, changes):
+    def mutate(rows):
+        for row in rows:
+            if row["stage_id"] == stage_id:
+                row.update(changes)
+    edit(dataset, mutate, STAGES)
+
+
+def edit_state(dataset, state_id, changes):
+    def mutate(rows):
+        for row in rows:
+            if row["state_id"] == state_id:
+                row.update(changes)
+    edit(dataset, mutate, STATES)
+
+
+def test_an_itinerary_stage_carries_no_position_of_its_own(dataset):
+    """The whole Road proof. Matthew Paris's itinerary is a strip diagram with no
+    projection; a stage with a longitude would invent the thing the manuscript
+    most conspicuously lacks."""
+    stage = row_at(dataset, STAGES, "stage_id", "cru-itn-01")
+    assert "lon" not in stage and "lat" not in stage and "geometry" not in stage
+
+
+def test_a_stage_must_resolve_to_a_place(dataset):
+    edit_stage(dataset, "cru-itn-05", {"place_id": "cru-plc-atlantis"})
+    refuses("does not resolve")
+
+
+def test_a_stage_is_a_manuscript_depiction_and_nothing_else(dataset):
+    edit_stage(dataset, "cru-itn-05", {"evidence_class": "direct_observation"})
+    refuses("manuscript depiction and nothing else")
+
+
+def test_the_stage_sequence_has_no_gaps(dataset):
+    edit_stage(dataset, "cru-itn-07", {"sequence": "99"})
+    refuses("must run 1..n with no gaps")
+
+
+def test_a_day_mark_is_a_whole_number(dataset):
+    edit_stage(dataset, "cru-itn-06", {"depicted_days": "about four"})
+    refuses("whole number of day-marks")
+
+
+def test_a_stage_above_raw_needs_its_folio(dataset):
+    edit_stage(dataset, "cru-itn-01", {"review_state": "normalized"})
+    refuses("needs the folio it was read from")
+
+
+# --- The Sea proof: a claim is not a possession (KAN-387) ---------------------
+
+def test_a_partition_claim_may_not_be_recorded_as_held(dataset):
+    edit_state(dataset, "cru-fcs-partitio", {"held": "held"})
+    refuses("must be recorded as claimed and not held")
+
+
+def test_a_partition_claim_may_not_be_drawn(dataset):
+    """The Partitio's boundaries are disputed. Drawing them would publish a claim
+    as a map, which is the error the Sea proof exists to avoid."""
+    edit_state(dataset, "cru-fcs-partitio",
+               {"geometry": "LINESTRING (28.9 41.0, 26.5 41.6)",
+                "geometry_provenance": "editorial_generalisation"})
+    refuses("publishes a claim as a map")
+
+
+def test_durable_control_means_it_was_held(dataset):
+    edit_state(dataset, "cru-fcs-durable", {"held": "claimed_not_held"})
+    refuses("durable control means it was held")
+
+
+def test_no_route_may_claim_a_documented_track(dataset):
+    edit_state(dataset, "cru-fcs-corfu", {"geometry_provenance": "modern_reference"})
+    refuses("any line here is a generalisation")
+
+
+def test_every_state_kind_is_present(dataset):
+    edit(dataset, lambda rows: [r for r in rows if r["state_kind"] != "negotiated_diversion"],
+         STATES)
+    refuses("no record for the 'negotiated_diversion' state")
+
+
+def test_a_state_must_name_a_real_source(dataset):
+    edit_state(dataset, "cru-fcs-zara", {"source_id": "cru-fc-invented"})
+    refuses("does not resolve")
+
+
+def test_a_vmn_reference_must_be_a_real_vmn_layer(dataset):
+    edit_state(dataset, "cru-fcs-durable", {"vmn_reference": "venetian-empire"})
+    refuses("is not a VMN layer")
+
+
+def test_a_not_spatial_state_may_not_carry_geometry(dataset):
+    edit_state(dataset, "cru-fcs-intent",
+               {"geometry": "LINESTRING (12.3 45.4, 31.2 30.0)"})
+    refuses("must not carry geometry")

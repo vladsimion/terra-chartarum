@@ -1,0 +1,170 @@
+---
+title: Maps for a Crusade
+subtitle: How Jerusalem became a network
+summary: >-
+  A thirteenth-century road drawn as a list of days, and a fleet fifty years
+  earlier that had already turned the same world into ports, debts and control.
+cover: /images/rooms/road-cover.webp
+hero: /images/rooms/road-hero.webp
+status: native
+eras: [Medieval]
+regions: [Western Europe, Adriatic, Aegean, Holy Land]
+lenses: [itinerarium, contractus, deviatio, dominium]
+yearFrom: 1201
+yearTo: 1261
+mapCount: 9
+readingMinutes: 12
+accent: '#b0563f'
+order: 13
+featured: false
+room: road
+secondaryRooms: [border, archive]
+sections:
+  - id: itinerarium
+    title: A road drawn as a list of days
+    room: road
+    secondaryRooms: [archive]
+  - id: comparatio
+    title: Putting the diagram on a map
+    room: map
+    secondaryRooms: [road]
+  - id: contractus
+    title: The fleet that had to be paid for
+    room: border
+    secondaryRooms: [road]
+  - id: deviatio
+    title: Four things that are not one route
+    room: border
+    secondaryRooms: [map]
+  - id: reliquum
+    title: What this prototype does not yet do
+    room: archive
+    secondaryRooms: [road]
+publishedAt: '2026-08-24'
+updatedAt: '2026-08-24'
+# HELD. Not one folio in the Crusades corpus has been transcribed and no witness
+# is cleared for publication. This is a prototype of the argument and of the
+# machinery under it, not the flagship essay, and it may not be published until
+# the Phase 0 audit's rights and locators are resolved.
+releaseAt: '2099-01-01'
+metaScores:
+  measure: 0.6
+  witness: 0.7
+  use: 0.8
+  cosmos: 0.25
+  power: 0.7
+  silence: 0.4
+---
+
+import Section from '../../components/Section.astro';
+
+<p class="essay-kicker">
+  Prototype · Road and Sea proofs · <strong>held pending source review</strong>
+</p>
+
+## Two ways of holding the same journey in your head.
+
+One is a list: London, then Dover, then a sea, then Beauvais, and so on to the
+heel of Italy, with the days marked between. The other is a contract: so many
+ships, so many marks, sailing on such a date, and if the money is not there then
+neither is the crusade.
+
+Both are maps in the sense this publication means. Neither is a map in the sense
+of a picture of the ground.
+
+<Section id="itinerarium" title="A road drawn as a list of days" rooms={['road', 'archive']}>
+
+Matthew Paris drew the road from London to Otranto some time around the middle of
+the thirteenth century. It runs up the page in columns: a town, a day-mark, a
+town, a day-mark, for fourteen stages and something over a month.
+
+It has no scale. It has no orientation. It has no coordinates. What it has is
+order and duration, which for a traveller are the two facts that matter, and it
+is worth resisting the reflex that calls this a primitive map. It is not a bad
+picture of the ground. It is an excellent picture of a journey.
+
+The sea crossing is the tell. Dover to Wissant is drawn in the same units as a
+day's walk to Beauvais, because in the diagram's terms it _is_ the same kind of
+thing: a stage that costs you a day. A map drawn to show the ground could not do
+that. A map drawn to show a journey has to.
+
+</Section>
+
+<Section id="comparatio" title="Putting the diagram on a map" rooms={['map', 'road']}>
+
+The Atlas layer for this act shows fourteen points, and every one of them is a
+modern coordinate the manuscript does not supply.
+
+That is a deliberate discomfort. Comparing the two is useful, and the comparison
+is something we are doing rather than something the thirteenth century did. So
+the data model refuses to let the two merge: a stage record has nowhere to put a
+position at all, the coordinate belongs to the _place_ the stage names, and the
+field carrying it is called `modernReference`.
+
+The day-marks stay as day-marks. This project does not convert them into a travel
+time, because the manuscript is making a claim about the journey and a
+conversion would turn that claim into a measurement.
+
+</Section>
+
+<Section id="contractus" title="The fleet that had to be paid for" rooms={['border', 'road']}>
+
+Fifty years before Matthew Paris drew his road, a different kind of geography had
+already been written down.
+
+In 1201 the Fourth Crusade contracted with Venice for a fleet. The agreement
+named the ships, the price and the destination, and the destination was Egypt.
+The army that assembled could not pay. What followed was not a change of route so
+much as a renegotiation, and the map of it is a map of terms rather than of
+ground.
+
+This is the shift the flagship essay is about. Jerusalem, in the twelfth century,
+was the end of a road. By the thirteenth it was a node in a system of ports,
+credit and shipping, and getting there had become a commercial problem before it
+was a geographical one.
+
+</Section>
+
+<Section id="deviatio" title="Four things that are not one route" rooms={['border', 'map']}>
+
+It is tempting to draw the Fourth Crusade as a line: Venice, Zara, Corfu,
+Constantinople. The line would be wrong in an interesting way.
+
+Six different things happened, and a route collapses them into one:
+
+- the destination the crusade **contracted for**, which it never approached;
+- the diversion it **negotiated**, which changed the terms rather than the
+  position;
+- the water it actually **travelled**, of which no source records a track;
+- the two **assaults** on Constantinople, which were events at a place;
+- the territory the Partitio Romaniae **assigned**, most of which the signatories
+  did not hold;
+- the territory anyone **durably controlled**, which was far less and was
+  contested for fifty years.
+
+The last two are the pair that matter. A treaty dividing an empire is a document
+about intentions, and a map that draws the assignment in the same ink as the
+occupation has republished the document's wishful thinking as geography. So the
+partition carries no boundary in this dataset at all, and the possession is
+pointed at the Venetian layers that already model it with their own evidence.
+
+</Section>
+
+<Section id="reliquum" title="What this prototype does not yet do" rooms={['archive', 'road']}>
+
+This is a prototype, and the honest way to end it is with the list.
+
+No folio has been transcribed. Every locator in the Crusades corpus reads
+`pending`, and the rights terms for the digitised manuscripts have not been read,
+so no image is reproduced here and none may be. The manuscript-to-modern
+comparison the Road proof is for cannot yet show the manuscript.
+
+The twenty core places are compiled and not reviewed. The route lines are
+generalisations between ports. The full flagship needs Acre and the Holy Land
+records, the sacred geography the itinerary was aiming at, and the century of
+maritime infrastructure between the two proofs.
+
+What exists is the argument and the machinery under it: a diagram that refuses to
+become a map, and a campaign that refuses to become a route.
+
+</Section>

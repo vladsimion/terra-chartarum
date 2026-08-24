@@ -33,6 +33,7 @@
     "hanseatic:test": "python3 -m pytest scripts/hanseatic -q",
     "dacia:validate": "python3 scripts/dacia/validate.py",
     "dacia:test": "python3 -m pytest scripts/dacia -q",
+    "crusades:build": "make crusades",
     "crusades:validate": "python3 scripts/crusades/validate.py",
     "crusades:test": "python3 -m pytest scripts/crusades -q",
     "antarctica:build": "make antarctica",
