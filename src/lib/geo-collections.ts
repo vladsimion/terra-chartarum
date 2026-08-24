@@ -103,7 +103,13 @@ const RAW: unknown[] = [
     defaultLayerIds: ['venetian-ports', 'venetian-routes'],
     room: 'road',
     secondaryRooms: ['border'],
-    essaySlugs: ['venice-sicily'],
+    // `invisible-maps-trade` is held, and is named here rather than added on
+    // release day (ATLAS-1223 / KAN-434). The catalogue filters this list
+    // against released essays, so nothing about a held essay reaches a reader,
+    // and the relationship appears by itself once it does release. This is the
+    // staged-release-safe route the ticket asks for, in place of the bespoke
+    // Atlas CTA that used to promote the standalone embed.
+    essaySlugs: ['venice-sicily', 'invisible-maps-trade'],
     tags: ['venice', 'mediterranean', 'maritime', 'trade', 'stato da mar', 'empire'],
     featured: true,
     sortWeight: 10,
