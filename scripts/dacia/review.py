@@ -160,6 +160,75 @@ def command_queue(args) -> int:
     return 0
 
 
+def command_coverage(args) -> int:
+    """Fate-class coverage against the CCD-C1 acceptance criterion (KAN-344).
+
+    The criterion is "at least one reviewed example exists for each fate class
+    used in the essay". Nothing in the corpus is reviewed yet, so the useful
+    question is not whether the criterion passes - it does not - but *what
+    stands between here and there*, per class.
+
+    Two answers are very different in cost. A class whose best row is already
+    ready to promote needs a person to run one command and put their name to
+    it. A class whose every row still has a pending locator needs somebody to
+    find a citation first, which is an afternoon in a library rather than a
+    keystroke. Reporting them as one number hides the only distinction that
+    would let anyone plan the work.
+    """
+    baseline = validate.validate_inputs()
+    if baseline:
+        print(f"The tables do not currently validate ({len(baseline)} errors); fix those first.")
+        return 1
+
+    _, rows = _load(validate.DATA, "name_uses")
+    by_class: dict[str, list[dict[str, str]]] = {}
+    for row in rows:
+        by_class.setdefault(row["fate_class"], []).append(row)
+
+    reviewed_index = LADDER.index("reviewed")
+    needs_locator: list[str] = []
+    needs_reviewer: list[str] = []
+    satisfied: list[str] = []
+
+    print("\nfate-class coverage for the reviewed-example criterion (KAN-344)")
+    print(f"  {len(by_class)} classes across {len(rows)} name uses\n")
+
+    for fate_class, group in sorted(by_class.items()):
+        already = [r for r in group if LADDER.index(r["review_state"]) >= reviewed_index]
+        ready = [r for r in group if not _blockers(r["name_use_id"], r["review_state"])]
+        if already:
+            satisfied.append(fate_class)
+            state = f"satisfied by {already[0]['name_use_id']}"
+        elif ready:
+            needs_reviewer.append(fate_class)
+            state = f"one command away - {ready[0]['name_use_id']} is ready to promote"
+        else:
+            needs_locator.append(fate_class)
+            state = "no promotable row: every candidate still needs a locator"
+        print(f"  {fate_class:<14} {len(group):>2} row(s)  {state}")
+        if args.verbose:
+            for row in group:
+                blockers = _blockers(row["name_use_id"], row["review_state"])
+                mark = "ready" if not blockers else "; ".join(
+                    b.split(": ", 1)[-1] for b in blockers
+                )
+                print(f"       {row['name_use_id']:<26} {row['review_state']:<11} {mark}")
+
+    print()
+    if satisfied:
+        print(f"  satisfied:      {len(satisfied)} ({', '.join(satisfied)})")
+    if needs_reviewer:
+        print(f"  needs a name:   {len(needs_reviewer)} ({', '.join(needs_reviewer)})")
+        print("                  -> review.py promote <id> --reviewer \"Name\"")
+    if needs_locator:
+        print(f"  needs a source: {len(needs_locator)} ({', '.join(needs_locator)})")
+        print("                  -> find a citation, then --set locator=... and promote")
+
+    # Not an error exit. This is a report about work outstanding, and a build
+    # that failed on it would make the corpus impossible to commit to.
+    return 0
+
+
 def command_show(args) -> int:
     key, id_column = _table_for(args.record_id)
     _, rows = _load(validate.DATA, key)
@@ -217,6 +286,12 @@ def main(argv: list[str] | None = None) -> int:
     queue.add_argument("--verbose", "-v", action="store_true", help="list records and blockers")
     queue.add_argument("--limit", type=int, default=20)
     queue.set_defaults(func=command_queue)
+
+    coverage = sub.add_parser(
+        "coverage", help="fate-class coverage against the reviewed-example criterion"
+    )
+    coverage.add_argument("--verbose", "-v", action="store_true", help="list every row")
+    coverage.set_defaults(func=command_coverage)
 
     show = sub.add_parser("show", help="one record and what blocks its promotion")
     show.add_argument("record_id")
