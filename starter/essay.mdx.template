@@ -36,6 +36,12 @@ import AdaptiveTimeline from '../../components/islands/AdaptiveTimeline.astro';
 import CompareSlider from '../../components/islands/CompareSlider.astro';
 import Scrollytelling from '../../components/islands/Scrollytelling.astro';
 
+# __TITLE__
+
+The essay page renders no title of its own, so this level-1 heading is the page's
+only `<h1>` - keep it, keep it first, and keep it matching the frontmatter `title`.
+Everything below it starts at `##`.
+
 Write your essay in Markdown/MDX here. Import only the islands you need (unused
 imports can be deleted). See `src/content/essays/starter-example.mdx` for a fully
 worked example, and `starter/README.md` for the authoring guide.

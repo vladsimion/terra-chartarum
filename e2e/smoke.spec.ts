@@ -7,6 +7,9 @@ import AxeBuilder from '@axe-core/playwright';
 // `heading: true` routes render their own <h1> in the portal DOM. Legacy essays
 // host their <h1> inside an isolated iframe, so the wrapper has none of its own -
 // its title lives in the essay-bar breadcrumb instead.
+// A native essay is in the set because its <h1> comes from the MDX body rather
+// than the page template, so nothing else here would notice if an essay lost it
+// (src/lib/essay-headings.test.ts pins the same invariant at the source).
 const ROUTES = [
   { path: '/', name: 'home', heading: true },
   { path: '/essays/', name: 'essays gallery', heading: true },
@@ -18,6 +21,7 @@ const ROUTES = [
   { path: '/about/', name: 'about', heading: true },
   { path: '/colophon/', name: 'colophon', heading: true },
   { path: '/bibliography/', name: 'bibliography', heading: true },
+  { path: '/essays/dacia/', name: 'native essay', heading: true },
   { path: '/essays/cartography/', name: 'legacy essay', heading: false },
 ];
 
@@ -30,7 +34,11 @@ test.describe('smoke: core routes render', () => {
       await expect(page.getByRole('banner')).toBeVisible();
       await expect(page.getByRole('contentinfo')).toBeVisible();
       if (heading) {
-        await expect(page.locator('h1').first()).toBeVisible();
+        // Exactly one, not merely at least one: axe's WCAG A/AA tag set leaves
+        // page-has-heading-one on the best-practice shelf, so a page that lost
+        // its <h1> would otherwise pass the a11y suite below in silence.
+        await expect(page.locator('h1')).toHaveCount(1);
+        await expect(page.locator('h1')).toBeVisible();
       } else {
         // Legacy essay: iframe interior carries the heading.
         await expect(page.locator('iframe.essay-frame')).toBeVisible();
