@@ -1,0 +1,13 @@
+proof_id,gate_id,order,status,jira_key,evidence,note
+matthew_paris,research,1,partial,KAN-384,data/crusades/source-audit.csv,"Four witnesses identified, including three manuscripts and Luard's edition. None is verified and every locator reads pending, so the itinerary stages cannot rise above raw."
+matthew_paris,rights,2,pending,KAN-384,data/crusades/source-audit.csv,"Three of the four need a rights review before any image may be shown; the library terms for the digitised manuscripts have not been read."
+matthew_paris,data,3,partial,KAN-385,data/crusades/itinerary-stages.csv,"Fourteen stages compiled with mode, day-marks, evidence class and confidence. All fourteen sit at raw: the validator refuses a stage above raw without the folio it was read from."
+matthew_paris,interaction,4,partial,KAN-386,src/components/islands/ItineraryComparison.astro,"The sequence-to-ground comparison is built, keyboard reachable and driven entirely by the compiled data. The manuscript half is absent because no witness is cleared, so the proof shows the diagram's order and not the diagram."
+matthew_paris,editorial,5,pending,KAN-389,,Prose is drafted as a prototype and has not been read against reviewed evidence by a named editor.
+matthew_paris,release,6,pending,KAN-389,src/content/essays/maps-for-a-crusade.mdx,Essay is held behind releaseAt 2099-01-01 and may not publish while research and rights are open.
+fourth_crusade,research,1,partial,KAN-384,data/crusades/source-audit.csv,"Five sources identified across narrative and diplomatic evidence, covering intent, diversion, both assaults and the partition. None is verified; Choniates is in copyright."
+fourth_crusade,rights,2,pending,KAN-384,data/crusades/source-audit.csv,"Three of the five need a rights review. The public-domain texts still need an edition chosen before a locator can be cited."
+fourth_crusade,data,3,partial,KAN-385,data/crusades/fourth-crusade-states.csv,"Eight records across six state kinds, with claimed and held separated and geometry refused on the partition claim. All eight sit at raw and every locator reads pending."
+fourth_crusade,interaction,4,partial,KAN-387,src/components/islands/FourthCrusadeStates.astro,"The six states render as six distinct kinds of claim, with claimed and held visibly different. Atlas layers are registered; the feature panels still inherit generic evidence rendering."
+fourth_crusade,editorial,5,pending,KAN-389,,Prose is drafted as a prototype and has not been read against reviewed evidence by a named editor.
+fourth_crusade,release,6,pending,KAN-389,src/content/essays/maps-for-a-crusade.mdx,Essay is held behind releaseAt 2099-01-01 and may not publish while research and rights are open.

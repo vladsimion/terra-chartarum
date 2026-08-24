@@ -10,6 +10,10 @@ import {
   getItinerary,
   statesOfKind,
   variantStages,
+  getProofGates,
+  getOpenDebts,
+  debtByTicket,
+  gateProgress,
   vmnReferences,
 } from './crusades';
 
@@ -164,5 +168,78 @@ describe('the Atlas reads what the essay reads', () => {
       expect(feature.properties.held).toBe(state.held);
       expect(feature.properties.confidence).toBe(state.confidence);
     }
+  });
+});
+
+describe('the flagship records why it is stopped (KAN-384, KAN-385)', () => {
+  /**
+   * The Dacia programme records why a trench is stopped and which ticket owns
+   * each gate. This pilot recorded neither, so five open tickets read as
+   * blocked for no stated reason - the condition the debt register exists to
+   * end. The registers are validated in `scripts/crusades/validate.py`; these
+   * assert the compiled shape the essay actually renders.
+   */
+  const gates = getProofGates();
+  const debts = getOpenDebts();
+
+  it('gives both proofs all six gates', () => {
+    const proofs = [...new Set(gates.map((g) => g.proof))];
+    expect(proofs.sort()).toEqual(['fourth_crusade', 'matthew_paris']);
+    for (const proof of proofs) {
+      const forProof = gates.filter((g) => g.proof === proof);
+      expect(forProof.map((g) => g.gate).sort(), proof).toEqual([
+        'data',
+        'editorial',
+        'interaction',
+        'release',
+        'research',
+        'rights',
+      ]);
+    }
+  });
+
+  it('never claims a gate has passed while the corpus is untranscribed', () => {
+    // The single fact this whole register exists to keep honest. Every locator
+    // reads `pending`, so nothing may report as done.
+    expect(gates.filter((g) => g.status === 'passed')).toEqual([]);
+  });
+
+  it('names the ticket that owns every gate', () => {
+    for (const gate of gates) {
+      expect(gate.jiraKey, `${gate.proof}:${gate.gate}`).toMatch(/^KAN-\d+$/);
+    }
+  });
+
+  it('reaches every ticket in this batch from the debt that blocks it', () => {
+    const tickets = debtByTicket().map(({ ticket }) => ticket);
+    for (const ticket of ['KAN-384', 'KAN-385', 'KAN-386', 'KAN-387', 'KAN-389']) {
+      expect(tickets, ticket).toContain(ticket);
+    }
+  });
+
+  it('gives every open item a gate to block and a way out', () => {
+    const pairs = new Set(gates.map((g) => `${g.proof}:${g.gate}`));
+    expect(debts.length).toBeGreaterThan(0);
+    for (const debt of debts) {
+      // An open item blocking nothing reaches no ticket, and is how an
+      // outstanding item is lost while still marked open.
+      expect(debt.blocks.length, debt.id).toBeGreaterThan(0);
+      for (const target of debt.blocks) expect(pairs, debt.id).toContain(target);
+      // A blocker with no route out is a complaint, not verification debt.
+      expect(debt.resolutionPath.length, debt.id).toBeGreaterThan(20);
+    }
+  });
+
+  it('separates rights debt from research debt', () => {
+    // The difference between work nobody has done and work nobody is permitted
+    // to publish. Collapsing them would make the rights blockers look like
+    // effort rather than permission.
+    const kinds = new Set(debts.map((d) => d.kind));
+    expect(kinds).toContain('rights');
+    expect(kinds).toContain('verification');
+  });
+
+  it('reports no progress it has not made', () => {
+    for (const { passed } of gateProgress()) expect(passed).toBe(0);
   });
 });

@@ -148,3 +148,82 @@ export function vmnReferences(): string[] {
     ),
   ].sort();
 }
+
+/**
+ * The flagship's gate state, and what is holding each gate (KAN-384 / KAN-385).
+ *
+ * The Dacia programme records why a trench is stopped and which ticket owns
+ * each gate; this pilot recorded neither, so its open tickets read as blocked
+ * for no stated reason. The registers are `data/crusades/reference/gates.csv`
+ * and `verification-debt.csv`, joined by a `<proof>:<gate>` key, and the
+ * validator enforces the join in both directions - an open item must name a
+ * gate, and a gate below `passed` must have something naming it.
+ */
+export interface ProofGate {
+  proof: string;
+  gate: string;
+  order: number;
+  status: 'pending' | 'partial' | 'passed' | 'waived';
+  jiraKey: string;
+  evidence: string | null;
+  note: string;
+}
+
+export interface CrusadesDebt {
+  id: string;
+  kind: 'verification' | 'rights';
+  statement: string;
+  /** `<proof>:<gate>` keys this item blocks. */
+  blocks: string[];
+  resolutionPath: string;
+  status: string;
+}
+
+const GATES = pilot.gates as ProofGate[];
+const DEBTS = pilot.debts as CrusadesDebt[];
+
+export function getProofGates(): ProofGate[] {
+  return [...GATES];
+}
+
+/** Open verification and rights debt. Resolved items are not compiled in. */
+export function getOpenDebts(): CrusadesDebt[] {
+  return [...DEBTS];
+}
+
+/**
+ * Debt grouped by the Jira ticket that owns the gate it blocks.
+ *
+ * Grouped by ticket rather than by item for the reason `review.py blocked`
+ * gives: one item blocking four tickets and four items blocking one ticket are
+ * different situations, and only the ticket-shaped view says which you have.
+ */
+export function debtByTicket(): Array<{ ticket: string; debts: CrusadesDebt[] }> {
+  const owner = new Map(GATES.map((g) => [`${g.proof}:${g.gate}`, g.jiraKey]));
+  const byTicket = new Map<string, CrusadesDebt[]>();
+  for (const debt of DEBTS) {
+    for (const target of debt.blocks) {
+      const ticket = owner.get(target);
+      if (!ticket) continue;
+      const list = byTicket.get(ticket) ?? [];
+      if (!list.includes(debt)) list.push(debt);
+      byTicket.set(ticket, list);
+    }
+  }
+  return [...byTicket.entries()]
+    .map(([ticket, debts]) => ({ ticket, debts }))
+    .sort((a, b) => a.ticket.localeCompare(b.ticket));
+}
+
+/** How far each proof has come, as a count of gates that have actually passed. */
+export function gateProgress(): Array<{ proof: string; passed: number; total: number }> {
+  const proofs = [...new Set(GATES.map((g) => g.proof))].sort();
+  return proofs.map((proof) => {
+    const gates = GATES.filter((g) => g.proof === proof);
+    return {
+      proof,
+      passed: gates.filter((g) => g.status === 'passed').length,
+      total: gates.length,
+    };
+  });
+}

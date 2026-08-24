@@ -1,0 +1,293 @@
+---
+/**
+ * The Sea proof: six things a single route line would destroy (KAN-387).
+ *
+ * The Fourth Crusade is usually drawn as one line through Venice, Zara and
+ * Constantinople. Six different claims get collapsed into that line: what the
+ * crusade contracted for, what it was diverted to, where the fleet actually
+ * went, what it attacked, what a treaty assigned it, and what anyone eventually
+ * held. Only one of the six kinds is a journey, and only its two records carry
+ * geometry; the other six records carry none.
+ *
+ * The hardest of them is the Partitio Romaniae, which divided an empire among
+ * people who held very little of it. Drawing the assignment would republish the
+ * document's wishful thinking as geography, so the validator refuses geometry on
+ * a partition claim and this island renders claimed and held as visibly
+ * different kinds of statement rather than as two shades of the same one.
+ *
+ * Six of the eight records are therefore on no layer. That is recorded as a fact about
+ * the evidence, not hidden as an absence: a reader who counts the lines and the
+ * states should find the difference explained rather than notice it.
+ */
+import { getFourthCrusadeStates, claimedAgainstHeld, vmnReferences } from '../../lib/crusades';
+
+const states = getFourthCrusadeStates();
+const { claimed, held } = claimedAgainstHeld();
+const vmn = vmnReferences();
+const withoutGeometry = states.filter((state) => state.geometry === null);
+const kindCount = new Set(states.map((state) => state.stateKind)).size;
+
+const KIND_LABELS: Record<string, string> = {
+  intended_destination: 'Intended destination',
+  negotiated_diversion: 'Negotiated diversion',
+  travelled_route: 'Travelled route',
+  attack: 'Attack',
+  partition_claim: 'Partition claim',
+  durable_control: 'Durable control',
+};
+
+// What each kind actually asserts. Written out because the difference between
+// "assigned" and "occupied" is the whole proof, and a label alone does not
+// carry it.
+const KIND_CLAIMS: Record<string, string> = {
+  intended_destination: 'A clause in a contract. Not a place the fleet approached.',
+  negotiated_diversion: 'A change of terms, agreed under debt. Not a course correction.',
+  travelled_route: 'Where the ships went, generalised between ports.',
+  attack: 'An assault at a place, on a date.',
+  partition_claim: 'What a treaty assigned. Not what anyone occupied.',
+  durable_control: 'What was actually held, and for how long.',
+};
+
+const HELD_LABELS: Record<string, string> = {
+  held: 'held',
+  claimed_not_held: 'claimed, not held',
+  not_applicable: 'not a territorial claim',
+};
+
+function dateLabel(state: (typeof states)[number]): string {
+  return state.dateFrom === state.dateTo ? state.dateFrom : `${state.dateFrom} – ${state.dateTo}`;
+}
+---
+
+<figure class="states" data-fourth-crusade>
+  <div class="states-legend">
+    <p class="states-intro">
+      {states.length} records across {kindCount} kinds, in sequence. Two carry a line; the other{
+        ' '
+      }
+      {withoutGeometry.length} carry none, because the claims they record are not journeys.
+    </p>
+  </div>
+
+  <ol class="states-list">
+    {
+      states.map((state) => (
+        <li>
+          <article
+            class:list={['state', `is-${state.stateKind}`, `held-${state.held}`]}
+            data-state={state.id}
+          >
+            <header class="state-head">
+              <span class="state-kind">{KIND_LABELS[state.stateKind] ?? state.stateKind}</span>
+              <span class="state-date">{dateLabel(state)}</span>
+            </header>
+
+            <h4 class="state-title">{state.title}</h4>
+            <p class="state-claim">{KIND_CLAIMS[state.stateKind]}</p>
+            <p class="state-note">{state.notes}</p>
+
+            <dl class="state-evidence">
+              <div>
+                <>
+                  <dt>Territory</dt>
+                  <dd class="state-held" data-held={state.held}>
+                    {HELD_LABELS[state.held]}
+                  </dd>
+                </>
+              </div>
+              <div>
+                <>
+                  <dt>Geometry</dt>
+                  <dd>
+                    {state.geometry === null ? (
+                      <em>none - deliberately unmapped</em>
+                    ) : (
+                      state.geometryProvenance.replaceAll('_', ' ')
+                    )}
+                  </dd>
+                </>
+              </div>
+              <div>
+                <>
+                  <dt>Evidence</dt>
+                  <dd>{state.evidenceClass.replaceAll('_', ' ')}</dd>
+                </>
+              </div>
+              <div>
+                <>
+                  <dt>Confidence</dt>
+                  <dd>{state.confidence}</dd>
+                </>
+              </div>
+              <div>
+                <>
+                  <dt>Locator</dt>
+                  <dd>
+                    {state.sourceLocator === 'pending' ? (
+                      <em>not transcribed</em>
+                    ) : (
+                      state.sourceLocator
+                    )}
+                  </dd>
+                </>
+              </div>
+              {state.vmnReference && (
+                <div>
+                  <>
+                    <dt>Reuses</dt>
+                    <dd>
+                      <code>{state.vmnReference}</code>
+                    </dd>
+                  </>
+                </div>
+              )}
+            </dl>
+          </article>
+        </li>
+      ))
+    }
+  </ol>
+
+  <figcaption>
+    <strong>
+      Territory assigned: {claimed.length} record. Territory actually held: {held.length}.
+    </strong>{' '}
+    The Partitio Romaniae is recorded as claimed and carries no geometry at all - the data model refuses
+    it, because drawing an assignment the way an occupation is drawn publishes a treaty's ambition as
+    a fact about the ground. Where the campaign crosses water the Venetian Maritime Network already publishes,
+    this pilot points at {vmn.length} of its layers ({vmn.join(', ')}) rather than re-authoring
+    them. Every locator in this table still reads <em>pending</em>: the narratives are identified
+    and no folio or page has been transcribed.
+  </figcaption>
+</figure>
+
+<style>
+  .states {
+    margin: 2.5rem 0;
+    padding: 1.25rem;
+    border: 1px solid var(--rule, #3a3226);
+    border-radius: 4px;
+    background: var(--surface-raised, #17130e);
+  }
+
+  .states-intro {
+    margin: 0 0 1.25rem;
+    font-size: 0.87rem;
+    opacity: 0.8;
+  }
+
+  .states-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.85rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  @media (min-width: 52rem) {
+    .states-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .state {
+    height: 100%;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--rule, #3a3226);
+    border-left-width: 3px;
+    border-radius: 3px;
+  }
+
+  /* The three kinds that are not journeys read differently on purpose. A
+     partition claim in particular must not look like a route with a line
+     missing. */
+  .state.is-partition_claim {
+    border-left-style: dashed;
+    border-left-color: var(--gold, #d4b87a);
+  }
+
+  .state.is-durable_control {
+    border-left-color: var(--gold, #d4b87a);
+  }
+
+  .state.is-travelled_route {
+    border-left-color: color-mix(in srgb, var(--ink, #e8dcc8) 55%, transparent);
+  }
+
+  .state.is-attack {
+    border-left-color: color-mix(in srgb, var(--ink, #e8dcc8) 30%, transparent);
+  }
+
+  .state-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  .state-title {
+    margin: 0.4rem 0 0.3rem;
+    font-size: 1rem;
+  }
+
+  .state-claim {
+    margin: 0 0 0.5rem;
+    font-size: 0.83rem;
+    font-style: italic;
+    opacity: 0.85;
+  }
+
+  .state-note {
+    margin: 0 0 0.75rem;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    opacity: 0.8;
+  }
+
+  .state-evidence {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 1.25rem;
+    margin: 0;
+    font-size: 0.75rem;
+  }
+
+  .state-evidence div {
+    display: flex;
+    gap: 0.35rem;
+  }
+
+  .state-evidence dt {
+    opacity: 0.55;
+  }
+
+  .state-evidence dd {
+    margin: 0;
+  }
+
+  /* Claimed and held are the two words this proof turns on, so they are the
+     two that are never allowed to look alike. */
+  .state-held[data-held='claimed_not_held'] {
+    color: var(--gold, #d4b87a);
+    font-style: italic;
+  }
+
+  .state-held[data-held='held'] {
+    color: var(--gold, #d4b87a);
+    font-weight: 600;
+  }
+
+  figcaption {
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule, #3a3226);
+    font-size: 0.8rem;
+    line-height: 1.55;
+    opacity: 0.72;
+  }
+</style>
