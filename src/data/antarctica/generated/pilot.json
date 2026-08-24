@@ -449,8 +449,10 @@
     }
   ],
   "layerIds": [
-    "antarctica-pilot-tracks",
-    "antarctica-pilot-observations"
+    "antarctica-conjectured-south",
+    "antarctica-expedition-tracks",
+    "antarctica-observations",
+    "antarctica-ghost-geographies"
   ],
   "phases": [
     {

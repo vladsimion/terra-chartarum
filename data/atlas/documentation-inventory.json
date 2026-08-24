@@ -443,16 +443,28 @@
         "note": "The only fully covered layer: a dedicated source ledger with instruments, interpretation, confidence, geometry rule and rights posture, plus the shared family method. KAN-413 gold standard."
       },
       {
-        "layerId": "antarctica-pilot-tracks",
+        "layerId": "antarctica-conjectured-south",
         "coverage": "covered",
         "missing": [],
-        "note": "Born after the KAN-418 cutover rather than migrated through it: the layer shipped with a public Handbook record already in place, so it has no legacy documentationLinks to classify and nothing to migrate. Covered by /atlas/layers/antarctica-pilot-tracks/ and the shared Antarctic data fields."
+        "note": "Born after the KAN-418 cutover rather than migrated through it: the layer shipped with a public Handbook record already in place, so it has no legacy documentationLinks to classify and nothing to migrate. Covered by /atlas/layers/antarctica-conjectured-south/ and the shared Antarctic data fields."
       },
       {
-        "layerId": "antarctica-pilot-observations",
+        "layerId": "antarctica-expedition-tracks",
         "coverage": "covered",
         "missing": [],
-        "note": "Born after the KAN-418 cutover rather than migrated through it: the layer shipped with a public Handbook record already in place, so it has no legacy documentationLinks to classify and nothing to migrate. Covered by /atlas/layers/antarctica-pilot-observations/ and the shared Antarctic data fields."
+        "note": "Born after the KAN-418 cutover rather than migrated through it: the layer shipped with a public Handbook record already in place, so it has no legacy documentationLinks to classify and nothing to migrate. Covered by /atlas/layers/antarctica-expedition-tracks/ and the shared Antarctic data fields."
+      },
+      {
+        "layerId": "antarctica-observations",
+        "coverage": "covered",
+        "missing": [],
+        "note": "Born after the KAN-418 cutover rather than migrated through it: the layer shipped with a public Handbook record already in place, so it has no legacy documentationLinks to classify and nothing to migrate. Covered by /atlas/layers/antarctica-observations/ and the shared Antarctic data fields."
+      },
+      {
+        "layerId": "antarctica-ghost-geographies",
+        "coverage": "covered",
+        "missing": [],
+        "note": "Born after the KAN-418 cutover rather than migrated through it: the layer shipped with a public Handbook record already in place, so it has no legacy documentationLinks to classify and nothing to migrate. Covered by /atlas/layers/antarctica-ghost-geographies/ and the shared Antarctic data fields."
       }
     ]
   },

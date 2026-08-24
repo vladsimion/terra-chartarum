@@ -138,8 +138,10 @@ describe('taxonomy is additive: no stable contract changes', () => {
       'dacia-principalities',
       'dacia-josephinian-sheets',
       'dacia-treaty-frontiers',
-      'antarctica-pilot-tracks',
-      'antarctica-pilot-observations',
+      'antarctica-conjectured-south',
+      'antarctica-expedition-tracks',
+      'antarctica-observations',
+      'antarctica-ghost-geographies',
     ]);
   });
 

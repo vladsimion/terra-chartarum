@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "geo-c3c685ef9b99e8f5",
+  "release": "geo-e8bc36deffbb924c",
   "generatedBy": "scripts/geo-release.mjs",
   "assets": [
     {
@@ -366,28 +366,46 @@
       "url": "/geo/dacia-treaty-frontiers.geojson?v=3442e0999d7b"
     },
     {
-      "id": "antarctica-pilot-tracks",
-      "file": "antarctica-pilot-tracks.geojson",
+      "id": "antarctica-conjectured-south",
+      "file": "antarctica-conjectured-south.geojson",
       "format": "geojson",
       "crs": "EPSG:4326",
       "geometry": [
-        "LineString",
         "Polygon"
       ],
-      "featureCount": 6,
+      "featureCount": 1,
       "yearFrom": 1531,
-      "yearTo": 1916,
+      "yearTo": 1775,
       "source": "Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-423",
       "license": "CC BY 4.0",
-      "attribution": "Terra Chartarum; each source and map object carries its own rights status; no object is cleared for reproduction",
-      "bytes": 8198,
-      "sha256": "2f67d2e622ad92c4ece8a8c25fce86b30475a7de20a4ee46b784e71841c4e2a9",
-      "version": "2f67d2e622ad",
-      "url": "/geo/antarctica-pilot-tracks.geojson?v=2f67d2e622ad"
+      "attribution": "Terra Chartarum; schematic envelope, declared editorial generalisation",
+      "bytes": 1767,
+      "sha256": "c74025cce9b909313691c76d1e49d4781d7441019770c572de5ccea3ddbb9960",
+      "version": "c74025cce9b9",
+      "url": "/geo/antarctica-conjectured-south.geojson?v=c74025cce9b9"
     },
     {
-      "id": "antarctica-pilot-observations",
-      "file": "antarctica-pilot-observations.geojson",
+      "id": "antarctica-expedition-tracks",
+      "file": "antarctica-expedition-tracks.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": [
+        "LineString"
+      ],
+      "featureCount": 5,
+      "yearFrom": 1773,
+      "yearTo": 1916,
+      "source": "Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-428",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; sampled and generalised linework, each segment declaring its provenance",
+      "bytes": 6485,
+      "sha256": "7f4315b65398069a334d43a3508bcb11eec8bf34652ae9441bad18f4ff96dcb4",
+      "version": "7f4315b65398",
+      "url": "/geo/antarctica-expedition-tracks.geojson?v=7f4315b65398"
+    },
+    {
+      "id": "antarctica-observations",
+      "file": "antarctica-observations.geojson",
       "format": "geojson",
       "crs": "EPSG:4326",
       "geometry": [
@@ -396,13 +414,32 @@
       "featureCount": 19,
       "yearFrom": 1774,
       "yearTo": 1916,
-      "source": "Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-423",
+      "source": "Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-425",
       "license": "CC BY 4.0",
       "attribution": "Terra Chartarum; positions recorded from the general literature and not yet checked against an edition",
       "bytes": 21247,
       "sha256": "e0b9a97439f1b8320ea47827f2d472ac819aa4b43bd7ebb6c90f8b4868ed8af9",
       "version": "e0b9a97439f1",
-      "url": "/geo/antarctica-pilot-observations.geojson?v=e0b9a97439f1"
+      "url": "/geo/antarctica-observations.geojson?v=e0b9a97439f1"
+    },
+    {
+      "id": "antarctica-ghost-geographies",
+      "file": "antarctica-ghost-geographies.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": [
+        "Point"
+      ],
+      "featureCount": 0,
+      "yearFrom": 1531,
+      "yearTo": 1916,
+      "source": "Terra Chartarum (compiled) - Antarctic ghost geographies, KAN-426",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; each ghost feature retains its original claimant and source",
+      "bytes": 52,
+      "sha256": "a55b431e78049bb7fdc7330ffdf2c9f8e87712545ebba199445408d48694225a",
+      "version": "a55b431e7804",
+      "url": "/geo/antarctica-ghost-geographies.geojson?v=a55b431e7804"
     }
   ]
 }

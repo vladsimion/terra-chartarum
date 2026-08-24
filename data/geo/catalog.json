@@ -249,30 +249,56 @@
       "attribution": "Terra Chartarum; instruments after Hertslet and the KAN-351 source ledger; all linework editorial"
     },
     {
-      "id": "antarctica-pilot-tracks",
-      "file": "antarctica-pilot-tracks.geojson",
+      "id": "antarctica-conjectured-south",
+      "file": "antarctica-conjectured-south.geojson",
       "format": "geojson",
       "crs": "EPSG:4326",
-      "geometry": ["LineString", "Polygon"],
-      "featureCount": 6,
+      "geometry": ["Polygon"],
+      "featureCount": 1,
       "yearFrom": 1531,
-      "yearTo": 1916,
+      "yearTo": 1775,
       "source": "Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-423",
       "license": "CC BY 4.0",
-      "attribution": "Terra Chartarum; each source and map object carries its own rights status; no object is cleared for reproduction"
+      "attribution": "Terra Chartarum; schematic envelope, declared editorial generalisation"
     },
     {
-      "id": "antarctica-pilot-observations",
-      "file": "antarctica-pilot-observations.geojson",
+      "id": "antarctica-expedition-tracks",
+      "file": "antarctica-expedition-tracks.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": ["LineString"],
+      "featureCount": 5,
+      "yearFrom": 1773,
+      "yearTo": 1916,
+      "source": "Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-428",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; sampled and generalised linework, each segment declaring its provenance"
+    },
+    {
+      "id": "antarctica-observations",
+      "file": "antarctica-observations.geojson",
       "format": "geojson",
       "crs": "EPSG:4326",
       "geometry": ["Point"],
       "featureCount": 19,
       "yearFrom": 1774,
       "yearTo": 1916,
-      "source": "Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-423",
+      "source": "Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-425",
       "license": "CC BY 4.0",
       "attribution": "Terra Chartarum; positions recorded from the general literature and not yet checked against an edition"
+    },
+    {
+      "id": "antarctica-ghost-geographies",
+      "file": "antarctica-ghost-geographies.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": ["Point"],
+      "featureCount": 0,
+      "yearFrom": 1531,
+      "yearTo": 1916,
+      "source": "Terra Chartarum (compiled) - Antarctic ghost geographies, KAN-426",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; each ghost feature retains its original claimant and source"
     }
   ]
 }

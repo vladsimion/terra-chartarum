@@ -7,15 +7,15 @@
 | Content type         | Count |
 | -------------------- | ----: |
 | Live essays          |     8 |
-| Held essays          |    10 |
+| Held essays          |    11 |
 | Map records          |    59 |
 | Cartographers        |    19 |
 | Bibliography entries |    37 |
 | Toponyms             |    12 |
 | Rooms                |     7 |
-| GIS layers           |    21 |
+| GIS layers           |    23 |
 
-Geo release: `geo-c3c685ef9b99e8f5`.
+Geo release: `geo-e8bc36deffbb924c`.
 
 ## Live essays by primary room
 
@@ -31,15 +31,16 @@ Geo release: `geo-c3c685ef9b99e8f5`.
 
 ## Held essays
 
-| Essay                         | Primary room | Release     |
-| ----------------------------- | ------------ | ----------- |
-| Classification Is Cartography | theatre      | unscheduled |
-| Invisible Maps of Migration   | road         | unscheduled |
-| Invisible Maps of Trade       | road         | unscheduled |
-| Palimpsest Landscapes         | archive      | unscheduled |
-| Projection and Perspective    | map          | unscheduled |
-| Speculum Chartarum            | theatre      | unscheduled |
-| Anatomy of a Native Essay     | map          | unscheduled |
-| The Cartography of Empire     | border       | unscheduled |
-| The Geography of Power        | city         | unscheduled |
-| When Maps Create Countries    | border       | unscheduled |
+| Essay                                              | Primary room | Release     |
+| -------------------------------------------------- | ------------ | ----------- |
+| Classification Is Cartography                      | theatre      | unscheduled |
+| Invisible Maps of Migration                        | road         | unscheduled |
+| Invisible Maps of Trade                            | road         | unscheduled |
+| Palimpsest Landscapes                              | archive      | unscheduled |
+| Projection and Perspective                         | map          | unscheduled |
+| Speculum Chartarum                                 | theatre      | unscheduled |
+| Anatomy of a Native Essay                          | map          | unscheduled |
+| Terra Incognita · The Continent Before It Was Seen | theatre      | unscheduled |
+| The Cartography of Empire                          | border       | unscheduled |
+| The Geography of Power                             | city         | unscheduled |
+| When Maps Create Countries                         | border       | unscheduled |

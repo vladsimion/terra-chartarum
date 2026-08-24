@@ -22,21 +22,33 @@ def atlas_features(outputs) -> list[dict]:
     """Both Atlas assets, read back as one list. The split is a rendering
     constraint, so no test should have to care which half a record landed in."""
     features: list[dict] = []
-    for layer in (build.LAYER_LINES, build.LAYER_POINTS):
+    for layer in build.ATLAS_LAYERS:
         payload = json.loads(outputs[build.GEO_DIR / f"{layer}.geojson"])
         features.extend(payload["features"])
     return features
 
 
-def test_the_two_assets_partition_the_mappable_records():
+def test_the_family_partitions_the_mappable_records():
+    """Four layers, and every mappable record in exactly one of them."""
     outputs = build.build_outputs()
-    lines = json.loads(outputs[build.GEO_DIR / f"{build.LAYER_LINES}.geojson"])["features"]
-    points = json.loads(outputs[build.GEO_DIR / f"{build.LAYER_POINTS}.geojson"])["features"]
-    assert {f["geometry"]["type"] for f in lines} <= {"LineString", "Polygon"}
-    assert {f["geometry"]["type"] for f in points} == {"Point"}
-    line_ids = {f["properties"]["id"] for f in lines}
-    point_ids = {f["properties"]["id"] for f in points}
-    assert line_ids.isdisjoint(point_ids)
+    seen: dict[str, int] = {}
+    for layer in build.ATLAS_LAYERS:
+        payload = json.loads(outputs[build.GEO_DIR / f"{layer}.geojson"])
+        for feature in payload["features"]:
+            key = feature["properties"]["id"]
+            seen[key] = seen.get(key, 0) + 1
+    assert seen, "no record reached any layer"
+    assert all(count == 1 for count in seen.values())
+    mappable = {r["id"] for r in build.project() if r["geometry"] is not None}
+    assert set(seen) == mappable
+
+
+def test_the_ghost_layer_is_empty_on_purpose():
+    outputs = build.build_outputs()
+    ghosts = json.loads(outputs[build.GEO_DIR / f"{build.LAYER_GHOSTS}.geojson"])
+    assert ghosts["features"] == []
+    # There are ghost records; none of them has a located position.
+    assert any(r["kind"] == "ghost" for r in build.project())
 
 
 def test_build_is_deterministic():
