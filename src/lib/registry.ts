@@ -119,6 +119,28 @@ export const CROSSWALK: Record<string, Partial<Record<CanonicalDimension, number
   Measure: { measure: 1 },
   Use: { use: 1 },
   Power: { power: 1 },
+  // Terra Incognita (ANT-12). Latin axes, as Dacia's are; `auctoritas` is
+  // already mapped above and is deliberately shared with Dacia rather than
+  // duplicated, because it means the same thing in both essays.
+  //
+  // The mappings follow the essay's own argument: a coastline deduced rather
+  // than seen is a cosmographic claim standing in for an absence of evidence;
+  // an observation is a witnessed position with an instrument behind it; a
+  // ghost geography is a witness report that later proved empty; and a drift is
+  // a position that keeps changing while nobody is navigating, which is a
+  // measurement problem and a witnessing one at once.
+  conjectura: { cosmos: 0.75, silence: 0.25 },
+  observatio: { witness: 0.75, measure: 0.25 },
+  error: { witness: 0.5, silence: 0.5 },
+  deriva: { measure: 0.5, witness: 0.5 },
+  // Maps for a Crusade (CRU-6). An itinerary is a journey made usable rather
+  // than a space measured; a contract and a diversion are both exercises of
+  // power over where a fleet goes; and dominium is the distinction the whole
+  // prototype protects, between a claim and a possession.
+  itinerarium: { use: 0.75, cosmos: 0.25 },
+  contractus: { power: 0.5, use: 0.5 },
+  deviatio: { power: 0.75, use: 0.25 },
+  dominium: { power: 1 },
 };
 
 export interface LensAuditEssay {

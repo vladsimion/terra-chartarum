@@ -1,0 +1,78 @@
+---
+/**
+ * A prose or figure link that opens the Atlas on a named composition
+ * (ANT-5 / ANT-10, KAN-424 / KAN-429).
+ *
+ * Two things make this safer than writing the URL by hand.
+ *
+ * First, the layer IDs are checked against the registry at build time. A link
+ * to a layer that was renamed or never existed fails `astro build` instead of
+ * shipping a composition that silently draws nothing - which is the failure
+ * mode that matters here, because an Atlas that opens with an empty map looks
+ * like a working link to a reader.
+ *
+ * Second, the query is built by `atlasDeepLink`, which is the same contract the
+ * share button writes and the map reads. Essay links and shared links therefore
+ * cannot drift apart.
+ *
+ * `collection` is context and never activates anything, so a link that means
+ * "show these layers" has to list them in `layers` - see `atlas-share.ts`.
+ */
+import { atlasDeepLink, type AtlasShareLens } from '../lib/atlas-share';
+import { GEO_LAYERS } from '../lib/geo';
+
+interface Props {
+  /** Layers to switch on. These, and only these, decide what is drawn. */
+  layers?: string[];
+  /** Collection context. Shown as provenance for the view; activates nothing. */
+  collection?: string;
+  /** Layer to inspect. Focus is not activation, so this draws nothing by itself. */
+  layer?: string;
+  year?: number;
+  feature?: string;
+  lens?: AtlasShareLens;
+  /** Extra class for the anchor, so callers can place it without :global(). */
+  class?: string;
+}
+
+const { layers = [], collection, layer, year, feature, lens, class: className } = Astro.props;
+
+const known = new Set(GEO_LAYERS.map((entry) => entry.id));
+const unknown = [...layers, ...(layer ? [layer] : [])].filter((id) => !known.has(id));
+if (unknown.length > 0) {
+  throw new Error(
+    `AtlasDeepLink names ${unknown.length === 1 ? 'a layer' : 'layers'} that the registry does ` +
+      `not define: ${unknown.join(', ')}. A deep link to a layer that does not exist opens an ` +
+      'empty map and reads as a working link.',
+  );
+}
+
+const href = atlasDeepLink({
+  layers: layers.length ? layers : undefined,
+  collection,
+  layer,
+  year,
+  feature,
+  lens,
+});
+---
+
+<a class:list={['atlas-deep-link', className]} href={href} data-atlas-deep-link>
+  <slot />
+  <span class="adl-arrow" aria-hidden="true">&#8594;</span>
+</a>
+
+<style>
+  .atlas-deep-link {
+    /* Not a button. It is a cross-reference, and it should read as one in a
+       paragraph as well as under a figure. */
+    font-weight: 600;
+    text-underline-offset: 0.15em;
+  }
+
+  .adl-arrow {
+    /* Kept out of the accessible name: the link text already says where it
+       goes, and "→" read aloud is noise. */
+    margin-inline-start: 0.25em;
+  }
+</style>

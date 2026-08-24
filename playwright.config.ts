@@ -16,6 +16,11 @@ const CROSS_BROWSER_TESTS = /flows\.spec\.ts/;
 
 export default defineConfig({
   testDir: './e2e',
+  // The held-essay preview needs a build with SHOW_UNRELEASED=1 and has its own
+  // config and port. Running it here would check a page against a build whose
+  // whole purpose is to lift the hold this suite proves. See
+  // playwright.held.config.ts.
+  testIgnore: /held-preview\.spec\.ts/,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,

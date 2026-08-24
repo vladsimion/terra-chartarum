@@ -11,6 +11,8 @@ import {
   getPublicRecords,
   getRecordsByAct,
   getRecordsByEvidenceClass,
+  atlasLayersFor,
+  layerForRecord,
   getCoastlineChronology,
   getPhases,
   getPriorityContest,
@@ -339,5 +341,54 @@ describe('the Atlas family partitions the mappable records', () => {
     const ids = observations.features.map((f) => f.properties.id as string);
     expect(ids).not.toContain('ant-ftr-terra-australis-conjectured');
     expect(observations.features.every((f) => f.geometry.type === 'Point')).toBe(true);
+  });
+});
+
+describe('Atlas composition for a deep link (KAN-424 / KAN-429)', () => {
+  const LAYERS = [
+    'antarctica-conjectured-south',
+    'antarctica-expedition-tracks',
+    'antarctica-observations',
+    'antarctica-ghost-geographies',
+  ];
+
+  it('reproduces the compiled GeoJSON split exactly', () => {
+    // The rule lives twice - in build.py and in layerForRecord - because the
+    // essay must resolve a layer without running Python. This is what stops the
+    // two copies from drifting: a deep link that names a layer the record is no
+    // longer on opens an Atlas with nothing on it, and looks like it worked.
+    for (const layer of LAYERS) {
+      const compiled = (
+        JSON.parse(readFileSync(`public/geo/${layer}.geojson`, 'utf8')) as {
+          features: AtlasFeature[];
+        }
+      ).features
+        .map((feature) => feature.properties.id as string)
+        .sort();
+      const derived = getAntarcticRecords()
+        .filter((record) => layerForRecord(record) === layer)
+        .map((record) => record.id)
+        .sort();
+      expect(derived, layer).toEqual(compiled);
+    }
+  });
+
+  it('gives a record with no geometry no layer at all', () => {
+    for (const record of getAntarcticRecords()) {
+      if (record.geometry === null) expect(layerForRecord(record), record.id).toBeNull();
+    }
+    // Every ghost is non-spatial, so asking for the ghosts yields no layer
+    // rather than the empty ghost layer - there is nothing there to switch on.
+    expect(atlasLayersFor(getGhostRecords().map((ghost) => ghost.id))).toEqual([]);
+  });
+
+  it('resolves the Cook transition to its two layers', () => {
+    expect(
+      atlasLayersFor(['ant-ftr-terra-australis-conjectured', 'ant-trk-cook-resolution']),
+    ).toEqual(['antarctica-conjectured-south', 'antarctica-expedition-tracks']);
+  });
+
+  it('refuses an unknown record rather than returning an empty composition', () => {
+    expect(() => atlasLayersFor(['ant-obs-does-not-exist'])).toThrow('Unknown Antarctic record');
   });
 });

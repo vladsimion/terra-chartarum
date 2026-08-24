@@ -2010,6 +2010,18 @@ const payload = {
       if (sharedState.feature) {
         focusFeatureTarget(sharedState.feature, [...wanted]);
       }
+      // The panel has to be redrawn here, at the end, and not only by the
+      // caller (KAN-424).
+      //
+      // This function is async and `map.on('load')` cannot await it, so the
+      // caller's `renderActiveLayers()` runs during the first `await
+      // addGeoLayer(...)` in the loop above - when exactly one requested layer
+      // has joined `activeLayers`. A deep link naming two layers therefore drew
+      // both on the map but listed only the first in Active Layers, which is
+      // also the reader's only way to remove one. Rendering again once the loop
+      // has finished makes the panel agree with the map whatever the
+      // interleaving.
+      renderActiveLayers();
     };
 
     // Deep-link support: /atlas/#<map-id> flies to and opens that pin (KAN-68);
@@ -2273,6 +2285,12 @@ const payload = {
         ...ids.map((id) => {
           const item = document.createElement('li');
           item.className = 'aal-item';
+          // The composition has to be readable by something other than a human
+          // eye (KAN-424/KAN-432). Until this existed the only record of which
+          // layers were on was the visible title text, so a test asserting
+          // "nothing is active" matched zero elements whether the map was empty
+          // or full, and passed either way.
+          item.dataset.activeLayer = id;
           const title = layerTitle(id);
           const name = document.createElement('span');
           name.className = 'aal-name';

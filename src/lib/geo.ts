@@ -1083,6 +1083,12 @@ const RAW: unknown[] = [
     // source - so nothing is on by default and nothing may be cited as
     // established. The two KAN-423 pilot IDs are retired here; the migration is
     // recorded in docs/antarctica/atlas-family.md.
+    //
+    // All four name `terra-incognita` in `essaySlugs` even though the essay is
+    // held (KAN-429). The catalogue filters that list against released essays,
+    // so the back-link is withheld today and appears by itself on the build
+    // after the hold lifts. An empty array would have needed somebody to
+    // remember, on release day, that four registry entries were waiting.
     id: 'antarctica-conjectured-south',
     role: 'historical',
     category: 'territories-boundaries',
@@ -1112,7 +1118,7 @@ const RAW: unknown[] = [
     source: 'Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-423',
     license: 'CC BY 4.0',
     attribution: 'Terra Chartarum; schematic envelope, declared editorial generalisation',
-    essaySlugs: [],
+    essaySlugs: ['terra-incognita'],
     geometry: 'line',
     color: '#8a8070',
     perFeatureTime: true,
@@ -1161,7 +1167,7 @@ const RAW: unknown[] = [
     license: 'CC BY 4.0',
     attribution:
       'Terra Chartarum; sampled and generalised linework, each segment declaring its provenance',
-    essaySlugs: [],
+    essaySlugs: ['terra-incognita'],
     geometry: 'line',
     color: '#7d93ad',
     perFeatureTime: true,
@@ -1216,7 +1222,7 @@ const RAW: unknown[] = [
     license: 'CC BY 4.0',
     attribution:
       'Terra Chartarum; positions recorded from the general literature and not yet checked against an edition',
-    essaySlugs: [],
+    essaySlugs: ['terra-incognita'],
     geometry: 'circle',
     color: '#c9a227',
     perFeatureTime: true,
@@ -1265,7 +1271,7 @@ const RAW: unknown[] = [
     source: 'Terra Chartarum (compiled) - Antarctic ghost geographies, KAN-426',
     license: 'CC BY 4.0',
     attribution: 'Terra Chartarum; each ghost feature retains its original claimant and source',
-    essaySlugs: [],
+    essaySlugs: ['terra-incognita'],
     geometry: 'circle',
     color: '#b0563f',
     perFeatureTime: true,
