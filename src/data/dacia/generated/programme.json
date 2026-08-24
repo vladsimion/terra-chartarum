@@ -318,7 +318,7 @@
       "kind": "trench",
       "label": "In Manibvs · Dacia in the Cabinet",
       "note": "physically inspected sheets only",
-      "openDebts": 0,
+      "openDebts": 3,
       "room": "archive",
       "state": "planned"
     },
@@ -399,7 +399,7 @@
     }
   ],
   "generatedBy": "scripts/dacia/build.py",
-  "openDebts": 14,
+  "openDebts": 17,
   "programmeId": "ccd",
   "release": "cnd-0.1",
   "schemaVersion": 1,

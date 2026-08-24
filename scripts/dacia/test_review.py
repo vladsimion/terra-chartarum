@@ -247,3 +247,68 @@ def test_blocked_ignores_resolved_debt(dataset, capsys):
 
     review.main(["blocked"])
     assert target not in capsys.readouterr().out
+
+
+def test_reconcile_reports_the_cycle_against_its_own_criteria(dataset, capsys):
+    """KAN-371 checks the programme as a whole, not one ticket at a time.
+
+    The value is in failing usefully. Almost every trench is blocked on human
+    review, so a reconciliation that could only print "not ready" would say
+    nothing about which part is not ready or how far off it is. Each criterion
+    reports a count against its target.
+    """
+    assert review.main(["reconcile"]) == 0
+    out = capsys.readouterr().out
+
+    # Every criterion prints a verdict, and both verdicts are reachable: a
+    # report that could only say PASS would pass an empty programme.
+    assert "[PASS]" in out
+    assert "[OPEN]" in out
+    assert re.search(r"\d+/\d+ criteria met\.", out), out
+
+    # Every trench in the register appears in the per-trench table. A
+    # reconciliation that quietly drops a trench is the failure it exists to
+    # catch.
+    with (validate.DATA / "reference" / "programme-ids.csv").open(
+        encoding="utf-8", newline=""
+    ) as handle:
+        trenches = [row for row in csv.DictReader(handle) if row["kind"] == "trench"]
+    assert trenches
+    for trench in trenches:
+        assert re.search(rf"^    {re.escape(trench['id'])}\s", out, re.MULTILINE), trench["id"]
+
+
+def test_reconcile_does_not_call_an_unreleased_cycle_closed(dataset, capsys):
+    """The one result that must never be wrong.
+
+    Not a trench has passed its release gate, and the programme's closing
+    ticket asks whether the cycle is done. A reconciliation that reported this
+    programme as closed would be worse than not having one.
+    """
+    review.main(["reconcile"])
+    out = capsys.readouterr().out
+    assert "The cycle does not close yet" in out
+
+    match = re.search(r"(\d+)/(\d+) criteria met\.", out)
+    assert match, out
+    met, total = int(match.group(1)), int(match.group(2))
+    assert met < total
+
+
+def test_reconcile_refuses_to_report_on_tables_that_do_not_validate(dataset, capsys):
+    """Criteria 1 and 3 are the validator's rules, not a second copy of them.
+
+    "Every index reference resolves" and "every trench records all six gates"
+    are already refusals in validate.py. `reconcile` runs that validator first
+    and stops on failure, so reaching the report is the check - and breaking one
+    of those rules has to stop the report rather than be re-detected by it.
+    """
+    path = validate.DATA / "reference" / "programme-ids.csv"
+    text = path.read_text(encoding="utf-8")
+    path.write_text(text.replace(",dacia,live,", ",no-such-essay,live,"), encoding="utf-8")
+
+    assert review.main(["reconcile"]) == 1
+    out = capsys.readouterr().out
+    assert "do not currently validate" in out
+    # And it must not print a verdict on a programme it could not read.
+    assert "criteria met" not in out
