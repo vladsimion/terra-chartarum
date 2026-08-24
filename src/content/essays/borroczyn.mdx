@@ -1,0 +1,108 @@
+---
+title: The Parcel and the Bulldozer
+subtitle: A bounded seam through Bucharest
+summary: >-
+  Borroczyn's cadastral city, a later survey and the present street fabric held
+  apart until their rights, transformations and uncertainties can be inspected.
+cover: /images/rooms/city-cover.webp
+hero: /images/rooms/city-hero.webp
+status: native
+eras: [Modern, Contemporary]
+regions: [Bucharest, Romania]
+lenses: [parcel, street, demolition, uncertainty]
+yearFrom: 1846
+yearTo: 2026
+mapCount: 3
+readingMinutes: 8
+accent: '#a85d48'
+order: 14
+featured: false
+room: city
+secondaryRooms: [archive, border]
+sections:
+  - id: seam
+    title: One seam, not a city
+    room: city
+    secondaryRooms: [map]
+  - id: witnesses
+    title: Three evidence layers
+    room: archive
+    secondaryRooms: [city]
+  - id: objects
+    title: What the object can say
+    room: archive
+    secondaryRooms: [border]
+publishedAt: '2026-08-24'
+updatedAt: '2026-08-24'
+# HELD. The historical source is licensed for teaching, not production, and no
+# parcel-resolution reproduction with publication rights is in the repository.
+# The route stays out of navigation, search and the sitemap until that changes.
+releaseAt: '2099-01-01'
+metaScores:
+  measure: 0.9
+  witness: 0.9
+  use: 0.7
+  cosmos: 0.15
+  power: 0.85
+  silence: 0.55
+---
+
+import Section from '../../components/Section.astro';
+import BorroczynSeam from '../../components/islands/BorroczynSeam.astro';
+
+<p class="essay-kicker">
+  Campaign III prototype · <strong>held pending source rights and measured georeferencing</strong>
+</p>
+
+## A city can be destroyed twice: once on the ground, and once by a comparison that hides how it was made.
+
+The first release is deliberately smaller than Bucharest. It takes one bounded
+Uranus–Antim seam across erased, relocated and surviving fabric. The rectangle
+is an editorial research envelope, not a historical neighbourhood boundary and
+not a cadastral parcel.
+
+<Section id="seam" title="One seam, not a city" rooms={['city', 'map']}>
+
+The selected envelope runs from 26.075° to 26.102° east and 44.417° to 44.437°
+north. It is versioned as `borroczyn-seam-0.1`; expanding it requires a new
+boundary and a new justification. Complete-city coverage is explicitly outside
+this prototype.
+
+The constraint matters because a bounded comparison can make its absences
+legible. A city-wide mosaic would look authoritative before the seams between
+source sheets, survey dates and rights states had been examined.
+
+</Section>
+
+<Section id="witnesses" title="Three evidence layers" rooms={['archive', 'city']}>
+
+The interaction below is a provenance inspector, not yet the spatial reveal.
+It keeps three things separate: the historical raster as received, geometry
+derived after georeferencing, and the present OpenStreetMap reference. The
+historical and derived states remain unavailable because their source cannot be
+published and no pixel control points or residuals can be measured without it.
+
+<BorroczynSeam />
+
+Stereo 70 (`EPSG:3844`) is the working reference plane; the web map is a second,
+explicit transform to `EPSG:3857`. A release needs at least six fit points, two
+independent checks, and recorded RMSE and maximum residuals. Until then the
+blank derived layer is evidence of work not done, not an invitation to infer a
+fit.
+
+</Section>
+
+<Section id="objects" title="What the object can say" rooms={['archive', 'border']}>
+
+Parcels, streets and buildings receive `urb-` identifiers in their own urban
+authority. They may link to Corpus Nominum Daciae places; they do not become
+places merely to borrow a stable ID. Every geometry keeps its source, evidence
+layer, source feature reference, provenance and review state.
+
+The companion In Manibus pipeline applies the same discipline to held maps. A
+catalogue description or scan is not a physical inspection. No `obj-` record is
+compiled until a named inspection has recorded recto and verso, state,
+dimensions, folds or binding traces, colour, repairs or marks, and provenance
+clues, and that inspection has been reviewed.
+
+</Section>

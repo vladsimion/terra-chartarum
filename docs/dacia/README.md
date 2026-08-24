@@ -43,6 +43,12 @@ the seam GeoJSON are hash-frozen in
 These are candidate research packages: a valid table is not a substitute for a
 named scholarly review or a production reuse grant.
 
+Campaign III adds a fail-closed
+[Borroczyn georeferencing contract](./borroczyn-georeferencing.md) and the
+[In Manibus physical-object evidence chain](./in-manibus-inventory.md). Their
+generated packages may be built and tested while held; neither a research-only
+raster nor a catalogue description can cross the production gate by implication.
+
 ## The trench roster
 
 | ID      | Trench                                   | Epic    | Campaign |

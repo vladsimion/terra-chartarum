@@ -777,6 +777,86 @@ def hiatus_timeline() -> dict:
     }
 
 
+def _read_csv(path: Path) -> list[dict[str, str]]:
+    with path.open(encoding="utf-8", newline="") as handle:
+        return [{k: (v or "").strip() for k, v in row.items()} for row in csv.DictReader(handle)]
+
+
+def borroczyn_package() -> dict:
+    """Compile the KAN-357/358/359 seam without weakening its release hold."""
+    georeferencing = json.loads(
+        (REFERENCE / "borroczyn-georeferencing.json").read_text(encoding="utf-8")
+    )
+    seam = json.loads((REFERENCE / "borroczyn-seam.geojson").read_text(encoding="utf-8"))
+    sources = _read_csv(REFERENCE / "borroczyn-seam-sources.csv")
+    urban = _read_csv(DATA / "urban-features.csv")
+    source_by_id = {row["source_id"]: row for row in sources}
+    layers = [
+        {
+            **layer,
+            "title": source_by_id.get(layer["sourceId"], {}).get("title", ""),
+            "rightsStatus": source_by_id.get(layer["sourceId"], {}).get("rights_status", ""),
+            "productionRole": source_by_id.get(layer["sourceId"], {}).get("production_role", ""),
+        }
+        for layer in georeferencing["evidenceLayers"]
+    ]
+    return {
+        "schemaVersion": SCHEMA_VERSION,
+        "generatedBy": "scripts/dacia/build.py",
+        "tickets": ["KAN-357", "KAN-358", "KAN-359"],
+        "studyArea": {
+            "id": seam["metadata"]["studyAreaId"],
+            "version": seam["metadata"]["version"],
+            "completeCityCoverage": seam["metadata"]["completeCityCoverage"],
+            "justification": seam["metadata"]["justification"],
+            "geometry": seam["features"][0]["geometry"],
+        },
+        "status": georeferencing["status"],
+        "publicReady": georeferencing["status"] == "released" and bool(urban),
+        "targetCrs": georeferencing["targetCrs"],
+        "webCrs": georeferencing["webCrs"],
+        "transformationMethod": georeferencing["transformationMethod"],
+        "controlPoints": georeferencing["controlPoints"],
+        "residualMetrics": georeferencing["residualMetrics"],
+        "layers": layers,
+        "urbanAuthority": {
+            "recordCount": len(urban),
+            "featureTypes": sorted({row["feature_type"] for row in urban}),
+            "schemaDecision": georeferencing["schemaDecision"],
+            "geometryPolicy": georeferencing["geometryPolicy"],
+        },
+        "blockers": georeferencing["blockers"],
+    }
+
+
+def in_manibus_package() -> dict:
+    """Compile only records that have crossed the physical-inspection gate."""
+    inspections = _read_csv(REFERENCE / "in-manibus-inspections.csv")
+    objects = _read_csv(DATA / "objects.csv")
+    evidence = _read_csv(DATA / "object-evidence.csv")
+    return {
+        "schemaVersion": SCHEMA_VERSION,
+        "generatedBy": "scripts/dacia/build.py",
+        "tickets": ["KAN-360", "KAN-361"],
+        "status": "reviewed" if objects else "pending_physical_inspection",
+        "publicReady": bool(objects) and all(row["review_state"] in {"approved", "published"} for row in objects),
+        "counts": {
+            "inspections": len(inspections),
+            "reviewedInspections": sum(1 for row in inspections if row["inspection_status"] == "reviewed"),
+            "objects": len(objects),
+            "evidence": len(evidence),
+        },
+        "inspections": sorted(inspections, key=lambda row: row["inspection_id"]),
+        "objects": sorted(objects, key=lambda row: row["object_id"]),
+        "evidence": sorted(evidence, key=lambda row: row["evidence_id"]),
+        "holdReason": (
+            "No sheet enters the corpus until its direct physical inspection has been recorded and reviewed."
+            if not objects
+            else ""
+        ),
+    }
+
+
 def build_outputs() -> dict[Path, bytes]:
     tables = {name: read_table(name) for name in TABLES}
     fieldnames = {
@@ -811,6 +891,8 @@ def build_outputs() -> dict[Path, bytes]:
     outputs[GENERATED_DIR / "trench-a.json"] = canonical_json(trench_a_bridge(tables))
     outputs[GENERATED_DIR / "hiatus-timeline.json"] = canonical_json(hiatus_timeline())
     outputs[GENERATED_DIR / "programme.json"] = canonical_json(programme_graph(tables))
+    outputs[GENERATED_DIR / "borroczyn.json"] = canonical_json(borroczyn_package())
+    outputs[GENERATED_DIR / "in-manibus.json"] = canonical_json(in_manibus_package())
 
     sites, network = roman_dacia_features(tables["places"])
     outputs[GEO_DIR / f"{ROMAN_SITES}.geojson"] = canonical_json(gis_collection(

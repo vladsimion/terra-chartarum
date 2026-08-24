@@ -414,3 +414,24 @@ geometry.
 All five tables and the seam GeoJSON are frozen by path, record IDs/count, and
 SHA-256 in `reference/research-package-manifest.json`. Any substantive change
 requires a dated re-freeze.
+
+## Campaign III authorities (KAN-358, KAN-360, KAN-361)
+
+`reference/borroczyn-georeferencing.json` records the selected seam, source,
+Stereo 70 and web coordinate systems, reproducible transform commands, control
+points, residual metrics, three distinct evidence-layer roles, the urban schema
+decision and active blockers. A package may remain explicitly blocked. A
+`released` package requires six fit points, two independent checks, measured
+RMSE/maximum residuals, and a production-cleared historical source.
+
+`urban-features.csv` owns `urb-` parcels, streets and buildings. It carries a
+WKT geometry with source feature reference, evidence-layer role, source ID,
+geometry provenance, validity and review state. These are urban entities, not
+CND places.
+
+`reference/in-manibus-inspections.csv` records direct physical examination.
+`objects.csv` owns `obj-` collection objects and accepts rows only from reviewed
+inspections. `object-evidence.csv` links objects to CND sources and attestations
+without conflating direct observation, bibliographic identification and
+inference. Header-only tables are valid and mean no object has crossed the
+physical-inspection gate.

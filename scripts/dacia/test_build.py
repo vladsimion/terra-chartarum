@@ -121,3 +121,25 @@ def test_parquet_mirrors_the_csv_row_count():
             io.BytesIO(outputs[build.RELEASE_DIR / f"{table}.parquet"])
         )
         assert parquet.num_rows == csv_rows, f"{table}: parquet and csv disagree"
+
+
+def test_borroczyn_package_reports_the_rights_hold():
+    package = build.borroczyn_package()
+    assert package["status"] == "blocked_pending_witness"
+    assert package["publicReady"] is False
+    assert {layer["role"] for layer in package["layers"]} == {
+        "historical_source", "georeferenced_derived", "modern_reference"
+    }
+    assert package["urbanAuthority"]["recordCount"] == 0
+
+
+def test_in_manibus_emits_no_object_without_inspection():
+    package = build.in_manibus_package()
+    assert package["status"] == "pending_physical_inspection"
+    assert package["publicReady"] is False
+    assert package["counts"] == {
+        "inspections": 0,
+        "reviewedInspections": 0,
+        "objects": 0,
+        "evidence": 0,
+    }
