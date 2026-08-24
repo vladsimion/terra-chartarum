@@ -1693,13 +1693,20 @@ const payload = {
         }
         setTopoVisible(topoCheck?.checked ?? false);
         syncLayerTime(Number(yearIn.value));
-        applyDeepLink();
         // The default-on base layers only join the composition here, so this is
         // the first moment the Active Layers panel is telling the whole truth.
         renderActiveLayers();
+        applyDeepLink();
         // Readiness signal (pairs with data-layer-browser-ready). Anything
         // waiting on the real composition - a test, a deep link - waits on this
         // rather than on a hand-tuned timeout.
+        //
+        // Deliberately raised without waiting for `applyDeepLink` (KAN-424).
+        // Gating it on that promise was tried and reverted: under software GL
+        // the promise does not reliably settle, and the map then stays
+        // permanently unready, which is a far worse failure than a flag raised
+        // early. The panel is instead redrawn at the end of `applyDeepLink`
+        // itself, so what it reports is correct whenever the restore finishes.
         root.dataset.mapReady = 'true';
       });
     }

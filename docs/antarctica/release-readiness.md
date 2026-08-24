@@ -56,21 +56,55 @@ both the search index and the sitemap.
 
 ## Accessibility and interaction
 
-Verified in the components and by unit test rather than in a browser, because
-there is no page to load them on:
+Verified in a browser, on the page the essay will actually ship on.
+
+Axe, mobile layout and deep-link restoration were previously recorded here as
+unverified, on the grounds that a held essay has no route to load. That was
+wrong: `SHOW_UNRELEASED=1` renders the whole collection (`src/lib/release.ts`),
+so the page existed the whole time. `playwright.held.config.ts` builds that
+variant on its own port and `e2e/antarctica-held-preview.spec.ts` runs against
+it - 24 checks, chromium and a Pixel 5 viewport, all passing.
+
+What it proves is narrow and worth stating precisely: the page is accessible,
+usable on a phone and correctly wired **when it ships**. It says nothing about
+whether it should ship. That is the review gate below, and no browser closes it.
+
+Now verified in the browser:
+
+- zero axe violations at WCAG 2.0/2.1 A and AA on the essay route, desktop and
+  mobile;
+- arrow, Home and End keys step both figures, and `aria-pressed` follows;
+- every step control clears 44x44px at both viewports;
+- the page does not scroll horizontally at 393px, and neither figure exceeds its
+  column;
+- each figure step links to an Atlas composition that restores, with the named
+  layers actually active on arrival.
+
+Still verified by unit test and inspection rather than in a browser, because
+they are properties of the markup rather than of the rendering:
 
 - both interactives render every step, caption and table server-side, and only
   become steppers once script runs;
-- arrow, Home and End keys move between steps; targets are at least 44px;
-  selection is weight and underline, never colour alone;
+- selection is weight and underline, never colour alone;
 - there is no animation to disable, so reduced motion gets the identical figure;
 - `EnduranceDrift` carries two captioned tables - phases with whether the ship
   was under her own power, and positions with how each was arrived at;
 - evidence tables scroll rather than crush below 40rem.
 
-Axe, mobile layout and deep-link restoration remain **unverified**, and will be
-run against the essay route when the hold lifts. Recorded as an exception rather
-than claimed.
+### What the hold was masking
+
+The pass was worth running for its own sake. Four defects were sitting behind
+the hold, three of them on published pages:
+
+| Found                                                                                | Where it bit                                                       |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| Four unmapped native lens axes in each of `terra-incognita` and `maps-for-a-crusade` | `astro build` would have thrown on release day                     |
+| `.bar-inner` never wrapped                                                           | Every essay page scrolled sideways on a phone, by 42-65px          |
+| `applyDeepLink` not awaited before `renderActiveLayers()`                            | A two-layer Atlas deep link listed only the first in Active Layers |
+| No `h1` on the essay                                                                 | Every heading on the page was an `h2`                              |
+
+A held page is not a finished page kept in a drawer. It is an unrendered one,
+and the checks that would have caught these were all skipping it.
 
 ## Residual risks accepted
 
