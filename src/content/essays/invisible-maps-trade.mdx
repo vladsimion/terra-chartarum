@@ -62,6 +62,7 @@ import AdaptiveTimeline from '../../components/islands/AdaptiveTimeline.astro';
 import AtlasMap from '../../components/islands/AtlasMap.astro';
 import CompareSlider from '../../components/islands/CompareSlider.astro';
 import VmnNetworkExplorer from '../../components/islands/VmnNetworkExplorer.astro';
+import AtlasDeepLink from '../../components/AtlasDeepLink.astro';
 
 <p class="essay-kicker">The Road · The Border · The City · c. 1275–1571</p>
 
@@ -408,6 +409,20 @@ be structurally close; neighbouring harbours can belong to different circuits. T
 reader learns to ask what each diagram preserves and what it sacrifices.
 
 <VmnNetworkExplorer />
+
+The other half of the comparison is on the Atlas, where the same ports and routes
+are drawn where they actually are. Reading the two against each other is the
+argument; neither on its own is.
+
+<p>
+  <AtlasDeepLink
+    layers={['venetian-ports', 'venetian-routes']}
+    collection="venetian-maritime-network"
+    year={1400}
+  >
+    Open these ports and routes in the Atlas
+  </AtlasDeepLink>
+</p>
 
 </Section>
 

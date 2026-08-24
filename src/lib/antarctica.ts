@@ -208,6 +208,48 @@ export function isEditorialLinework(record: AntarcticRecord): boolean {
 }
 
 /**
+ * Which Atlas layer a record is drawn on (ANT-5 / ANT-10, KAN-424 / KAN-429).
+ *
+ * This mirrors the split in `scripts/antarctica/build.py`, and it is a rule
+ * rather than a table on purpose: a deep link that names its layers by hand
+ * goes stale the moment a record changes kind, and it goes stale silently,
+ * because the Atlas simply opens with that record missing. `antarctica.test.ts`
+ * asserts this function reproduces the compiled GeoJSON exactly, so the two
+ * cannot drift without failing.
+ *
+ * A record with no geometry belongs to no layer. That is not an omission: an
+ * argument with no place is precisely what the Atlas cannot show.
+ */
+export function layerForRecord(record: AntarcticRecord): string | null {
+  if (record.geometry === null) return null;
+  if (record.kind === 'track') return 'antarctica-expedition-tracks';
+  if (record.kind === 'ghost') return 'antarctica-ghost-geographies';
+  if (record.kind === 'observation') return 'antarctica-observations';
+  if (record.kind === 'feature') {
+    return record.evidenceClass === 'conjectured'
+      ? 'antarctica-conjectured-south'
+      : 'antarctica-observations';
+  }
+  return null;
+}
+
+/**
+ * The Atlas composition that shows the given records: sorted, de-duplicated and
+ * containing only layers that something in the list is actually drawn on.
+ */
+export function atlasLayersFor(recordIds: readonly string[]): string[] {
+  const byId = new Map(RECORDS.map((record) => [record.id, record]));
+  const layers = new Set<string>();
+  for (const id of recordIds) {
+    const record = byId.get(id);
+    if (!record) throw new Error(`Unknown Antarctic record '${id}'`);
+    const layer = layerForRecord(record);
+    if (layer) layers.add(layer);
+  }
+  return [...layers].sort();
+}
+
+/**
  * Records a public reader may be shown as established. Currently none, and the
  * function exists so that stays a computed fact rather than a claim in a comment.
  */

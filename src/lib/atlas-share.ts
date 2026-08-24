@@ -92,3 +92,19 @@ export function buildAtlasShareUrl(baseUrl: string, state: AtlasShareState): str
   set('relevant', state.relevant ? '1' : undefined);
   return url.toString();
 }
+
+/**
+ * A root-relative Atlas deep link (ANT-5 / ANT-10, KAN-424 / KAN-429).
+ *
+ * `buildAtlasShareUrl` needs an absolute base because it is used in the browser,
+ * where `location.href` is always at hand. Prose and server-rendered figures
+ * have no origin to build from and must not invent one, so this returns the
+ * path and query alone and lets the document supply the rest.
+ *
+ * The query is produced by the same function the share button uses, so a link
+ * written into an essay and a link copied out of the Atlas cannot drift apart.
+ */
+export function atlasDeepLink(state: AtlasShareState): string {
+  const url = new URL(buildAtlasShareUrl('https://atlas.invalid/atlas/', state));
+  return `${url.pathname}${url.search}`;
+}

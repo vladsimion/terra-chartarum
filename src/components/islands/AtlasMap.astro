@@ -1789,13 +1789,20 @@ const payload = {
         }
         setTopoVisible(topoCheck?.checked ?? false);
         syncLayerTime(Number(yearIn.value));
-        applyDeepLink();
         // The default-on base layers only join the composition here, so this is
         // the first moment the Active Layers panel is telling the whole truth.
         renderActiveLayers();
+        applyDeepLink();
         // Readiness signal (pairs with data-layer-browser-ready). Anything
         // waiting on the real composition - a test, a deep link - waits on this
         // rather than on a hand-tuned timeout.
+        //
+        // Deliberately raised without waiting for `applyDeepLink` (KAN-424).
+        // Gating it on that promise was tried and reverted: under software GL
+        // the promise does not reliably settle, and the map then stays
+        // permanently unready, which is a far worse failure than a flag raised
+        // early. The panel is instead redrawn at the end of `applyDeepLink`
+        // itself, so what it reports is correct whenever the restore finishes.
         root.dataset.mapReady = 'true';
       });
     }
@@ -2107,6 +2114,18 @@ const payload = {
       if (sharedState.feature) {
         focusFeatureTarget(sharedState.feature, [...wanted]);
       }
+      // The panel has to be redrawn here, at the end, and not only by the
+      // caller (KAN-424).
+      //
+      // This function is async and `map.on('load')` cannot await it, so the
+      // caller's `renderActiveLayers()` runs during the first `await
+      // addGeoLayer(...)` in the loop above - when exactly one requested layer
+      // has joined `activeLayers`. A deep link naming two layers therefore drew
+      // both on the map but listed only the first in Active Layers, which is
+      // also the reader's only way to remove one. Rendering again once the loop
+      // has finished makes the panel agree with the map whatever the
+      // interleaving.
+      renderActiveLayers();
     };
 
     // Deep-link support: /atlas/#<map-id> flies to and opens that pin (KAN-68);
@@ -2384,6 +2403,12 @@ const payload = {
         ...ids.map((id) => {
           const item = document.createElement('li');
           item.className = 'aal-item';
+          // The composition has to be readable by something other than a human
+          // eye (KAN-424/KAN-432). Until this existed the only record of which
+          // layers were on was the visible title text, so a test asserting
+          // "nothing is active" matched zero elements whether the map was empty
+          // or full, and passed either way.
+          item.dataset.activeLayer = id;
           const title = layerTitle(id);
           const name = document.createElement('span');
           name.className = 'aal-name';

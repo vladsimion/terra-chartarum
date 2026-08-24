@@ -6,6 +6,7 @@ import {
   assessRelease,
   essayReleaseAgreesWithCorpus,
 } from './antarctica-release';
+import { projectCatalogue } from './atlas-catalogue';
 
 describe('the release gate', () => {
   const readiness = assessRelease();
@@ -69,5 +70,35 @@ describe('the essay cannot be released ahead of its evidence', () => {
     const state = await essayReleaseAgreesWithCorpus();
     expect(state.shouldBeHeld).toBe(true);
     expect(ESSAY_SLUG).toBe('terra-incognita');
+  });
+});
+
+describe('essay and Atlas point at each other without leaking the hold (KAN-429)', () => {
+  it('names the essay on every Antarctic layer', () => {
+    for (const layer of antarcticLayers()) {
+      expect(layer.essaySlugs, layer.id).toContain(ESSAY_SLUG);
+    }
+  });
+
+  it('withholds the back-link while the essay is held, and restores it on release', () => {
+    const input = {
+      availableLayerIds: antarcticLayers().map((layer) => layer.id),
+      documentationRoutes: {},
+    };
+
+    // Today: the essay is held, so the catalogue must offer no route to a 404.
+    const held = projectCatalogue({ ...input, releasedEssaySlugs: [] }).layers.filter((row) =>
+      row.id.startsWith('antarctica-'),
+    );
+    expect(held.length).toBe(4);
+    for (const row of held) expect(row.essaySlugs, row.id).toEqual([]);
+
+    // Release day: the same registry, one essay released, and the link is there
+    // with no edit to any layer.
+    const released = projectCatalogue({
+      ...input,
+      releasedEssaySlugs: [ESSAY_SLUG],
+    }).layers.filter((row) => row.id.startsWith('antarctica-'));
+    for (const row of released) expect(row.essaySlugs, row.id).toEqual([ESSAY_SLUG]);
   });
 });
