@@ -23,10 +23,20 @@ export interface TrenchAStela {
   title: string;
   sourceFamily: string;
   dateLabel: string;
+  yearFrom: number | null;
+  yearTo: number | null;
   repository: string;
   reviewState: string;
   attestations: number;
   silences: number;
+  sampleAttestation: {
+    attestationId: string;
+    attestationClass: string;
+    name: string;
+    reviewState: string;
+    placeId: string;
+    placeName: string;
+  } | null;
 }
 
 export interface TrenchAPitPlace {

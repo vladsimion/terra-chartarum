@@ -154,6 +154,14 @@ a trench appears as reading the shared corpus by having records in it, which
 today only Trench A does. And the shared datasets are listed once, as programme
 infrastructure, rather than under the essay that happens to show them first.
 
+The index also publishes the cross-registry paths the committed identifiers can
+actually prove. A path begins with a migrated Terra Sigillata source and follows
+its period, sample attestation and place through the canonical collection object,
+cartographer, Atlas layer, corpus record, trench and essay stratum. Planned
+relationships do not appear early: while Trench A is the only demonstrated corpus
+consumer, it is also the only trench allowed to emit these paths. The linked
+attestations retain their research review state on the page.
+
 Terra Sigillata is presented there as the cycle's intellectual index and is not
 extended as one: no stone was added and none will be. The index is discoverable
 from the essay in turn, which is how the series pages work elsewhere in the

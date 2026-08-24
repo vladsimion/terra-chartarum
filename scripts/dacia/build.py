@@ -292,6 +292,16 @@ def trench_a_bridge(tables: dict[str, list[dict[str, str]]]) -> dict:
             if source is None:
                 continue
             rows = [a for a in attestations if a["source_id"] == source["source_id"]]
+            # One representative reading lets the programme index expose a
+            # real source -> attestation -> place path. Prefer a reading over a
+            # typed silence, then keep the stable attestation-id order. This is
+            # navigation into the research tier, not a claim that the row has
+            # passed human review.
+            sample = next(
+                (a for a in rows if a["attestation_class"] not in SILENT_CLASSES),
+                rows[0] if rows else None,
+            )
+            sample_place = by_place.get(sample["place_id"]) if sample else None
             stelae.append({
                 "stela": ref[len("STONES["):-1],
                 "sourceId": source["source_id"],
@@ -299,10 +309,20 @@ def trench_a_bridge(tables: dict[str, list[dict[str, str]]]) -> dict:
                 "title": source["title"],
                 "sourceFamily": source["source_family"],
                 "dateLabel": source["date_label"],
+                "yearFrom": int(source["year_from"]) if source["year_from"] else None,
+                "yearTo": int(source["year_to"]) if source["year_to"] else None,
                 "repository": source["repository"],
                 "reviewState": source["review_state"],
                 "attestations": len(rows),
                 "silences": sum(1 for a in rows if a["attestation_class"] in SILENT_CLASSES),
+                "sampleAttestation": {
+                    "attestationId": sample["attestation_id"],
+                    "attestationClass": sample["attestation_class"],
+                    "name": sample["name_original"] or sample["name_normalized"] or "Typed silence",
+                    "reviewState": sample["review_state"],
+                    "placeId": sample["place_id"],
+                    "placeName": sample_place["reference_name"] if sample_place else sample["place_id"],
+                } if sample else None,
             })
         elif row["datum_kind"] == "attestation_set" and ref.startswith("PITS["):
             place_ids = [p for p in row["target_id"].split("|") if p]

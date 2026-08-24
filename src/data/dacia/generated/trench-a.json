@@ -130,144 +130,264 @@
       "dateLabel": "1700",
       "repository": "BnF Paris",
       "reviewState": "normalized",
+      "sampleAttestation": {
+        "attestationClass": "alternative",
+        "attestationId": "att-0041",
+        "name": "Severin",
+        "placeId": "plc-drobeta",
+        "placeName": "Drobeta",
+        "reviewState": "raw"
+      },
       "shortTitle": "Cantacuzino",
       "silences": 3,
       "sourceFamily": "regional_print",
       "sourceId": "src-cantacuzino-wallachia",
       "stela": "cantacuzino",
-      "title": "Map of Wallachia"
+      "title": "Map of Wallachia",
+      "yearFrom": 1700,
+      "yearTo": 1700
     },
     {
       "attestations": 4,
       "dateLabel": "1716",
       "repository": "Widely reproduced",
       "reviewState": "normalized",
+      "sampleAttestation": {
+        "attestationClass": "extra_muros",
+        "attestationId": "att-0008",
+        "name": "Typed silence",
+        "placeId": "plc-ulpia-traiana-sarmizegetusa",
+        "placeName": "Colonia Ulpia Traiana Sarmizegetusa",
+        "reviewState": "raw"
+      },
       "shortTitle": "Cantemir",
       "silences": 4,
       "sourceFamily": "regional_print",
       "sourceId": "src-cantemir-moldavia",
       "stela": "cantemir",
-      "title": "Descriptio Moldaviae - map"
+      "title": "Descriptio Moldaviae - map",
+      "yearFrom": 1716,
+      "yearTo": 1716
     },
     {
       "attestations": 4,
       "dateLabel": "c. A.D. 1300",
       "repository": "Hereford Cathedral",
       "reviewState": "normalized",
+      "sampleAttestation": {
+        "attestationClass": "source_silent",
+        "attestationId": "att-0003",
+        "name": "Typed silence",
+        "placeId": "plc-ulpia-traiana-sarmizegetusa",
+        "placeName": "Colonia Ulpia Traiana Sarmizegetusa",
+        "reviewState": "raw"
+      },
       "shortTitle": "Herefordia",
       "silences": 4,
       "sourceFamily": "mappa_mundi",
       "sourceId": "src-hereford-mappa",
       "stela": "hereford",
-      "title": "Hereford Mappa Mundi"
+      "title": "Hereford Mappa Mundi",
+      "yearFrom": 1300,
+      "yearTo": 1300
     },
     {
       "attestations": 4,
       "dateLabel": "1532",
       "repository": "Repository unconfirmed - recorded as likely Budapest",
       "reviewState": "normalized",
+      "sampleAttestation": {
+        "attestationClass": "alternative",
+        "attestationId": "att-0016",
+        "name": "Weissenburg",
+        "placeId": "plc-apulum",
+        "placeName": "Apulum",
+        "reviewState": "raw"
+      },
       "shortTitle": "Honterus",
       "silences": 2,
       "sourceFamily": "regional_print",
       "sourceId": "src-honterus-chorographia",
       "stela": "honterus",
-      "title": "Chorographia Transylvaniae"
+      "title": "Chorographia Transylvaniae",
+      "yearFrom": 1532,
+      "yearTo": 1532
     },
     {
       "attestations": 5,
       "dateLabel": "1769–1773",
       "repository": "Kriegsarchiv Vienna",
       "reviewState": "normalized",
+      "sampleAttestation": {
+        "attestationClass": "alternative",
+        "attestationId": "att-0009",
+        "name": "Varhely",
+        "placeId": "plc-ulpia-traiana-sarmizegetusa",
+        "placeName": "Colonia Ulpia Traiana Sarmizegetusa",
+        "reviewState": "raw"
+      },
       "shortTitle": "Iosephina",
       "silences": 1,
       "sourceFamily": "military_survey",
       "sourceId": "src-iosephina-survey",
       "stela": "josephine",
-      "title": "Josephinische Landesaufnahme"
+      "title": "Josephinische Landesaufnahme",
+      "yearFrom": 1769,
+      "yearTo": 1773
     },
     {
       "attestations": 4,
       "dateLabel": "1595",
       "repository": "Widely held",
       "reviewState": "normalized",
+      "sampleAttestation": {
+        "attestationClass": "reconstructed",
+        "attestationId": "att-0006",
+        "name": "Zarmizegethusa regia",
+        "placeId": "plc-sarmizegetusa-regia",
+        "placeName": "Sarmizegetusa Regia",
+        "reviewState": "raw"
+      },
       "shortTitle": "Ortelius",
       "silences": 0,
       "sourceFamily": "antiquarian_reconstruction",
       "sourceId": "src-ortelius-parergon",
       "stela": "ortelius",
-      "title": "Dacia - Parergon"
+      "title": "Dacia - Parergon",
+      "yearFrom": 1595,
+      "yearTo": 1595
     },
     {
       "attestations": 4,
       "dateLabel": "content c. A.D. 350",
       "repository": "ÖNB Vienna Cod. 324",
       "reviewState": "normalized",
+      "sampleAttestation": {
+        "attestationClass": "variant",
+        "attestationId": "att-0002",
+        "name": "Sarmategte",
+        "placeId": "plc-ulpia-traiana-sarmizegetusa",
+        "placeName": "Colonia Ulpia Traiana Sarmizegetusa",
+        "reviewState": "raw"
+      },
       "shortTitle": "Peutingeriana",
       "silences": 0,
       "sourceFamily": "itinerary",
       "sourceId": "src-tabula-peutingeriana",
       "stela": "peutinger",
-      "title": "Tabula Peutingeriana segm. VII–VIII"
+      "title": "Tabula Peutingeriana segm. VII–VIII",
+      "yearFrom": 350,
+      "yearTo": 350
     },
     {
       "attestations": 4,
       "dateLabel": "c. A.D. 150",
       "repository": "Bologna 1477 editio princeps",
       "reviewState": "normalized",
+      "sampleAttestation": {
+        "attestationClass": "variant",
+        "attestationId": "att-0001",
+        "name": "pending",
+        "placeId": "plc-sarmizegetusa-regia",
+        "placeName": "Sarmizegetusa Regia",
+        "reviewState": "raw"
+      },
       "shortTitle": "Ptolemaeus",
       "silences": 1,
       "sourceFamily": "coordinate_catalogue",
       "sourceId": "src-ptolemy-geographia",
       "stela": "ptolemy",
-      "title": "Geographia III.8 - Dacia"
+      "title": "Geographia III.8 - Dacia",
+      "yearFrom": 150,
+      "yearTo": 150
     },
     {
       "attestations": 4,
       "dateLabel": "1835",
       "repository": "Staff archives and major collections",
       "reviewState": "normalized",
+      "sampleAttestation": {
+        "attestationClass": "exact",
+        "attestationId": "att-0044",
+        "name": "Turnu Severin",
+        "placeId": "plc-drobeta",
+        "placeName": "Drobeta",
+        "reviewState": "raw"
+      },
       "shortTitle": "Russia 1835",
       "silences": 3,
       "sourceFamily": "military_survey",
       "sourceId": "src-russian-staff-1835",
       "stela": "russia",
-      "title": "Russian General Staff map"
+      "title": "Russian General Staff map",
+      "yearFrom": 1835,
+      "yearTo": 1835
     },
     {
       "attestations": 4,
       "dateLabel": "1916-1959",
       "repository": "Military archives; the series is georeferenced sheet by sheet by geo-spatial.org",
       "reviewState": "normalized",
+      "sampleAttestation": {
+        "attestationClass": "variant",
+        "attestationId": "att-0046",
+        "name": "Sarmizegetusa",
+        "placeId": "plc-ulpia-traiana-sarmizegetusa",
+        "placeName": "Colonia Ulpia Traiana Sarmizegetusa",
+        "reviewState": "raw"
+      },
       "shortTitle": "Secret Century",
       "silences": 0,
       "sourceFamily": "military_survey",
       "sourceId": "src-secret-century",
       "stela": "secret",
-      "title": "Planurile directoare de tragere and their classified successors"
+      "title": "Planurile directoare de tragere and their classified successors",
+      "yearFrom": 1916,
+      "yearTo": 1959
     },
     {
       "attestations": 4,
       "dateLabel": "1864",
       "repository": "National collections; widely reproduced",
       "reviewState": "normalized",
+      "sampleAttestation": {
+        "attestationClass": "variant",
+        "attestationId": "att-0045",
+        "name": "Turnu-Severinu",
+        "placeId": "plc-drobeta",
+        "placeName": "Drobeta",
+        "reviewState": "raw"
+      },
       "shortTitle": "Szathmári",
       "silences": 3,
       "sourceFamily": "national_survey",
       "sourceId": "src-szathmari-charta",
       "stela": "szathmari",
-      "title": "Charta României Meridionale"
+      "title": "Charta României Meridionale",
+      "yearFrom": 1864,
+      "yearTo": 1864
     },
     {
       "attestations": 4,
       "dateLabel": "1311",
       "repository": "Florence",
       "reviewState": "normalized",
+      "sampleAttestation": {
+        "attestationClass": "extra_muros",
+        "attestationId": "att-0004",
+        "name": "Typed silence",
+        "placeId": "plc-ulpia-traiana-sarmizegetusa",
+        "placeName": "Colonia Ulpia Traiana Sarmizegetusa",
+        "reviewState": "raw"
+      },
       "shortTitle": "Vesconte",
       "silences": 4,
       "sourceFamily": "portolan",
       "sourceId": "src-vesconte-portolan",
       "stela": "vesconte",
-      "title": "Portolan chart"
+      "title": "Portolan chart",
+      "yearFrom": 1311,
+      "yearTo": 1311
     }
   ]
 }

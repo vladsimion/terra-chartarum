@@ -4,6 +4,8 @@ import {
   describeState,
   getCorpusConsumers,
   getProgrammeEntries,
+  getProgrammeRelationshipPaths,
+  RELATIONSHIP_KINDS,
   getSharedDatasets,
   getTrenches,
   getWorkstreams,
@@ -58,5 +60,19 @@ describe('Corpus Chartarum Daciae programme index (KAN-370)', () => {
   it('resolves a published trench to its essay and leaves the rest without one', () => {
     const withEssay = getProgrammeEntries().filter((entry) => entry.essaySlug);
     expect(withEssay.map((entry) => entry.essaySlug)).toEqual(['dacia']);
+  });
+
+  it('builds cross-registry paths only from identifiers that resolve now', () => {
+    const paths = getProgrammeRelationshipPaths();
+    expect(paths.length).toBeGreaterThan(0);
+
+    for (const path of paths) {
+      expect(path.reviewState).not.toBe('approved');
+      expect(path.nodes.map((node) => node.kind)).toEqual(RELATIONSHIP_KINDS);
+      for (const node of path.nodes) {
+        expect(node.label.length).toBeGreaterThan(0);
+        expect(node.href.startsWith('/') || node.href.startsWith('#')).toBe(true);
+      }
+    }
   });
 });

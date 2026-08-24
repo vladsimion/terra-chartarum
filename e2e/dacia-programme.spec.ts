@@ -59,6 +59,24 @@ test.describe('Corpus Chartarum Daciae programme index', () => {
     await expect(page.locator(`a[href="${INDEX}"]`)).not.toHaveCount(0);
   });
 
+  test('the cross-registry path is keyboard reachable and fits at 320px', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 720 });
+    await page.goto(INDEX);
+
+    const path = page.locator('.relationship-path').first();
+    await expect(path).toBeVisible();
+    await expect(path.locator('.relationship-kind')).toHaveCount(10);
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+    ).toBe(true);
+
+    const firstLink = path.locator('a').first();
+    await firstLink.focus();
+    await expect(firstLink).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(page).toHaveURL(/\/atlas\/.*layers=dacia-attestations-research/);
+  });
+
   test('has no accessibility violations', async ({ page }) => {
     await page.goto(INDEX);
     const results = await new AxeBuilder({ page })
