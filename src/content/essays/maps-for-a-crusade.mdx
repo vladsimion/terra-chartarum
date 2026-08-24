@@ -14,7 +14,7 @@ yearFrom: 1201
 yearTo: 1261
 mapCount: 9
 readingMinutes: 12
-accent: '#b0563f'
+accent: '#bc5d44'
 order: 13
 featured: false
 room: road
@@ -57,6 +57,9 @@ metaScores:
 ---
 
 import Section from '../../components/Section.astro';
+import ItineraryComparison from '../../components/islands/ItineraryComparison.astro';
+import FourthCrusadeStates from '../../components/islands/FourthCrusadeStates.astro';
+import CrusadesGateState from '../../components/islands/CrusadesGateState.astro';
 
 <p class="essay-kicker">
   Prototype · Road and Sea proofs · <strong>held pending source review</strong>
@@ -105,6 +108,13 @@ The day-marks stay as day-marks. This project does not convert them into a trave
 time, because the manuscript is making a claim about the journey and a
 conversion would turn that claim into a measurement.
 
+<ItineraryComparison />
+
+Select a stage on either side and it lights up on both. What the two halves will
+not do is become one picture, because a composite would be this project's
+drawing rather than the thirteenth century's, and the difference between them is
+the entire subject.
+
 </Section>
 
 <Section id="contractus" title="The fleet that had to be paid for" rooms={['border', 'road']}>
@@ -125,7 +135,7 @@ was a geographical one.
 
 </Section>
 
-<Section id="deviatio" title="Four things that are not one route" rooms={['border', 'map']}>
+<Section id="deviatio" title="Six things that are not one route" rooms={['border', 'map']}>
 
 It is tempting to draw the Fourth Crusade as a line: Venice, Zara, Corfu,
 Constantinople. The line would be wrong in an interesting way.
@@ -148,23 +158,36 @@ occupation has republished the document's wishful thinking as geography. So the
 partition carries no boundary in this dataset at all, and the possession is
 pointed at the Venetian layers that already model it with their own evidence.
 
+<FourthCrusadeStates />
+
+Only the travelled route carries a line. Five of the six kinds are on no layer at
+all, and that is the dataset agreeing with the argument rather than falling short
+of it: a claim that was never a place cannot be given one without inventing it.
+
 </Section>
 
 <Section id="reliquum" title="What this prototype does not yet do" rooms={['archive', 'road']}>
 
 This is a prototype, and the honest way to end it is with the list.
 
-No folio has been transcribed. Every locator in the Crusades corpus reads
-`pending`, and the rights terms for the digitised manuscripts have not been read,
-so no image is reproduced here and none may be. The manuscript-to-modern
-comparison the Road proof is for cannot yet show the manuscript.
+The list used to be written here by hand, which meant it was a second copy of the
+project's state and therefore the copy that went out of date. It is now compiled
+from the same registers the validator reads.
 
-The twenty core places are compiled and not reviewed. The route lines are
-generalisations between ports. The full flagship needs Acre and the Holy Land
-records, the sacred geography the itinerary was aiming at, and the century of
-maritime infrastructure between the two proofs.
+<CrusadesGateState />
+
+One gap changes what the reader sees, and it is worth naming outside the table:
+no folio has been transcribed, so the comparison above shows the diagram's
+_sequence_ beside the ground and cannot yet show the diagram.
+
+The route lines are generalisations between ports. The full flagship needs Acre
+and the Holy Land records, the sacred geography the itinerary was aiming at, and
+the century of maritime infrastructure between the two proofs.
 
 What exists is the argument and the machinery under it: a diagram that refuses to
-become a map, and a campaign that refuses to become a route.
+become a map, and a campaign that refuses to become a route. Both proofs are now
+interactive, and both are driven entirely by the compiled dataset - no route, date
+or day-mark is written into a component. When a witness is cleared, the manuscript
+appears in the first of them without the argument changing.
 
 </Section>

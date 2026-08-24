@@ -6,6 +6,7 @@
   "description": "Interactive historical atlas portal - a gallery of cartographic visual essays.",
   "scripts": {
     "dev": "astro dev",
+    "dev:held": "SHOW_UNRELEASED=1 astro dev",
     "start": "astro dev",
     "build": "npm run registries:validate && npm run editorial:validate && npm run typography:validate && npm run epic:validate && npm run release:validate && npm run hanseatic:validate && npm run hanseatic:release:validate && npm run dacia:validate && npm run crusades:validate && npm run antarctica:validate && npm run provenance:write && astro build && npm run reports:check && npm run embed:prune && npm run indexing:validate && npm run geo:interop:validate && npm run handbook:validate",
     "preview": "astro preview",

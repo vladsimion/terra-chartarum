@@ -274,3 +274,68 @@ def test_a_not_spatial_state_may_not_carry_geometry(dataset):
     edit_state(dataset, "cru-fcs-intent",
                {"geometry": "LINESTRING (12.3 45.4, 31.2 30.0)"})
     refuses("must not carry geometry")
+
+
+GATES = "reference/gates.csv"
+DEBTS = "reference/verification-debt.csv"
+
+
+def test_a_gate_must_name_the_ticket_that_owns_it(dataset):
+    edit(dataset, lambda rows: [{**r, "jira_key": ""} if r["gate_id"] == "data" else r
+                                for r in rows], table=GATES)
+    refuses("jira_key must name the ticket")
+
+
+def test_a_gate_above_pending_must_point_at_evidence(dataset):
+    """`partial` is a claim that some of the work exists and can be looked at."""
+    edit(dataset, lambda rows: [{**r, "evidence": ""} if r["status"] == "partial" else r
+                                for r in rows], table=GATES)
+    refuses("needs evidence")
+
+
+def test_a_gate_cannot_cite_evidence_that_does_not_exist(dataset):
+    edit(dataset, lambda rows: [{**r, "evidence": "src/components/islands/Nope.astro"}
+                                if r["status"] == "partial" else r for r in rows], table=GATES)
+    refuses("does not exist")
+
+
+def test_release_cannot_pass_while_the_other_gates_are_open(dataset):
+    """The essay is held. A passed release gate here would contradict the hold."""
+    edit(dataset, lambda rows: [{**r, "status": "passed"} if r["gate_id"] == "release" else r
+                                for r in rows], table=GATES)
+    refuses("claims release while")
+
+
+def test_a_proof_cannot_lose_a_gate(dataset):
+    edit(dataset, lambda rows: [r for r in rows if r["gate_id"] != "rights"], table=GATES)
+    refuses("has no rights gate")
+
+
+def test_an_open_item_must_name_the_gate_it_blocks(dataset):
+    """Open debt that reaches no gate reaches no ticket, and is how an
+    outstanding item is lost while still sitting in the register marked open."""
+    edit(dataset, lambda rows: [{**r, "blocks": ""} if r["debt_id"].startswith("vd-cru-") else r
+                                for r in rows], table=DEBTS)
+    refuses("an open item must name the gate it blocks")
+
+
+def test_debt_cannot_block_a_gate_that_does_not_exist(dataset):
+    edit(dataset, lambda rows: [{**r, "blocks": "matthew_paris:provenance"}
+                                for r in rows], table=DEBTS)
+    refuses("is not a proof:gate pair")
+
+
+def test_an_open_gate_must_have_something_naming_it(dataset):
+    """The other direction, and the one that found a real gap when it was added.
+
+    A gate below `passed` with no open debt pointing at it is a gate nobody can
+    act on: the register says work remains and names none of it.
+    """
+    edit(dataset, lambda rows: [r for r in rows if r["debt_id"] != "vd-cru-feature-panel-evidence"],
+         table=DEBTS)
+    refuses("with no open debt naming it")
+
+
+def test_a_blocker_must_carry_a_way_out(dataset):
+    edit(dataset, lambda rows: [{**r, "resolution_path": ""} for r in rows], table=DEBTS)
+    refuses("resolution_path is required")

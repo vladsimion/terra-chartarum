@@ -1,0 +1,279 @@
+---
+/**
+ * What this prototype cannot yet do, compiled rather than written (KAN-389).
+ *
+ * The essay's closing section is the most-read statement of the pilot's limits,
+ * and it was prose. Prose is a second copy of the project's state, and the copy
+ * is the one that goes stale: a gate moving from pending to partial, a rights
+ * question resolving, a folio finally transcribed should all change this block
+ * on the next `make crusades` and not when somebody remembers to edit it.
+ *
+ * Grouped by the ticket that owns the gate, following `review.py blocked` in the
+ * Dacia programme: one item blocking four tickets and four items blocking one
+ * ticket are different situations, and only the ticket-shaped view tells you
+ * which you have.
+ */
+import { getProofGates, debtByTicket, getOpenDebts } from '../../lib/crusades';
+
+const gates = getProofGates();
+const byTicket = debtByTicket();
+const debts = getOpenDebts();
+
+const PROOF_LABELS: Record<string, string> = {
+  matthew_paris: 'Road · the itinerary',
+  fourth_crusade: 'Sea · the Fourth Crusade',
+};
+
+const GATE_LABELS: Record<string, string> = {
+  research: 'Research',
+  rights: 'Rights',
+  data: 'Data',
+  interaction: 'Interaction',
+  editorial: 'Editorial',
+  release: 'Release',
+};
+
+// Road before Sea, because that is the order the essay argues them in. The
+// register sorts alphabetically, which would put the Fourth Crusade first and
+// silently invert the argument's sequence.
+const PROOF_ORDER = ['matthew_paris', 'fourth_crusade'];
+const proofs = [...new Set(gates.map((gate) => gate.proof))].sort(
+  (a, b) => PROOF_ORDER.indexOf(a) - PROOF_ORDER.indexOf(b),
+);
+const totalGates = gates.length;
+const totalPassed = gates.filter((gate) => gate.status === 'passed').length;
+const rightsDebts = debts.filter((debt) => debt.kind === 'rights').length;
+---
+
+<section class="gate-state" aria-labelledby="gate-state-heading">
+  <h3 id="gate-state-heading">Where the two proofs actually stand</h3>
+  <p class="gate-intro">
+    Six gates each, of which <strong>{totalPassed} of {totalGates}</strong> have passed. Compiled from
+    the project's own registers, so this list cannot quietly fall out of date with the work.
+  </p>
+
+  <div class="gate-grid">
+    {
+      proofs.map((proof) => (
+        <div class="gate-column">
+          <h4>{PROOF_LABELS[proof] ?? proof}</h4>
+          <ol class="gate-list">
+            {gates
+              .filter((gate) => gate.proof === proof)
+              .map((gate) => (
+                <li class:list={['gate', `gate-${gate.status}`]}>
+                  <div class="gate-head">
+                    <span class="gate-name">{GATE_LABELS[gate.gate] ?? gate.gate}</span>
+                    <span class="gate-status">{gate.status}</span>
+                  </div>
+                  <p class="gate-note">{gate.note}</p>
+                </li>
+              ))}
+          </ol>
+        </div>
+      ))
+    }
+  </div>
+
+  <h4 class="blocked-heading">
+    {debts.length} open items, across {byTicket.length} tickets
+  </h4>
+  <p class="gate-intro">
+    {rightsDebts} of them are rights questions rather than research, which is the difference between work
+    nobody has done and work nobody is permitted to publish.
+  </p>
+
+  <dl class="blocked">
+    {
+      byTicket.map(({ ticket, debts: items }) => (
+        <div class="blocked-ticket">
+          <dt>
+            <code>{ticket}</code>
+            <span class="blocked-count">{items.length} blocking</span>
+          </dt>
+          <dd>
+            <ul>
+              {items.map((debt) => (
+                <li>
+                  <p class="debt-statement">{debt.statement}</p>
+                  <p class="debt-path">
+                    <span class="debt-arrow" aria-hidden="true">
+                      →
+                    </span>
+                    <span class="sr-only">Resolution: </span>
+                    {debt.resolutionPath}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </dd>
+        </div>
+      ))
+    }
+  </dl>
+</section>
+
+<style>
+  .gate-state {
+    margin: 2.5rem 0;
+    padding: 1.25rem;
+    border: 1px solid var(--rule, #3a3226);
+    border-radius: 4px;
+    background: var(--surface-raised, #17130e);
+  }
+
+  .gate-state h3 {
+    margin: 0 0 0.4rem;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .gate-intro {
+    margin: 0 0 1.25rem;
+    font-size: 0.85rem;
+    line-height: 1.55;
+    opacity: 0.8;
+  }
+
+  .gate-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 48rem) {
+    .gate-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .gate-column h4 {
+    margin: 0 0 0.6rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    opacity: 0.75;
+  }
+
+  .gate-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .gate {
+    padding: 0.5rem 0.7rem;
+    border-left: 3px solid var(--rule, #3a3226);
+  }
+
+  /* Partial and pending must not look alike: one is work begun and shown, the
+     other is work not started, and the essay's honesty depends on the reader
+     being able to tell. */
+  .gate-partial {
+    border-left-color: var(--gold, #d4b87a);
+    border-left-style: dashed;
+  }
+
+  .gate-passed {
+    border-left-color: var(--gold, #d4b87a);
+  }
+
+  .gate-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.75rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .gate-status {
+    opacity: 0.65;
+  }
+
+  .gate-note {
+    margin: 0.3rem 0 0;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    opacity: 0.78;
+  }
+
+  .blocked-heading {
+    margin: 2rem 0 0.4rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .blocked {
+    margin: 0;
+  }
+
+  .blocked-ticket {
+    padding: 0.75rem 0;
+    border-top: 1px solid var(--rule, #3a3226);
+  }
+
+  .blocked-ticket dt {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 0.4rem;
+    font-size: 0.8rem;
+  }
+
+  .blocked-count {
+    opacity: 0.6;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .blocked-ticket dd {
+    margin: 0;
+  }
+
+  .blocked-ticket ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .debt-statement {
+    margin: 0 0 0.25rem;
+    font-size: 0.85rem;
+    line-height: 1.55;
+  }
+
+  .debt-path {
+    display: flex;
+    gap: 0.45rem;
+    margin: 0;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    opacity: 0.72;
+  }
+
+  .debt-arrow {
+    flex: none;
+    color: var(--gold, #d4b87a);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>

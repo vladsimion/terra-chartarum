@@ -119,6 +119,7 @@ def pipe(value: str) -> list[str]:
 
 def validate_inputs(*, include_release: bool = True) -> list[str]:
     errors: list[str] = []
+    validate_debts(errors, validate_gates(errors))
     place_ids = validate_places(errors)
     rows = read(TABLE)
     seen: set[str] = set()
@@ -452,6 +453,114 @@ def validate_release(errors: list[str]) -> None:
             "release: a witness is marked cleared for publication, but no folio in this corpus "
             "has been transcribed"
         )
+
+
+GATES = "reference/gates.csv"
+DEBTS = "reference/verification-debt.csv"
+GATE_IDS = ("research", "rights", "data", "interaction", "editorial", "release")
+GATE_STATUSES = {"pending", "partial", "passed", "waived"}
+DEBT_KINDS = {"verification", "rights"}
+
+
+def validate_gates(errors: list[str]) -> set[tuple[str, str]]:
+    """The flagship's own gates, per proof (KAN-384/KAN-385).
+
+    The Dacia programme records why a trench is stopped and which ticket owns
+    each gate; this pilot recorded neither, so its five open tickets read as
+    blocked for no stated reason. The shape is deliberately the same as
+    `trench-gates.csv` so the two registers can be read the same way, with
+    `proof` where Dacia has `trench`.
+    """
+    rows = read(GATES)
+    pairs: set[tuple[str, str]] = set()
+    proofs = {row["proof"] for row in read(TABLE)}
+
+    for row in rows:
+        proof, gate = row["proof_id"], row["gate_id"]
+        label = f"gates[{proof}/{gate}]"
+        if proof not in proofs:
+            errors.append(f"{label}: proof_id is not a proof the source audit knows")
+        if gate not in GATE_IDS:
+            errors.append(f"{label}: gate_id '{gate}' is not a recognised gate")
+        if (proof, gate) in pairs:
+            errors.append(f"{label}: duplicate gate row")
+        pairs.add((proof, gate))
+        if row["status"] not in GATE_STATUSES:
+            errors.append(f"{label}: status '{row['status']}' is not recognised")
+        if not row["jira_key"].startswith("KAN-"):
+            errors.append(f"{label}: jira_key must name the ticket that owns the gate")
+        if not row["note"]:
+            errors.append(f"{label}: a gate with no note explains nothing")
+        # A gate above pending has to point at something a reader can open.
+        if row["status"] in {"partial", "passed"} and not row["evidence"]:
+            errors.append(f"{label}: status '{row['status']}' needs evidence")
+        if row["evidence"] and not (REPO / row["evidence"]).exists():
+            errors.append(f"{label}: evidence '{row['evidence']}' does not exist")
+
+    for proof in sorted(proofs):
+        for gate in GATE_IDS:
+            if (proof, gate) not in pairs:
+                errors.append(f"gates: {proof} has no {gate} gate")
+
+    # Nothing may claim release while a release-blocking gate is open. The
+    # essay is held; a passed release gate here would contradict the hold.
+    by_pair = {(r["proof_id"], r["gate_id"]): r for r in rows}
+    for proof in sorted(proofs):
+        release = by_pair.get((proof, "release"))
+        if release and release["status"] == "passed":
+            unmet = [
+                gate
+                for gate in GATE_IDS[:-1]
+                if by_pair.get((proof, gate), {}).get("status") not in {"passed", "waived"}
+            ]
+            if unmet:
+                errors.append(
+                    f"gates: {proof} claims release while {', '.join(unmet)} have not passed"
+                )
+    return pairs
+
+
+def validate_debts(errors: list[str], pairs: set[tuple[str, str]]) -> None:
+    """Why each gate is stopped, joined to the gate it stops (KAN-384/KAN-385)."""
+    rows = read(DEBTS)
+    seen: set[str] = set()
+    for row in rows:
+        debt_id = row["debt_id"]
+        label = f"verification-debt[{debt_id}]"
+        if not debt_id.startswith("vd-cru-") or not SLUG.match(debt_id):
+            errors.append(f"{label}: debt_id must be a vd-cru- slug")
+        if debt_id in seen:
+            errors.append(f"{label}: duplicate debt_id")
+        seen.add(debt_id)
+        if row["kind"] not in DEBT_KINDS:
+            errors.append(f"{label}: kind '{row['kind']}' must be verification or rights")
+        for field in ("statement", "resolution_path"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        if row["status"] not in {"open", "resolved"}:
+            errors.append(f"{label}: status '{row['status']}' must be open or resolved")
+        if row["raised_in"] and not (REPO / row["raised_in"]).exists():
+            errors.append(f"{label}: raised_in '{row['raised_in']}' does not exist")
+        # An open item that reaches no gate reaches no ticket either, and is the
+        # one way an outstanding item is lost while still marked open.
+        targets = pipe(row["blocks"])
+        if row["status"] == "open" and not targets:
+            errors.append(f"{label}: an open item must name the gate it blocks")
+        for target in targets:
+            proof, _, gate = target.partition(":")
+            if (proof, gate) not in pairs:
+                errors.append(f"{label}: blocks '{target}' is not a proof:gate pair")
+
+    # And the other direction: a gate below passed with nothing blocking it is
+    # a gate nobody can act on, which is what this register exists to prevent.
+    blocked = {t for row in rows if row["status"] == "open" for t in pipe(row["blocks"])}
+    by_pair = {(r["proof_id"], r["gate_id"]): r for r in read(GATES)}
+    for (proof, gate), row in sorted(by_pair.items()):
+        if row["status"] in {"pending", "partial"} and f"{proof}:{gate}" not in blocked:
+            errors.append(
+                f"gates[{proof}/{gate}]: status '{row['status']}' with no open debt naming it; "
+                "either record what is missing or move the gate"
+            )
 
 
 def readiness(rows: list[dict[str, str]], places: list[dict[str, str]]) -> list[str]:

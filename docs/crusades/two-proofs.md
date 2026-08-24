@@ -42,7 +42,7 @@ dataset keeps them apart:
 | `intended_destination` | Egypt, in the 1201 contract         | none             |
 | `negotiated_diversion` | Zara, and the terms that changed    | none             |
 | `travelled_route`      | Where the fleet went                | generalised line |
-| `attack`               | An assault at a place, on a date    | place position   |
+| `attack`               | An assault at a place, on a date    | none             |
 | `partition_claim`      | What the Partitio Romaniae assigned | none             |
 | `durable_control`      | What anyone actually held           | none             |
 
@@ -52,8 +52,17 @@ as claimed and not held, and it may not carry geometry at all. The Partitio
 divided an empire among people who held very little of it; drawing the assignment
 would republish the document's wishful thinking as geography.
 
-Three states are therefore on no layer, and the release manifest records which
-three so a later reader finds a decision rather than an omission.
+Only `travelled_route` carries geometry, and it does so twice: the assembly at
+Venice and the run from Zara to the Aegean. **Six of the eight records are
+therefore on no layer**, across five of the six kinds, and the release manifest
+records which so a later reader finds a decision rather than an omission.
+
+An attack carries none either, which is worth stating because it is the one that
+looks like an exception. A siege happened somewhere, so a point is tempting. But
+the point that would be drawn is the _place's_ coordinate, already published by
+the place record, and attaching it to the event would assert that the event's
+position is independently attested when it is inherited. The place is where
+Constantinople is; it is not evidence for where the fleet stood.
 
 ## Reuse rather than re-authoring
 
@@ -74,3 +83,29 @@ Road proof cannot yet show the manuscript half of its comparison.
 The prototype essay is held at `releaseAt: '2099-01-01'` for the same reason as
 TERRA INCOGNITA: publishing an argument whose sources nobody has read would be
 the failure the argument is about.
+
+## Why each gate is stopped (KAN-384, KAN-385)
+
+The Dacia programme records why a trench is stopped and which ticket owns each
+gate. This pilot recorded neither, so its five open tickets read as blocked for
+no stated reason - the condition a debt register exists to end. Two tables now
+carry it, with `proof` playing the role `trench` plays in Dacia:
+
+- [`reference/gates.csv`](../../data/crusades/reference/gates.csv) - twelve rows,
+  six gates for each proof, each naming the ticket that owns it.
+- [`reference/verification-debt.csv`](../../data/crusades/reference/verification-debt.csv) -
+  seven open items, each naming the `<proof>:<gate>` pairs it blocks and the way out.
+
+`scripts/crusades/validate.py` enforces the join **in both directions**, which is
+the part that matters. An open item must name a gate, or it reaches no ticket and
+is lost while still marked open. And a gate below `passed` must have something
+naming it, or the register says work remains and names none of it. Adding the
+second rule immediately found a gap: `fourth_crusade:interaction` was marked
+`partial` with nothing recording what was still missing, which turned out to be
+the Atlas feature panel, where a partition claim and a travelled route still
+render alike.
+
+Nothing may report `passed` while the corpus is untranscribed, and nothing does:
+0 of 12. The essay renders this table rather than restating it in prose, because
+a hand-written list of what a prototype cannot yet do is a second copy of the
+project's state, and the copy is the one that goes stale.

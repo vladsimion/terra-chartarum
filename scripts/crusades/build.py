@@ -91,6 +91,45 @@ def places_by_id() -> dict[str, dict[str, str]]:
     return {row["place_id"]: row for row in read("places")}
 
 
+def gates_and_debts() -> dict[str, list[dict[str, object]]]:
+    """The flagship's gate state and what blocks each gate (KAN-384/KAN-385).
+
+    Compiled rather than written into the essay, for the reason the Dacia
+    programme index gives: a hand-maintained list of what a prototype cannot yet
+    do is a second copy of the project's state, and the copy is the one that
+    goes stale. The essay's closing section is the most-read statement of this
+    pilot's limits, and it was prose.
+    """
+    gates = [
+        {
+            "proof": row["proof_id"],
+            "gate": row["gate_id"],
+            "order": int(row["order"]),
+            "status": row["status"],
+            "jiraKey": row["jira_key"],
+            "evidence": row["evidence"] or None,
+            "note": row["note"],
+        }
+        for row in read("reference/gates")
+    ]
+    gates.sort(key=lambda g: (g["proof"], g["order"]))
+
+    debts = [
+        {
+            "id": row["debt_id"],
+            "kind": row["kind"],
+            "statement": row["statement"],
+            "blocks": [t for t in (p.strip() for p in row["blocks"].split("|")) if t],
+            "resolutionPath": row["resolution_path"],
+            "status": row["status"],
+        }
+        for row in read("reference/verification-debt")
+        if row["status"] == "open"
+    ]
+    debts.sort(key=lambda d: d["id"])
+    return {"gates": gates, "debts": debts}
+
+
 def project() -> dict[str, list[dict[str, object]]]:
     """One projection, read by both the Atlas assets and the essay."""
     places = places_by_id()
@@ -205,6 +244,7 @@ def build_outputs() -> dict[Path, bytes]:
         "release": RELEASE_VERSION,
         "layerIds": ATLAS_LAYERS,
         **projection,
+        **gates_and_debts(),
     })
 
     for name in TABLES:
