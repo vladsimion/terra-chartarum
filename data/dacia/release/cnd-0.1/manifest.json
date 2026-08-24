@@ -101,9 +101,17 @@
       "bytes": 14361,
       "sha256": "3442e0999d7bf597c4c0dd224b9ac618303010c8214fd21cc0493c7e2c8b54f2"
     },
+    "src/data/dacia/generated/borroczyn.json": {
+      "bytes": 3022,
+      "sha256": "37650d788ec3db83cdca8381a592a59544e3937597800da2e7acd588bad2572a"
+    },
     "src/data/dacia/generated/hiatus-timeline.json": {
       "bytes": 6548,
       "sha256": "f5207bd851c5b6aecba5ce3b20a39a2a6ecbbd63dbbe0e182e561acfcd886b4a"
+    },
+    "src/data/dacia/generated/in-manibus.json": {
+      "bytes": 462,
+      "sha256": "04af4bb877e05444beb8f4559648a1fd152f5ae4405e403ba3c2d0a298d1549a"
     },
     "src/data/dacia/generated/programme.json": {
       "bytes": 11639,

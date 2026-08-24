@@ -69,6 +69,26 @@ BORROCZYN_SOURCE_TYPES = {
     "modern_reference",
     "context",
 }
+BORROCZYN_LAYER_ROLES = {
+    "historical_source",
+    "georeferenced_derived",
+    "modern_reference",
+}
+BORROCZYN_RELEASE_STATES = {
+    "blocked_pending_witness",
+    "research",
+    "reviewed",
+    "released",
+}
+URBAN_FEATURE_TYPES = {"parcel", "street", "building"}
+IN_MANIBUS_INSPECTION_STATES = {"not_inspected", "physically_inspected", "reviewed"}
+OBJECT_EVIDENCE_KINDS = {
+    "physical_observation",
+    "bibliographic_identification",
+    "inference",
+    "cnd_attestation",
+}
+OBJECT_EVIDENCE_BASES = {"direct_physical", "object_record", "external_reference"}
 HIATUS_SILENCE_ASSESSMENTS = {"not_assessed", "not_applicable", "meaningful_silence"}
 HIATUS_APPLICABILITY = {"applicable", "place_names_only", "not_applicable"}
 SOURCE_LEDGER_RIGHTS = {
@@ -242,6 +262,10 @@ TABLES = {
     "reception_rubric": f"{REFERENCE}/reception-review-rubric.csv",
     "reception_claims": f"{REFERENCE}/reception-claims.csv",
     "borroczyn_seam_sources": f"{REFERENCE}/borroczyn-seam-sources.csv",
+    "in_manibus_inspections": f"{REFERENCE}/in-manibus-inspections.csv",
+    "urban_features": "urban-features.csv",
+    "objects": "objects.csv",
+    "object_evidence": "object-evidence.csv",
     "places": "places.csv",
     "sources": "sources.csv",
     "attestations": "attestations.csv",
@@ -258,6 +282,7 @@ TABLES = {
 PILOT_MANIFEST = f"{PILOT}/pilot-manifest.json"
 SOURCE_LEDGER_MANIFEST = f"{REFERENCE}/source-ledger-manifest.json"
 RESEARCH_PACKAGE_MANIFEST = f"{REFERENCE}/research-package-manifest.json"
+BORROCZYN_GEOREFERENCING = f"{REFERENCE}/borroczyn-georeferencing.json"
 
 
 def _read(key: str, errors: list[str]) -> list[dict[str, str]]:
@@ -1080,6 +1105,7 @@ def validate_pilot_manifest(rows, errors: list[str]) -> None:
 
 
 RELEASE_MANIFEST = DATA_RELATIVE_MANIFEST = "release/cnd-0.1/manifest.json"
+V1_MANIFEST = "release/cnd-1.0-rc1/manifest.json"
 PUBLIC_STATES = {"approved", "published"}
 
 
@@ -1129,6 +1155,63 @@ def validate_release(ranks, errors: list[str]) -> None:
             f"release: manifest claims {manifest.get('publicRecords')} public records, "
             f"the tables hold {public}"
         )
+
+
+def validate_v1_candidate(errors: list[str]) -> None:
+    """KAN-364..366: a complete candidate may build; a blocked one may not claim release."""
+    path = DATA / V1_MANIFEST
+    if not path.exists():
+        errors.append(f"missing CND v1 candidate manifest: {path.relative_to(REPO)}; run make dacia")
+        return
+    manifest = json.loads(path.read_text(encoding="utf-8"))
+    release_dir = path.parent
+    required = {
+        *(f"{name}.{suffix}" for name in ("places", "sources", "attestations", "transcriptions", "name-uses", "name-use-edges") for suffix in ("csv", "parquet")),
+        "cnd.jsonld",
+        "atlas-publishable.geojson",
+        "atlas-research.geojson",
+        "qa.json",
+        "CITATION.cff",
+        "LICENSE.md",
+        "METHODOLOGY.md",
+        "SCHEMA.md",
+    }
+    missing = sorted(name for name in required if not (release_dir / name).exists())
+    if missing:
+        errors.append(f"CND v1 candidate: missing required artifacts {', '.join(missing)}")
+
+    for name, recorded in sorted(manifest.get("inputs", {}).items()):
+        source = REPO / name
+        if not source.exists():
+            errors.append(f"CND v1 candidate: manifest records a missing input {name}")
+        elif hashlib.sha256(source.read_bytes()).hexdigest() != recorded:
+            errors.append(f"CND v1 candidate: {name} changed since the last build; run make dacia")
+    for name, entry in sorted(manifest.get("outputs", {}).items()):
+        output = REPO / name
+        if not output.exists():
+            errors.append(f"CND v1 candidate: manifest records a missing output {name}")
+            continue
+        payload = output.read_bytes()
+        if hashlib.sha256(payload).hexdigest() != entry.get("sha256"):
+            errors.append(f"CND v1 candidate: {name} does not match its manifest hash")
+        if len(payload) != entry.get("bytes"):
+            errors.append(f"CND v1 candidate: {name} does not match its manifest byte length")
+
+    qa_path = release_dir / "qa.json"
+    if not qa_path.exists():
+        return
+    qa = json.loads(qa_path.read_text(encoding="utf-8"))
+    if qa.get("releaseStatus") != manifest.get("releaseStatus"):
+        errors.append("CND v1 candidate: QA and manifest releaseStatus disagree")
+    blockers = qa.get("blockers", [])
+    if qa.get("releaseStatus") == "ready" and blockers:
+        errors.append("CND v1 candidate: a ready release may not carry blockers")
+    if qa.get("releaseStatus") == "blocked" and not blockers:
+        errors.append("CND v1 candidate: a blocked release must name its blockers")
+    if qa.get("doi", {}).get("status") == "deferred" and not qa.get("doi", {}).get("reason"):
+        errors.append("CND v1 candidate: DOI deferral requires a reason")
+    if qa.get("rights", {}).get("sourceImageryRedistributed") is not False:
+        errors.append("CND v1 candidate: this metadata package may not imply source-image rights")
 
 
 def validate_debt(trenches, errors: list[str]) -> None:
@@ -1778,6 +1861,215 @@ def validate_borroczyn_package(errors: list[str]) -> None:
         errors.append("borroczyn-seam: polygon falls outside the Bucharest review bounds")
     if max(lons) - min(lons) > 0.1 or max(lats) - min(lats) > 0.1:
         errors.append("borroczyn-seam: study area is not bounded tightly enough")
+
+
+def validate_borroczyn_georeferencing(errors: list[str]) -> None:
+    """KAN-358: keep the source, transform and modern reference distinct.
+
+    An explicitly blocked package is valid. A released package is held to the
+    stronger rules below, so adding a filename or changing a status cannot make
+    an unmeasured transform look complete.
+    """
+    path = DATA / BORROCZYN_GEOREFERENCING
+    if not path.exists():
+        errors.append(f"missing Borroczyn georeferencing package: {BORROCZYN_GEOREFERENCING}")
+        return
+    try:
+        package = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        errors.append(f"borroczyn-georeferencing: invalid JSON: {exc}")
+        return
+
+    label = "borroczyn-georeferencing"
+    if package.get("schemaVersion") != 1:
+        errors.append(f"{label}: unsupported schemaVersion")
+    if package.get("ticket") != "KAN-358":
+        errors.append(f"{label}: ticket must be KAN-358")
+    if package.get("studyAreaId") != "br-seam-uranus-antim":
+        errors.append(f"{label}: studyAreaId must resolve to the selected seam")
+    status = package.get("status")
+    if status not in BORROCZYN_RELEASE_STATES:
+        errors.append(f"{label}: status '{status}' is not recognised")
+    if package.get("targetCrs") != "EPSG:3844":
+        errors.append(f"{label}: targetCrs must be Romanian Stereo 70 (EPSG:3844)")
+    if package.get("webCrs") != "EPSG:3857":
+        errors.append(f"{label}: webCrs must be EPSG:3857")
+    if not package.get("transformationMethod"):
+        errors.append(f"{label}: transformationMethod is required")
+    pipeline = package.get("pipeline", [])
+    if not isinstance(pipeline, list) or not pipeline or not all(isinstance(step, str) for step in pipeline):
+        errors.append(f"{label}: a reproducible command pipeline is required")
+
+    sources = {row["source_id"]: row for row in _read("borroczyn_seam_sources", errors)}
+    layers = package.get("evidenceLayers", [])
+    roles = [layer.get("role") for layer in layers if isinstance(layer, dict)]
+    if set(roles) != BORROCZYN_LAYER_ROLES or len(roles) != len(BORROCZYN_LAYER_ROLES):
+        errors.append(f"{label}: historical, derived and modern evidence layers must be distinct")
+    for layer in layers:
+        if not isinstance(layer, dict):
+            errors.append(f"{label}: every evidence layer must be an object")
+            continue
+        source_id = layer.get("sourceId")
+        if source_id not in sources:
+            errors.append(f"{label}: layer source '{source_id}' does not resolve")
+        if not layer.get("id") or not layer.get("status"):
+            errors.append(f"{label}: every evidence layer needs an id and status")
+
+    controls = package.get("controlPoints", [])
+    if not isinstance(controls, list):
+        errors.append(f"{label}: controlPoints must be a list")
+        controls = []
+    seen = set()
+    for point in controls:
+        if not isinstance(point, dict):
+            errors.append(f"{label}: every control point must be an object")
+            continue
+        point_id = point.get("id", "")
+        point_label = f"{label}[{point_id or 'unnamed-control'}]"
+        if not point_id or point_id in seen:
+            errors.append(f"{point_label}: control point id must be unique")
+        seen.add(point_id)
+        for field in ("pixelX", "pixelY", "stereo70X", "stereo70Y", "residualM"):
+            if not isinstance(point.get(field), (int, float)):
+                errors.append(f"{point_label}: {field} must be numeric")
+        if point.get("use") not in {"fit", "independent_check"}:
+            errors.append(f"{point_label}: use must be fit or independent_check")
+        if not point.get("sourceFeature"):
+            errors.append(f"{point_label}: sourceFeature is required")
+
+    metrics = package.get("residualMetrics", {})
+    if metrics.get("unit") != "metres":
+        errors.append(f"{label}: residual metrics must be recorded in metres")
+    if status == "blocked_pending_witness" and not package.get("blockers"):
+        errors.append(f"{label}: a blocked package must name its blockers")
+    if status == "released":
+        fit = [point for point in controls if point.get("use") == "fit"]
+        checks = [point for point in controls if point.get("use") == "independent_check"]
+        if len(fit) < 6 or len(checks) < 2:
+            errors.append(f"{label}: release requires six fit points and two independent checks")
+        if not isinstance(metrics.get("rmse"), (int, float)) or not isinstance(
+            metrics.get("maximum"), (int, float)
+        ):
+            errors.append(f"{label}: release requires measured RMSE and maximum residuals")
+        historical = next(
+            (layer for layer in layers if layer.get("role") == "historical_source"), None
+        )
+        source = sources.get(historical.get("sourceId")) if historical else None
+        if source is None or source.get("production_role") not in {
+            "production_primary", "production_fallback"
+        }:
+            errors.append(f"{label}: release requires a rights-cleared historical production source")
+
+    rows = _read("urban_features", errors)
+    _check_unique(rows, "urban_feature_id", "urban-features", errors)
+    for row in rows:
+        feature_id = row["urban_feature_id"]
+        row_label = f"urban-features[{feature_id}]"
+        if not feature_id.startswith("urb-") or not SLUG.match(feature_id):
+            errors.append(f"{row_label}: urban_feature_id must be an urb- slug")
+        if row["feature_type"] not in URBAN_FEATURE_TYPES:
+            errors.append(f"{row_label}: feature_type is not recognised")
+        if row["study_area_id"] != package.get("studyAreaId"):
+            errors.append(f"{row_label}: study_area_id does not resolve to the selected seam")
+        if row["evidence_layer"] not in BORROCZYN_LAYER_ROLES:
+            errors.append(f"{row_label}: evidence_layer is not recognised")
+        source = sources.get(row["source_id"])
+        if source is None:
+            errors.append(f"{row_label}: source_id '{row['source_id']}' does not resolve")
+        for field in ("geometry_provenance", "source_feature_ref", "geometry_wkt", "notes"):
+            if not row[field]:
+                errors.append(f"{row_label}: {field} is required")
+        if row["geometry_provenance"] not in REQUIRED_TERMS["geometry_provenance"]:
+            errors.append(f"{row_label}: geometry_provenance is not recognised")
+        if row["review_state"] not in REQUIRED_TERMS["review_state"]:
+            errors.append(f"{row_label}: review_state is not recognised")
+        if not row["valid_from"].lstrip("-").isdigit() or not row["valid_to"].lstrip("-").isdigit():
+            errors.append(f"{row_label}: validity bounds must be years")
+        if row["review_state"] == "published" and (
+            source is None or source.get("production_role") == "research_only"
+        ):
+            errors.append(f"{row_label}: published geometry requires a production-cleared source")
+
+
+def validate_in_manibus(errors: list[str], sources: set[str], attestations: set[str]) -> None:
+    """KAN-360/361: physical observation is a gate, not a prose assertion."""
+    inspections = _read("in_manibus_inspections", errors)
+    _check_unique(inspections, "inspection_id", "in-manibus-inspections", errors)
+    inspections_by_id = {row["inspection_id"]: row for row in inspections}
+    observed_fields = (
+        "inspection_date", "inspector", "creator", "title", "date_label",
+        "edition_state", "dimensions_cm", "recto_observations", "verso_observations",
+        "fold_binding_traces", "colour_state", "repairs_marks", "provenance_clues",
+        "state_confidence",
+    )
+    for row in inspections:
+        inspection_id = row["inspection_id"]
+        label = f"in-manibus-inspections[{inspection_id}]"
+        if not inspection_id.startswith("ins-") or not SLUG.match(inspection_id):
+            errors.append(f"{label}: inspection_id must be an ins- slug")
+        if not row["candidate_map_id"]:
+            errors.append(f"{label}: candidate_map_id is required")
+        status = row["inspection_status"]
+        if status not in IN_MANIBUS_INSPECTION_STATES:
+            errors.append(f"{label}: inspection_status '{status}' is not recognised")
+        if status in {"physically_inspected", "reviewed"}:
+            for field in observed_fields:
+                if not row[field]:
+                    errors.append(f"{label}: {field} is required after physical inspection")
+            if row["inspection_date"] and not ISO_DATE.match(row["inspection_date"]):
+                errors.append(f"{label}: inspection_date must be an ISO date")
+
+    objects = _read("objects", errors)
+    _check_unique(objects, "object_id", "objects", errors)
+    objects_by_id = {row["object_id"]: row for row in objects}
+    for row in objects:
+        object_id = row["object_id"]
+        label = f"objects[{object_id}]"
+        if not object_id.startswith("obj-") or not SLUG.match(object_id):
+            errors.append(f"{label}: object_id must be an obj- slug")
+        inspection = inspections_by_id.get(row["inspection_id"])
+        if inspection is None:
+            errors.append(f"{label}: inspection_id '{row['inspection_id']}' does not resolve")
+        elif inspection["inspection_status"] != "reviewed":
+            errors.append(f"{label}: only a reviewed physical inspection may create an object")
+        for field in (
+            "collection_map_id", "title", "creator", "date_label", "edition_state",
+            "dimensions_cm", "provenance", "condition", "colour_state", "binding_state",
+        ):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+        if row["source_id"] and row["source_id"] not in sources:
+            errors.append(f"{label}: source_id '{row['source_id']}' does not resolve")
+        if row["review_state"] not in REVIEWED_OR_ABOVE:
+            errors.append(f"{label}: a production object must be reviewed or above")
+
+    evidence = _read("object_evidence", errors)
+    _check_unique(evidence, "evidence_id", "object-evidence", errors)
+    for row in evidence:
+        evidence_id = row["evidence_id"]
+        label = f"object-evidence[{evidence_id}]"
+        if not evidence_id.startswith("obe-") or not SLUG.match(evidence_id):
+            errors.append(f"{label}: evidence_id must be an obe- slug")
+        if row["object_id"] not in objects_by_id:
+            errors.append(f"{label}: object_id '{row['object_id']}' does not resolve")
+        if row["evidence_kind"] not in OBJECT_EVIDENCE_KINDS:
+            errors.append(f"{label}: evidence_kind is not recognised")
+        if row["observation_basis"] not in OBJECT_EVIDENCE_BASES:
+            errors.append(f"{label}: observation_basis is not recognised")
+        if row["evidence_kind"] == "physical_observation" and row["observation_basis"] != "direct_physical":
+            errors.append(f"{label}: physical observations require direct_physical basis")
+        if not row["evidence_note"]:
+            errors.append(f"{label}: evidence_note is required")
+        if row["source_id"] and row["source_id"] not in sources:
+            errors.append(f"{label}: source_id '{row['source_id']}' does not resolve")
+        for attestation_id in _pipe_set(row["attestation_ids"]):
+            if attestation_id not in attestations:
+                errors.append(f"{label}: attestation_id '{attestation_id}' does not resolve")
+        for slug in _pipe_set(row["related_essay_slugs"]):
+            if not (REPO / "src" / "content" / "essays" / f"{slug}.mdx").exists():
+                errors.append(f"{label}: related essay '{slug}' does not resolve")
+        if row["review_state"] not in REQUIRED_TERMS["review_state"]:
+            errors.append(f"{label}: review_state is not recognised")
 
 
 def _check_gis_ring(ring, label: str, errors: list[str]) -> None:
@@ -2601,11 +2893,13 @@ def validate_inputs() -> list[str]:
     validate_pilot(terms, places, sources, errors)
     validate_debt(trenches, errors)
     validate_release(ranks, errors)
+    validate_v1_candidate(errors)
     validate_hiatus_witness_families(errors)
     validate_hiatus_timeline(errors)
     validate_treaty_frontier_sources(errors)
     validate_carta_rubra_package(errors)
     validate_borroczyn_package(errors)
+    validate_borroczyn_georeferencing(errors)
     name_uses = {row["name_use_id"] for row in _read("name_uses", errors)}
     validate_nomen_errans_witnesses(terms, ranks, name_uses, errors)
     place_points = {
@@ -2620,6 +2914,7 @@ def validate_inputs() -> list[str]:
     validate_roman_dacia(terms, places, errors)
     validate_principalities(terms, errors)
     validate_josephinian_sheets(terms, places, place_points, errors)
+    validate_in_manibus(errors, sources, attestation_ids)
     validate_source_ledger_manifest(errors)
     validate_research_package_manifest(errors)
     return errors
@@ -2641,6 +2936,10 @@ def readiness_lines() -> list[str]:
     carta_sources = _read("carta_rubra_sources", errors)
     carta_claims = _read("carta_rubra_claims", errors)
     borroczyn_sources = _read("borroczyn_seam_sources", errors)
+    urban_features = _read("urban_features", errors)
+    inspections = _read("in_manibus_inspections", errors)
+    objects = _read("objects", errors)
+    object_evidence = _read("object_evidence", errors)
     witnesses = _read("nomen_errans_witnesses", errors)
     reception = _read("reception_corpus", errors)
     reception_claims = _read("reception_claims", errors)
@@ -2677,6 +2976,9 @@ def readiness_lines() -> list[str]:
         f"  research packages: {len(hiatus_states)} Hiatus states, "
         f"{len(carta_sources)} Carta Rubra sources/{len(carta_claims)} claims, and "
         f"{len(borroczyn_sources)} Borroczyn seam sources",
+        f"  Campaign III: {len(urban_features)} Borroczyn urban features; "
+        f"{len(inspections)} In Manibus inspections, {len(objects)} held objects and "
+        f"{len(object_evidence)} object-evidence links",
         f"  Nomen Errans: {len(uses)} name uses, "
         f"{sum(1 for row in uses if row['review_state'] == 'normalized')} normalized and "
         f"{sum(1 for row in uses if row['review_state'] in REVIEWED_OR_ABOVE)} reviewed; "

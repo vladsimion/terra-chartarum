@@ -40,6 +40,16 @@ const bars = essays.map((e) => {
         explaining its sources, how it was interpreted and how much of it was reconstructed. Those
         notes live in the <a href="/atlas/handbook/">Atlas Handbook</a>.
       </p>
+      <aside class="handbook-callout" aria-labelledby="handbook-callout-title">
+        <div>
+          <h2 id="handbook-callout-title">New to the Atlas?</h2>
+          <p>
+            Learn how to read layers, chronology, evidence, reconstruction, uncertainty, provenance
+            and sources before you explore.
+          </p>
+        </div>
+        <a href="/atlas/handbook/">Read the Handbook →</a>
+      </aside>
     </header>
 
     <h2 class="section-h">The corpus, mapped</h2>
@@ -162,7 +172,6 @@ const bars = essays.map((e) => {
     padding-block: clamp(2.5rem, 6vw, 4rem);
   }
   .atlas-head {
-    max-width: var(--prose-max);
     margin-bottom: 2.5rem;
   }
   .atlas-head h1 {
@@ -173,6 +182,37 @@ const bars = essays.map((e) => {
     color: var(--ink-muted);
     font-size: var(--step-1);
     margin: 0;
+  }
+  .handbook-callout {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+    padding: 1rem 1.15rem;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--gold);
+    border-radius: var(--radius);
+    background: var(--panel);
+  }
+  .handbook-callout h2 {
+    margin: 0 0 0.25rem;
+    font-size: var(--step-1);
+  }
+  .handbook-callout p {
+    margin: 0;
+    color: var(--ink-muted);
+  }
+  .handbook-callout a {
+    flex: 0 0 auto;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+  }
+  @media (max-width: 640px) {
+    .handbook-callout {
+      align-items: flex-start;
+      flex-direction: column;
+    }
   }
 
   .section-h {

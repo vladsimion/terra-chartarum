@@ -1,0 +1,229 @@
+---
+/**
+ * Evidence-layer inspector for the held Borroczyn prototype (KAN-359).
+ *
+ * It deliberately shows layer availability and provenance, not invented map
+ * geometry. The full reveal comparison activates only after the generated
+ * package reports a rights-cleared historical source and measured transform.
+ */
+import { getBorroczynLayers, getBorroczynPackage } from '../../lib/campaign-iii';
+
+const seam = getBorroczynPackage();
+const layers = getBorroczynLayers();
+const roleLabels = {
+  historical_source: 'Historical source',
+  georeferenced_derived: 'Georeferenced geometry',
+  modern_reference: 'Modern reference',
+};
+---
+
+<figure class="seam" data-borroczyn-seam>
+  <div class="seam-controls" role="group" aria-label="Borroczyn evidence layers">
+    {
+      layers.map((layer, index) => (
+        <button
+          type="button"
+          class:list={['seam-tab', index === 0 && 'is-active']}
+          aria-pressed={index === 0 ? 'true' : 'false'}
+          data-layer={layer.role}
+        >
+          {roleLabels[layer.role]}
+        </button>
+      ))
+    }
+  </div>
+
+  <div class="seam-stage" aria-live="polite">
+    <div class="seam-boundary" aria-hidden="true">
+      <span>Uranus–Antim</span>
+    </div>
+    {
+      layers.map((layer, index) => (
+        <section class="seam-layer" data-panel={layer.role} hidden={index !== 0}>
+          <p class="seam-role">{roleLabels[layer.role]}</p>
+          <h3>{layer.title || 'Derived layer not generated'}</h3>
+          <dl>
+            <div>
+              <>
+                <dt>Status</dt>
+                <dd>{layer.status.replaceAll('_', ' ')}</dd>
+              </>
+            </div>
+            <div>
+              <>
+                <dt>Source</dt>
+                <dd>
+                  <code>{layer.sourceId}</code>
+                </dd>
+              </>
+            </div>
+            <div>
+              <>
+                <dt>Rights</dt>
+                <dd>{layer.rightsStatus.replaceAll('_', ' ') || 'Inherited from source'}</dd>
+              </>
+            </div>
+            <div>
+              <>
+                <dt>Role</dt>
+                <dd>{layer.productionRole.replaceAll('_', ' ') || 'Not generated'}</dd>
+              </>
+            </div>
+          </dl>
+        </section>
+      ))
+    }
+  </div>
+
+  <figcaption>
+    Bounded seam <code>{seam.studyArea.version}</code>. This inspector keeps source, transformed
+    geometry and modern reference separate. The spatial reveal remains held until control points,
+    residuals and production rights are recorded.
+  </figcaption>
+</figure>
+
+<script>
+  function initialise(root: HTMLElement) {
+    if (root.dataset.ready) return;
+    root.dataset.ready = 'true';
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-layer]'));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-panel]'));
+    for (const tab of tabs) {
+      tab.addEventListener('click', () => {
+        const selected = tab.dataset.layer;
+        for (const candidate of tabs) {
+          const active = candidate === tab;
+          candidate.classList.toggle('is-active', active);
+          candidate.setAttribute('aria-pressed', String(active));
+        }
+        for (const panel of panels) panel.hidden = panel.dataset.panel !== selected;
+      });
+    }
+  }
+
+  const boot = () =>
+    document.querySelectorAll<HTMLElement>('[data-borroczyn-seam]').forEach(initialise);
+  boot();
+  document.addEventListener('astro:page-load', boot);
+</script>
+
+<style>
+  .seam {
+    margin: 2rem 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--panel);
+  }
+  .seam-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.8rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .seam-tab {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.45rem 0.75rem;
+    color: var(--ink-muted);
+    background: var(--canvas);
+    font: inherit;
+    cursor: pointer;
+  }
+  .seam-tab.is-active {
+    border-color: var(--gold);
+    color: var(--ink);
+  }
+  .seam-tab:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
+  .seam-stage {
+    position: relative;
+    min-height: 22rem;
+    display: grid;
+    place-items: center;
+    padding: clamp(1.25rem, 4vw, 3rem);
+    background:
+      linear-gradient(90deg, color-mix(in srgb, var(--line) 35%, transparent) 1px, transparent 1px),
+      linear-gradient(color-mix(in srgb, var(--line) 35%, transparent) 1px, transparent 1px);
+    background-size: 2rem 2rem;
+  }
+  .seam-boundary {
+    position: absolute;
+    inset: 12% 9%;
+    border: 2px dashed var(--gold);
+  }
+  .seam-boundary span {
+    position: absolute;
+    top: 0.4rem;
+    left: 0.55rem;
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .seam-layer {
+    position: relative;
+    z-index: 1;
+    width: min(32rem, 100%);
+    padding: 1rem 1.15rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--canvas) 92%, transparent);
+  }
+  .seam-layer[hidden] {
+    display: none;
+  }
+  .seam-role {
+    margin: 0;
+    color: var(--gold);
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .seam-layer h3 {
+    margin: 0.35rem 0 0.8rem;
+  }
+  .seam-layer dl {
+    margin: 0;
+    display: grid;
+    gap: 0.4rem;
+  }
+  .seam-layer dl div {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    gap: 0.75rem;
+  }
+  .seam-layer dt {
+    color: var(--ink-muted);
+  }
+  .seam-layer dd {
+    margin: 0;
+  }
+  figcaption {
+    padding: 0.85rem 1rem;
+    border-top: 1px solid var(--line);
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+  }
+  @media (max-width: 34rem) {
+    .seam-tab {
+      flex: 1 1 100%;
+    }
+    .seam-stage {
+      min-height: 25rem;
+    }
+    .seam-layer dl div {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .seam * {
+      scroll-behavior: auto;
+    }
+  }
+</style>

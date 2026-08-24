@@ -9,8 +9,8 @@ export const PRIMARY_NAV: readonly PrimaryNavItem[] = [
   { href: '/atlas/', label: 'Atlas' },
   { href: '/collection/', label: 'Collection' },
   { href: '/cartographers/', label: 'Cartographers' },
+  { href: '/bibliography/', label: 'Bibliography' },
   { href: '/about/', label: 'About' },
-  { href: '/colophon/', label: 'Colophon' },
 ];
 
 export function isPrimaryNavActive(path: string, href: string): boolean {

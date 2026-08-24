@@ -78,6 +78,52 @@ def test_release_is_versioned_as_a_pilot():
     assert manifest["licence"]
 
 
+def test_v1_candidate_is_complete_but_fail_closed():
+    outputs = build.build_v1_outputs()
+    qa = json.loads(outputs[build.V1_RELEASE_DIR / "qa.json"])
+    assert qa["releaseStatus"] == "blocked"
+    assert "coverage_target_not_reached" in qa["blockers"]
+    assert "scholarly_spot_check_not_recorded" in qa["blockers"]
+    assert "no_publishable_attestations" in qa["blockers"]
+    assert qa["doi"]["status"] == "deferred"
+    for name in build.TABLES:
+        assert build.V1_RELEASE_DIR / f"{name}.csv" in outputs
+        assert build.V1_RELEASE_DIR / f"{name}.parquet" in outputs
+    for name in (
+        "cnd.jsonld",
+        "atlas-publishable.geojson",
+        "atlas-research.geojson",
+        "qa.json",
+        "CITATION.cff",
+        "LICENSE.md",
+        "METHODOLOGY.md",
+        "SCHEMA.md",
+    ):
+        assert build.V1_RELEASE_DIR / name in outputs
+    spatial = json.loads(outputs[build.V1_RELEASE_DIR / "atlas-research.geojson"])
+    assert spatial["_cnd"]["release"] == "cnd-1.0-rc1"
+    assert spatial["_cnd"]["kind"] == "release_candidate"
+
+
+def test_v1_manifest_hashes_candidate_outputs_and_inputs():
+    outputs = build.build_v1_outputs()
+    manifest = json.loads(build.build_v1_manifest(outputs))
+    assert manifest["release"] == "cnd-1.0-rc1"
+    assert manifest["releaseStatus"] == "blocked"
+    assert "data/dacia/reference/cnd-v1-release.json" in manifest["inputs"]
+    assert "data/dacia/reference/cnd-id-migrations.csv" in manifest["inputs"]
+    for name, entry in manifest["outputs"].items():
+        payload = outputs[build.REPO / name]
+        assert entry["sha256"] == build.sha256_bytes(payload)
+        assert entry["bytes"] == len(payload)
+
+
+def test_v1_preserves_every_pilot_place_and_source_id():
+    qa = build.v1_qa({name: build.read_table(name) for name in build.TABLES})
+    assert qa["stableIdAudit"]["missingPublishedIds"] == {}
+    assert qa["authorityConsumers"]["nomenErrans"] == "resolves"
+
+
 def test_unlocated_places_are_reported_not_positioned():
     """Vicina has no coordinates, so it contributes no feature and is named instead."""
     outputs = build.build_outputs()
@@ -121,3 +167,25 @@ def test_parquet_mirrors_the_csv_row_count():
             io.BytesIO(outputs[build.RELEASE_DIR / f"{table}.parquet"])
         )
         assert parquet.num_rows == csv_rows, f"{table}: parquet and csv disagree"
+
+
+def test_borroczyn_package_reports_the_rights_hold():
+    package = build.borroczyn_package()
+    assert package["status"] == "blocked_pending_witness"
+    assert package["publicReady"] is False
+    assert {layer["role"] for layer in package["layers"]} == {
+        "historical_source", "georeferenced_derived", "modern_reference"
+    }
+    assert package["urbanAuthority"]["recordCount"] == 0
+
+
+def test_in_manibus_emits_no_object_without_inspection():
+    package = build.in_manibus_package()
+    assert package["status"] == "pending_physical_inspection"
+    assert package["publicReady"] is False
+    assert package["counts"] == {
+        "inspections": 0,
+        "reviewedInspections": 0,
+        "objects": 0,
+        "evidence": 0,
+    }

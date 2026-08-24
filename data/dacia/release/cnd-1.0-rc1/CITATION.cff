@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: >-
+  This is a blocked release candidate; consult qa.json before citation.
+title: Corpus Nominum Daciae
+type: dataset
+version: cnd-1.0-rc1
+authors:
+  - family-names: Simion
+    given-names: Vlad
+license: CC-BY-4.0

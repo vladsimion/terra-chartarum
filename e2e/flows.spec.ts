@@ -46,7 +46,7 @@ test.describe('flow: primary navigation', () => {
     await expect(links).toHaveCount(7);
 
     // The nav used to sit in an overflow-x box with the scrollbar hidden, so the
-    // last items (About, Colophon) were off screen with no affordance. It now
+    // last items were off screen with no affordance. It now
     // shrinks and wraps instead: nothing scrolls, everything is clickable.
     const overflow = await nav.evaluate((el) => el.scrollWidth - el.clientWidth);
     expect(overflow).toBeLessThanOrEqual(1);
@@ -63,6 +63,12 @@ test.describe('flow: primary navigation', () => {
       expect(box!.x).toBeGreaterThanOrEqual(0);
       expect(box!.x + box!.width).toBeLessThanOrEqual((viewport?.width ?? 0) + 1);
     }
+
+    await expect(nav.getByRole('link', { name: 'Bibliography' })).toBeVisible();
+    await expect(nav.getByRole('link', { name: 'Colophon' })).toHaveCount(0);
+    await expect(
+      page.getByRole('navigation', { name: 'Footer' }).getByRole('link', { name: 'Colophon' }),
+    ).toBeVisible();
   });
 });
 

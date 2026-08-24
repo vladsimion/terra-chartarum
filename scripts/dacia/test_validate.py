@@ -105,7 +105,7 @@ def test_place_name_cannot_stand_in_for_an_id(dataset):
 
 def test_reserved_prefix_whose_table_exists_must_be_promoted(dataset):
     def mutate(rows):
-        find(rows, "prefix", "obj")["authority_table"] = "data/dacia/places.csv"
+        find(rows, "prefix", "frn")["authority_table"] = "data/dacia/places.csv"
 
     edit(dataset, "entity_prefixes", mutate)
     refuses("promote the prefix to live")
@@ -808,6 +808,91 @@ def test_borroczyn_seam_cannot_claim_complete_city_coverage(dataset):
     geojson["metadata"]["completeCityCoverage"] = True
     path.write_text(json.dumps(geojson, indent=2) + "\n", encoding="utf-8")
     refuses("complete-city coverage must remain explicitly false")
+
+
+def test_borroczyn_release_requires_measured_control_points(dataset):
+    path = dataset / validate.BORROCZYN_GEOREFERENCING
+    package = json.loads(path.read_text(encoding="utf-8"))
+    package["status"] = "released"
+    path.write_text(json.dumps(package), encoding="utf-8")
+    refuses("release requires six fit points and two independent checks")
+
+
+def test_borroczyn_evidence_layers_cannot_collapse(dataset):
+    path = dataset / validate.BORROCZYN_GEOREFERENCING
+    package = json.loads(path.read_text(encoding="utf-8"))
+    package["evidenceLayers"][1]["role"] = "historical_source"
+    path.write_text(json.dumps(package), encoding="utf-8")
+    refuses("historical, derived and modern evidence layers must be distinct")
+
+
+def test_research_only_geometry_cannot_be_published(dataset):
+    def mutate(rows):
+        rows.append({
+            "urban_feature_id": "urb-test-parcel",
+            "feature_type": "parcel",
+            "study_area_id": "br-seam-uranus-antim",
+            "evidence_layer": "georeferenced_derived",
+            "source_id": "br-borroczyn-1852-uauim",
+            "geometry_provenance": "georeferenced_source",
+            "source_feature_ref": "test",
+            "geometry_wkt": "POLYGON ((0 0, 1 0, 1 1, 0 0))",
+            "valid_from": "1852",
+            "valid_to": "1852",
+            "review_state": "published",
+            "notes": "validator fixture",
+        })
+
+    edit(dataset, "urban_features", mutate)
+    refuses("published geometry requires a production-cleared source")
+
+
+def test_unreviewed_inspection_cannot_create_an_object(dataset):
+    edit(
+        dataset,
+        "in_manibus_inspections",
+        lambda rows: rows + [{
+            "inspection_id": "ins-test",
+            "candidate_map_id": "specht",
+            "inspection_status": "not_inspected",
+            "inspection_date": "",
+            "inspector": "",
+            "creator": "",
+            "title": "",
+            "date_label": "",
+            "edition_state": "",
+            "dimensions_cm": "",
+            "recto_observations": "",
+            "verso_observations": "",
+            "fold_binding_traces": "",
+            "colour_state": "",
+            "repairs_marks": "",
+            "provenance_clues": "",
+            "state_confidence": "",
+            "notes": "awaiting direct inspection",
+        }],
+    )
+    edit(
+        dataset,
+        "objects",
+        lambda rows: rows + [{
+            "object_id": "obj-test",
+            "inspection_id": "ins-test",
+            "collection_map_id": "specht",
+            "source_id": "",
+            "title": "Test",
+            "creator": "Test",
+            "date_label": "1791",
+            "edition_state": "unresolved",
+            "dimensions_cm": "1 x 1",
+            "provenance": "test",
+            "condition": "test",
+            "colour_state": "test",
+            "binding_state": "test",
+            "review_state": "reviewed",
+        }],
+    )
+    refuses("only a reviewed physical inspection may create an object")
 
 
 def test_research_package_is_hash_frozen(dataset):

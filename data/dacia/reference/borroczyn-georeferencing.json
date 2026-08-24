@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "ticket": "KAN-358",
+  "studyAreaId": "br-seam-uranus-antim",
+  "status": "blocked_pending_witness",
+  "sourceCrs": "source_pixels_unavailable",
+  "targetCrs": "EPSG:3844",
+  "webCrs": "EPSG:3857",
+  "transformationMethod": "Compare projective and thin-plate-spline fits; retain the simpler model unless the independently checked residuals justify TPS.",
+  "pipeline": [
+    "gdal_translate -of GTiff -gcp <pixel-x> <pixel-y> <stereo70-x> <stereo70-y> <source> borroczyn-gcp.tif",
+    "gdalwarp -s_srs EPSG:3844 -t_srs EPSG:3844 -r cubic -tps borroczyn-gcp.tif borroczyn-stereo70.tif",
+    "gdalwarp -s_srs EPSG:3844 -t_srs EPSG:3857 -r cubic borroczyn-stereo70.tif borroczyn-web.tif"
+  ],
+  "controlPoints": [],
+  "residualMetrics": {
+    "unit": "metres",
+    "rmse": null,
+    "maximum": null,
+    "independentCheckPointCount": 0
+  },
+  "evidenceLayers": [
+    {
+      "id": "borroczyn-source-raster",
+      "role": "historical_source",
+      "sourceId": "br-borroczyn-1852-uauim",
+      "status": "research_only"
+    },
+    {
+      "id": "borroczyn-georeferenced",
+      "role": "georeferenced_derived",
+      "sourceId": "br-borroczyn-1852-uauim",
+      "status": "not_generated"
+    },
+    {
+      "id": "bucharest-osm-current",
+      "role": "modern_reference",
+      "sourceId": "br-osm-current",
+      "status": "production_ready"
+    }
+  ],
+  "schemaDecision": "Urban parcels, streets and buildings use a dedicated urb- authority. They may link to CND places, but are not CND places and may never be inserted into the place authority merely to obtain an identifier.",
+  "geometryPolicy": "Every urban feature retains its source ID, evidence-layer role, source feature reference, geometry provenance and review state.",
+  "blockers": [
+    "A production-resolution Borroczyn reproduction with production-wide reuse terms has not been secured.",
+    "No licensed source raster is present, so pixel control points and residual metrics cannot be measured without fabrication."
+  ]
+}

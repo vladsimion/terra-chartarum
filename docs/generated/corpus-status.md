@@ -7,7 +7,7 @@
 | Content type         | Count |
 | -------------------- | ----: |
 | Live essays          |     8 |
-| Held essays          |    12 |
+| Held essays          |    13 |
 | Map records          |    59 |
 | Cartographers        |    19 |
 | Bibliography entries |    37 |
@@ -33,6 +33,7 @@ Geo release: `geo-40f732f7c12fd04e`.
 
 | Essay                                              | Primary room | Release     |
 | -------------------------------------------------- | ------------ | ----------- |
+| The Parcel and the Bulldozer                       | city         | unscheduled |
 | Classification Is Cartography                      | theatre      | unscheduled |
 | Invisible Maps of Migration                        | road         | unscheduled |
 | Invisible Maps of Trade                            | road         | unscheduled |

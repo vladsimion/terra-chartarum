@@ -32,6 +32,10 @@ src/data/antarctica/generated/
 # `make crusades` likewise.
 src/data/crusades/generated/
 
+# `make dacia` now also emits Campaign III packages alongside its existing
+# generated projections; keep every deterministic Python JSON output byte-stable.
+src/data/dacia/generated/
+
 # `make dacia` writes the CND release from Python. Its bytes are hashed into the
 # release manifest, so reformatting them here would put the committed tree
 # permanently at odds with the manifest that describes it.
