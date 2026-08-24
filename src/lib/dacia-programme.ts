@@ -13,6 +13,10 @@
  */
 import programme from '../data/dacia/generated/programme.json';
 import type { RoomSlug } from '../data/rooms';
+import { getCartographerById } from './cartographers';
+import { getMapById } from './corpus';
+import { atlasDeepLink } from './atlas-share';
+import { CND_ATLAS_LAYER, getTrenchAStelae } from './trench-a';
 
 export interface ProgrammeGate {
   gate: string;
@@ -46,6 +50,35 @@ export interface SharedDataset {
   href: string;
 }
 
+export const RELATIONSHIP_KINDS = [
+  'period',
+  'source',
+  'attestation',
+  'place',
+  'map_object',
+  'cartographer',
+  'atlas_layer',
+  'corpus_record',
+  'related_trench',
+  'stratum',
+] as const;
+
+export type RelationshipKind = (typeof RELATIONSHIP_KINDS)[number];
+
+export interface RelationshipNode {
+  kind: RelationshipKind;
+  label: string;
+  href: string;
+  identifier?: string;
+}
+
+export interface ProgrammeRelationshipPath {
+  id: string;
+  title: string;
+  reviewState: string;
+  nodes: RelationshipNode[];
+}
+
 const ENTRIES = programme.entries as ProgrammeEntry[];
 
 export function getProgrammeEntries(): ProgrammeEntry[] {
@@ -68,6 +101,96 @@ export function getSharedDatasets(): SharedDataset[] {
 
 export function getOpenDebtCount(): number {
   return programme.openDebts as number;
+}
+
+/**
+ * Cross-registry paths that can be demonstrated from committed identifiers.
+ *
+ * Only a migrated Trench A source whose canonical collection object exists is
+ * eligible. That makes the sparse result honest: planned trenches do not gain
+ * relationships merely because the programme expects them to exist later.
+ */
+export function getProgrammeRelationshipPaths(): ProgrammeRelationshipPath[] {
+  return getTrenchAStelae().flatMap((stela) => {
+    const map = getMapById(stela.stela);
+    const sample = stela.sampleAttestation;
+    if (!map || map.essaySlug !== 'dacia' || !sample || stela.yearFrom === null) return [];
+
+    const cartographer = map.cartographerId ? getCartographerById(map.cartographerId) : undefined;
+    if (!cartographer) return [];
+
+    const atlasHref = atlasDeepLink({
+      layers: [CND_ATLAS_LAYER],
+      feature: sample.attestationId,
+      year: stela.yearFrom,
+    });
+    const stratumHref = `/essays/dacia/#stratum-${stela.stela}`;
+
+    return [
+      {
+        id: `${stela.sourceId}:${sample.attestationId}`,
+        title: `${stela.shortTitle} to ${sample.placeName}`,
+        reviewState: sample.reviewState,
+        nodes: [
+          { kind: 'period', label: stela.dateLabel, href: atlasHref },
+          {
+            kind: 'source',
+            label: stela.title,
+            identifier: stela.sourceId,
+            href: stratumHref,
+          },
+          {
+            kind: 'attestation',
+            label: `${sample.name} (${sample.attestationClass})`,
+            identifier: sample.attestationId,
+            href: atlasHref,
+          },
+          {
+            kind: 'place',
+            label: sample.placeName,
+            identifier: sample.placeId,
+            href: atlasHref,
+          },
+          {
+            kind: 'map_object',
+            label: map.title,
+            identifier: map.id,
+            href: `/collection/${map.id}/`,
+          },
+          {
+            kind: 'cartographer',
+            label: cartographer.name,
+            identifier: cartographer.id,
+            href: `/cartographers/${cartographer.id}/`,
+          },
+          {
+            kind: 'atlas_layer',
+            label: 'CND research attestations',
+            identifier: CND_ATLAS_LAYER,
+            href: `/atlas/layers/${CND_ATLAS_LAYER}/`,
+          },
+          {
+            kind: 'corpus_record',
+            label: sample.attestationId,
+            identifier: sample.attestationId,
+            href: atlasHref,
+          },
+          {
+            kind: 'related_trench',
+            label: 'Terra Sigillata · Lapidarivm Dacicvm',
+            identifier: 'ccd-a',
+            href: '#trench-ccd-a',
+          },
+          {
+            kind: 'stratum',
+            label: `Stratum ${stela.shortTitle}`,
+            identifier: stela.stela,
+            href: stratumHref,
+          },
+        ],
+      },
+    ];
+  });
 }
 
 /**
