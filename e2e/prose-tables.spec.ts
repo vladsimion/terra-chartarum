@@ -44,6 +44,14 @@ test.describe('prose tables survive a 320px viewport', () => {
 
       // No wrapper may stick out of the viewport: that is the page-level
       // sideways scroll this fix exists to remove.
+      // The whole point: at 320px the page itself must not scroll sideways.
+      // Every other contributor on these pages was fixed under KAN-432, so a
+      // failure here is the tables again.
+      const pageOverflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      );
+      expect(pageOverflow, `${path} scrolls sideways at ${REFLOW_WIDTH}px`).toBeLessThanOrEqual(1);
+
       const boxes = await wrappers.evaluateAll((nodes) =>
         nodes.map((node) => {
           const box = node.getBoundingClientRect();
@@ -110,10 +118,11 @@ test.describe('prose tables survive a 320px viewport', () => {
     await expect.poll(() => wrapper.evaluate((node) => node.scrollLeft)).toBeGreaterThan(0);
 
     // Scrolling the table must not have moved the page.
-    const pageOverflow = await page.evaluate(() => {
+    const root = await page.evaluate(() => {
       const root = document.documentElement;
-      return root.scrollLeft;
+      return { scrollLeft: root.scrollLeft, overflow: root.scrollWidth - root.clientWidth };
     });
-    expect(pageOverflow).toBe(0);
+    expect(root.scrollLeft).toBe(0);
+    expect(root.overflow).toBeLessThanOrEqual(1);
   });
 });
