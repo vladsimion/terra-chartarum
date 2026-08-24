@@ -250,6 +250,16 @@ const essayChromeScript = `(function () {
     display: flex;
     align-items: center;
     gap: 0.7rem;
+    /*
+     * Wrap rather than overflow (KAN-432). The back link, room badge and pager
+     * are all `white-space: nowrap` and together they are wider than a phone,
+     * so with `nowrap` the pager was pushed off the right edge and every essay
+     * page scrolled sideways - a reflow failure on published essays, not only
+     * on the held one. Wrapping puts the pager on a second row instead, and
+     * --essay-chrome-h is measured at runtime, so the sticky offset follows.
+     */
+    flex-wrap: wrap;
+    row-gap: 0.35rem;
     padding-block: 0.6rem;
     font-family: var(--font-mono);
     font-size: var(--step--1);
@@ -267,6 +277,15 @@ const essayChromeScript = `(function () {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    /*
+     * The ellipsis above never fired. A flex item's default `min-width: auto`
+     * refuses to shrink below its content, so a long title pushed the pager
+     * past the right edge and every essay page scrolled sideways on a phone -
+     * 42 to 65px depending on the title. `min-width: 0` lets the title give way,
+     * which is what it was always styled to do. Found by the KAN-432 mobile
+     * pass; it affected published essays too, not only Antarctica.
+     */
+    min-width: 0;
   }
   .pager {
     margin-left: auto;

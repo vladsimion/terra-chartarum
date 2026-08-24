@@ -21,6 +21,8 @@ import {
   driftSteps,
   driftTranscript,
 } from '../../lib/endurance-drift';
+import { atlasLayersFor } from '../../lib/antarctica';
+import AtlasDeepLink from '../AtlasDeepLink.astro';
 
 interface Props {
   caption?: string;
@@ -33,6 +35,19 @@ const steps = driftSteps();
 const geometries = driftGeometries(WIDTH);
 const transcript = driftTranscript();
 const positions = driftPositions();
+
+/**
+ * Each step opens the Atlas on the records it draws, subordinated ones included
+ * (KAN-429).
+ *
+ * The plan stays in the composition after the ice takes over for the same
+ * reason it stays on the figure: the argument of the drift steps is the
+ * distance between what was intended and what happened, and an Atlas showing
+ * only the drift would have quietly dropped one half of it.
+ */
+const atlasFor = new Map(
+  steps.map((step) => [step.id, atlasLayersFor([...step.shows, ...step.subordinates])]),
+);
 ---
 
 <figure class="endurance" data-endurance>
@@ -86,7 +101,15 @@ const positions = driftPositions();
           <div class="ed-caption" data-caption-for={step.id}>
             <p class="ed-when">{step.when}</p>
             <p>
-              <strong>{step.title}.</strong> {step.caption}
+              <strong>{step.title}.</strong> {step.caption}{' '}
+              <AtlasDeepLink
+                class="ed-atlas"
+                layers={atlasFor.get(step.id)}
+                collection="terra-incognita"
+                year={1915}
+              >
+                Open this step in the Atlas
+              </AtlasDeepLink>
             </p>
           </div>
         ))

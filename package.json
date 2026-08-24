@@ -13,6 +13,7 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "test:e2e:held": "playwright test --config playwright.held.config.ts",
     "test:vmn-visual": "playwright test e2e/vmn-visual.spec.ts --project=chromium",
     "registries:validate": "node scripts/validate-registries.mjs",
     "editorial:validate": "node scripts/validate-editorial.mjs",

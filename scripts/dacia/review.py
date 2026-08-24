@@ -160,6 +160,161 @@ def command_queue(args) -> int:
     return 0
 
 
+def command_blocked(args) -> int:
+    """Which Jira tickets are waiting on which piece of verification debt.
+
+    The three registries needed to answer this already exist and have never
+    been joined. `verification-debt.csv` records what is outstanding and names
+    the gate it blocks, as `<trench>:<gate>`. `trench-gates.csv` maps a trench
+    and a gate to the Jira key that owns it. So the chain from "a repository
+    has not been confirmed" to "KAN-349 cannot close" is fully determined by
+    committed data - and reading it required opening three CSVs and doing the
+    join by eye, which nobody does, so the tickets look blocked for no stated
+    reason.
+
+    Grouping by ticket rather than by debt is the point. A debt item blocking
+    four tickets and four items blocking one ticket are different situations,
+    and only the ticket-shaped view tells you which you have.
+    """
+    baseline = validate.validate_inputs()
+    if baseline:
+        print(f"The tables do not currently validate ({len(baseline)} errors); fix those first.")
+        return 1
+
+    reference = validate.DATA / "reference"
+    with (reference / "verification-debt.csv").open(encoding="utf-8", newline="") as handle:
+        debts = list(csv.DictReader(handle))
+    with (reference / "trench-gates.csv").open(encoding="utf-8", newline="") as handle:
+        gates = list(csv.DictReader(handle))
+
+    # (trench, gate) -> the ticket that owns that gate.
+    owner = {(row["trench_id"], row["gate_id"]): row for row in gates}
+
+    by_ticket: dict[str, list[tuple[dict[str, str], str]]] = {}
+    unmapped: list[str] = []
+    ungated: list[dict[str, str]] = []
+    for debt in debts:
+        if debt["status"] != "open":
+            continue
+        targets = [t.strip() for t in debt["blocks"].split("|") if t.strip()]
+        if not targets:
+            # Open debt that blocks nothing recorded. It would vanish from any
+            # gate-driven view of the programme, which is the one way an
+            # outstanding item can be forgotten while still sitting in the
+            # register marked open.
+            ungated.append(debt)
+            continue
+        for target in targets:
+            trench, _, gate = target.partition(":")
+            row = owner.get((trench, gate))
+            if row is None or not row.get("jira_key"):
+                unmapped.append(f"{debt['debt_id']} -> {target}")
+                continue
+            by_ticket.setdefault(row["jira_key"], []).append((debt, target))
+
+    open_count = sum(1 for d in debts if d["status"] == "open")
+    print(f"\n{open_count} open debt item(s) across {len(by_ticket)} ticket(s)\n")
+
+    for ticket in sorted(by_ticket):
+        items = by_ticket[ticket]
+        print(f"  {ticket}  ({len(items)} blocking)")
+        for debt, target in items:
+            print(f"    {debt['debt_id']}  [{target}]")
+            print(f"      {debt['statement']}")
+            print(f"      -> {debt['resolution_path']}")
+        print()
+
+    if ungated:
+        print(f"  {len(ungated)} open item(s) block no recorded gate:")
+        for debt in ungated:
+            print(f"    {debt['debt_id']}")
+            print(f"      {debt['statement']}")
+            print(f"      -> {debt['resolution_path']}")
+        print(
+            "    These reach no ticket. Either name the gate they block, or\n"
+            "    close them - open debt nothing points at is how an item is lost."
+        )
+        print()
+
+    if unmapped:
+        # Not an error: a debt may name a gate before the trench row exists.
+        # Saying so is better than dropping it from the report in silence.
+        print(f"  {len(unmapped)} debt target(s) name no ticket yet:")
+        for entry in unmapped:
+            print(f"    {entry}")
+
+    return 0
+
+
+def command_coverage(args) -> int:
+    """Fate-class coverage against the CCD-C1 acceptance criterion (KAN-344).
+
+    The criterion is "at least one reviewed example exists for each fate class
+    used in the essay". Nothing in the corpus is reviewed yet, so the useful
+    question is not whether the criterion passes - it does not - but *what
+    stands between here and there*, per class.
+
+    Two answers are very different in cost. A class whose best row is already
+    ready to promote needs a person to run one command and put their name to
+    it. A class whose every row still has a pending locator needs somebody to
+    find a citation first, which is an afternoon in a library rather than a
+    keystroke. Reporting them as one number hides the only distinction that
+    would let anyone plan the work.
+    """
+    baseline = validate.validate_inputs()
+    if baseline:
+        print(f"The tables do not currently validate ({len(baseline)} errors); fix those first.")
+        return 1
+
+    _, rows = _load(validate.DATA, "name_uses")
+    by_class: dict[str, list[dict[str, str]]] = {}
+    for row in rows:
+        by_class.setdefault(row["fate_class"], []).append(row)
+
+    reviewed_index = LADDER.index("reviewed")
+    needs_locator: list[str] = []
+    needs_reviewer: list[str] = []
+    satisfied: list[str] = []
+
+    print("\nfate-class coverage for the reviewed-example criterion (KAN-344)")
+    print(f"  {len(by_class)} classes across {len(rows)} name uses\n")
+
+    for fate_class, group in sorted(by_class.items()):
+        already = [r for r in group if LADDER.index(r["review_state"]) >= reviewed_index]
+        ready = [r for r in group if not _blockers(r["name_use_id"], r["review_state"])]
+        if already:
+            satisfied.append(fate_class)
+            state = f"satisfied by {already[0]['name_use_id']}"
+        elif ready:
+            needs_reviewer.append(fate_class)
+            state = f"one command away - {ready[0]['name_use_id']} is ready to promote"
+        else:
+            needs_locator.append(fate_class)
+            state = "no promotable row: every candidate still needs a locator"
+        print(f"  {fate_class:<14} {len(group):>2} row(s)  {state}")
+        if args.verbose:
+            for row in group:
+                blockers = _blockers(row["name_use_id"], row["review_state"])
+                mark = "ready" if not blockers else "; ".join(
+                    b.split(": ", 1)[-1] for b in blockers
+                )
+                print(f"       {row['name_use_id']:<26} {row['review_state']:<11} {mark}")
+
+    print()
+    if satisfied:
+        print(f"  satisfied:      {len(satisfied)} ({', '.join(satisfied)})")
+    if needs_reviewer:
+        print(f"  needs a name:   {len(needs_reviewer)} ({', '.join(needs_reviewer)})")
+        print("                  -> review.py promote <id> --reviewer \"Name\"")
+    if needs_locator:
+        print(f"  needs a source: {len(needs_locator)} ({', '.join(needs_locator)})")
+        print("                  -> find a citation, then --set locator=... and promote")
+
+    # Not an error exit. This is a report about work outstanding, and a build
+    # that failed on it would make the corpus impossible to commit to.
+    return 0
+
+
 def command_show(args) -> int:
     key, id_column = _table_for(args.record_id)
     _, rows = _load(validate.DATA, key)
@@ -217,6 +372,17 @@ def main(argv: list[str] | None = None) -> int:
     queue.add_argument("--verbose", "-v", action="store_true", help="list records and blockers")
     queue.add_argument("--limit", type=int, default=20)
     queue.set_defaults(func=command_queue)
+
+    coverage = sub.add_parser(
+        "coverage", help="fate-class coverage against the reviewed-example criterion"
+    )
+    coverage.add_argument("--verbose", "-v", action="store_true", help="list every row")
+    coverage.set_defaults(func=command_coverage)
+
+    blocked = sub.add_parser(
+        "blocked", help="which Jira tickets are waiting on which verification debt"
+    )
+    blocked.set_defaults(func=command_blocked)
 
     show = sub.add_parser("show", help="one record and what blocks its promotion")
     show.add_argument("record_id")

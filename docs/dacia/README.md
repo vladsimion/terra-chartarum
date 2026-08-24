@@ -200,3 +200,39 @@ Dacia has meant and what may be shown beside it,
 [`definition-of-done.md`](./definition-of-done.md) for the gates, and
 [`trench-a-inventory.md`](./trench-a-inventory.md) for the migration and the
 frozen pilot.
+
+## Why a trench is blocked (KAN-349, KAN-354, KAN-355)
+
+Three registries already record this and were never joined.
+`verification-debt.csv` names the gate each outstanding item blocks, as
+`<trench>:<gate>`; `trench-gates.csv` maps that pair to the Jira key that owns
+the gate. So the chain from _a repository has not been confirmed_ to _KAN-349
+cannot close_ is fully determined by committed data - it just took three files
+and a join by eye, which meant in practice nobody read it and the tickets looked
+blocked for no stated reason.
+
+```bash
+python3 scripts/dacia/review.py blocked
+```
+
+Fourteen open items across six tickets. Grouping by ticket rather than by debt
+is the point: one item blocking four tickets and four items blocking one ticket
+are different situations, and only the ticket-shaped view tells you which you
+have.
+
+For the Campaign II trenches specifically:
+
+| Ticket  | Blocked by                    | What closes it                                                        |
+| ------- | ----------------------------- | --------------------------------------------------------------------- |
+| KAN-349 | `vd-hiatus-witness-review`    | A named researcher reviews bounded samples and promotes states singly |
+| KAN-354 | `vd-carta-rubra-claim-review` | Each high-importance claim reviewed against its cited map or text     |
+| KAN-355 | `vd-treaty-frontier-geometry` | Georeference the Berlin, Trianon, 1947 and Vienna Award annex maps    |
+
+KAN-350 and KAN-356 carry no debt of their own. They are the release tickets for
+those trenches and wait on the ones above.
+
+**Two open items block no recorded gate at all** - `vd-roman-baseline-geometry`
+and `vd-principality-envelopes` have an empty `blocks` column, so no gate-driven
+view of the programme would ever have surfaced them. The report lists them
+separately rather than dropping them. They need either the gate they block named
+or the item closed; open debt that nothing points at is how an item is lost.

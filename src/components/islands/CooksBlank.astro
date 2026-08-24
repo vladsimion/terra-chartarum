@@ -22,7 +22,9 @@ import {
   transitionSteps,
   transitionTranscript,
 } from '../../lib/antarctic-transition';
+import { atlasLayersFor } from '../../lib/antarctica';
 import { encodingFor } from '../../lib/uncertainty';
+import AtlasDeepLink from '../AtlasDeepLink.astro';
 
 interface Props {
   caption?: string;
@@ -33,6 +35,19 @@ const SIZE = 1000;
 const steps = transitionSteps();
 const records = transitionRecords(SIZE);
 const transcript = transitionTranscript();
+
+/**
+ * Each step opens the Atlas on the records it is drawing (KAN-424).
+ *
+ * The composition is derived from the step's own record list rather than named
+ * here, so a record that moves between layers moves the link with it. A
+ * withdrawn record is included: step three is an argument about a coastline
+ * that was published and then contradicted, and an Atlas that omitted the
+ * coastline would show the reader the conclusion without the evidence.
+ */
+const atlasFor = new Map(
+  steps.map((step) => [step.id, atlasLayersFor([...step.shows, ...step.withdraws])]),
+);
 
 /**
  * Our own linework is dotted, a transcribed coordinate is solid. This is the
@@ -118,7 +133,15 @@ const withdrawn = encodingFor('disproved');
       {
         steps.map((step) => (
           <p class="cb-caption" data-caption-for={step.id}>
-            <strong>{step.title}.</strong> {step.caption}
+            <strong>{step.title}.</strong> {step.caption}{' '}
+            <AtlasDeepLink
+              class="cb-atlas"
+              layers={atlasFor.get(step.id)}
+              collection="terra-incognita"
+              year={1775}
+            >
+              Open this step in the Atlas
+            </AtlasDeepLink>
           </p>
         ))
       }

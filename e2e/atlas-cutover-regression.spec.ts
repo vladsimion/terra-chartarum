@@ -141,7 +141,11 @@ test.describe('the legacy presentation is gone', () => {
     const lede = page.locator('.atlas-head');
     await expect(lede).toContainText(/reconstructed territories, routes, frontiers/i);
     await expect(lede).not.toContainText(/Regime A|serverless/i);
-    await expect(lede.locator('a[href="/atlas/handbook/"]')).toBeVisible();
+    // Scoped to the prose, not the whole header: the handbook callout added
+    // alongside it (atlas.astro) puts a second link to the same href inside
+    // .atlas-head, and an unscoped locator matches both. What this case pins is
+    // that the introduction itself hands the reader on to the Handbook.
+    await expect(lede.locator('.lede a[href="/atlas/handbook/"]')).toBeVisible();
   });
 
   test('the migration report covers every registered layer', async ({ request }) => {

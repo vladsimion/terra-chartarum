@@ -70,8 +70,18 @@ test.describe('the Atlas half ships with its warnings intact', () => {
   test('the Antarctic collection offers no default composition', async ({ page }) => {
     await page.goto('/atlas/?collection=terra-incognita');
     // Nothing here has been reviewed, so opening the collection must not put
-    // uncleared material on the map.
-    const active = page.locator('[data-active-layer]');
-    await expect(active).toHaveCount(0);
+    // uncleared material on the map. Base context layers are a different thing
+    // and are allowed to be on: the assertion is about this collection's own
+    // members, not about the map being blank.
+    //
+    // This used to read `[data-active-layer]` with an expected count of zero,
+    // at a time when no element carried that attribute - so it matched nothing
+    // whatever the map was showing. AtlasMap now stamps the ID on each active
+    // layer chip, which is what gives the check something to be wrong about.
+    await page.waitForFunction(() => document.querySelector('[data-active-layers]') !== null);
+    const active = await page
+      .locator('[data-active-layer]')
+      .evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-active-layer') ?? ''));
+    expect(active.filter((id) => id.startsWith('antarctica-'))).toEqual([]);
   });
 });

@@ -43,39 +43,42 @@ const tickYears = ticks ?? [minY, maxY];
 
 <figure class="atl">
   <div class="atl-track">
-    <div class="atl-axis" aria-hidden="true">
+    <div class="atl-band">
+      <div class="atl-axis" aria-hidden="true">
+        {
+          tickYears.map((t) => (
+            <span class="atl-tick" style={`left:${pos(t)}%; --anchor:-${pos(t)}%`}>
+              <span class="atl-tick-label">{fmt(t)}</span>
+            </span>
+          ))
+        }
+      </div>
       {
-        tickYears.map((t) => (
-          <span class="atl-tick" style={`left:${pos(t)}%`}>
-            <span class="atl-tick-label">{fmt(t)}</span>
-          </span>
-        ))
+        sorted.map((e, i) => {
+          const above = i % 2 === 0;
+          const p = pos(e.year);
+          const style = `left:${p}%; --anchor:-${p}%; --accent:${e.accent ?? 'var(--gold)'}`;
+          const inner = (
+            <>
+              <span class="atl-dot" />
+              <span class={`atl-label ${above ? 'above' : 'below'}`}>
+                <span class="atl-year">{fmt(e.year)}</span>
+                <span class="atl-name">{e.label}</span>
+              </span>
+            </>
+          );
+          return e.href ? (
+            <a class="atl-node" style={style} href={e.href} title={`${e.label} (${fmt(e.year)})`}>
+              {inner}
+            </a>
+          ) : (
+            <span class="atl-node" style={style} title={`${e.label} (${fmt(e.year)})`}>
+              {inner}
+            </span>
+          );
+        })
       }
     </div>
-    {
-      sorted.map((e, i) => {
-        const above = i % 2 === 0;
-        const style = `left:${pos(e.year)}%; --accent:${e.accent ?? 'var(--gold)'}`;
-        const inner = (
-          <>
-            <span class="atl-dot" />
-            <span class={`atl-label ${above ? 'above' : 'below'}`}>
-              <span class="atl-year">{fmt(e.year)}</span>
-              <span class="atl-name">{e.label}</span>
-            </span>
-          </>
-        );
-        return e.href ? (
-          <a class="atl-node" style={style} href={e.href} title={`${e.label} (${fmt(e.year)})`}>
-            {inner}
-          </a>
-        ) : (
-          <span class="atl-node" style={style} title={`${e.label} (${fmt(e.year)})`}>
-            {inner}
-          </span>
-        );
-      })
-    }
   </div>
   {caption && <figcaption>{caption}</figcaption>}
 </figure>
@@ -90,11 +93,22 @@ const tickYears = ticks ?? [minY, maxY];
     border: 1px solid var(--line);
     border-radius: var(--radius);
     background: var(--panel);
-    padding: 0 1.5rem;
+  }
+  /*
+   * One band is the scale for everything on it (KAN-432). Ticks used to be
+   * placed inside .atl-axis, which was inset 1.5rem, while nodes were placed
+   * against the track's padding box, which is not - so the same year drew its
+   * tick and its dot 24px apart, and the outermost dots floated past the ends
+   * of the rule they annotate. Both now share this band, so `left: X%` means
+   * one position, and the 1.5rem gutter is slack the labels can lean into.
+   */
+  .atl-band {
+    position: absolute;
+    inset: 0 1.5rem;
   }
   .atl-axis {
     position: absolute;
-    inset: 0 1.5rem;
+    inset: 0;
     top: 50%;
   }
   .atl-axis::before {
@@ -115,7 +129,7 @@ const tickYears = ticks ?? [minY, maxY];
     position: absolute;
     top: 0.4rem;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(var(--anchor, -50%));
     font-family: var(--font-mono);
     font-size: 0.62rem;
     letter-spacing: 0.08em;
@@ -155,7 +169,22 @@ const tickYears = ticks ?? [minY, maxY];
   .atl-label {
     position: absolute;
     left: 0;
-    transform: translateX(-50%);
+    /*
+     * Anchor the label by where its node sits on the band rather than always
+     * centring it (KAN-432). Centring pushed the last node's label half its
+     * width past the right edge - 27px of sideways scroll on /essays/dacia/,
+     * 63px on /essays/maps-that-age/, a WCAG 1.4.10 reflow failure - and hid
+     * the first node's label off the left edge, where nothing could scroll to
+     * it. Sliding the anchor linearly from 0% at the band's left end to -100%
+     * at its right end keeps the label inside the band at both ends while
+     * leaving mid-track labels within a few pixels of centred. The label's
+     * left edge sits at p*B - p*W and its right at p*B + (1-p)*W, so both stay
+     * inside the band whenever the label is no wider than the band. The 11rem
+     * cap below holds that: the band is 238px at a 320px viewport, the width
+     * WCAG 1.4.10 reflow is measured at, and only grows from there. No label
+     * is clipped or truncated; only the point it hangs from moves.
+     */
+    transform: translateX(var(--anchor, -50%));
     width: max-content;
     max-width: 11rem;
     text-align: center;
