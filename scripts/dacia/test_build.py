@@ -82,9 +82,13 @@ def test_v1_candidate_is_complete_but_fail_closed():
     outputs = build.build_v1_outputs()
     qa = json.loads(outputs[build.V1_RELEASE_DIR / "qa.json"])
     assert qa["releaseStatus"] == "blocked"
-    assert "coverage_target_not_reached" in qa["blockers"]
+    assert "coverage_target_not_reached" not in qa["blockers"]
+    assert "required_evidence_regime_missing" not in qa["blockers"]
+    assert "hiatus_authority_reconciliation_pending" not in qa["blockers"]
     assert "scholarly_spot_check_not_recorded" in qa["blockers"]
     assert "no_publishable_attestations" in qa["blockers"]
+    assert qa["coverage"]["places"]["current"] >= 120
+    assert qa["coverage"]["sources"]["current"] >= 25
     assert qa["doi"]["status"] == "deferred"
     for name in build.TABLES:
         assert build.V1_RELEASE_DIR / f"{name}.csv" in outputs
@@ -122,6 +126,36 @@ def test_v1_preserves_every_pilot_place_and_source_id():
     qa = build.v1_qa({name: build.read_table(name) for name in build.TABLES})
     assert qa["stableIdAudit"]["missingPublishedIds"] == {}
     assert qa["authorityConsumers"]["nomenErrans"] == "resolves"
+    assert qa["authorityConsumers"]["hiatus"] == "resolves"
+
+
+def test_v1_stable_id_audit_uses_the_frozen_contract():
+    tables = {name: build.read_table(name) for name in build.TABLES}
+    tables["places"] = [row for row in tables["places"] if row["place_id"] != "plc-apulum"]
+    qa = build.v1_qa(tables)
+    assert qa["stableIdAudit"]["missingPublishedIds"] == {"places": ["plc-apulum"]}
+    assert "published_identifier_missing" in qa["blockers"]
+
+
+def test_pleiades_import_is_source_located_and_stays_unreviewed():
+    attestations = [
+        row for row in build.read_table("attestations")
+        if row["source_id"] == "src-pleiades-gazetteer"
+    ]
+    attestation_ids = {row["attestation_id"] for row in attestations}
+    captures = {
+        row["attestation_id"]: row for row in build.read_table("transcriptions")
+        if row["attestation_id"] in attestation_ids
+    }
+    assert len(attestations) == 80
+    assert len(captures) == 80
+    assert sorted(attestation_ids) == [f"att-{number:04d}" for number in range(50, 130)]
+    for row in attestations:
+        assert row["review_state"] == "normalized"
+        assert row["normalization_method"] == "imported"
+        assert row["locator_type"] == "section"
+        assert row["locator"].startswith("https://pleiades.stoa.org/places/")
+        assert captures[row["attestation_id"]]["capture_method"] == "from_edition"
 
 
 def test_unlocated_places_are_reported_not_positioned():

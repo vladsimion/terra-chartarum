@@ -8,10 +8,14 @@ as citable until the manifest's `releaseStatus` becomes `ready`.
 
 ## Coverage and migration
 
-The v1.0 target is approximately 120 normalized places and 25 coherent source
-witnesses or series. The build publishes the exact count and shortfall instead
-of presenting the 0.1 pilot as if it had reached that target. Ancient, medieval,
-early-modern, survey/cadastral and modern regimes each have named source IDs in
+The v1.0 candidate holds 120 normalized places and 25 coherent source witnesses
+or series. Eighty place authorities were imported from the Pleiades published
+places snapshot dated 21 August 2026. Their stable `plc-pleiades-*` IDs retain
+the Pleiades identifier and representative point; their associated attestations
+record Pleiades display labels as scholarly locator evidence, not as ancient
+witness spellings. Imported rows stop at `normalized` and remain outside the
+publishable tier until a human reviews them. Ancient, medieval, early-modern,
+survey/cadastral and modern regimes each have named source IDs in
 `reference/cnd-v1-release.json`; a missing ID blocks readiness.
 
 Place and source IDs published in CND 0.1 are immutable. The release audit
@@ -19,9 +23,9 @@ checks that every 0.1 ID still exists. A retirement or merge must be added to
 `reference/cnd-id-migrations.csv`; IDs are never silently reassigned.
 
 Nomen Errans continues to resolve its source and place keys against the CND
-authority. The Hiatus witness-family ledger remains a candidate research ledger
-and has not yet been migrated to CND source IDs; the QA report names that
-authority reconciliation as a blocker rather than hiding a second authority.
+authority. Every Hiatus witness family now carries a `corpus_source_id` that
+resolves against the same source table. The validator rejects a missing or
+private duplicate authority, and the QA report exposes both consumers' status.
 
 ## Scholarly and rights gate
 

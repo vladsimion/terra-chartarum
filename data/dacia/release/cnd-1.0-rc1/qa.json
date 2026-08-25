@@ -1,6 +1,7 @@
 {
   "authorityConsumers": {
-    "hiatus": "candidate_ledger_pending_cnd_source_migration",
+    "hiatus": "resolves",
+    "hiatusUnresolvedSourceIds": [],
     "nomenErrans": "resolves",
     "nomenErransUnresolvedIds": []
   },
@@ -16,21 +17,19 @@
     ]
   },
   "blockers": [
-    "coverage_target_not_reached",
     "scholarly_spot_check_not_recorded",
-    "no_publishable_attestations",
-    "hiatus_authority_reconciliation_pending"
+    "no_publishable_attestations"
   ],
   "candidate": "cnd-1.0-rc1",
   "coverage": {
     "places": {
-      "current": 40,
-      "shortfall": 80,
+      "current": 120,
+      "shortfall": 0,
       "target": 120
     },
     "sources": {
-      "current": 14,
-      "shortfall": 11,
+      "current": 25,
+      "shortfall": 0,
       "target": 25
     }
   },
@@ -58,7 +57,7 @@
   "schemaVersion": 1,
   "scholarlyReview": {
     "attestationsReviewedOrAbove": 0,
-    "capturesFromWitnessOrEdition": 0,
+    "capturesFromWitnessOrEdition": 80,
     "lowConfidencePendingReview": 3,
     "publishableAttestations": 0,
     "reconstructedPlaceGeometry": 10,
