@@ -154,7 +154,19 @@ def test_coverage_separates_a_missing_name_from_a_missing_source(dataset, capsys
     to it. A class whose every row still has a pending locator needs somebody to
     find a citation first. Collapsing those into one "not reviewed" number is
     what makes the ticket look like a single unit of work when it is two.
+
+    The two outcomes are constructed here rather than read off the committed
+    corpus: as real review closes the name-only classes, a corpus-dependent
+    assertion would stop exercising the distinction without ever failing.
     """
+    fieldnames, uses = review._load(validate.DATA, "name_uses")
+    for row in uses:
+        if row["name_use_id"] == "nmu-dacia-province":
+            row["review_state"] = "normalized"
+            row["reviewer"] = ""
+            row["review_date"] = ""
+    review._store(validate.DATA, "name_uses", fieldnames, uses)
+
     assert review.main(["coverage"]) == 0
     out = capsys.readouterr().out
 
