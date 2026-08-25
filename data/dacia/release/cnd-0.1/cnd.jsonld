@@ -2861,9 +2861,9 @@
         "from_name_use": "nmu-dacia-antiquarian",
         "normalization_method": "llm_assisted",
         "note": "Kept as an explicit non-relationship so the reception material cannot inherit the authority of the scholarship it borrows from.",
-        "review_date": "",
-        "review_state": "raw",
-        "reviewer": "",
+        "review_date": "2026-08-25",
+        "review_state": "reviewed",
+        "reviewer": "Vlad Simion",
         "to_name_use": "nmu-dacia-reception"
       },
       {
@@ -2875,9 +2875,9 @@
         "from_name_use": "nmu-dacia-aureliana",
         "normalization_method": "llm_assisted",
         "note": "One Dacia contains the other. Recorded so a reader meeting both in the same register does not have to guess which is which.",
-        "review_date": "",
-        "review_state": "normalized",
-        "reviewer": "",
+        "review_date": "2026-08-25",
+        "review_state": "reviewed",
+        "reviewer": "Vlad Simion",
         "to_name_use": "nmu-dacia-diocese"
       },
       {
@@ -2889,9 +2889,9 @@
         "from_name_use": "nmu-dacia-coin-legend",
         "normalization_method": "llm_assisted",
         "note": "Adjudicated explicitly, like every other pair across the Danube/Baltic divide, so that no reader has to decide for themselves whether the coin is evidence about Denmark.",
-        "review_date": "",
-        "review_state": "normalized",
-        "reviewer": "",
+        "review_date": "2026-08-25",
+        "review_state": "reviewed",
+        "reviewer": "Vlad Simion",
         "to_name_use": "nmu-dacia-scandinavia"
       },
       {
@@ -2903,9 +2903,9 @@
         "from_name_use": "nmu-dacia-province",
         "normalization_method": "llm_assisted",
         "note": "Derivation of the name only. This edge asserts nothing about the movement of people.",
-        "review_date": "",
-        "review_state": "raw",
-        "reviewer": "",
+        "review_date": "2026-08-25",
+        "review_state": "reviewed",
+        "reviewer": "Vlad Simion",
         "to_name_use": "nmu-dacia-aureliana"
       },
       {
@@ -2917,9 +2917,9 @@
         "from_name_use": "nmu-dacia-diocese",
         "normalization_method": "llm_assisted",
         "note": "Recorded for the same reason as the others: the Latin word is the only thing the two have in common.",
-        "review_date": "",
-        "review_state": "normalized",
-        "reviewer": "",
+        "review_date": "2026-08-25",
+        "review_state": "reviewed",
+        "reviewer": "Vlad Simion",
         "to_name_use": "nmu-dacia-scandinavia"
       },
       {
@@ -2931,9 +2931,9 @@
         "from_name_use": "nmu-dacia-province",
         "normalization_method": "llm_assisted",
         "note": "A deliberate reach back across the gap, not an unbroken inheritance.",
-        "review_date": "",
-        "review_state": "raw",
-        "reviewer": "",
+        "review_date": "2026-08-25",
+        "review_state": "reviewed",
+        "reviewer": "Vlad Simion",
         "to_name_use": "nmu-dacia-antiquarian"
       },
       {
@@ -2945,9 +2945,9 @@
         "from_name_use": "nmu-dacia-province",
         "normalization_method": "llm_assisted",
         "note": "The same referent named by two arms of one state. It is not continuity, because no attestation has been cited to carry the claim.",
-        "review_date": "",
-        "review_state": "normalized",
-        "reviewer": "",
+        "review_date": "2026-08-25",
+        "review_state": "reviewed",
+        "reviewer": "Vlad Simion",
         "to_name_use": "nmu-dacia-coin-legend"
       },
       {
@@ -2959,9 +2959,9 @@
         "from_name_use": "nmu-dacia-province",
         "normalization_method": "llm_assisted",
         "note": "Derivation, not continuity: the ground is different ground, and the register that attests the diocese says nothing about the province it was named after.",
-        "review_date": "",
-        "review_state": "normalized",
-        "reviewer": "",
+        "review_date": "2026-08-25",
+        "review_state": "reviewed",
+        "reviewer": "Vlad Simion",
         "to_name_use": "nmu-dacia-diocese"
       },
       {
@@ -2973,9 +2973,9 @@
         "from_name_use": "nmu-dacia-province",
         "normalization_method": "llm_assisted",
         "note": "The load-bearing edge of the trench: lexical identity here is a coincidence of transmission, and the corpus says so explicitly rather than leaving the reader to infer continuity from the word.",
-        "review_date": "",
-        "review_state": "raw",
-        "reviewer": "",
+        "review_date": "2026-08-25",
+        "review_state": "reviewed",
+        "reviewer": "Vlad Simion",
         "to_name_use": "nmu-dacia-scandinavia"
       },
       {
@@ -2987,9 +2987,9 @@
         "from_name_use": "nmu-dacia-scandinavia",
         "normalization_method": "llm_assisted",
         "note": "Both ends still need source review.",
-        "review_date": "",
-        "review_state": "raw",
-        "reviewer": "",
+        "review_date": "2026-08-25",
+        "review_state": "reviewed",
+        "reviewer": "Vlad Simion",
         "to_name_use": "nmu-dacia-ecclesiastical"
       },
       {
@@ -3001,9 +3001,9 @@
         "from_name_use": "nmu-napoca-roman",
         "normalization_method": "llm_assisted",
         "note": "The instrument is administrative, not linguistic: the name did not survive, it was reinstated.",
-        "review_date": "",
-        "review_state": "raw",
-        "reviewer": "",
+        "review_date": "2026-08-25",
+        "review_state": "reviewed",
+        "reviewer": "Vlad Simion",
         "to_name_use": "nmu-napoca-restored"
       }
     ],
