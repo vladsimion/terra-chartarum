@@ -92,7 +92,7 @@ def test_atlas_and_essay_read_the_same_records():
 
 
 def test_a_record_without_geometry_is_absent_rather_than_placed():
-    """The southern region Coronelli does not depict must not acquire a point."""
+    """A source-checked graphic absence must not acquire a placeholder point."""
     features = atlas_features(build.build_outputs())
     ids = {feature["properties"]["id"] for feature in features}
     assert "ant-ftr-coronelli-southern-region" not in ids

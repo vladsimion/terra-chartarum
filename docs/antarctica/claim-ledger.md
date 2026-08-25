@@ -7,7 +7,9 @@ Tables: `data/antarctica/claims.csv`, `terminology.csv`.
 
 ## The ledger
 
-Twenty claims, eleven of them flagged high risk, none reviewed.
+Twenty-three claims, thirteen of them flagged high risk, none reviewed. Four are
+`source_checked`; that state records that the cited locator was opened, not that
+a scholarly reviewer accepted the proposition.
 
 Each claim carries its act and anchor, the proposition itself, a claim type, the
 sources on each side, a locator, a confidence, the map objects and GIS records it
@@ -20,20 +22,23 @@ Claim types are `fact`, `interpretation`, `historiographical_dispute` and
 medium confidence must cite something, and a high-risk claim typed as `fact` must
 cite something whatever its confidence.
 
-## The claims that are blocked
+## The claims that remain blocked
 
-Four propositions have no support at all and are recorded precisely so they
+Two propositions have no support at all and are recorded precisely so they
 cannot be made in passing:
 
-- **What Coronelli's polar material depicts.** The plate has not been seen.
-- **Whether Coronelli distinguished inherited from reported information.** The
-  Epitome text is untranscribed and the Milanesi monograph unconsulted, so any
-  statement about his method would exceed the evidence entirely.
 - **Whether particular ghost features were caused by mirage, refraction or ice.**
   Recording that a feature was later removed is safe. Saying why it was seen is a
   much stronger claim and no source is held for any instance of it.
 - **The distance between the 1915 reported position and the 2022 wreck.** Both
   figures are unheld.
+
+The two Coronelli propositions are no longer unsupported. The plate, selected
+_Atlante Veneto_ pages and the _Epitome_ chapter have been read together, moving
+both claims to `source_checked` at medium confidence. They remain unreviewed:
+three polar leaves, the globe, the rest of the atlas and Milanesi's workshop
+study are still open, and the explanation for the missing southern plate is the
+essay's inference rather than Coronelli's statement.
 
 Two more are recorded as arguments the essay should resist. The claim that early
 modern cartographers _believed_ in a balancing continent is an attribution of
@@ -42,11 +47,12 @@ claim that unrecorded sealing voyages may have sighted land earlier is an
 argument from silence, and this project's own Dacia work is about how dangerous
 those are.
 
-## The one claim with real evidence
+## The source-checked claims
 
-The 1910 chart compiles eleven voyages between 1772 and 1909. That is transcribed
-from the Greenwich catalogue title, which is the strongest evidence the programme
-currently holds, and it is the only claim at `source_checked`.
+Four claims now carry opened locators. Two describe Coronelli's graphic/textual
+treatment of the poles. The other two describe the 1910 chart's eleven-voyage
+compilation and the additions and subtraction that distinguish it from the 1874
+issue. None is `reviewed`, and nothing in the public tier depends on them yet.
 
 ## Terminology
 

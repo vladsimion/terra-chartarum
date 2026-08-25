@@ -7,11 +7,11 @@
  * the prose around it, so this module reads the compiled pilot slice and offers
  * the essay exactly the questions the argument needs to ask.
  *
- * `scripts/antarctica/build.py` compiles one projection into three assets: this
- * JSON and the two Atlas GeoJSON layers. The essay reads the first and the Atlas
- * reads the other two, and they are the same records - the mappable subset is a
- * filter and the line/point split is a MapLibre render constraint, never a
- * separate compilation. Nothing here authors a date, a position or a confidence.
+ * `scripts/antarctica/build.py` compiles one projection into this JSON and four
+ * Atlas GeoJSON layers. The essay reads the first and the Atlas reads the other
+ * four, and they are the same records - the mappable subset is a filter and the
+ * layer split is a rendering constraint, never a separate compilation. Nothing
+ * here authors a date, a position or a confidence.
  */
 import pilot from '../data/antarctica/generated/pilot.json';
 

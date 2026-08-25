@@ -7,8 +7,8 @@ Tables: `data/antarctica/sources.csv`, `map-objects.csv`, `source-gaps.csv`.
 
 ## What the audit holds
 
-Thirty sources across eleven claim families, seventeen candidate map objects,
-and sixteen recorded gaps.
+Forty-one sources across eleven claim families, twenty candidate map objects,
+and twenty-two recorded gaps: fourteen open, three in progress and five closed.
 
 The bibliography is grouped by argument rather than alphabetically, because the
 question a reader has is never "what has been published about Antarctica" but
@@ -28,14 +28,14 @@ Three states, and the distinction between them is the point of the audit.
 - **unverified** - recorded from scholarly knowledge and not yet checked against
   any catalogue.
 
-Two objects are verified: the 1777 southern-hemisphere chart at Greenwich
-(PAI4123) and the 1910 cumulative ice chart (G288:1/2(2)). Both catalogue
-records were read and both are transcribed exactly, including two facts that
-change the argument. The Cook chart is credited to William Whitchurch as
-engraver, which the essay should not silently replace with Cook's name. And the
-Greenwich record dates the ice chart 1910 _and_ 1874, which means the cumulative
-sheet is itself a reissue of an earlier compilation, and the layered archive of
-Act VII is literal rather than metaphorical.
+Five objects are verified: Coronelli's _Terre Artiche_, two Greenwich impressions
+of the 1777 Cook chart, and the 1874 and 1910 cumulative ice charts. Six source
+records have been read and marked `source_checked`, including the distinct
+polar texts in the _Atlante Veneto_ and _Epitome Cosmografica_. The records now
+support three findings that change the argument: the two Cook impressions carry
+different catalogue attributions; the 1910 chart revises the 1874 compilation;
+and Coronelli's Tomo I polar sequence is graphically Arctic while its text
+explicitly considers and rejects claimed southern lands.
 
 Everything else is unverified or partially verified. A rule enforces the obvious
 consequence: a source may not be marked verified while its locator is still
@@ -44,11 +44,12 @@ pending, because knowing a book exists is not having read a page of it.
 ## Rights
 
 No object in the register is cleared for reproduction. The register separates
-the rights of the _work_ from the rights of the _scan_, and the two verified
-objects show why: both are long out of copyright as engravings, and neither
-catalogue record states any reuse licence. The ice chart carries a Crown
-copyright credit line. Both are therefore `research_only` until Royal Museums
-Greenwich answers in writing.
+the rights of the _work_ from the rights of the _scan_, and the verified objects
+show why. The Greenwich works are long out of copyright as engravings, but their
+catalogue records state no reuse licence and the ice charts carry a Crown
+copyright credit line. They are therefore `research_only` until Royal Museums
+Greenwich answers in writing. The Coronelli work is public domain, but the
+Rumsey scan's reproduction use remains undetermined.
 
 The validator will refuse any row that claims a reproduction use without open
 rights, a verified identity and a named scan source. Dealer and auction listings
@@ -56,14 +57,15 @@ are refused as a source of record outright.
 
 ## The gaps
 
-Sixteen, all open, each naming what it blocks and what would close it. The four
-that matter most:
+Twenty-two recorded gaps, of which fourteen remain open. Each names what it
+blocks and what would close it. The four that matter most:
 
-1. **The Coronelli plate has not been seen.** The Rumsey record returned an
-   access check. Act III's central object is unexamined, and search evidence
-   suggests the plate may be weighted towards the Arctic - which, if true, is
-   the finding rather than an obstacle to it.
-2. **Worsley's navigational records have not been located.** Until they are,
+1. **The Coronelli package is only partly read.** The plate, the _Epitome_
+   chapter and three of the seven _Atlante Veneto_ text pages are established.
+   Three leaves, the other twelve atlas volumes, the globe's southern calotte
+   and Milanesi's workshop study remain open, so the central interpretation
+   stays at medium confidence.
+2. **Worsley's navigational records have not been read.** Until they are,
    every Endurance position is taken from a published narrative, and the
    distinction between a fix and a reckoning cannot be made at all.
 3. **The 2022 wreck position is unheld.** The expedition site returned 403 and

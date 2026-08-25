@@ -705,7 +705,7 @@
     },
     {
       "act": "act_iii",
-      "confidence": "unresolved",
+      "confidence": "medium",
       "evidenceClass": "inherited_cartography",
       "expeditionId": null,
       "featureType": "cartographic_treatment",
@@ -715,10 +715,10 @@
       "id": "ant-ftr-coronelli-southern-region",
       "kind": "feature",
       "laterStatus": "unresolved",
-      "notes": "A non-spatial evidence record. The plate has not been seen, so the record exists to hold the question rather than to answer it, and carries no geometry precisely because inventing one would be the error Act III is about.",
-      "reviewState": "raw",
-      "sourceId": "ant-src-coronelli-epitome-1693",
-      "sourceLocator": "pending",
+      "notes": "A non-spatial evidence record. The examined plate is Arctic to the neatline, while the accompanying text treats the far south and rejects several claimed lands as fabulous. The record carries no geometry because this is evidence of textual treatment and graphic absence, not a mappable southern extent.",
+      "reviewState": "normalized",
+      "sourceId": "ant-src-coronelli-atlante-veneto",
+      "sourceLocator": "Atlante Veneto, printed pp. 70 and 76; Rumsey 12186.101",
       "title": "Coronelli's southern polar region, as treated in 1693",
       "validFrom": 1688,
       "validTo": 1701
