@@ -8,18 +8,18 @@
     "claims": 23,
     "coastline-chronology": 6,
     "coronelli-annotations": 5,
-    "coronelli-lineage": 5,
+    "coronelli-lineage": 7,
     "expedition-phases": 9,
     "expeditions": 16,
     "feature-evidence": 7,
     "feature-map-objects": 4,
     "features": 4,
     "ghost-geographies": 5,
-    "map-objects": 19,
+    "map-objects": 20,
     "names": 2,
     "observations": 18,
     "priority-claims": 6,
-    "source-gaps": 19,
+    "source-gaps": 21,
     "sources": 41,
     "terminology": 17,
     "tracks": 5
@@ -37,22 +37,22 @@
   "highRiskClaims": 13,
   "inputs": {
     "data/antarctica/chart-contributions.csv": "b6b1a8c915a01e44a0e8d6b75af2dfbc0e53dfa4de27bd409f1a98cf6c5f560c",
-    "data/antarctica/claims.csv": "fa12b4f693e3d43aa6be7692a4aa718c0d2f01d883b04d4e4f6409a35990b224",
+    "data/antarctica/claims.csv": "56b954e85adeb85c92a2bc4069fa8a614e22b77e68b3b8df12ffd46c01fd9fc2",
     "data/antarctica/coastline-chronology.csv": "e271cae60095ac3352c65136dd340684b95ef34406a94baae53c352dbf1c4fca",
-    "data/antarctica/coronelli-annotations.csv": "20c304b55d5fa6df1b7f8100b72985785fadeb2a4ae708d45b177835bbfa1a38",
-    "data/antarctica/coronelli-lineage.csv": "769d37a660196d2672a574637cbe17b4bfc359fdb0da0d7b72dc5939951820d1",
+    "data/antarctica/coronelli-annotations.csv": "3b7eab81e20a0959ed37da78df6bc5b8a8b077df4b191d8d51a697b1ebcd902a",
+    "data/antarctica/coronelli-lineage.csv": "c805bd569e5d6d2be44fe40a8258186039161b8cd721c26db66742ba9dba93a3",
     "data/antarctica/expedition-phases.csv": "79f17d192a789161590610f98f4c24b1a564877b996e27854a638192dc8dacc8",
     "data/antarctica/expeditions.csv": "51b3bcac5f62c72ae282a76972685efb4ed5bb1c1710fd4a8f9887935e02de75",
-    "data/antarctica/feature-evidence.csv": "4f5a7d0d057997a56828fbaffb16a70b30ccbc593f45d973922ebbe5a3515522",
-    "data/antarctica/feature-map-objects.csv": "917521894b87e24fff034b2a28af8866f4902a4d05e86e0fea2ad68ddeda59c0",
+    "data/antarctica/feature-evidence.csv": "0297e0887d759f28664fec28cf5fc2ccf08142b7fe03f030a23dfa4867615e0a",
+    "data/antarctica/feature-map-objects.csv": "df6a3929063b700e52a2e971437dabbc3bea8a42c97e90db9eecafb39b2f03de",
     "data/antarctica/features.csv": "c50ecf22459d9f1c1a195acd88a3838bfe5b7f98d2266603eb0f39a3902fffd3",
     "data/antarctica/ghost-geographies.csv": "96ffc5c7da29a7be7071d133581df57588f480e489dcd5300ce33afb838c06fd",
-    "data/antarctica/map-objects.csv": "6fc2587322040b28637171376c6ba3486d2d83745d5381858f371f9891c9a5ae",
+    "data/antarctica/map-objects.csv": "ed6a376a09b5c7c77b6fdbdd684e784aaf6a11fe03b2d4d59a953218219f30a7",
     "data/antarctica/names.csv": "6154ee629379a7b42dcd59f10fe1212c52f83b7a78b2198004c9cb3cfff7efa9",
     "data/antarctica/observations.csv": "9c99ee5a0ef0ad6f371860d8ed6c09df898adc69c0ad9736bfff8c932068ef3a",
     "data/antarctica/priority-claims.csv": "8bbb405d020a3656ee61cbd4b9ef29681f3e4954f1723eca51c9b6b7fc4c54c4",
-    "data/antarctica/source-gaps.csv": "c2547470534e032d5ab5022cc54b9e71feaa0af7914a36c597a6246a1e57c114",
-    "data/antarctica/sources.csv": "06edbccfc7d10c4a3bc3019e09380705ce3e6ea4a191342bdb0dc3cd4f34b9e4",
+    "data/antarctica/source-gaps.csv": "a6231cb1ead3d4f17248271edb6106393d8c2190e7ced2792d1bc7c759e02e94",
+    "data/antarctica/sources.csv": "83316fb6449bbf72f5f827a44d4e8c35a764764b952ef33738a4ffa9affbc469",
     "data/antarctica/terminology.csv": "62cf5b1109f0a6582335ae136a6709b1edd4b77318182e8dc52ea8b0d82663f3",
     "data/antarctica/tracks.csv": "2c1400201b2916a0ac6028eca6d171bc562eed194796f92cd811fb09ca0d0fc7"
   },
@@ -73,20 +73,20 @@
       "sha256": "b6b1a8c915a01e44a0e8d6b75af2dfbc0e53dfa4de27bd409f1a98cf6c5f560c"
     },
     "data/antarctica/release/ant-pilot-0.1/claims.csv": {
-      "bytes": 13234,
-      "sha256": "fa12b4f693e3d43aa6be7692a4aa718c0d2f01d883b04d4e4f6409a35990b224"
+      "bytes": 13907,
+      "sha256": "56b954e85adeb85c92a2bc4069fa8a614e22b77e68b3b8df12ffd46c01fd9fc2"
     },
     "data/antarctica/release/ant-pilot-0.1/coastline-chronology.csv": {
       "bytes": 2627,
       "sha256": "e271cae60095ac3352c65136dd340684b95ef34406a94baae53c352dbf1c4fca"
     },
     "data/antarctica/release/ant-pilot-0.1/coronelli-annotations.csv": {
-      "bytes": 2283,
-      "sha256": "20c304b55d5fa6df1b7f8100b72985785fadeb2a4ae708d45b177835bbfa1a38"
+      "bytes": 3187,
+      "sha256": "3b7eab81e20a0959ed37da78df6bc5b8a8b077df4b191d8d51a697b1ebcd902a"
     },
     "data/antarctica/release/ant-pilot-0.1/coronelli-lineage.csv": {
-      "bytes": 2283,
-      "sha256": "769d37a660196d2672a574637cbe17b4bfc359fdb0da0d7b72dc5939951820d1"
+      "bytes": 4029,
+      "sha256": "c805bd569e5d6d2be44fe40a8258186039161b8cd721c26db66742ba9dba93a3"
     },
     "data/antarctica/release/ant-pilot-0.1/expedition-phases.csv": {
       "bytes": 2703,
@@ -97,12 +97,12 @@
       "sha256": "51b3bcac5f62c72ae282a76972685efb4ed5bb1c1710fd4a8f9887935e02de75"
     },
     "data/antarctica/release/ant-pilot-0.1/feature-evidence.csv": {
-      "bytes": 2051,
-      "sha256": "4f5a7d0d057997a56828fbaffb16a70b30ccbc593f45d973922ebbe5a3515522"
+      "bytes": 2143,
+      "sha256": "0297e0887d759f28664fec28cf5fc2ccf08142b7fe03f030a23dfa4867615e0a"
     },
     "data/antarctica/release/ant-pilot-0.1/feature-map-objects.csv": {
-      "bytes": 963,
-      "sha256": "917521894b87e24fff034b2a28af8866f4902a4d05e86e0fea2ad68ddeda59c0"
+      "bytes": 1019,
+      "sha256": "df6a3929063b700e52a2e971437dabbc3bea8a42c97e90db9eecafb39b2f03de"
     },
     "data/antarctica/release/ant-pilot-0.1/features.csv": {
       "bytes": 2569,
@@ -113,8 +113,8 @@
       "sha256": "96ffc5c7da29a7be7071d133581df57588f480e489dcd5300ce33afb838c06fd"
     },
     "data/antarctica/release/ant-pilot-0.1/map-objects.csv": {
-      "bytes": 14623,
-      "sha256": "6fc2587322040b28637171376c6ba3486d2d83745d5381858f371f9891c9a5ae"
+      "bytes": 16811,
+      "sha256": "ed6a376a09b5c7c77b6fdbdd684e784aaf6a11fe03b2d4d59a953218219f30a7"
     },
     "data/antarctica/release/ant-pilot-0.1/names.csv": {
       "bytes": 671,
@@ -129,12 +129,12 @@
       "sha256": "8bbb405d020a3656ee61cbd4b9ef29681f3e4954f1723eca51c9b6b7fc4c54c4"
     },
     "data/antarctica/release/ant-pilot-0.1/source-gaps.csv": {
-      "bytes": 9449,
-      "sha256": "c2547470534e032d5ab5022cc54b9e71feaa0af7914a36c597a6246a1e57c114"
+      "bytes": 11830,
+      "sha256": "a6231cb1ead3d4f17248271edb6106393d8c2190e7ced2792d1bc7c759e02e94"
     },
     "data/antarctica/release/ant-pilot-0.1/sources.csv": {
-      "bytes": 26620,
-      "sha256": "06edbccfc7d10c4a3bc3019e09380705ce3e6ea4a191342bdb0dc3cd4f34b9e4"
+      "bytes": 27605,
+      "sha256": "83316fb6449bbf72f5f827a44d4e8c35a764764b952ef33738a4ffa9affbc469"
     },
     "data/antarctica/release/ant-pilot-0.1/terminology.csv": {
       "bytes": 6147,
@@ -178,5 +178,5 @@
   "release": "ant-pilot-0.1",
   "reviewedClaims": 0,
   "schemaVersion": 1,
-  "verifiedObjects": 4
+  "verifiedObjects": 5
 }
