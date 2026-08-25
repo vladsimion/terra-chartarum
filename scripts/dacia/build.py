@@ -25,6 +25,7 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -32,6 +33,7 @@ REPO = Path(__file__).resolve().parents[2]
 DATA = REPO / "data" / "dacia"
 RELEASE_DIR = DATA / "release" / "cnd-0.1"
 V1_CONTRACT = DATA / "reference" / "cnd-v1-release.json"
+V1_QA_AUDIT = DATA / "reference" / "cnd-v1-qa.json"
 V1_MIGRATIONS = DATA / "reference" / "cnd-id-migrations.csv"
 V1_RELEASE_DIR = DATA / "release" / "cnd-1.0-rc1"
 GEO_DIR = REPO / "public" / "geo"
@@ -888,6 +890,7 @@ def in_manibus_package() -> dict:
 def v1_qa(tables: dict[str, list[dict[str, str]]]) -> dict:
     """Separate a reproducible candidate from the human claim that it is citable."""
     contract = json.loads(V1_CONTRACT.read_text(encoding="utf-8"))
+    audit = json.loads(V1_QA_AUDIT.read_text(encoding="utf-8"))
     ids = {
         "places": {row["place_id"] for row in tables["places"]},
         "sources": {row["source_id"] for row in tables["sources"]},
@@ -914,6 +917,20 @@ def v1_qa(tables: dict[str, list[dict[str, str]]]) -> dict:
         row for row in transcriptions
         if row["capture_method"] in {"from_witness", "from_edition"}
     ]
+    places_by_id = {row["place_id"]: row for row in tables["places"]}
+    attestations_by_id = {row["attestation_id"]: row for row in attestations}
+    spot_checks = audit["spotChecks"]
+    matched_spot_checks = [check for check in spot_checks if check["result"] == "matched"]
+    spot_checked_attestations = [
+        attestations_by_id[check["attestationId"]]
+        for check in matched_spot_checks
+        if check["attestationId"] in attestations_by_id
+    ]
+    spot_checked_regions = sorted({
+        places_by_id[row["place_id"]]["region"]
+        for row in spot_checked_attestations
+        if row["place_id"] in places_by_id
+    })
     missing_regimes = {
         regime: sorted(set(source_ids) - ids["sources"])
         for regime, source_ids in contract["requiredRegimes"].items()
@@ -943,6 +960,47 @@ def v1_qa(tables: dict[str, list[dict[str, str]]]) -> dict:
         source_id for source_id in public_source_ids
         if sources_by_id[source_id]["rights_statement"] in {"", "rights_unknown"}
     )
+    public_source_spot_checks_missing = sorted(
+        public_source_ids - {row["source_id"] for row in spot_checked_attestations}
+    )
+    reviewed_states = {"reviewed", "approved", "published"}
+    source_silent = [
+        row for row in attestations if row["attestation_class"] == "source_silent"
+    ]
+    low_confidence = [row for row in attestations if row["confidence"] == "low"]
+    editorial_reconstruction = [
+        row for row in tables["places"]
+        if row["ref_geometry_provenance"] == "editorial_reconstruction"
+    ]
+    public_reconstructed_unreviewed = sorted({
+        row["place_id"]
+        for row in publishable
+        if row["place_id"] in places_by_id
+        and places_by_id[row["place_id"]]["ref_geometry_provenance"]
+        == "editorial_reconstruction"
+        and places_by_id[row["place_id"]]["review_state"] not in reviewed_states
+    })
+
+    debt_rows = _read_reference("verification-debt")
+    open_debt_ids = {
+        row["debt_id"] for row in debt_rows if row["status"] == "open"
+    }
+    debt_pattern = re.compile(r"\bvd-[a-z0-9-]+\b")
+    public_open_debt = {}
+    for row in publishable:
+        related = (
+            row,
+            places_by_id.get(row["place_id"], {}),
+            sources_by_id.get(row["source_id"], {}),
+        )
+        refs = sorted({
+            debt_id
+            for record in related
+            for debt_id in debt_pattern.findall(record.get("note", ""))
+            if debt_id in open_debt_ids
+        })
+        if refs:
+            public_open_debt[row["attestation_id"]] = refs
     hiatus_source_ids = {
         row.get("corpus_source_id", "")
         for row in _read_reference("hiatus-witness-families")
@@ -959,12 +1017,20 @@ def v1_qa(tables: dict[str, list[dict[str, str]]]) -> dict:
         blockers.append("required_evidence_regime_missing")
     if stable_missing:
         blockers.append("published_identifier_missing")
-    if not reviewed or not checked_captures:
+    if not matched_spot_checks:
         blockers.append("scholarly_spot_check_not_recorded")
+    if not reviewed:
+        blockers.append("human_scholarly_review_not_recorded")
     if len(publishable) < contract["minimumPublishableAttestations"]:
         blockers.append("no_publishable_attestations")
+    if public_source_spot_checks_missing:
+        blockers.append("public_source_spot_check_missing")
     if public_rights_incomplete:
         blockers.append("public_source_rights_incomplete")
+    if public_reconstructed_unreviewed:
+        blockers.append("public_reconstructed_geometry_unreviewed")
+    if public_open_debt:
+        blockers.append("publishable_verification_debt")
     if unresolved_hiatus:
         blockers.append("hiatus_authority_reconciliation_pending")
 
@@ -973,6 +1039,22 @@ def v1_qa(tables: dict[str, list[dict[str, str]]]) -> dict:
         "candidate": contract["candidate"],
         "releaseStatus": "ready" if not blockers else "blocked",
         "blockers": blockers,
+        "qaRun": {
+            "audit": str(V1_QA_AUDIT.relative_to(REPO)),
+            "checkedOn": audit["checkedOn"],
+            "performedBy": audit["performedBy"],
+            "policy": audit["policy"],
+            "promotesReviewState": False,
+            "authoritySpotChecks": {
+                "recorded": len(spot_checks),
+                "matched": len(matched_spot_checks),
+                "attestationIds": sorted(
+                    check["attestationId"] for check in matched_spot_checks
+                ),
+                "missingPublicSourceIds": public_source_spot_checks_missing,
+                "regions": spot_checked_regions,
+            },
+        },
         "coverage": coverage,
         "evidenceRegimes": {
             "required": sorted(contract["requiredRegimes"]),
@@ -1002,11 +1084,62 @@ def v1_qa(tables: dict[str, list[dict[str, str]]]) -> dict:
                 if row["ref_geometry_provenance"] == "editorial_reconstruction"
             ),
         },
+        "editorialReview": {
+            "sourceSilent": {
+                "recordIds": sorted(row["attestation_id"] for row in source_silent),
+                "reviewedIds": sorted(
+                    row["attestation_id"]
+                    for row in source_silent
+                    if row["review_state"] in reviewed_states
+                ),
+                "excludedIds": sorted(
+                    row["attestation_id"]
+                    for row in source_silent
+                    if row["review_state"] not in reviewed_states
+                ),
+            },
+            "lowConfidence": {
+                "recordIds": sorted(row["attestation_id"] for row in low_confidence),
+                "reviewedIds": sorted(
+                    row["attestation_id"]
+                    for row in low_confidence
+                    if row["review_state"] in reviewed_states
+                ),
+                "excludedIds": sorted(
+                    row["attestation_id"]
+                    for row in low_confidence
+                    if row["review_state"] not in reviewed_states
+                ),
+            },
+            "editorialReconstruction": {
+                "recordIds": sorted(row["place_id"] for row in editorial_reconstruction),
+                "reviewedIds": sorted(
+                    row["place_id"]
+                    for row in editorial_reconstruction
+                    if row["review_state"] in reviewed_states
+                ),
+                "excludedIds": sorted(
+                    row["place_id"]
+                    for row in editorial_reconstruction
+                    if row["review_state"] not in reviewed_states
+                ),
+                "publicUnreviewedIds": public_reconstructed_unreviewed,
+            },
+        },
         "rights": {
             "publicSourceIds": sorted(public_source_ids),
             "incompletePublicSourceIds": public_rights_incomplete,
+            "researchOnlyRightsUnknownSourceIds": sorted(
+                row["source_id"]
+                for row in tables["sources"]
+                if row["rights_statement"] in {"", "rights_unknown"}
+            ),
             "sourceImageryRedistributed": False,
             "metadataLicence": "CC BY 4.0",
+        },
+        "verificationDebt": {
+            "openIds": sorted(open_debt_ids),
+            "publishableAttestations": public_open_debt,
         },
         "authorityConsumers": {
             "nomenErrans": "resolves" if not unresolved_nomen else "blocked",
@@ -1090,7 +1223,9 @@ def build_v1_outputs() -> dict[Path, bytes]:
         "as source-located claims. Names are never join keys. Silences remain typed claims and "
         "cannot carry readings. Machine normalization may reach `normalized`; only a named human "
         "reviewer checking a witness or edition may promote a record further. The public spatial "
-        "output contains only approved or published attestations. See `qa.json` before citation.\n"
+        "output contains only approved or published attestations. The KAN-365 machine-assisted "
+        "authority sample is recorded separately and promotes no review state. See `qa.json` "
+        "before citation.\n"
     ).encode("utf-8")
     outputs[V1_RELEASE_DIR / "LICENSE.md"] = (
         "# Licence\n\nTerra Chartarum metadata and original annotations in this candidate are "
@@ -1108,7 +1243,12 @@ def build_v1_outputs() -> dict[Path, bytes]:
 
 def build_v1_manifest(outputs: dict[Path, bytes]) -> bytes:
     qa = json.loads(outputs[V1_RELEASE_DIR / "qa.json"])
-    inputs = [*(DATA / f"{name}.csv" for name in TABLES), V1_CONTRACT, V1_MIGRATIONS]
+    inputs = [
+        *(DATA / f"{name}.csv" for name in TABLES),
+        V1_CONTRACT,
+        V1_QA_AUDIT,
+        V1_MIGRATIONS,
+    ]
     return canonical_json({
         "schemaVersion": 1,
         "release": qa["candidate"],

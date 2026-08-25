@@ -17,7 +17,7 @@
     ]
   },
   "blockers": [
-    "scholarly_spot_check_not_recorded",
+    "human_scholarly_review_not_recorded",
     "no_publishable_attestations"
   ],
   "candidate": "cnd-1.0-rc1",
@@ -37,6 +37,66 @@
     "reason": "A DOI requires an authenticated external repository deposit. No repository credential or legal deposit decision is stored in this repository; the deterministic local candidate is therefore built without a DOI.",
     "status": "deferred"
   },
+  "editorialReview": {
+    "editorialReconstruction": {
+      "excludedIds": [
+        "plc-arcidava",
+        "plc-bologa",
+        "plc-histria",
+        "plc-micia",
+        "plc-porolissum",
+        "plc-romula",
+        "plc-sarmizegetusa-regia",
+        "plc-sucidava",
+        "plc-tibiscum",
+        "plc-ulpia-traiana-sarmizegetusa"
+      ],
+      "publicUnreviewedIds": [],
+      "recordIds": [
+        "plc-arcidava",
+        "plc-bologa",
+        "plc-histria",
+        "plc-micia",
+        "plc-porolissum",
+        "plc-romula",
+        "plc-sarmizegetusa-regia",
+        "plc-sucidava",
+        "plc-tibiscum",
+        "plc-ulpia-traiana-sarmizegetusa"
+      ],
+      "reviewedIds": []
+    },
+    "lowConfidence": {
+      "excludedIds": [
+        "att-0005",
+        "att-0035",
+        "att-0044"
+      ],
+      "recordIds": [
+        "att-0005",
+        "att-0035",
+        "att-0044"
+      ],
+      "reviewedIds": []
+    },
+    "sourceSilent": {
+      "excludedIds": [
+        "att-0003",
+        "att-0014",
+        "att-0025",
+        "att-0035",
+        "att-0037"
+      ],
+      "recordIds": [
+        "att-0003",
+        "att-0014",
+        "att-0025",
+        "att-0035",
+        "att-0037"
+      ],
+      "reviewedIds": []
+    }
+  },
   "evidenceRegimes": {
     "missingSourceIds": {},
     "required": [
@@ -47,11 +107,55 @@
       "survey-cadastral"
     ]
   },
+  "qaRun": {
+    "audit": "data/dacia/reference/cnd-v1-qa.json",
+    "authoritySpotChecks": {
+      "attestationIds": [
+        "att-0050",
+        "att-0052",
+        "att-0054",
+        "att-0085",
+        "att-0089",
+        "att-0098",
+        "att-0113",
+        "att-0129"
+      ],
+      "matched": 8,
+      "missingPublicSourceIds": [],
+      "recorded": 8,
+      "regions": [
+        "banat",
+        "crisana",
+        "dobrogea",
+        "maramures",
+        "moldavia",
+        "muntenia",
+        "oltenia",
+        "transylvania"
+      ]
+    },
+    "checkedOn": "2026-08-25",
+    "performedBy": {
+      "kind": "machine_assisted",
+      "name": "OpenAI Codex"
+    },
+    "policy": {
+      "editorialReconstruction": "exclude_until_place_reviewed",
+      "lowConfidence": "exclude_until_attestation_reviewed",
+      "rightsUnknown": "exclude_until_rights_resolved",
+      "sourceSilent": "exclude_until_source_and_attestation_reviewed"
+    },
+    "promotesReviewState": false
+  },
   "releaseStatus": "blocked",
   "rights": {
     "incompletePublicSourceIds": [],
     "metadataLicence": "CC BY 4.0",
     "publicSourceIds": [],
+    "researchOnlyRightsUnknownSourceIds": [
+      "src-secret-century",
+      "src-teleki-ethnographic-map-1920"
+    ],
     "sourceImageryRedistributed": false
   },
   "schemaVersion": 1,
@@ -67,5 +171,27 @@
     "migrationRegister": "data/dacia/reference/cnd-id-migrations.csv",
     "missingPublishedIds": {},
     "pilot": "cnd-0.1"
+  },
+  "verificationDebt": {
+    "openIds": [
+      "vd-borroczyn-production-witness",
+      "vd-carta-rubra-claim-review",
+      "vd-drobeta-ptolemy",
+      "vd-hiatus-witness-review",
+      "vd-honterus-impression",
+      "vd-honterus-orientation",
+      "vd-in-manibus-essay-claims",
+      "vd-in-manibus-inspection",
+      "vd-in-manibus-object-rights",
+      "vd-josephinian-sheet-ids",
+      "vd-nomen-errans-locators",
+      "vd-nomen-errans-review",
+      "vd-nomen-errans-rights",
+      "vd-principality-envelopes",
+      "vd-roman-baseline-geometry",
+      "vd-treaty-frontier-geometry",
+      "vd-vicina-site"
+    ],
+    "publishableAttestations": {}
   }
 }

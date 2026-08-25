@@ -21,7 +21,10 @@ thing that can move a hash is the data.
 The same command now emits the complete, fail-closed
 [CND v1.0 release candidate](./cnd-v1-release.md). Its QA report makes the
 coverage, scholarly-review, rights, authority-reconciliation and DOI state
-machine-readable; it cannot silently relabel the pilot as a citable v1.0.
+machine-readable. The committed
+[`cnd-v1-qa.json`](../../data/dacia/reference/cnd-v1-qa.json) freezes the
+KAN-365 authority sample and fail-closed exclusions; neither artifact can
+silently relabel the pilot as a citable v1.0.
 
 **CND 0.1 is a pilot release.** The distinction is carried in the outputs rather
 than in a caveat: the **public** tier holds only records cleared by human review

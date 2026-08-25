@@ -1,0 +1,159 @@
+{
+  "candidate": "cnd-1.0-rc1",
+  "checkedOn": "2026-08-25",
+  "sensitiveRecords": {
+    "editorialReconstructionPlaceIds": [
+      "plc-arcidava",
+      "plc-bologa",
+      "plc-histria",
+      "plc-micia",
+      "plc-porolissum",
+      "plc-romula",
+      "plc-sarmizegetusa-regia",
+      "plc-sucidava",
+      "plc-tibiscum",
+      "plc-ulpia-traiana-sarmizegetusa"
+    ],
+    "lowConfidenceAttestationIds": [
+      "att-0005",
+      "att-0035",
+      "att-0044"
+    ],
+    "rightsUnknownSourceIds": [
+      "src-secret-century",
+      "src-teleki-ethnographic-map-1920"
+    ],
+    "sourceSilentAttestationIds": [
+      "att-0003",
+      "att-0014",
+      "att-0025",
+      "att-0035",
+      "att-0037"
+    ]
+  },
+  "performedBy": {
+    "kind": "machine_assisted",
+    "name": "OpenAI Codex"
+  },
+  "policy": {
+    "editorialReconstruction": "exclude_until_place_reviewed",
+    "lowConfidence": "exclude_until_attestation_reviewed",
+    "rightsUnknown": "exclude_until_rights_resolved",
+    "sourceSilent": "exclude_until_source_and_attestation_reviewed"
+  },
+  "schemaVersion": 1,
+  "spotChecks": [
+    {
+      "attestationId": "att-0050",
+      "authorityUrl": "https://pleiades.stoa.org/places/206895",
+      "checkedFields": [
+        "reference_name",
+        "representative_point"
+      ],
+      "observedRepresentativePoint": [
+        23.47618,
+        44.00204
+      ],
+      "observedTitle": "Afumaţi",
+      "result": "matched"
+    },
+    {
+      "attestationId": "att-0052",
+      "authorityUrl": "https://pleiades.stoa.org/places/206932",
+      "checkedFields": [
+        "reference_name",
+        "representative_point"
+      ],
+      "observedRepresentativePoint": [
+        21.315096,
+        46.146819
+      ],
+      "observedTitle": "Aradul Nou",
+      "result": "matched"
+    },
+    {
+      "attestationId": "att-0054",
+      "authorityUrl": "https://pleiades.stoa.org/places/206956",
+      "checkedFields": [
+        "reference_name",
+        "representative_point"
+      ],
+      "observedRepresentativePoint": [
+        22.598167,
+        44.345407
+      ],
+      "observedTitle": "Balta Verde",
+      "result": "matched"
+    },
+    {
+      "attestationId": "att-0085",
+      "authorityUrl": "https://pleiades.stoa.org/places/207456",
+      "checkedFields": [
+        "reference_name",
+        "representative_point"
+      ],
+      "observedRepresentativePoint": [
+        23.343711,
+        47.31268
+      ],
+      "observedTitle": "Şoimuşeni",
+      "result": "matched"
+    },
+    {
+      "attestationId": "att-0089",
+      "authorityUrl": "https://pleiades.stoa.org/places/216700",
+      "checkedFields": [
+        "reference_name",
+        "representative_point"
+      ],
+      "observedRepresentativePoint": [
+        27.692895999999998,
+        44.1873315
+      ],
+      "observedTitle": "Altinum",
+      "result": "matched"
+    },
+    {
+      "attestationId": "att-0098",
+      "authorityUrl": "https://pleiades.stoa.org/places/216772",
+      "checkedFields": [
+        "reference_name",
+        "representative_point"
+      ],
+      "observedRepresentativePoint": [
+        26.263876,
+        45.448538
+      ],
+      "observedTitle": "Cîrlomăneşti",
+      "result": "matched"
+    },
+    {
+      "attestationId": "att-0113",
+      "authorityUrl": "https://pleiades.stoa.org/places/216932",
+      "checkedFields": [
+        "reference_name",
+        "representative_point"
+      ],
+      "observedRepresentativePoint": [
+        27.250009,
+        45.983326
+      ],
+      "observedTitle": "Piroboridava",
+      "result": "matched"
+    },
+    {
+      "attestationId": "att-0129",
+      "authorityUrl": "https://pleiades.stoa.org/places/281718504",
+      "checkedFields": [
+        "reference_name",
+        "representative_point"
+      ],
+      "observedRepresentativePoint": [
+        23.1309849,
+        46.3062526
+      ],
+      "observedTitle": "Alburnus Maior",
+      "result": "matched"
+    }
+  ]
+}

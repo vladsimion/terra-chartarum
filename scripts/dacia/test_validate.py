@@ -58,6 +58,13 @@ def edit(dataset: Path, key: str, mutate) -> None:
     write(dataset, key, fieldnames, rows if result is None else result)
 
 
+def edit_json(dataset: Path, relative_path: str, mutate) -> None:
+    path = dataset / relative_path
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    mutate(payload)
+    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
 def find(rows: list[dict[str, str]], column: str, value: str) -> dict[str, str]:
     for row in rows:
         if row[column] == value:
@@ -218,6 +225,48 @@ def test_normalized_import_requires_a_real_locator(dataset):
 
     edit(dataset, "attestations", mutate)
     refuses("normalized import requires a real locator")
+
+
+def test_v1_qa_spot_check_covers_every_imported_region(dataset):
+    def mutate(audit):
+        audit["spotChecks"] = [
+            check for check in audit["spotChecks"] if check["attestationId"] != "att-0054"
+        ]
+
+    edit_json(dataset, validate.V1_QA_AUDIT, mutate)
+    refuses("region-stratified spot check drifted (missing: banat")
+
+
+def test_v1_qa_spot_check_resolves_to_the_cited_authority(dataset):
+    def mutate(audit):
+        audit["spotChecks"][0]["authorityUrl"] = "https://example.invalid/not-the-source"
+
+    edit_json(dataset, validate.V1_QA_AUDIT, mutate)
+    refuses("authorityUrl must equal the attestation locator")
+
+
+def test_v1_qa_spot_check_freezes_the_observed_authority_values(dataset):
+    def mutate(audit):
+        audit["spotChecks"][0]["observedRepresentativePoint"][0] += 1
+
+    edit_json(dataset, validate.V1_QA_AUDIT, mutate)
+    refuses("observed authority point no longer matches the import")
+
+
+def test_v1_qa_exclusions_enumerate_every_sensitive_record(dataset):
+    def mutate(audit):
+        audit["sensitiveRecords"]["sourceSilentAttestationIds"].remove("att-0003")
+
+    edit_json(dataset, validate.V1_QA_AUDIT, mutate)
+    refuses("sourceSilentAttestationIds does not enumerate the current sensitive records")
+
+
+def test_publishable_attestation_may_not_reference_open_debt(dataset):
+    def mutate(rows):
+        find(rows, "attestation_id", "att-0005")["review_state"] = "approved"
+
+    edit(dataset, "attestations", mutate)
+    refuses("publishable att-0005 references open verification debt")
 
 
 # --- what an attestation may and may not carry (KAN-332) --------------------
