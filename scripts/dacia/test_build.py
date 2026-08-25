@@ -85,7 +85,8 @@ def test_v1_candidate_is_complete_but_fail_closed():
     assert "coverage_target_not_reached" not in qa["blockers"]
     assert "required_evidence_regime_missing" not in qa["blockers"]
     assert "hiatus_authority_reconciliation_pending" not in qa["blockers"]
-    assert "scholarly_spot_check_not_recorded" in qa["blockers"]
+    assert "scholarly_spot_check_not_recorded" not in qa["blockers"]
+    assert "human_scholarly_review_not_recorded" in qa["blockers"]
     assert "no_publishable_attestations" in qa["blockers"]
     assert qa["coverage"]["places"]["current"] >= 120
     assert qa["coverage"]["sources"]["current"] >= 25
@@ -115,6 +116,7 @@ def test_v1_manifest_hashes_candidate_outputs_and_inputs():
     assert manifest["release"] == "cnd-1.0-rc1"
     assert manifest["releaseStatus"] == "blocked"
     assert "data/dacia/reference/cnd-v1-release.json" in manifest["inputs"]
+    assert "data/dacia/reference/cnd-v1-qa.json" in manifest["inputs"]
     assert "data/dacia/reference/cnd-id-migrations.csv" in manifest["inputs"]
     for name, entry in manifest["outputs"].items():
         payload = outputs[build.REPO / name]
@@ -127,6 +129,43 @@ def test_v1_preserves_every_pilot_place_and_source_id():
     assert qa["stableIdAudit"]["missingPublishedIds"] == {}
     assert qa["authorityConsumers"]["nomenErrans"] == "resolves"
     assert qa["authorityConsumers"]["hiatus"] == "resolves"
+
+
+def test_v1_qa_records_the_authority_sample_without_promoting_it():
+    qa = build.v1_qa({name: build.read_table(name) for name in build.TABLES})
+    run = qa["qaRun"]
+    assert run["performedBy"]["kind"] == "machine_assisted"
+    assert run["promotesReviewState"] is False
+    assert run["authoritySpotChecks"]["recorded"] == 8
+    assert run["authoritySpotChecks"]["matched"] == 8
+    assert len(run["authoritySpotChecks"]["regions"]) == 8
+    assert run["authoritySpotChecks"]["missingPublicSourceIds"] == []
+
+
+def test_v1_qa_enumerates_fail_closed_editorial_work():
+    qa = build.v1_qa({name: build.read_table(name) for name in build.TABLES})
+    assert len(qa["editorialReview"]["sourceSilent"]["excludedIds"]) == 5
+    assert len(qa["editorialReview"]["lowConfidence"]["excludedIds"]) == 3
+    assert len(qa["editorialReview"]["editorialReconstruction"]["excludedIds"]) == 10
+    assert qa["rights"]["researchOnlyRightsUnknownSourceIds"] == [
+        "src-secret-century",
+        "src-teleki-ethnographic-map-1920",
+    ]
+    assert qa["verificationDebt"]["publishableAttestations"] == {}
+
+
+def test_v1_reconstructed_geometry_needs_place_review_before_publication():
+    tables = {name: build.read_table(name) for name in build.TABLES}
+    attestation = next(
+        row for row in tables["attestations"]
+        if row["place_id"] == "plc-sarmizegetusa-regia"
+    )
+    attestation["review_state"] = "approved"
+    qa = build.v1_qa(tables)
+    assert "public_reconstructed_geometry_unreviewed" in qa["blockers"]
+    assert qa["editorialReview"]["editorialReconstruction"]["publicUnreviewedIds"] == [
+        "plc-sarmizegetusa-regia"
+    ]
 
 
 def test_v1_stable_id_audit_uses_the_frozen_contract():

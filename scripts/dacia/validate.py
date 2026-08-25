@@ -279,6 +279,8 @@ TABLES = {
     "josephinian_sheets": f"{GIS}/josephinian-sheets.csv",
     "treaty_frontier": f"{GIS}/treaty-frontier.csv",
 }
+
+V1_QA_AUDIT = f"{REFERENCE}/cnd-v1-qa.json"
 PILOT_MANIFEST = f"{PILOT}/pilot-manifest.json"
 SOURCE_LEDGER_MANIFEST = f"{REFERENCE}/source-ledger-manifest.json"
 RESEARCH_PACKAGE_MANIFEST = f"{REFERENCE}/research-package-manifest.json"
@@ -1193,6 +1195,10 @@ def validate_v1_candidate(errors: list[str]) -> None:
     if missing:
         errors.append(f"CND v1 candidate: missing required artifacts {', '.join(missing)}")
 
+    audit_input = f"data/dacia/{V1_QA_AUDIT}"
+    if audit_input not in manifest.get("inputs", {}):
+        errors.append("CND v1 candidate: manifest must hash the KAN-365 QA audit")
+
     for name, recorded in sorted(manifest.get("inputs", {}).items()):
         source = REPO / name
         if not source.exists():
@@ -1225,6 +1231,161 @@ def validate_v1_candidate(errors: list[str]) -> None:
         errors.append("CND v1 candidate: DOI deferral requires a reason")
     if qa.get("rights", {}).get("sourceImageryRedistributed") is not False:
         errors.append("CND v1 candidate: this metadata package may not imply source-image rights")
+
+
+def validate_v1_qa_audit(errors: list[str]) -> None:
+    """KAN-365: freeze the source check and every fail-closed exclusion.
+
+    This record is deliberately separate from the review ladder. An external
+    authority comparison can detect an import error, but a machine-assisted QA
+    run cannot promote its own rows or borrow a human reviewer's name.
+    """
+    path = DATA / V1_QA_AUDIT
+    if not path.exists():
+        errors.append(f"missing CND v1 QA audit: {path.relative_to(DATA)}")
+        return
+    try:
+        audit = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        errors.append(f"CND v1 QA audit: invalid JSON ({exc.msg})")
+        return
+
+    label = "CND v1 QA audit"
+    if audit.get("schemaVersion") != 1:
+        errors.append(f"{label}: unsupported schemaVersion")
+    if audit.get("candidate") != "cnd-1.0-rc1":
+        errors.append(f"{label}: candidate must be cnd-1.0-rc1")
+    if not ISO_DATE.match(str(audit.get("checkedOn", ""))):
+        errors.append(f"{label}: checkedOn must be an ISO date")
+    performer = audit.get("performedBy", {})
+    if performer.get("kind") != "machine_assisted" or not performer.get("name"):
+        errors.append(f"{label}: performedBy must name the machine-assisted check honestly")
+
+    places = _read("places", errors)
+    attestations = _read("attestations", errors)
+    sources = _read("sources", errors)
+    places_by_id = {row["place_id"]: row for row in places}
+    attestations_by_id = {row["attestation_id"]: row for row in attestations}
+    sources_by_id = {row["source_id"]: row for row in sources}
+
+    imported_regions = {
+        row["region"] for row in places if row["normalization_method"] == "imported"
+    }
+    checked_regions: set[str] = set()
+    checked_ids: set[str] = set()
+    required_fields = {"reference_name", "representative_point"}
+    for check in audit.get("spotChecks", []):
+        attestation_id = check.get("attestationId", "")
+        check_label = f"{label}[{attestation_id or 'missing-id'}]"
+        if attestation_id in checked_ids:
+            errors.append(f"{check_label}: duplicate spot check")
+            continue
+        checked_ids.add(attestation_id)
+        attestation = attestations_by_id.get(attestation_id)
+        if not attestation:
+            errors.append(f"{check_label}: attestation does not resolve")
+            continue
+        place = places_by_id.get(attestation["place_id"])
+        if not place:
+            continue
+        if attestation["normalization_method"] != "imported":
+            errors.append(f"{check_label}: source spot checks must target imported attestations")
+        if attestation["source_id"] != "src-pleiades-gazetteer":
+            errors.append(f"{check_label}: source spot check is not a Pleiades authority record")
+        if check.get("authorityUrl") != attestation["locator"]:
+            errors.append(f"{check_label}: authorityUrl must equal the attestation locator")
+        if set(check.get("checkedFields", [])) != required_fields:
+            errors.append(f"{check_label}: checkedFields must cover name and representative point")
+        if check.get("observedTitle") not in {
+            place["reference_name"],
+            attestation["name_original"],
+        } or place["reference_name"] != attestation["name_original"]:
+            errors.append(f"{check_label}: observed authority title no longer matches the import")
+        observed_point = check.get("observedRepresentativePoint", [])
+        try:
+            observed = tuple(float(value) for value in observed_point)
+        except (TypeError, ValueError):
+            observed = ()
+        try:
+            local_points = (
+                (float(place["ref_lon"]), float(place["ref_lat"])),
+                (float(attestation["source_lon"]), float(attestation["source_lat"])),
+            )
+        except ValueError:
+            local_points = ((), ())
+        if len(observed) != 2 or any(
+            len(local) != 2
+            or any(abs(left - right) > 1e-9 for left, right in zip(observed, local))
+            for local in local_points
+        ):
+            errors.append(f"{check_label}: observed authority point no longer matches the import")
+        if check.get("result") != "matched":
+            errors.append(f"{check_label}: an unresolved comparison cannot be recorded as checked")
+        checked_regions.add(place["region"])
+    if checked_regions != imported_regions:
+        missing = ", ".join(sorted(imported_regions - checked_regions)) or "none"
+        extra = ", ".join(sorted(checked_regions - imported_regions)) or "none"
+        errors.append(f"{label}: region-stratified spot check drifted (missing: {missing}; extra: {extra})")
+
+    expected_policy = {
+        "editorialReconstruction": "exclude_until_place_reviewed",
+        "lowConfidence": "exclude_until_attestation_reviewed",
+        "rightsUnknown": "exclude_until_rights_resolved",
+        "sourceSilent": "exclude_until_source_and_attestation_reviewed",
+    }
+    if audit.get("policy") != expected_policy:
+        errors.append(f"{label}: fail-closed policy changed")
+
+    sensitive_records = audit.get("sensitiveRecords", {})
+    expected_sensitive_records = {
+        "sourceSilentAttestationIds": sorted(
+            row["attestation_id"]
+            for row in attestations
+            if row["attestation_class"] == "source_silent"
+        ),
+        "lowConfidenceAttestationIds": sorted(
+            row["attestation_id"] for row in attestations if row["confidence"] == "low"
+        ),
+        "editorialReconstructionPlaceIds": sorted(
+            row["place_id"]
+            for row in places
+            if row["ref_geometry_provenance"] == "editorial_reconstruction"
+        ),
+        "rightsUnknownSourceIds": sorted(
+            row["source_id"]
+            for row in sources
+            if row["rights_statement"] in {"", "rights_unknown"}
+        ),
+    }
+    for key, expected in expected_sensitive_records.items():
+        if sorted(sensitive_records.get(key, [])) != expected:
+            errors.append(f"{label}: {key} does not enumerate the current sensitive records")
+
+    debts = {row["debt_id"]: row for row in _read("verification_debt", errors)}
+    open_debts = {debt_id for debt_id, row in debts.items() if row["status"] == "open"}
+    debt_pattern = re.compile(r"\bvd-[a-z0-9-]+\b")
+    for attestation in attestations:
+        related = [
+            ("attestation", attestation["attestation_id"], attestation),
+            ("place", attestation["place_id"], places_by_id.get(attestation["place_id"], {})),
+            ("source", attestation["source_id"], sources_by_id.get(attestation["source_id"], {})),
+        ]
+        referenced: set[str] = set()
+        for kind, subject_id, row in related:
+            refs = set(debt_pattern.findall(row.get("note", "")))
+            missing = sorted(refs - debts.keys())
+            if missing:
+                errors.append(
+                    f"{label}: {kind} {subject_id} references unknown debt {', '.join(missing)}"
+                )
+            referenced.update(refs)
+        if (
+            attestation["review_state"] in PUBLIC_STATES
+            and referenced & open_debts
+        ):
+            errors.append(
+                f"{label}: publishable {attestation['attestation_id']} references open verification debt"
+            )
 
 
 def validate_debt(trenches, errors: list[str]) -> None:
@@ -2912,6 +3073,7 @@ def validate_inputs() -> list[str]:
     validate_gates(trenches, campaigns_used, errors)
     validate_pilot(terms, places, sources, errors)
     validate_debt(trenches, errors)
+    validate_v1_qa_audit(errors)
     validate_release(ranks, errors)
     validate_v1_candidate(errors)
     validate_hiatus_witness_families(sources, errors)

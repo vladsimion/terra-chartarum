@@ -35,10 +35,33 @@ counts records checked from a witness or edition, publishable attestations,
 geometry. Unreviewed or verification-debt rows remain in the research candidate
 and cannot enter its publishable spatial tier.
 
+The KAN-365 audit on 25 August 2026 is frozen in
+[`reference/cnd-v1-qa.json`](../../data/dacia/reference/cnd-v1-qa.json). It
+independently compared one imported Pleiades authority from each of the eight
+represented regions against the cited live authority record. All eight names
+and representative points matched. The check is recorded as machine-assisted
+and promotes no review state; it must not be mistaken for a named scholar's
+review of an ancient witness or edition.
+
+The same audit enumerates every record needing an explicit disposition before
+publication: five `source_silent` attestations, three low-confidence
+attestations, ten editorially reconstructed place geometries and two sources
+whose rights remain unknown. All are excluded from the publishable tier. The
+generated QA report lists their IDs, all open verification-debt IDs and any
+publishable row that refers to open debt. The validator rejects a stale audit,
+an unresolved authority locator, incomplete regional sampling, or a public row
+that still cites open debt.
+
 Terra Chartarum metadata and annotations are offered under CC BY 4.0. An
 upstream source's `rights_statement` applies to that source or work; it does not
 grant rights to redistribute repository imagery. The candidate redistributes no
-source imagery.
+source imagery. The two `rights_unknown` sources remain research-only; no public
+attestation currently references any source, so the public-source rights set is
+empty and complete.
+
+The candidate remains blocked: there are no human-reviewed or publishable
+attestations. Its source audit is now explicit, but the audit does not manufacture
+the scholarly sign-off required to make v1.0 citable.
 
 ## DOI
 

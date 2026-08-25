@@ -1,6 +1,6 @@
 {
   "blockers": [
-    "scholarly_spot_check_not_recorded",
+    "human_scholarly_review_not_recorded",
     "no_publishable_attestations"
   ],
   "counts": {
@@ -33,6 +33,7 @@
     "data/dacia/name-uses.csv": "a1e2236adf6233fa850cb4683145a01946adf0d621077f4d5b0974f0b17173df",
     "data/dacia/places.csv": "c5a2ed3917e1d42db72d388df2a5abe3d5b7b3513612e861864a21f8d0a83e76",
     "data/dacia/reference/cnd-id-migrations.csv": "d8c4866a8df5db0d02b433bfaa692dad2b246f057658e92e4e074cc468027e5d",
+    "data/dacia/reference/cnd-v1-qa.json": "91dc5dd2188256d12e045888b9704346cfbd2e5dce6cb38a8c7a749a3942f616",
     "data/dacia/reference/cnd-v1-release.json": "095a857ea0140559741828d513847f2511107083fad3f0f844cb119a6e488761",
     "data/dacia/sources.csv": "aba3ef0a1d6fbb208f0af1c6c98f03890f3aa92e91b09aa3aa7002a6bcab1d9e",
     "data/dacia/transcriptions.csv": "7daba7bc764ba4356761256c06483cd2e9453235cd2d9d315126f2e7f38b1cd9"
@@ -51,8 +52,8 @@
       "sha256": "a8bf95d1d2f61e24ee24db2d34ca1664151982d1f3907badb62985fb61999c8d"
     },
     "data/dacia/release/cnd-1.0-rc1/METHODOLOGY.md": {
-      "bytes": 454,
-      "sha256": "14281442e2f97240dbaf8872235af7c7c4f14f4dd67cb2856776a05a91c4f3ca"
+      "bytes": 553,
+      "sha256": "dacf84799378d9cb1c6d6eaa8401c65b44d4fe01cd2efd03589e53ee5bb99b38"
     },
     "data/dacia/release/cnd-1.0-rc1/SCHEMA.md": {
       "bytes": 1825,
@@ -103,8 +104,8 @@
       "sha256": "a7065bbd422ac9f4303375244f28c46ec956d3c22d3bbebc82d523b716c8fc5b"
     },
     "data/dacia/release/cnd-1.0-rc1/qa.json": {
-      "bytes": 1789,
-      "sha256": "5f01a266dbc63ef0b27207c692f7ecc0a98cbdd4a08ee5c308c6b396a6118cb0"
+      "bytes": 4825,
+      "sha256": "9f4cf543a95578161b25fda1c3fae33f1eff5f19ea6b21218a913ed99f6f5af7"
     },
     "data/dacia/release/cnd-1.0-rc1/sources.csv": {
       "bytes": 16324,
