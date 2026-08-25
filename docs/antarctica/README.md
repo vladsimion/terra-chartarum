@@ -25,20 +25,23 @@ geography apart: conjectured, reported, observed, reconciled and disproved.
 
 ## The state of it
 
-Nothing here is cleared. Four map objects have had their catalogue records read;
-no object may be reproduced; no claim has been reviewed; every source locator is
-pending; the public tier is empty and the build asserts that it is.
+Nothing here is cleared for public evidence. Five map objects have verified
+catalogue identity, six source records and four claims are `source_checked`, and
+the Coronelli treatment has advanced to `normalized`. No object may be
+reproduced; no claim has been reviewed; thirty of thirty-two pilot records
+still carry pending locators; the public tier is empty and the build asserts that
+it is.
 
 That is the intended state of a research foundation, not a shortfall against it.
 The audit's job at this stage is to make the distance between _we know this
 exists_ and _we have read it_ visible, and the open gaps are the measure of that
 distance rather than a defect in the record.
 
-Two gaps closed in the second batch, both by reading a catalogue record: the
-relationship between the 1874 and 1910 ice charts, and the identity of the second
-Greenwich impression of the Cook chart. Three moved to in progress once a citable
-source was located for the Endurance position, Worsley's logbook and the Wilkes
-atlas.
+Five gaps are closed, including the relationship between the 1874 and 1910 ice
+charts, the second Greenwich Cook impression, the identity and hemisphere of
+Coronelli's plate, and the distinction between his _Atlante Veneto_ and
+_Epitome_ polar texts. Three remain in progress after citable leads were located
+for the Endurance position, Worsley's logbook and the Wilkes atlas.
 
 ## Running it
 
@@ -81,14 +84,15 @@ Not on engineering. Every gate in [release readiness](release-readiness.md) that
 a machine can close is green; the four that block need a person reading a source
 or an institution answering a letter.
 
-- **KAN-422** stays open on the Coronelli plate, which has not been seen. The
-  package records what is established, what is not, and the finding that may be
-  waiting if the plate is retrieved.
+- **KAN-422** has established the Arctic plate and the two polar texts. Its
+  remaining gaps are the three unread _Atlante Veneto_ leaves, the globe and
+  wider atlas search, and Milanesi's workshop study; none is silently promoted
+  through KAN-432.
 - **KAN-424** and **KAN-429** are engineering-complete and verified under
   `npm run test:e2e:held`. They remain open only because the pages they build
   are held with the essay.
-- **KAN-431** is drafted in full and held. No claim in it resolves to a source
-  anyone has read.
+- **KAN-431** is drafted in full and held. Four claims now resolve to opened
+  locators, but none is reviewed and most of the essay remains pending.
 - **KAN-432** has three gates blocked on review and one on rights.
 
 ### Deferred, with tickets to raise

@@ -24,6 +24,31 @@ Every gate a machine can close is green. Every gate that is blocked needs either
 a person reading a source or an institution answering a letter, and no amount of
 further engineering will move one of them.
 
+## Verification run, 25 August 2026
+
+- **Data and determinism:** 50 Antarctic Python rule/build tests pass, including
+  two byte-identical builds and manifest hash verification. The committed
+  release validates at 32 records, 25 mappable, none public, with 14 open source
+  gaps and no object cleared for reproduction.
+- **Types, lint, build and unit tests:** Astro reports zero errors; ESLint is
+  clean; the production build and every registry/report/index/Handbook gate pass;
+  619 Vitest tests pass.
+- **Held essay:** 68 Playwright checks pass in desktop Chromium and a Pixel 5
+  viewport, including axe WCAG A/AA, keyboard operation, 44px targets, static
+  transcripts, reduced motion, mobile overflow and Atlas state restoration.
+- **Public browser flows:** the public hold, Atlas records and cross-links pass.
+  Eight MapLibre/visual checks timed out in the four-worker run while the VMN
+  screenshot scrub saturated the browser; all affected specs pass when rerun
+  serially (51 Atlas/Handbook/facet checks and all three VMN visual checks).
+  Firefox and mobile Chrome core flows pass. WebKit and mobile Safari could not
+  start because Playwright's current WebKit build does not support this macOS 12
+  host; they must run on a supported runner before public release.
+- **Performance:** every hard Lighthouse assertion passes. The Atlas produces
+  the existing machine-sensitive warnings: performance 0.70 against the 0.80
+  warning threshold and total blocking time 2,047ms against the 1,000ms warning
+  threshold. Accessibility, best practices, SEO, byte weight, script size, LCP
+  and layout shift remain hard-green.
+
 ## What that means in practice
 
 The **engineering is done and demonstrable**. Data validates, the build is
@@ -31,9 +56,12 @@ deterministic and hash-checked, the Atlas and the essay read one projection,
 every layer has a public Handbook record, nothing is on by default, and the
 accessibility and static-fallback work is in the components.
 
-The **scholarship is not started in the sense that matters**. Every source
-locator is pending. Nothing has been read against an edition. No claim in the
-ledger has been reviewed. No map object may be reproduced.
+The **scholarship is incomplete in the sense that matters for release**. The
+Coronelli treatment is now normalized from opened pages, six source records and
+four claims are `source_checked`, and five map objects have verified catalogue
+identity. But no claim in the ledger has been reviewed, thirty of the
+thirty-two pilot records still carry pending locators, and no map object may be
+reproduced.
 
 That is not a criticism of the work; it is the state a research programme is in
 after its foundation is built and before anyone has been to a library. What
@@ -106,24 +134,31 @@ the hold, three of them on published pages:
 A held page is not a finished page kept in a drawer. It is an unrendered one,
 and the checks that would have caught these were all skipping it.
 
-## Residual risks accepted
+## Residual risks carried while held
 
 1. **Positions are recorded from the general literature.** Approximate, at `raw`,
    with pending locators. They are labelled as such in the data and in every
    layer record, and none may be cited.
-2. **The Coronelli act cannot be written.** The plate has not been seen. If the
-   search evidence about its Arctic weighting holds, the act improves rather than
-   collapses, but that has to be established rather than assumed.
+2. **The Coronelli act is written but not releasable.** The Arctic plate, the
+   _Epitome_ chapter and selected _Atlante Veneto_ pages have been read together.
+   Three of seven leaves, the globe, the other atlas volumes and Milanesi remain
+   open, so the explanation for the absent southern plate stays an explicitly
+   medium-confidence interpretation.
 3. **The Coda draws no comparison.** Neither the 1915 nor the 2022 coordinate is
    held from a source this project has read, and secondary reporting conflates
    them.
 4. **The besetment date is disputed** in the sources seen: 18 or 19 January 1915.
    The dataset records 19 January and logs the disagreement.
+5. **Safari has not been exercised on this host.** The current Playwright WebKit
+   runtime does not support macOS 12. This is a test-environment limitation, not
+   evidence of compatibility; the WebKit and mobile-Safari projects remain a
+   release prerequisite on a supported runner.
 
 ## What would change the verdict
 
 In order of leverage: read Bergman and Stuart on the Endurance position and its
-chronometer companion; write to RMG Images about the two verified charts; retrieve
-the Coronelli plate; open the Wilkes atlas at the Library of Congress and find the
-disputed sheet; consult Headland's chronology and check every date in the
-observations table against it.
+chronometer companion; write to RMG Images about the verified charts; read the
+remaining Coronelli leaves and Milanesi, then inspect a globe's southern calotte;
+open the Wilkes atlas at the Library of Congress and find the disputed sheet;
+consult Headland's chronology and check every date in the observations table
+against it.

@@ -459,6 +459,20 @@ test.describe('flow: Cities Remember publication', () => {
       page.getByRole('link', { name: 'Download the Allmaps-compatible Web Annotation' }),
     ).toHaveAttribute('href', '/annotations/cities-remember-nolli.json');
 
+    // The overlay shows a display-sized rung so the route stays inside its
+    // transfer budget, but the four control points are stated in the canonical
+    // plate's pixel space - so the reader has to be able to fetch that exact
+    // file. Assert both halves: resampled by default, canonical on request.
+    const historic = page.locator('.cmo-historic');
+    await expect(historic).toHaveAttribute('src', /\/display\/nolli-sheet-01-\d+\.jpg$/);
+    await page.getByRole('button', { name: /^Full plate/ }).click();
+    await expect(page.getByRole('button', { name: 'Full plate · 1920 × 1185' })).toBeVisible();
+    await expect(historic).toHaveAttribute('src', '/images/cities-remember/nolli-sheet-01.jpg');
+    await expect(historic).not.toHaveAttribute('srcset', /./);
+    // A surviving <source> would keep the picture serving an AVIF rung and the
+    // reader would never actually receive the file they asked for.
+    await expect(page.locator('.cmo-stage picture:has(.cmo-historic) source')).toHaveCount(0);
+
     await expect(
       page.getByRole('navigation', { name: 'Reading path through The City' }),
     ).toBeVisible();

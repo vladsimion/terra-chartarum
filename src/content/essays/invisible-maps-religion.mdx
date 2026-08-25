@@ -315,24 +315,40 @@ the journey.
   afterLabel="Sequential route · Matthew Paris"
   caption="Two reading grammars, not registered geographic layers. The reproductions differ in scale, crop and aspect ratio."
 >
-  <img
-    slot="before"
-    src="/images/invisible-maps-religion/hereford.jpg"
-    alt="Hereford Mappa Mundi, an east-up world map centred on Jerusalem"
-    width="1920"
-    height="2281"
-    loading="lazy"
-    decoding="async"
-  />
-  <img
-    slot="after"
-    src="/images/invisible-maps-religion/matthew-paris.jpg"
-    alt="Matthew Paris itinerary from London toward Jerusalem arranged as a vertical sequence"
-    width="1280"
-    height="1735"
-    loading="lazy"
-    decoding="async"
-  />
+  <picture slot="before">
+    <source
+      type="image/avif"
+      srcset="/images/invisible-maps-religion/display/hereford-640.avif 640w, /images/invisible-maps-religion/display/hereford-960.avif 960w, /images/invisible-maps-religion/display/hereford-1120.avif 1120w"
+      sizes="(min-width: 1200px) 1106px, 92vw"
+    />
+    <img
+      src="/images/invisible-maps-religion/display/hereford-1120.jpg"
+      srcset="/images/invisible-maps-religion/display/hereford-640.jpg 640w, /images/invisible-maps-religion/display/hereford-960.jpg 960w, /images/invisible-maps-religion/display/hereford-1120.jpg 1120w"
+      sizes="(min-width: 1200px) 1106px, 92vw"
+      alt="Hereford Mappa Mundi, an east-up world map centred on Jerusalem"
+      width="1920"
+      height="2281"
+      loading="lazy"
+      decoding="async"
+    />
+  </picture>
+  <picture slot="after">
+    <source
+      type="image/avif"
+      srcset="/images/invisible-maps-religion/display/matthew-paris-640.avif 640w, /images/invisible-maps-religion/display/matthew-paris-960.avif 960w, /images/invisible-maps-religion/display/matthew-paris-1120.avif 1120w"
+      sizes="(min-width: 1200px) 1106px, 92vw"
+    />
+    <img
+      src="/images/invisible-maps-religion/display/matthew-paris-1120.jpg"
+      srcset="/images/invisible-maps-religion/display/matthew-paris-640.jpg 640w, /images/invisible-maps-religion/display/matthew-paris-960.jpg 960w, /images/invisible-maps-religion/display/matthew-paris-1120.jpg 1120w"
+      sizes="(min-width: 1200px) 1106px, 92vw"
+      alt="Matthew Paris itinerary from London toward Jerusalem arranged as a vertical sequence"
+      width="1280"
+      height="1735"
+      loading="lazy"
+      decoding="async"
+    />
+  </picture>
 </CompareSlider>
 
 The distinction between centre and route is not absolute. Pilgrimage routes tend

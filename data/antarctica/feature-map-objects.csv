@@ -1,5 +1,5 @@
 bridge_id,feature_id,map_object_id,relationship,evidence_class,review_state,notes
 ant-bri-terra-australis-ortelius,ant-ftr-terra-australis-conjectured,ant-obj-ortelius-typus-1570,depicted_on,inherited_cartography,raw,"Asserted from the object's general character, not from an examined copy."
-ant-bri-coronelli-plate,ant-ftr-coronelli-southern-region,ant-obj-coronelli-terre-polari,subject_of,inherited_cartography,raw,The record and the object it is about. Both are unverified.
+ant-bri-coronelli-plate,ant-ftr-coronelli-southern-region,ant-obj-coronelli-terre-artiche,absent_from,inherited_cartography,normalized,"The southern polar region is absent from the examined plate and from both plates in the Tomo I polar sequence. Recorded as absence rather than depiction."
 ant-bri-cook-limit-chart,ant-ftr-cook-southern-limit,ant-obj-cook-southern-hemisphere-1777,depicted_on,direct_observation,raw,The 1777 chart carries the tracks; whether it marks this particular position has not been checked against the sheet.
 ant-bri-synthesis-chart,ant-ftr-ross-1910-synthesis,ant-obj-ukho-ice-chart-1910,is_the_object,scholarly_reconstruction,normalized,"The synthesis record and the sheet are the same thing, which is why the relationship is not depicted_on."

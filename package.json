@@ -53,6 +53,7 @@
     "build-room-images": "node scripts/build-room-images.mjs",
     "cartometry:export": "node scripts/export-cartometry.mjs",
     "build-map-tiles": "node scripts/build-map-tiles.mjs",
+    "build-plate-derivatives": "node scripts/build-plate-derivatives.mjs",
     "astro": "astro",
     "handbook:validate": "node scripts/validate-handbook.mjs"
   },

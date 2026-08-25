@@ -103,10 +103,27 @@ describe('the essay and the Atlas read one dataset', () => {
     }
   });
 
-  it('leaves an unseen plate off the map rather than giving it a point', () => {
+  it('keeps the source-checked Coronelli absence non-spatial', () => {
     const atlasIds = new Set(atlas.features.map((feature) => feature.properties.id as string));
     expect(atlasIds.has('ant-ftr-coronelli-southern-region')).toBe(false);
-    expect(getRecordsByAct('act_iii').length).toBeGreaterThan(0);
+    const record = getRecordsByAct('act_iii').find(
+      (candidate) => candidate.id === 'ant-ftr-coronelli-southern-region',
+    );
+    expect(record).toMatchObject({
+      confidence: 'medium',
+      geometry: null,
+      geometryProvenance: 'not_spatial',
+      reviewState: 'normalized',
+      sourceId: 'ant-src-coronelli-atlante-veneto',
+    });
+    expect(record?.sourceLocator).not.toBe('pending');
+  });
+
+  it('does not leave the held essay on the superseded unseen-plate account', () => {
+    const essay = readFileSync('src/content/essays/terra-incognita.mdx', 'utf8');
+    expect(essay).toContain('David Rumsey 12186.101');
+    expect(essay).toContain('The act can now be written; it cannot yet be released.');
+    expect(essay).not.toContain('The plate the argument rests on has not been seen');
   });
 });
 

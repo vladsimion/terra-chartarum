@@ -59,8 +59,10 @@ crossing that was announced with the drift that happened. If the plan were filed
 as observation, that contrast would be between two things we drew ourselves.
 
 **A record with no geometry stays without geometry.** `not_spatial` is a real
-answer. Coronelli's plate has not been seen, so its record carries no coordinates
-and is absent from the Atlas rather than given a placeholder point.
+answer. Coronelli's Arctic plate and its accompanying text have now been read,
+but their evidence is a graphic absence and a textual judgement, not a mappable
+southern extent. The record therefore remains absent from the Atlas rather than
+being given a placeholder point.
 
 **A ghost feature keeps its claim.** The validator requires a claimant, what was
 reported, why it was plausible and what later evidence challenged it. A disproof
@@ -74,12 +76,12 @@ drawn in the wrong hemisphere.
 
 ## The pilot slice
 
-Twelve records covering seven acts: a schematic Terra Australis envelope, the
+Thirty-two records covering seven acts: a schematic Terra Australis envelope, the
 Coronelli treatment record, Cook's farthest south and a sampled track, a disputed
 1820 sighting, the Wilkes ghost segment, the 1910 synthesis, and the Endurance
 plan, besetment, drift and reported sinking position.
 
-Nine are mappable. Three carry no geometry on purpose. None is public.
+Twenty-five are mappable. Seven carry no geometry on purpose. None is public.
 
 The Terra Australis record deserves a note. It is a latitude envelope, not a
 coastline, and its display name says so. No map in the register has been
@@ -88,18 +90,22 @@ outline would manufacture the false confidence the essay exists to examine.
 
 ## The build
 
-`scripts/antarctica/build.py` compiles one projection into three assets:
+`scripts/antarctica/build.py` compiles one projection into five browser assets:
 
-- `public/geo/antarctica-pilot-tracks.geojson` - lines and outlines;
-- `public/geo/antarctica-pilot-observations.geojson` - dated points;
+- `public/geo/antarctica-conjectured-south.geojson` - conjectured geography;
+- `public/geo/antarctica-expedition-tracks.geojson` - planned and travelled lines;
+- `public/geo/antarctica-observations.geojson` - dated positions;
+- `public/geo/antarctica-ghost-geographies.geojson` - located disproved features,
+  deliberately empty until a position is source-checked;
 - `src/data/antarctica/generated/pilot.json` - everything, including the records
   with no geometry.
 
-The two Atlas assets exist because MapLibre takes one render hint per layer, not
-because there are two datasets. `src/lib/antarctica.ts` reads the third, and the
-test suite asserts that the Atlas features and the essay records agree on every
-record's evidence class, geometry provenance, confidence and review state. That
-assertion is the ticket's requirement expressed as a gate rather than a promise.
+The four Atlas assets exist because each carries a different part of the
+argument, not because there are four datasets. `src/lib/antarctica.ts` reads the
+essay projection, and the test suite asserts that the Atlas features and essay
+records agree on every record's evidence class, geometry provenance, confidence
+and review state. That assertion is the ticket's requirement expressed as a
+gate rather than a promise.
 
 The build is deterministic: no timestamps, sorted keys, fixed float precision and
 a stable row order. `data/antarctica/release/ant-pilot-0.1/manifest.json` records
