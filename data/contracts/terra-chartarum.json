@@ -272,6 +272,13 @@
         "totalTransferBytes": 1250000,
         "scriptTransferBytes": 200000
       },
+      "citiesRemember": {
+        "performanceScore": 0.9,
+        "totalBlockingTimeMs": 200,
+        "totalTransferBytes": 2250000,
+        "scriptTransferBytes": 200000,
+        "exception": "Cities Remember carries two scholarly plates as its argument - the 1920x1185 Nolli sheet at 1,209,518 bytes and the Nuremberg chronicle view at 472,412 - and every reader who scrolls the essay downloads both. Until the full-width editorial layout (#127) they sat far enough down a 707px column to fall outside Chrome's lazy-load horizon during a Lighthouse run, so the content budget was measuring the fold rather than the page: 492 KiB reported against 2.13 MiB actually served. The wider column shortens the page by ~2,800px and brings them inside it, and the audit now reports 2,174,726 bytes for the same page. The ceiling is set above that number rather than below it because neither cheaper option survives measurement: re-encoding takes the sheet from 1181 to 829 KiB (mozjpeg q82; webp is worse at 984) and the chronicle from 461 to 442, still over the content budget and at the cost of the engraved detail CityMemoryOverlay invites readers to inspect, and the sheet cannot be resized because geo:interop:validate asserts its 1920x1185 frame for four overlay control points and the published annotation manifest pins the same dimensions. Every other content route keeps the 1,250,000 ceiling. A cheaper treatment of the plates themselves is content work, tracked separately."
+      },
       "atlas": {
         "performanceScoreWarning": 0.8,
         "totalTransferBytes": 1500000,
