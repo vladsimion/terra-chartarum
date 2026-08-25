@@ -9,8 +9,9 @@ import { expect, test } from '@playwright/test';
  * SHOW_UNRELEASED=1. `crusades-prototype.spec.ts` proves the essay is not
  * served; this one proves that what is being withheld works, so release day is
  * a decision about evidence rather than a scramble to fix a page nobody could
- * load. The two proofs' interaction gates are recorded as `partial` on the
- * strength of these checks.
+ * load. The three registers' interaction gates are recorded against these
+ * checks: the Sea proof's has passed on the strength of them, and the other
+ * two stay `partial` for reasons no browser can settle.
  *
  * Nothing here asserts the essay is ready to publish. That is the research and
  * rights question, and no browser can answer it.
