@@ -134,6 +134,14 @@ const clamped = Math.max(0, Math.min(100, start));
     width: 100%;
     height: auto;
   }
+  /* A slotted layer may be a <picture> wrapping the <img> so it can offer AVIF
+     alongside a fallback. `display: contents` removes the wrapper's own box, so
+     every rule here still applies to the <img> as a direct child of the layer -
+     including the framed `height: 100%`, which would otherwise resolve against
+     an inline <picture> of no particular height. */
+  .cmp-layer :global(picture) {
+    display: contents;
+  }
   .cmp-before {
     position: relative;
   }

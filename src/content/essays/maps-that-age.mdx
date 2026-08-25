@@ -164,24 +164,43 @@ as anchors, and notice how much can change while the first glance continues to s
   afterLabel="Replacement plate · 1587"
   caption="A visual comparison, not a pixel measurement. Different scans, crops and colouring prevent metric registration."
 >
-  <img
-    slot="before"
-    src="/images/maps-that-age/ortelius-1579.jpg"
-    alt="Ortelius Typus Orbis Terrarum printed in 1579 from the first copperplate"
-    width="1600"
-    height="1186"
-    loading="lazy"
-    decoding="async"
-  />
-  <img
-    slot="after"
-    src="/images/maps-that-age/ortelius-1587.jpg"
-    alt="Ortelius Typus Orbis Terrarum reproduction catalogued as 1587"
-    width="800"
-    height="588"
-    loading="lazy"
-    decoding="async"
-  />
+  <picture slot="before">
+    <source
+      type="image/avif"
+      srcset="/images/maps-that-age/display/ortelius-1579-640.avif 640w, /images/maps-that-age/display/ortelius-1579-960.avif 960w, /images/maps-that-age/display/ortelius-1579-1120.avif 1120w"
+      sizes="(min-width: 1200px) 1106px, 92vw"
+    />
+    <img
+      src="/images/maps-that-age/display/ortelius-1579-1120.jpg"
+      srcset="/images/maps-that-age/display/ortelius-1579-640.jpg 640w, /images/maps-that-age/display/ortelius-1579-960.jpg 960w, /images/maps-that-age/display/ortelius-1579-1120.jpg 1120w"
+      sizes="(min-width: 1200px) 1106px, 92vw"
+      alt="Ortelius Typus Orbis Terrarum printed in 1579 from the first copperplate"
+      width="1600"
+      height="1186"
+      loading="lazy"
+      decoding="async"
+    />
+  </picture>
+  <picture slot="after">
+    <source
+      type="image/avif"
+      srcset="/images/maps-that-age/display/ortelius-1587-640.avif 640w, /images/maps-that-age/display/ortelius-1587-800.avif 800w"
+      sizes="(min-width: 1200px) 1106px, 92vw"
+    />
+    {/* One fallback rung, so no srcset: the 1587 reproduction is only 800px
+        wide to begin with, and the 800 rung is the canonical file itself, which
+        this slider exists to stop requesting. A browser without AVIF gets 640
+        upscaled into the column - the same kind of upscale every reader already
+        gets from an 800px plate in a 1106px box. */}
+    <img
+      src="/images/maps-that-age/display/ortelius-1587-640.jpg"
+      alt="Ortelius Typus Orbis Terrarum reproduction catalogued as 1587"
+      width="800"
+      height="588"
+      loading="lazy"
+      decoding="async"
+    />
+  </picture>
 </CompareSlider>
 
 The slider’s incompleteness is part of the lesson. A convincing image comparison does

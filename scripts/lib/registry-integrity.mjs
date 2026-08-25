@@ -490,11 +490,6 @@ export function validateSharedContract(contract) {
   }
   if (!budgets?.atlas?.exception)
     errors.push(issue('contract', 'Atlas performance exception must be explicit'));
-  // A route that sits outside its profile's ceiling has to say why in the
-  // contract, not only in lighthouserc.json - otherwise the written budget and
-  // the executable one drift apart, which is what this file exists to prevent.
-  if (budgets?.citiesRemember && !budgets.citiesRemember.exception)
-    errors.push(issue('contract', 'Cities Remember transfer exception must be explicit'));
 
   return errors;
 }
@@ -514,11 +509,15 @@ export function validateExecutableAlignment(contract, lighthouse, playwrightSour
   const errors = [];
   const matrix = lighthouse.ci?.assert?.assertMatrix ?? [];
   const shared = assertion(matrix, '.*');
+  // Written out rather than derived, so that widening the set of routes held to
+  // the content budget has to be done deliberately in two files. It must track
+  // lighthouserc.json exactly: an entry that no longer matches reads here as an
+  // empty assertion set, and every content-budget check below then fails loudly
+  // rather than silently passing an unmeasured route.
   const content = assertion(
     matrix,
-    '(localhost/index|essays/(index|the-league-that-left-no-map)/index)\\.html$',
+    '(localhost/index|essays/(index|cities-remember|invisible-maps-religion|maps-that-age|the-league-that-left-no-map)/index)\\.html$',
   );
-  const citiesRemember = assertion(matrix, 'essays/cities-remember/index\\.html$');
   const atlas = assertion(matrix, 'atlas/index\\.html$');
   const budgets = contract.support.budgets;
 
@@ -603,46 +602,6 @@ export function validateExecutableAlignment(contract, lighthouse, playwrightSour
     'maxNumericValue',
     budgets.content.scriptTransferBytes,
     'content budget',
-  );
-
-  // Cities Remember holds the content profile on every metric except transfer
-  // weight, where the essay's two scholarly plates put it above the ceiling.
-  // The reason is recorded on the budget itself.
-  expectAssertion(
-    errors,
-    citiesRemember,
-    'categories:performance',
-    'error',
-    'minScore',
-    budgets.citiesRemember.performanceScore,
-    'Cities Remember budget',
-  );
-  expectAssertion(
-    errors,
-    citiesRemember,
-    'total-blocking-time',
-    'error',
-    'maxNumericValue',
-    budgets.citiesRemember.totalBlockingTimeMs,
-    'Cities Remember budget',
-  );
-  expectAssertion(
-    errors,
-    citiesRemember,
-    'total-byte-weight',
-    'error',
-    'maxNumericValue',
-    budgets.citiesRemember.totalTransferBytes,
-    'Cities Remember budget',
-  );
-  expectAssertion(
-    errors,
-    citiesRemember,
-    'resource-summary:script:size',
-    'error',
-    'maxNumericValue',
-    budgets.citiesRemember.scriptTransferBytes,
-    'Cities Remember budget',
   );
 
   expectAssertion(

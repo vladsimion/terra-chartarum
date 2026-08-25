@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import sharp from 'sharp';
 
@@ -95,6 +95,92 @@ requireValue(
   overlaySource.includes('/annotations/cities-remember-nolli.json'),
   'City overlay must link to its inspectable georeference annotation',
 );
+
+// The overlay and the essay now show display-sized derivatives (see
+// scripts/build-plate-derivatives.mjs) rather than the archival plate, which is
+// the whole reason that route's transfer weight came back under the content
+// budget. Two things have to stay true for the georeference to keep meaning
+// anything, and neither is self-enforcing:
+//
+//  1. The canonical plate stays *reachable from the overlay*. The four control
+//     points are stated in its pixel space and the annotation names its URL as
+//     target.source.id, so a reader checking the registration must be able to
+//     get at that exact file - a ladder that only ever serves resampled copies
+//     would leave the published annotation pointing at something nobody sees.
+//  2. Every derivative is the same frame as its canonical, only smaller. A rung
+//     that got cropped or re-framed would move the control points relative to
+//     the image without changing a single number in the manifest.
+const CANONICAL_PLATE = '/images/cities-remember/nolli-sheet-01.jpg';
+requireValue(
+  declaredSource.id?.endsWith(CANONICAL_PLATE),
+  `Nolli annotation must target ${CANONICAL_PLATE}, the plate the control points are measured on`,
+);
+requireValue(
+  overlaySource.includes(CANONICAL_PLATE),
+  'City overlay must keep the canonical plate reachable, not only its display derivatives',
+);
+
+const essaySource = read('src/content/essays/cities-remember.mdx');
+const referencedDerivatives = [
+  ...new Set(
+    [...overlaySource.matchAll(/\/images\/cities-remember\/display\/([\w.-]+)/g)].map(
+      ([, name]) => name,
+    ),
+  ),
+  ...new Set(
+    [...essaySource.matchAll(/\/images\/cities-remember\/display\/([\w.-]+)/g)].map(
+      ([, name]) => name,
+    ),
+  ),
+];
+requireValue(
+  referencedDerivatives.length > 0,
+  'Cities Remember must serve display derivatives rather than archival plates',
+);
+for (const name of new Set(referencedDerivatives)) {
+  // <base>-<width>.<ext>, where <base>.<something> is the canonical beside it.
+  const match = name.match(/^(.+)-(\d+)\.(avif|jpg|webp)$/);
+  if (!match) {
+    failures.push(`Derivative ${name} does not follow <plate>-<width>.<ext>`);
+    continue;
+  }
+  const [, base, width] = match;
+  const canonicalName = readdirSync(resolve(ROOT, 'public/images/cities-remember')).find(
+    (candidate) => candidate.replace(/\.[^.]+$/, '') === base,
+  );
+  if (!canonicalName) {
+    failures.push(`Derivative ${name} has no canonical plate named ${base}.*`);
+    continue;
+  }
+  let derivative;
+  try {
+    derivative = await sharp(
+      resolve(ROOT, 'public/images/cities-remember/display', name),
+    ).metadata();
+  } catch {
+    failures.push(`Derivative ${name} is referenced but missing - run build-plate-derivatives`);
+    continue;
+  }
+  const canonical = await sharp(
+    resolve(ROOT, 'public/images/cities-remember', canonicalName),
+  ).metadata();
+  requireValue(
+    derivative.width === Number(width),
+    `Derivative ${name} is ${derivative.width}px wide but its name claims ${width}`,
+  );
+  requireValue(
+    derivative.width <= canonical.width,
+    `Derivative ${name} is wider than the ${canonicalName} it is derived from`,
+  );
+  // Same frame, only smaller. A tolerance of half a percent absorbs the rounding
+  // in an integer target height without admitting a real crop.
+  const ratio = derivative.width / derivative.height;
+  const canonicalRatio = canonical.width / canonical.height;
+  requireValue(
+    Math.abs(ratio - canonicalRatio) / canonicalRatio < 0.005,
+    `Derivative ${name} is ${ratio.toFixed(4)}:1 but ${canonicalName} is ${canonicalRatio.toFixed(4)}:1 - a re-framed rung moves the control points`,
+  );
+}
 
 const linkedPlaces = JSON.parse(read('dist/geo/toponyms.lpf.json'));
 requireValue(
