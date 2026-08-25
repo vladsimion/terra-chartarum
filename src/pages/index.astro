@@ -99,7 +99,11 @@ const mapTotal = all.reduce((n, e) => n + (e.data.mapCount ?? 0), 0);
   }
   .hero-inner {
     padding-block: clamp(3.5rem, 9vw, 7rem);
-    max-width: 60ch;
+    /* The hero is the landing page's primary text, so it takes the page width
+       with everything else (#128) rather than sitting as a narrow column
+       against the gradient. .hero-inner is itself the .shell, so this restores
+       the shell width the class already carries. */
+    max-width: var(--content-max);
   }
   .hero-title {
     font-size: var(--step-5);
@@ -166,7 +170,7 @@ const mapTotal = all.reduce((n, e) => n + (e.data.mapCount ?? 0), 0);
     padding-block: clamp(3rem, 7vw, 5rem) 0;
   }
   .start-head {
-    max-width: var(--prose-max);
+    max-width: var(--content-max);
     margin-bottom: 1.5rem;
   }
   .start-head h2 {

@@ -48,7 +48,34 @@
      in-essay anchors. Published from essays/[slug].astro; this is the two
      one-row heights as the pre-JS fallback. */
   --essay-chrome-h: 7.5rem;
+  /* Two content measures, chosen by what the text is for.
+
+     --content-max is the page's standard content width, and it is what the
+     editorial surfaces use: essays, rooms, the Atlas Handbook, cartographers,
+     the landing page, bibliography and About (#127, #128). Their text had been
+     pinned to a column narrower than the grid of cards, maps and chrome around
+     it, so the copy read as boxed in rather than as part of the composition.
+
+     It is the shell width rather than 100% because several of these containers
+     *are* the .shell element: 100% would resolve against the viewport and push
+     the page wider than the header above it, which is the misalignment the
+     issues ask to remove. On an inner block the shell width never binds, so the
+     same token serves both, and it is a px width rather than a ch one, so the
+     fallback face cannot shift the column before the self-hosted body face
+     arrives - the layout shift essays/[slug].astro used to guard with its own
+     44rem cap.
+
+     --prose-max stays the narrow measure, for the supporting text that sits
+     beside something else rather than carrying the page: footer copy, dataset
+     citations, captions, the labels inside an explorer. Nothing the two issues
+     put in scope uses it any more; the deliberate narrow exceptions do.
+
+     A full-width line is a long one - about 150 characters at body size on a
+     desktop, above the range WCAG 1.4.8 describes as comfortable. That is the
+     tradeoff the issues asked for, and it is retuned here in one place: give
+     --content-max a min() with a measure to pull every surface back at once. */
   --prose-max: 68ch;
+  --content-max: var(--shell-max);
   --radius: 4px;
 
   /* Motion tokens (shared across page + view transitions) */

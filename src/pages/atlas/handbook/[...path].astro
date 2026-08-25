@@ -126,9 +126,13 @@ const section = entry ? sectionForDocType(entry.doc.docType) : index;
 </HandbookShell>
 
 <style>
+  /* The lede and the listing blurbs are the document's own text, so they take
+     the width of the .hb-main column like the body copy does (#127). The review
+     note keeps a measure: it is a rule-marked annotation beside the document
+     rather than part of it, and the two issues asked for exactly that
+     distinction to survive. */
   .lede {
     font-size: 1.15rem;
-    max-width: 40rem;
   }
   .review-note {
     border-left: 3px solid var(--accent, #d4b87a);
@@ -148,7 +152,6 @@ const section = entry ? sectionForDocType(entry.doc.docType) : index;
   }
   .listing p {
     margin: 0;
-    max-width: 40rem;
   }
   .meta {
     margin-top: 0.35rem !important;

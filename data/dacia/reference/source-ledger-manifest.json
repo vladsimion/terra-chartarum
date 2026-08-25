@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "frozenOn": "2026-08-09",
+  "frozenOn": "2026-08-25",
   "ledgers": {
     "hiatus_witness_families": {
       "ticket": "KAN-348",
@@ -14,7 +14,7 @@
         "hw-fiscal",
         "hw-late-maps"
       ],
-      "sha256": "fdd4e93e732d56b1b216d7486ccec20c0b8b7d1b45cb936375d1d3494367876a"
+      "sha256": "2854202f12c7c47e6ba389c4fc0d4e5c628680df0232ea71e4de6e4d30567e4f"
     },
     "treaty_frontier_sources": {
       "ticket": "KAN-351",

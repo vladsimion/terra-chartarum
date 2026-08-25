@@ -143,9 +143,14 @@ const { title, description, eyebrow, breadcrumbs, headings = [], schema } = Astr
   .hb-main :global(h3) {
     margin-block: 1.75rem 0.5rem;
   }
+  /* No measure of its own: .hb-main is already one column of a two-column grid
+     beside a 15rem contents rail, so the column *is* the measure (~786px inside
+     the shell) and it tracks the layout instead of a second number that has to
+     be kept in step with it. A per-paragraph cap here read narrower than the
+     column rather than wider, because handbook body copy is set smaller than
+     the essay face and a ch-based measure shrinks with it (#127). */
   .hb-main :global(p),
   .hb-main :global(li) {
-    max-width: 38rem;
     line-height: 1.65;
   }
   .hb-main :global(table) {

@@ -894,8 +894,12 @@ def v1_qa(tables: dict[str, list[dict[str, str]]]) -> dict:
     }
     stable_missing: dict[str, list[str]] = {}
     for table, key in (("places", "place_id"), ("sources", "source_id")):
-        pilot = _read_csv(RELEASE_DIR / f"{table}.csv")
-        missing = sorted({row[key] for row in pilot} - ids[table])
+        # The baseline belongs to the release contract, not to a generated
+        # directory that this same build rewrites. Otherwise deleting a 0.1 ID
+        # from the canonical table would delete it from both sides of the audit
+        # and make the check pass precisely when it should fail.
+        pilot_ids = set(contract["stableIdBaseline"][table])
+        missing = sorted(pilot_ids - ids[table])
         if missing:
             stable_missing[table] = missing
 
@@ -939,6 +943,14 @@ def v1_qa(tables: dict[str, list[dict[str, str]]]) -> dict:
         source_id for source_id in public_source_ids
         if sources_by_id[source_id]["rights_statement"] in {"", "rights_unknown"}
     )
+    hiatus_source_ids = {
+        row.get("corpus_source_id", "")
+        for row in _read_reference("hiatus-witness-families")
+    }
+    unresolved_hiatus = sorted(
+        source_id for source_id in hiatus_source_ids
+        if not source_id or source_id not in ids["sources"]
+    )
 
     blockers = []
     if not coverage_ready:
@@ -953,9 +965,8 @@ def v1_qa(tables: dict[str, list[dict[str, str]]]) -> dict:
         blockers.append("no_publishable_attestations")
     if public_rights_incomplete:
         blockers.append("public_source_rights_incomplete")
-    # Hiatus deliberately remains in its bounded candidate ledger. Until those
-    # witnesses migrate to source IDs it is not allowed to masquerade as a CND consumer.
-    blockers.append("hiatus_authority_reconciliation_pending")
+    if unresolved_hiatus:
+        blockers.append("hiatus_authority_reconciliation_pending")
 
     return {
         "schemaVersion": contract["schemaVersion"],
@@ -1000,7 +1011,8 @@ def v1_qa(tables: dict[str, list[dict[str, str]]]) -> dict:
         "authorityConsumers": {
             "nomenErrans": "resolves" if not unresolved_nomen else "blocked",
             "nomenErransUnresolvedIds": unresolved_nomen,
-            "hiatus": "candidate_ledger_pending_cnd_source_migration",
+            "hiatus": "resolves" if not unresolved_hiatus else "blocked",
+            "hiatusUnresolvedSourceIds": unresolved_hiatus,
         },
         "automatedValidation": {
             "command": "npm run dacia:validate",

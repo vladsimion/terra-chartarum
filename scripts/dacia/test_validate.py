@@ -210,6 +210,16 @@ def test_pending_field_cannot_survive_promotion(dataset):
     refuses("name_original is still pending above raw")
 
 
+def test_normalized_import_requires_a_real_locator(dataset):
+    def mutate(rows):
+        row = find(rows, "attestation_id", "att-0050")
+        row["locator_type"] = "none"
+        row["locator"] = ""
+
+    edit(dataset, "attestations", mutate)
+    refuses("normalized import requires a real locator")
+
+
 # --- what an attestation may and may not carry (KAN-332) --------------------
 
 
@@ -686,6 +696,14 @@ def test_hiatus_family_needs_a_survival_limit(dataset):
 
     edit(dataset, "hiatus_witness_families", mutate)
     refuses("survival_limitations is required")
+
+
+def test_hiatus_family_must_resolve_to_a_canonical_source(dataset):
+    def mutate(rows):
+        rows[0]["corpus_source_id"] = "src-does-not-exist"
+
+    edit(dataset, "hiatus_witness_families", mutate)
+    refuses("corpus_source_id 'src-does-not-exist' does not resolve")
 
 
 def test_treaty_ambiguity_must_record_alternatives(dataset):

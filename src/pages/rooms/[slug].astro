@@ -224,7 +224,7 @@ const mapThumb = (m: (typeof sheets)[number]) => m.images?.[0]?.src;
 <style>
   .room {
     padding-block: clamp(2rem, 5vw, 3.5rem);
-    max-width: var(--prose-max);
+    max-width: var(--content-max);
   }
   .room-crumbs {
     font-family: var(--font-mono);
@@ -259,7 +259,6 @@ const mapThumb = (m: (typeof sheets)[number]) => m.images?.[0]?.src;
     margin: 0;
   }
   .room-lede {
-    max-width: var(--prose-max);
     margin: 0 0 3rem;
     color: var(--ink);
     font-size: var(--step-0);
