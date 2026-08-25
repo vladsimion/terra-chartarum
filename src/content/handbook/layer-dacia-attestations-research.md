@@ -1,13 +1,13 @@
 ---
 id: layer-dacia-attestations-research
 title: Dacia name attestations (research tier)
-summary: The full CND 0.1 pilot, including its silences - compiled, filterable, and cleared by nobody. Not citable as established evidence.
+summary: The full CND 1.0 release candidate, including silences and normalized imports - compiled, filterable, and cleared by nobody. Not citable as established evidence.
 docType: layer
 pattern: B
 programme: dacia
 layerId: dacia-attestations-research
 lifecycle: in-review
-lastReviewed: '2026-08-23'
+lastReviewed: '2026-08-25'
 referencesDocIds:
   - data-fields-dacia
 relatedLayerIds:
@@ -17,7 +17,7 @@ relatedCollectionIds:
 relatedEssaySlugs:
   - dacia
 citation:
-  version: 'cnd-0.1-research'
+  version: 'cnd-1.0-rc1-research'
   licence: 'CC BY 4.0'
 technicalLinks:
   - label: CCD data dictionary
@@ -26,8 +26,9 @@ technicalLinks:
 
 ## What you are looking at
 
-The whole Corpus Nominum Daciae 0.1 pilot: every compiled attestation, including
-every recorded silence, with nothing cleared by human review.
+The whole Corpus Nominum Daciae 1.0 release candidate: every compiled
+attestation, including recorded silences and normalized authority imports, with
+nothing cleared by human review.
 
 ## What you may do with it
 
@@ -45,10 +46,10 @@ uncleared material.
 
 ## Why a research tier exists at all
 
-It is the whole point of a pilot that the records can be seen and argued with
-before anyone has cleared them. The alternative - holding everything until it is
-reviewed - produces a corpus that appears complete on the day it appears, with
-no public record of what it looked like on the way.
+It is the point of the research candidate that records can be seen and argued
+with before anyone has cleared them. Holding everything until review would
+produce a corpus that appears complete on the day it appears, with no public
+record of what it looked like on the way.
 
 Every feature carries its `review_state`, so the tier's condition travels with
 each record rather than sitting only on this page.

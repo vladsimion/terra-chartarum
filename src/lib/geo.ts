@@ -855,10 +855,9 @@ const RAW: unknown[] = [
     defaultOn: false,
   },
   {
-    // The research tier exists because CND 0.1 is a pilot release: it is the
-    // whole point of the pilot that the records can be seen and argued with
-    // before anyone has cleared them. Every feature carries its review_state,
-    // and this layer is never on by default.
+    // The research tier exists so the v1 candidate can be seen and argued with
+    // before anyone has cleared its imported records. Every feature carries its
+    // review_state, and this layer is never on by default.
     id: 'dacia-attestations-research',
     // `in-review` states the plain fact that no record here has had a human pass;
     // the asset itself exists and ships.
@@ -880,13 +879,14 @@ const RAW: unknown[] = [
     secondaryRooms: ['map'],
     title: 'Dacia name attestations (research tier, unreviewed)',
     description:
-      'The full CND 0.1 pilot: every compiled attestation including silences, none of it cleared by human review. Records here may not be cited as established evidence.',
+      'The full CND 1.0 release candidate: every compiled attestation including silences and normalized imports, none of it cleared by human review. Records here may not be cited as established evidence.',
     kind: 'vector',
     format: 'geojson',
     url: '/geo/dacia-attestations-research.geojson',
     yearFrom: 150,
-    yearTo: 1959,
-    source: 'Terra Chartarum (compiled) - Corpus Nominum Daciae 0.1 research tier, KAN-337',
+    yearTo: 2026,
+    source:
+      'Terra Chartarum (compiled) - Corpus Nominum Daciae 1.0 release-candidate research tier, KAN-364',
     license: 'CC BY 4.0',
     attribution: 'Terra Chartarum; each source carries its own rights statement',
     documentationLinks: [
