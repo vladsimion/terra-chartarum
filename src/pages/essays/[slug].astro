@@ -315,11 +315,17 @@ const essayChromeScript = `(function () {
   .native-essay {
     padding-block: 3rem;
     /*
-     * Cap the ch-based measure with a font-independent width. Without the cap,
-     * the fallback font makes this container about 60px wider before the
-     * self-hosted body face arrives, producing a visible layout shift.
+     * The essay body takes the page width, like the rest of the editorial
+     * surfaces (#127). The measure it used to carry was ch-based and needed a
+     * font-independent cap on top, or the fallback face made the container
+     * about 60px wider before the self-hosted body face arrived; --content-max
+     * is a px width, so that layout shift has no way in.
+     *
+     * The blocks *inside* an essay keep their own measures - the islands, the
+     * pull quotes, the captions - so the full width applies to the column, not
+     * to every element in it.
      */
-    max-width: min(var(--prose-max, 44rem), 44rem);
+    max-width: var(--content-max);
   }
   /*
    * In-essay heading anchors, the targets of an essay's own deep links (dacia's
@@ -341,10 +347,10 @@ const essayChromeScript = `(function () {
   }
   .essay-room-links {
     padding-block: 1rem 4rem;
-    max-width: min(var(--prose-max, 44rem), 44rem);
+    max-width: var(--content-max);
   }
   .essay-citation {
-    max-width: min(var(--prose-max, 44rem), 44rem);
+    max-width: var(--content-max);
     padding-block: 2rem 1rem;
   }
   .essay-citation h2 {
