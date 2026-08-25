@@ -247,8 +247,10 @@ def test_an_established_lineage_must_state_a_relationship(dataset):
 
 
 def test_an_annotation_cannot_be_built_on_an_unresolved_region(dataset):
+    # Step 04 is the globe's southern calotte, whose region stays unresolved
+    # while no gore set has been examined (ant-gap-coronelli-gores).
     edit(dataset, "coronelli-annotations.csv",
-         lambda rows: find(rows, "annotation_id", "ant-ann-coronelli-01")
+         lambda rows: find(rows, "annotation_id", "ant-ann-coronelli-04")
          .update({"status": "built"}))
     refuses("needs a specified region")
 
