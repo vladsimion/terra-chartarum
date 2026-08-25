@@ -158,10 +158,17 @@ def test_coverage_separates_a_missing_name_from_a_missing_source(dataset, capsys
     The two outcomes are constructed here rather than read off the committed
     corpus: as real review closes the name-only classes, a corpus-dependent
     assertion would stop exercising the distinction without ever failing.
+
+    Demoting one named row is not enough to construct the first outcome, because
+    a class is satisfied by any reviewed row it holds. The whole class has to go
+    back, or a class that has grown a second reviewed example goes on reporting
+    itself as satisfied and the assertion fails for a reason that is nothing to
+    do with what it is testing.
     """
     fieldnames, uses = review._load(validate.DATA, "name_uses")
+    demoted = next(row["fate_class"] for row in uses if row["review_state"] == "reviewed")
     for row in uses:
-        if row["name_use_id"] == "nmu-dacia-province":
+        if row["fate_class"] == demoted and row["review_state"] == "reviewed":
             row["review_state"] = "normalized"
             row["reviewer"] = ""
             row["review_date"] = ""
