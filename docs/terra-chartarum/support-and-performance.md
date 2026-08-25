@@ -44,20 +44,37 @@ WebGL dependency and shared CI runners make its aggregate score noisy. This does
 not weaken its accessibility, LCP, CLS, blocking-time or transfer budgets; those
 remain errors. `lighthouserc.json` is the executable form.
 
-One content route carries a higher transfer ceiling: `/essays/cities-remember/`
-is allowed 2,250,000 bytes, and holds the content profile on every other metric.
-Its two scholarly plates - the 1920x1185 Nolli sheet at 1,209,518 bytes and the
-Nuremberg chronicle view at 472,412 - are the essay's argument, and every reader
-who scrolls it downloads both. They are lazy, and until the editorial layout took
-the page width (#127) they sat far enough down a 707px column to fall outside
-Chrome's lazy-load horizon during a Lighthouse run: 492 KiB reported against 2.13
-MiB actually served. The wider column shortens the page by ~2,800px, so the audit
-now reports 2,174,726 bytes for the same page. The ceiling is set above that
-number rather than below it because re-encoding buys little on engraved linework
-(1181 -> 829 KiB at mozjpeg q82, 461 -> 442 for the chronicle) and the sheet
-cannot be resized - `geo:interop:validate` asserts its 1920x1185 frame for four
-overlay control points, and the published annotation manifest pins the same
-dimensions. Making the plates themselves cheaper is content work.
+### Archival plates on a budgeted route
+
+Every content route holds the 1,250,000-byte ceiling, including
+`/essays/cities-remember/`, which carries three large images as its argument: the
+1920x1185 Nolli sheet (1,209,518 bytes), the Nuremberg chronicle view (472,412)
+and the modern Rome basemap (778,760). Serving those at archival size put the
+route at 2,173,970 bytes once the full-width editorial layout (#127) brought them
+inside Chrome's lazy-load horizon.
+
+They are not re-encoded in place, and the sheet is not resized. Its 1920x1185
+frame is the pixel space the four overlay control points are stated in;
+`geo:interop:validate` asserts that frame against the file on disk, and the
+published annotation names the file's own URL as `target.source.id`. Shrinking it
+would silently invalidate a georeference other people can download.
+
+Instead `scripts/build-plate-derivatives.mjs` writes a ladder of display-sized
+rungs into `public/images/cities-remember/display/`, and the essay and
+`CityMemoryOverlay` request the rung that matches the box each image occupies.
+The canonical plates stay byte-for-byte unchanged beside the ladder, and the
+overlay's **Full plate** control loads the sheet on request - so the detail the
+overlay invites readers to inspect is deferred, not removed. The route now
+measures 1,173,482 bytes and needs no exception.
+
+Two cheaper options were measured and rejected. Re-encoding in place buys too
+little on engraved linework (1181 -> 829 KiB at mozjpeg q82; WebP is worse at 984) and costs detail everywhere rather than only where nobody is looking.
+Backing the overlay with DeepZoom tiles costs _more_, not less: a DZI pyramid of
+the sheet is 66 tiles and 1,552 KiB against the 1,181 KiB single file, its 1:1
+level alone is 1,140 KiB, and OpenSeadragon adds ~400 KiB of script before the
+first tile. A pyramid defers pixels only when the master is far larger than the
+viewport; at 1920x1185 the top level is the whole image, so there is nothing to
+defer. `scripts/build-map-tiles.mjs` remains the right tool for scans that are.
 
 ## Reusable interaction gates
 

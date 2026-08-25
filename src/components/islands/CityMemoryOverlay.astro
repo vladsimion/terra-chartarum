@@ -1,3 +1,27 @@
+---
+/**
+ * CityMemoryOverlay
+ *
+ * A looking device: one Nolli sheet blended or swiped over a modern basemap,
+ * with the exploratory four-point registration published beside it.
+ *
+ * Both layers load as a ladder of display-sized derivatives (see
+ * scripts/build-plate-derivatives.mjs) rather than at archival size. The stage
+ * is 16/10 and the layers fill it with `object-fit: cover`, which for both
+ * images resolves to about the stage's own width - hence one shared `sizes`.
+ *
+ * The canonical 1920x1185 plate is not gone, only deferred: FULL_PLATE is the
+ * URL that public/annotations/cities-remember-nolli.json declares as its
+ * target.source.id, and the "full plate" control swaps it in on request. That
+ * matters beyond sharpness - the four control points are stated in *that* file's
+ * pixel space, so a reader checking the registration has to be able to reach it.
+ * scripts/validate-geo-interop.mjs asserts this component still offers it.
+ */
+const FULL_PLATE = '/images/cities-remember/nolli-sheet-01.jpg';
+/** Stage width: the 1200px shell less its padding, ~1120px, else the viewport. */
+const STAGE_SIZES = '(min-width: 1200px) 1120px, 92vw';
+---
+
 <figure class="cmo" data-city-memory-overlay>
   <div class="cmo-head">
     <div>
@@ -10,24 +34,46 @@
   </div>
 
   <div class="cmo-stage">
-    <img
-      class="cmo-modern"
-      src="/images/cities-remember/rome-modern.webp"
-      alt="Modern OpenStreetMap-derived street map of central Rome"
-      width="1600"
-      height="1448"
-      loading="lazy"
-      decoding="async"
-    />
-    <img
-      class="cmo-historic"
-      src="/images/cities-remember/nolli-sheet-01.jpg"
-      alt="One engraved sheet of Giambattista Nolli's 1748 plan of Rome"
-      width="1920"
-      height="1185"
-      loading="lazy"
-      decoding="async"
-    />
+    <picture>
+      <source
+        type="image/avif"
+        srcset="/images/cities-remember/display/rome-modern-560.avif 560w, /images/cities-remember/display/rome-modern-800.avif 800w, /images/cities-remember/display/rome-modern-1120.avif 1120w, /images/cities-remember/display/rome-modern-1600.avif 1600w"
+        sizes={STAGE_SIZES}
+      />
+      <source
+        type="image/webp"
+        srcset="/images/cities-remember/display/rome-modern-560.webp 560w, /images/cities-remember/display/rome-modern-800.webp 800w, /images/cities-remember/display/rome-modern-1120.webp 1120w, /images/cities-remember/rome-modern.webp 1600w"
+        sizes={STAGE_SIZES}
+      />
+      <img
+        class="cmo-modern"
+        src="/images/cities-remember/rome-modern.webp"
+        alt="Modern OpenStreetMap-derived street map of central Rome"
+        width="1600"
+        height="1448"
+        loading="lazy"
+        decoding="async"
+      />
+    </picture>
+    <picture>
+      <source
+        type="image/avif"
+        srcset="/images/cities-remember/display/nolli-sheet-01-640.avif 640w, /images/cities-remember/display/nolli-sheet-01-960.avif 960w, /images/cities-remember/display/nolli-sheet-01-1280.avif 1280w, /images/cities-remember/display/nolli-sheet-01-1600.avif 1600w, /images/cities-remember/display/nolli-sheet-01-1920.avif 1920w"
+        sizes={STAGE_SIZES}
+      />
+      <img
+        class="cmo-historic"
+        src="/images/cities-remember/display/nolli-sheet-01-1280.jpg"
+        srcset="/images/cities-remember/display/nolli-sheet-01-640.jpg 640w, /images/cities-remember/display/nolli-sheet-01-960.jpg 960w, /images/cities-remember/display/nolli-sheet-01-1280.jpg 1280w, /images/cities-remember/display/nolli-sheet-01-1600.jpg 1600w, /images/cities-remember/nolli-sheet-01.jpg 1920w"
+        sizes={STAGE_SIZES}
+        data-full-plate={FULL_PLATE}
+        alt="One engraved sheet of Giambattista Nolli's 1748 plan of Rome"
+        width="1920"
+        height="1185"
+        loading="lazy"
+        decoding="async"
+      />
+    </picture>
     <span class="cmo-label modern">Modern street map</span>
     <span class="cmo-label historic">Nolli · 1748</span>
   </div>
@@ -36,6 +82,9 @@
     <div class="cmo-mode" role="group" aria-label="Historical map comparison mode">
       <button type="button" data-overlay-mode="blend" aria-pressed="true">Blend</button>
       <button type="button" data-overlay-mode="swipe" aria-pressed="false">Swipe</button>
+      <button type="button" class="cmo-full" data-overlay-full>
+        Full plate <span class="cmo-weight" aria-hidden="true">1.2 MB</span>
+      </button>
     </div>
     <div class="cmo-range">
       <label for="city-memory-opacity">Historical layer amount</label>
@@ -55,7 +104,9 @@
     This is a looking device, not evidence of parcel survival. The sheet and basemap use an
     exploratory four-point registration; crop, engraving and modern projection introduce visible
     residual error. Do not infer that a wall or property line survives because two strokes appear to
-    coincide. <a href="/annotations/cities-remember-nolli.json"
+    coincide. Both layers are shown at display resolution; <strong>Full plate</strong> loads the canonical
+    1920 × 1185 sheet, which is the pixel space the four control points are stated in.
+    <a href="/annotations/cities-remember-nolli.json"
       >Download the Allmaps-compatible Web Annotation</a
     >. Modern base: © OpenStreetMap contributors, ODbL; historical sheet: public domain via
     Wikimedia Commons.
@@ -64,10 +115,54 @@
 
 <script>
   function initOverlay(root: HTMLElement) {
-    const layer = root.querySelector<HTMLElement>('.cmo-historic')!;
+    const layer = root.querySelector<HTMLImageElement>('.cmo-historic')!;
     const input = root.querySelector<HTMLInputElement>('input[type="range"]')!;
     const output = root.querySelector<HTMLOutputElement>('output')!;
     const modeButtons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-overlay-mode]'));
+    const fullButton = root.querySelector<HTMLButtonElement>('[data-overlay-full]');
+
+    /**
+     * Swap the display ladder for the canonical plate the georeference targets.
+     *
+     * Deliberately a click rather than a side effect of moving the slider: this
+     * fetches over a megabyte, and a reader nudging the opacity has not asked
+     * for that. The <source> elements have to go with the srcset - a <picture>
+     * that still lists an AVIF candidate would keep serving it and the reader
+     * would never receive the file the control points are measured against.
+     */
+    function loadFullPlate() {
+      const canonical = layer.dataset.fullPlate;
+      if (!fullButton || !canonical || layer.dataset.fullPlateLoaded) return;
+      layer.dataset.fullPlateLoaded = 'pending';
+      fullButton.disabled = true;
+      fullButton.textContent = 'Loading full plate…';
+      layer.addEventListener(
+        'load',
+        () => {
+          layer.dataset.fullPlateLoaded = 'done';
+          fullButton.textContent = 'Full plate · 1920 × 1185';
+        },
+        { once: true },
+      );
+      layer.addEventListener(
+        'error',
+        () => {
+          delete layer.dataset.fullPlateLoaded;
+          fullButton.disabled = false;
+          fullButton.textContent = 'Full plate unavailable';
+        },
+        { once: true },
+      );
+      layer
+        .closest('picture')
+        ?.querySelectorAll('source')
+        .forEach((source) => source.remove());
+      layer.removeAttribute('srcset');
+      layer.removeAttribute('sizes');
+      layer.src = canonical;
+    }
+    fullButton?.addEventListener('click', loadFullPlate);
+
     let mode: 'blend' | 'swipe' = 'blend';
     const render = () => {
       if (mode === 'blend') {
@@ -194,6 +289,27 @@
     border-color: var(--gold);
     color: var(--canvas);
     background: var(--gold);
+  }
+  /* The full-plate control is a fetch, not a mode - keep it visually apart from
+     the two aria-pressed buttons it sits beside. */
+  .cmo-full {
+    margin-inline-start: 0.5rem;
+  }
+  .cmo-full:hover:not(:disabled) {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+  .cmo-full:disabled {
+    opacity: 0.7;
+    cursor: progress;
+  }
+  .cmo-weight {
+    color: var(--ink-muted);
+  }
+  /* <picture> is a wrapper, not a box: without this the absolutely positioned
+     stage rules below resolve against the picture instead of the stage. */
+  .cmo-stage picture {
+    display: contents;
   }
   .cmo-range {
     display: grid;
