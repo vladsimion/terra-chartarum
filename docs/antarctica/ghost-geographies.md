@@ -58,6 +58,81 @@ question about the man rather than about this feature, and the two are kept
 apart. Whether the drift track actually crosses the reported coast has not been
 checked against either position, and the claim stays at low confidence until it is.
 
+## The register that is not ours: Coronelli, 1691
+
+Ten of the fifteen records come from one printed page. The last leaf of
+`Terre Polari, Artiche, ed Antartiche` in _Atlante Veneto_ Tomo I (printed p. 76,
+Rumsey 12186.107) is a rejection register: Coronelli names the lands he will not
+carry and, for most of them, says why.
+
+He works in three registers, and the rows preserve the difference rather than
+flattening it:
+
+- **Argued.** The Sevarambi get a full case. No author's name is attached to the
+  history printed at Paris in 1677; the circumstances are paradoxical; the same
+  history dates the discovery to 1427, so two and a half centuries would have
+  passed in silence; and a great priest of the Sun could not have been ruling a
+  Persia already under Islamic law. That is source criticism, and it is what
+  makes these rows Act III material rather than Act VI.
+- **Asserted.** The Isle of Pines opens with its verdict, `per favolosa pure
+viene tenuta`, and Frisquemore is named among countries `capricciosamente
+inventati da Ingegni otiosi`. The reason has to be read off the pairing.
+- **Swept up.** The Terra di Vista and the Terra de' Papagalli get no verdict in
+  the sentence that introduces them. The next paragraph opens `Queste Favole si
+possono aggiungere` and takes them in retrospectively. Those two rows say so:
+  `disproved` there rests on Coronelli's sentence order, which is weaker than
+  either of the other registers, and the note carries the weakness rather than
+  levelling it up to match its neighbours.
+
+The last five names, the Strait of Anian, Frisland, Nova Albion, Saint Borondon
+and Fonseca, are disposed of in one clause with a single shared reason: after
+their supposed discoveries nobody was ever again able to find or see them. That
+is this table's own pattern, stated in 1691. Those rows carry the verdict and
+the reason and almost nothing of the original claim, because the page gives
+neither discoverer nor date, and `what_was_reported` says only what the passage
+says.
+
+### Whose verdict it is
+
+`later_status` is `disproved` on all ten and names
+`ant-src-coronelli-atlante-veneto` as the source of the disproof. That is the
+whole point of the field being sourced: the judgement is Coronelli's, dated,
+attributable, and open to being wrong.
+
+`current_scholarly_status` is `unresolved` on all ten. This corpus holds no
+modern authority on any of these features, and inheriting a seventeenth-century
+verdict as a present-day one is precisely the confusion the two fields exist to
+prevent. A reader who wants to know what scholarship now says about Frisland
+will not find this dataset pretending to answer.
+
+### What was left out, and why
+
+Coronelli's list runs past the polar essay's subject. In the same passage he adds
+the City of Tartar in Tartary, Lusson in the Manila islands, Lodrino in Albania,
+Manoa del Dorado and the Lake of Parime in Guiana, and Norumberga and Hochelaga
+in New France. Those seven are not recorded here.
+
+He introduces them himself as a separate class, a comparison set the polar fables
+`si possono aggiungere` to, and they are continental interior fictions with no
+bearing on any ocean this programme charts. Recording them would turn an
+Antarctic table into a general phantom-lands index, which is a different dataset
+and should be argued for as one.
+
+The line is drawn at the polar essay's own list, not at the southern hemisphere.
+Five of the ten records held here are northern or Atlantic: Frisquemore sits on
+the confines of Lapland and the Samoyeds, Anian and Nova Albion are north-west
+American, Saint Borondon Atlantic, Fonseca Caribbean. They are kept because the
+record is an act of judgement made in one breath, and because the essay is headed
+for both poles. Every one of those rows states in its note that it is not a
+southern feature and must not be read as an Antarctic phantom.
+
+### How much of the essay has been read
+
+Three of the seven printed pages: 70, 73 and 76. Rumsey 12186.102, .103 and .106
+are unread and open as `ant-gap-atlante-polar-leaves`. Every Coronelli row is
+held at `low` confidence for that reason alone, independently of how firm the
+reading of page 76 is.
+
 ## Reusing this elsewhere
 
 `src/lib/uncertainty.ts` is programme-neutral by construction. It knows nothing

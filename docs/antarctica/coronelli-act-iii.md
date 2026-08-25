@@ -129,7 +129,17 @@ account for that or specify a different copy.
 ## A finding that belongs to another act
 
 Page 76 sets out, in a named source with Coronelli's own verdict attached, a list
-of invented lands: Frisquemore, the Isle of Pines, the Sevarambi, the Strait of
-Anian, Frisland, Nova Albione, St Borondon, Fonseca, Terra de' Papagalli. That is
-material for `ghost-geographies.csv` rather than for Act III, and it is recorded
-here only so it is not lost.
+of invented lands: Frisquemore, the Isle of Pines, the Sevarambi, the Terra di
+Vista, the Terra de' Papagalli, the Strait of Anian, Frisland, Nova Albione, St
+Borondon and Fonseca.
+
+That is now recorded, as ten rows in `data/antarctica/ghost-geographies.csv`
+filed under `act_iii`, with Coronelli's reasons held as his own seventeenth-century
+judgement and not as this programme's. The seven non-polar fictions he names in
+the same passage, the City of Tartar, Lusson, Lodrino, Manoa del Dorado, the Lake
+of Parime, Norumberga and Hochelaga, were left out as a different dataset's
+subject. The argument for both decisions is in
+[the ghost geographies methodology](ghost-geographies.md).
+
+The rejection register is what makes the missing plate a judgement rather than an
+oversight, so Act III keeps the finding even though the rows live elsewhere.
