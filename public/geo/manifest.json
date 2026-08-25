@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "geo-6e3ab044672af114",
+  "release": "geo-fcb63902971f009a",
   "generatedBy": "scripts/geo-release.mjs",
   "assets": [
     {
@@ -259,16 +259,16 @@
       "geometry": [
         "Point"
       ],
-      "featureCount": 49,
+      "featureCount": 129,
       "yearFrom": 150,
-      "yearTo": 1959,
-      "source": "Terra Chartarum (compiled) - Corpus Nominum Daciae 0.1 research tier, KAN-337",
+      "yearTo": 2026,
+      "source": "Terra Chartarum (compiled) - Corpus Nominum Daciae 1.0 release-candidate research tier, KAN-364",
       "license": "CC BY 4.0",
       "attribution": "Terra Chartarum; each source carries its own rights statement",
-      "bytes": 59900,
-      "sha256": "1429cd60cf29f0e2745276ea3b09b54e3d46c314bcd18056aea06b3d5ada04d4",
-      "version": "1429cd60cf29",
-      "url": "/geo/dacia-attestations-research.geojson?v=1429cd60cf29"
+      "bytes": 165941,
+      "sha256": "0cbfd5790f48e7c345c3fddd068c3710f1444b94b7a90850d0f1c5649af7b962",
+      "version": "0cbfd5790f48",
+      "url": "/geo/dacia-attestations-research.geojson?v=0cbfd5790f48"
     },
     {
       "id": "dacia-roman-sites",
@@ -341,10 +341,10 @@
       "source": "Terra Chartarum (compiled) - Josephinian sheet index, KAN-343",
       "license": "CC BY 4.0",
       "attribution": "Terra Chartarum; sheets held by the Kriegsarchiv, Vienna; no scan redistributed",
-      "bytes": 21697,
-      "sha256": "84285f399879242e663d41f859e9fb0fea50c768e5579831a436584e075f8184",
-      "version": "84285f399879",
-      "url": "/geo/dacia-josephinian-sheets.geojson?v=84285f399879"
+      "bytes": 21717,
+      "sha256": "4d563312e47f22e86e39741027de4b26947f5bb34aaa8e1ef9190abd5c375955",
+      "version": "4d563312e47f",
+      "url": "/geo/dacia-josephinian-sheets.geojson?v=4d563312e47f"
     },
     {
       "id": "dacia-treaty-frontiers",

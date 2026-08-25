@@ -783,6 +783,19 @@ def validate_attestations(terms, ranks, places, source_states, errors: list[str]
         if row["name_original"] and not captures.get(attestation_id):
             errors.append(f"{label}: a reading requires a transcription recording how it was captured")
 
+        # An imported authority record is useful only while its origin remains
+        # recoverable. Normalisation does not turn an unlocated label into a
+        # checked reading, but it must preserve the external locator and a
+        # capture that did not come from this project's own display.
+        if row["normalization_method"] == "imported" and state_rank > raw_rank:
+            if row["locator_type"] == "none" or row["locator"] in {"", PENDING}:
+                errors.append(f"{label}: a normalized import requires a real locator")
+            elif not any(
+                capture["capture_method"] in {"from_witness", "from_edition", "from_secondary"}
+                for capture in captures.get(attestation_id, [])
+            ):
+                errors.append(f"{label}: a normalized import requires an external capture")
+
         if state_rank >= reviewed_rank:
             # `whole_work` is the documented maximum precision for an indivisible
             # witness, so it passes only when it says why nothing finer exists.
@@ -1237,8 +1250,8 @@ def validate_debt(trenches, errors: list[str]) -> None:
                 errors.append(f"{label}: blocks '{blocked}' is not a trench:gate pair")
 
 
-def validate_hiatus_witness_families(errors: list[str]) -> None:
-    """KAN-348: freeze candidate families without manufacturing an absence claim."""
+def validate_hiatus_witness_families(sources: dict[str, str], errors: list[str]) -> None:
+    """KAN-348/364: freeze candidate families and resolve their CND authorities."""
     rows = _read("hiatus_witness_families", errors)
     _check_unique(rows, "witness_id", "hiatus-witness-families", errors)
     families: set[str] = set()
@@ -1249,6 +1262,13 @@ def validate_hiatus_witness_families(errors: list[str]) -> None:
         families.add(row["witness_family"])
         if not witness_id.startswith("hw-") or not SLUG.match(witness_id):
             errors.append(f"{label}: witness_id must be an hw- slug")
+        if not row["corpus_source_id"]:
+            errors.append(f"{label}: corpus_source_id is required")
+        elif row["corpus_source_id"] not in sources:
+            errors.append(
+                f"{label}: corpus_source_id '{row['corpus_source_id']}' "
+                "does not resolve in sources.csv"
+            )
         for field in (
             "witness_family",
             "historical_question",
@@ -2894,7 +2914,7 @@ def validate_inputs() -> list[str]:
     validate_debt(trenches, errors)
     validate_release(ranks, errors)
     validate_v1_candidate(errors)
-    validate_hiatus_witness_families(errors)
+    validate_hiatus_witness_families(sources, errors)
     validate_hiatus_timeline(errors)
     validate_treaty_frontier_sources(errors)
     validate_carta_rubra_package(errors)

@@ -405,7 +405,7 @@
   "schemaVersion": 1,
   "sharedDatasets": [
     {
-      "detail": "40 places, 14 sources, 49 attestations",
+      "detail": "120 places, 25 sources, 129 attestations",
       "href": "https://github.com/vladsimion/terra-chartarum/tree/main/data/dacia/release/cnd-0.1",
       "id": "cnd",
       "kind": "corpus",
