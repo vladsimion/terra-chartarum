@@ -49,14 +49,26 @@ LICENCE = (
 LAYER_ITINERARY = "crusades-itinerary"
 LAYER_ROUTES = "crusades-fourth-crusade-routes"
 LAYER_EVENTS = "crusades-fourth-crusade-events"
-ATLAS_LAYERS = [LAYER_ITINERARY, LAYER_ROUTES, LAYER_EVENTS]
+LAYER_NETWORK = "crusades-jerusalem-network"
+ATLAS_LAYERS = [LAYER_ITINERARY, LAYER_ROUTES, LAYER_EVENTS, LAYER_NETWORK]
 
-TABLES = ["places", "source-audit", "itinerary-stages", "fourth-crusade-states"]
+TABLES = [
+    "places",
+    "source-audit",
+    "itinerary-stages",
+    "fourth-crusade-states",
+    "jerusalem-roles",
+]
 PUBLIC_STATES = {"approved", "published"}
 
 # States that resolve to a place and may be drawn there. The other three are
 # absent from every layer on purpose, and the manifest records that.
 DRAWABLE_STATES = {"attack", "negotiated_diversion"}
+
+# The one Holy Land register that is about a place on the ground. The other five
+# say what Jerusalem meant, and meaning has no coordinate: a sacred centre drawn
+# at 31.78N is a pin where the argument was (KAN-438).
+DRAWABLE_ROLES = {"network_node"}
 
 
 def read(name: str) -> list[dict[str, str]]:
@@ -183,7 +195,33 @@ def project() -> dict[str, list[dict[str, object]]]:
             "geometry": line_geometry(row["geometry"]) if row["geometry"] else None,
         })
 
-    return {"itinerary": itinerary, "states": states}
+    roles: list[dict[str, object]] = []
+    for row in sorted(read("jerusalem-roles"), key=lambda r: int(r["sequence"])):
+        place_ids = [p for p in row["place_ids"].split("|") if p]
+        roles.append({
+            "id": row["role_id"],
+            "sequence": int(row["sequence"]),
+            "roleKind": row["role_kind"],
+            "title": row["display_name"],
+            "dateFrom": row["date_from"],
+            "dateTo": row["date_to"],
+            "datePrecision": row["date_precision"],
+            "placeIds": place_ids,
+            "placeNames": [places[p]["preferred_name"] for p in place_ids],
+            "evidenceClass": row["evidence_class"],
+            "geometryProvenance": row["geometry_provenance"],
+            "confidence": row["confidence"],
+            "reviewState": row["review_state"],
+            # Empty for later cartographic memory, which rests on its catalogue
+            # record instead: see the rule in validate_roles.
+            "sourceId": row["source_id"] or None,
+            "sourceLocator": row["source_locator"] or None,
+            "catalogueObjectId": row["catalogue_object_id"] or None,
+            "vmnReference": row["vmn_reference"] or None,
+            "notes": row["notes"],
+        })
+
+    return {"itinerary": itinerary, "states": states, "roles": roles}
 
 
 def build_outputs() -> dict[Path, bytes]:
@@ -239,6 +277,30 @@ def build_outputs() -> dict[Path, bytes]:
         "type": "FeatureCollection", "features": events,
     })
 
+    # The Holy Land register, drawn only where it is about a quay. The other
+    # five registers are absent from every layer, and the manifest says so.
+    network = []
+    for role in projection["roles"]:
+        if role["roleKind"] not in DRAWABLE_ROLES:
+            continue
+        for place_id in role["placeIds"]:
+            place = places[place_id]
+            properties = {k: v for k, v in role.items()}
+            properties["placeId"] = place_id
+            properties["placeName"] = place["preferred_name"]
+            properties["nameArabic"] = place["name_arabic"] or None
+            network.append({
+                "type": "Feature",
+                "properties": properties,
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [round6(float(place["lon"])), round6(float(place["lat"]))],
+                },
+            })
+    outputs[GEO_DIR / f"{LAYER_NETWORK}.geojson"] = canonical_json({
+        "type": "FeatureCollection", "features": network,
+    })
+
     outputs[GENERATED_DIR / "pilot.json"] = canonical_json({
         "schemaVersion": SCHEMA_VERSION,
         "release": RELEASE_VERSION,
@@ -256,8 +318,10 @@ def build_manifest(outputs: dict[Path, bytes]) -> bytes:
     tables = {name: read(name) for name in TABLES}
     states = tables["fourth-crusade-states"]
     sources = tables["source-audit"]
+    roles = tables["jerusalem-roles"]
     undrawn = [s["state_id"] for s in states if s["state_kind"] not in DRAWABLE_STATES
                and not s["geometry"]]
+    unplaced = [r["role_id"] for r in roles if r["role_kind"] not in DRAWABLE_ROLES]
 
     return canonical_json({
         "schemaVersion": SCHEMA_VERSION,
@@ -266,9 +330,13 @@ def build_manifest(outputs: dict[Path, bytes]) -> bytes:
         "licence": LICENCE,
         "counts": {name: len(rows) for name, rows in tables.items()},
         "stateKinds": sorted({s["state_kind"] for s in states}),
+        "roleKinds": sorted({r["role_kind"] for r in roles}),
         # Recorded rather than left implicit: three states are deliberately on no
         # layer, and a future reader should find that as a decision.
         "statesWithoutGeometry": sorted(undrawn),
+        # The same decision one register along: five of the six Holy Land
+        # registers are claims about meaning and are on no layer at all.
+        "rolesWithoutGeometry": sorted(unplaced),
         "clearedWitnesses": sum(1 for s in sources if s["production_role"] != "research_only"),
         "untranscribedFolios": sum(1 for s in sources if s["locator"] == "pending"),
         "publicRecords": sum(
@@ -301,6 +369,7 @@ def main() -> int:
     print(f"  records: {manifest['counts']}")
     print(f"  witnesses cleared for publication: {manifest['clearedWitnesses']}")
     print(f"  states deliberately undrawn: {', '.join(manifest['statesWithoutGeometry'])}")
+    print(f"  Holy Land registers deliberately unplaced: {len(manifest['rolesWithoutGeometry'])}")
     return 0
 
 

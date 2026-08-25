@@ -2,18 +2,19 @@
 title: Maps for a Crusade
 subtitle: How Jerusalem became a network
 summary: >-
-  A thirteenth-century road drawn as a list of days, and a fleet fifty years
-  earlier that had already turned the same world into ports, debts and control.
+  A thirteenth-century road drawn as a list of days, a fleet fifty years earlier
+  that had already turned the same world into ports and debts, and the city both
+  of them were pointed at - which was never only a place.
 cover: /images/rooms/road-cover.webp
 hero: /images/rooms/road-hero.webp
 status: native
-eras: [Medieval]
-regions: [Western Europe, Adriatic, Aegean, Holy Land]
-lenses: [itinerarium, contractus, deviatio, dominium]
-yearFrom: 1201
-yearTo: 1261
-mapCount: 9
-readingMinutes: 12
+eras: [Medieval, Early Modern]
+regions: [Western Europe, Adriatic, Aegean, Holy Land, Egypt, Cyprus]
+lenses: [itinerarium, contractus, deviatio, dominium, centrum, memoria]
+yearFrom: 1099
+yearTo: 1581
+mapCount: 12
+readingMinutes: 22
 accent: '#bc5d44'
 order: 13
 featured: false
@@ -28,41 +29,64 @@ sections:
     title: Putting the diagram on a map
     room: map
     secondaryRooms: [road]
+  - id: terminus
+    title: Where the road stops
+    room: road
+    secondaryRooms: [border]
+  - id: centrum
+    title: The city in the middle of the world
+    room: theatre
+    secondaryRooms: [map]
   - id: contractus
     title: The fleet that had to be paid for
     room: border
     secondaryRooms: [road]
   - id: deviatio
-    title: Four things that are not one route
+    title: Six things that are not one route
     room: border
     secondaryRooms: [map]
+  - id: portus
+    title: A sacred centre with a working port
+    room: road
+    secondaryRooms: [city]
+  - id: descriptio
+    title: The land written down, and ruled into squares
+    room: archive
+    secondaryRooms: [map]
+  - id: memoria
+    title: The centre outlives the kingdom
+    room: theatre
+    secondaryRooms: [archive]
   - id: reliquum
-    title: What this prototype does not yet do
+    title: What this essay cannot yet do
     room: archive
     secondaryRooms: [road]
 publishedAt: '2026-08-24'
-updatedAt: '2026-08-24'
-# HELD. Not one folio in the Crusades corpus has been transcribed and no witness
-# is cleared for publication. This is a prototype of the argument and of the
-# machinery under it, not the flagship essay, and it may not be published until
-# the Phase 0 audit's rights and locators are resolved.
+updatedAt: '2026-08-25'
+# HELD. Not one folio or page in the Crusades corpus has been transcribed and no
+# witness is cleared for publication. This is the complete argument and the
+# machinery under it, not a publishable essay, and it may not go out until the
+# Phase 0 audit's rights and locators are resolved.
 releaseAt: '2099-01-01'
 metaScores:
   measure: 0.6
-  witness: 0.7
+  witness: 0.75
   use: 0.8
-  cosmos: 0.25
+  cosmos: 0.6
   power: 0.7
-  silence: 0.4
+  silence: 0.45
 ---
 
 import Section from '../../components/Section.astro';
+import EssayLink from '../../components/EssayLink.astro';
+import AtlasDeepLink from '../../components/AtlasDeepLink.astro';
 import ItineraryComparison from '../../components/islands/ItineraryComparison.astro';
 import FourthCrusadeStates from '../../components/islands/FourthCrusadeStates.astro';
+import JerusalemRegisters from '../../components/islands/JerusalemRegisters.astro';
 import CrusadesGateState from '../../components/islands/CrusadesGateState.astro';
 
 <p class="essay-kicker">
-  Prototype · Road and Sea proofs · <strong>held pending source review</strong>
+  Road, Sea and the city both are pointed at · <strong>held pending source review</strong>
 </p>
 
 ## Two ways of holding the same journey in your head.
@@ -74,6 +98,13 @@ neither is the crusade.
 
 Both are maps in the sense this publication means. Neither is a map in the sense
 of a picture of the ground.
+
+And both are pointed at the same city, which is the third thing this essay has
+to be careful about. Jerusalem in the thirteenth century was a destination, the
+middle of the inhabited world, a text, a plan, a port two days' ride away, and -
+for most of the years the road above was being drawn - a city the people drawing
+it did not hold. Those are not versions of one fact. Keeping them apart is the
+work.
 
 <Section id="itinerarium" title="A road drawn as a list of days" rooms={['road', 'archive']}>
 
@@ -115,6 +146,70 @@ not do is become one picture, because a composite would be this project's
 drawing rather than the thirteenth century's, and the difference between them is
 the entire subject.
 
+<AtlasDeepLink layers={['crusades-itinerary']} collection="maps-for-a-crusade" year={1255}>
+  Open the fourteen stages in the Atlas
+</AtlasDeepLink>
+
+</Section>
+
+<Section id="terminus" title="Where the road stops" rooms={['road', 'border']}>
+
+The last stage is Otranto, in the heel of Apulia, and the drawing ends there.
+
+It ends there for a reason the diagram makes obvious once you look for it. The
+itinerary's unit is a day, and it has already spent one of them on the crossing
+from Dover, so it plainly can measure a sea. What it cannot do is measure _that_
+sea. A fortnight of sailing depending on wind, convoy and season does not
+decompose into stages with towns at the ends of them, and the diagram is honest
+enough to stop rather than invent the ones it would need.
+
+So the destination is carried without being drawn. The columns run in a
+direction; the road stops at a sailing port; and everyone reading knew what was
+on the far side. This is a strong claim about a document that has not been
+transcribed here, and it is worth naming as an inference rather than a reading:
+the register records the destination as a state of the itinerary and gives it no
+position, because a pin in Judaea would be this project asserting what the
+manuscript declines to draw.
+
+What lies beyond Otranto is not a longer road. It is a shipping problem, and it
+had been one for fifty years already.
+
+</Section>
+
+<Section id="centrum" title="The city in the middle of the world" rooms={['theatre', 'map']}>
+
+Within a few years of the itinerary, an English psalter carried a world map the
+size of a postcard, and Jerusalem is in the middle of it. A half-century later
+the Hereford map does the same thing on a sheet of vellum well over a metre
+across.
+
+The reflex is to file this as an error corrected by later cartography, and the
+reflex is wrong twice. It is wrong about the maps, which are not attempting the
+kind of statement that could be wrong in that way. And it is wrong about what
+centring does: a world image with Jerusalem in the middle is a claim about what
+the world is arranged around, and there is no coordinate at which that claim
+could be checked. The <EssayLink slug="invisible-maps-religion">religious world
+images</EssayLink> in this collection are the long version of that argument; here
+the point is narrower and structural.
+
+Because it means the corpus cannot hold Jerusalem as a row. It has to hold it as
+six rows of different kinds, and say what each kind may be used for.
+
+<JerusalemRegisters />
+
+Four of the ten records are on a layer, and the six that are not are the ones
+doing most of the arguing. That asymmetry is the register working. A dataset
+willing to draw all ten would have flattened a mappa mundi's middle, a text's
+organising principle and a quay into the same object, which is the flattening
+the whole essay is about.
+
+One consequence lands immediately. For most of the years the itinerary was being
+drawn, Jerusalem was not in Latin hands at all - it was lost in 1187, held again
+briefly by treaty from 1229, and lost for good in 1244. The road above was drawn
+to a city its readers could not enter. The sacred centre does not move when that
+happens, because it was never the kind of thing that was there in the first
+place.
+
 </Section>
 
 <Section id="contractus" title="The fleet that had to be paid for" rooms={['border', 'road']}>
@@ -128,10 +223,10 @@ The army that assembled could not pay. What followed was not a change of route s
 much as a renegotiation, and the map of it is a map of terms rather than of
 ground.
 
-This is the shift the flagship essay is about. Jerusalem, in the twelfth century,
-was the end of a road. By the thirteenth it was a node in a system of ports,
-credit and shipping, and getting there had become a commercial problem before it
-was a geographical one.
+This is the shift the essay is named for. Jerusalem, in the twelfth century, was
+the end of a road. By the thirteenth it was a node in a system of ports, credit
+and shipping, and getting there had become a commercial problem before it was a
+geographical one.
 
 </Section>
 
@@ -164,11 +259,122 @@ Only the travelled route carries a line. Five of the six kinds are on no layer a
 all, and that is the dataset agreeing with the argument rather than falling short
 of it: a claim that was never a place cannot be given one without inventing it.
 
+<AtlasDeepLink
+  layers={['crusades-fourth-crusade-routes', 'crusades-fourth-crusade-events']}
+  collection="maps-for-a-crusade"
+  year={1204}
+>
+  Open the routes and the assaults in the Atlas
+</AtlasDeepLink>
+
+The Atlas half of this now says the same thing the panel above says. A feature
+there declares what kind of claim it is, whether it was claimed or held, and that
+it is unreviewed - because a reader who arrives on the map rather than through
+the prose must not be shown a tidier argument than the one being made.
+
+For the one thing this dataset will not draw, the link goes elsewhere. What was
+actually held after 1204 is modelled by the Venetian possessions layer, with its
+own phased extents and its own evidence, and pointing at it is the honest form of
+a territorial claim we decline to author.
+
+<AtlasDeepLink layers={['venetian-possessions']} collection="venetian-maritime-network" year={1261}>
+  Open the possessions layer that models what was held
+</AtlasDeepLink>
+
 </Section>
 
-<Section id="reliquum" title="What this prototype does not yet do" rooms={['archive', 'road']}>
+<Section id="portus" title="A sacred centre with a working port" rooms={['road', 'city']}>
 
-This is a prototype, and the honest way to end it is with the list.
+The kingdom that called itself Jerusalem was, for most of the thirteenth century,
+administered from Acre.
+
+That sentence is the whole of the network argument in miniature. Pilgrims landed
+at Jaffa and rode inland; grain, arms, money, officials and orders came through a
+port two days up the coast; and the city at the middle of the world maps was
+reached, supplied and governed through quays that appear on none of them. The
+sacred geography and the working geography are both true, and they are not the
+same map.
+
+The Venetian Maritime Network is the other end of this. Those ports, their
+phases, their evidence and their contested holdings are already published with
+their own records, and this register points at them rather than re-authoring
+them: Acre and Famagusta name `venetian-ports`, Alexandria names
+`venetian-routes`. If you want the commercial system in its own right, read{' '}
+
+<EssayLink slug="venice-sicily">Venice and Sicily</EssayLink>; what this essay takes from it is only
+the shape.
+
+<AtlasDeepLink
+  layers={['crusades-jerusalem-network', 'venetian-ports']}
+  collection="maps-for-a-crusade"
+  year={1250}
+>
+  Open the Holy Land ports beside the Venetian ones
+</AtlasDeepLink>
+
+The four ports outlive their reason. Acre fell in 1291 and the traffic moved to
+Famagusta, on Cyprus, which is the network surviving the kingdom that gave it its
+name. A crusading geography that ends in 1291 ends too early; the merchants did
+not stop sailing because a war ended.
+
+</Section>
+
+<Section id="descriptio" title="The land written down, and ruled into squares" rooms={['archive', 'map']}>
+
+Two objects from the end of this story do something the world maps and the
+itinerary do not: they organise the Holy Land as a system.
+
+The first is a description. Burchard of Mount Sion, a Dominican who lived in the
+region, sets the land out in divisions running from a centre - and the centre he
+takes them from is Acre, not Jerusalem. A description is a geography, and this
+one quietly puts the port where the sacred city is on the mappae mundi. It is the
+same substitution the previous act describes, made a second time in a different
+medium, by someone who was standing there.
+
+The second is a plan. Marino Sanudo Torsello, a Venetian, spent years pressing a
+scheme on the papal court for recovering the Holy Land by cutting Egyptian trade,
+and the copies of his treatise travel with maps in which the Holy Land is ruled
+into a grid. It is the most modern-looking cartography in this corpus. The
+squares carry no survey behind them and the expedition they were drawn for never
+sailed, which makes the object a useful warning: the visual language of precision
+arrives centuries before the measurement does, and it arrives in the service of
+an argument. The catalogue holds two portolan sheets under the same maker's name,
+read in <EssayLink slug="invisible-maps-trade">Invisible Maps of Trade</EssayLink>{' '}
+as instruments of commerce - the same drafting practice, pointed at a crusade.
+
+Neither object is reproduced here. Both need a rights review, and the register
+that is about pictures of Jerusalem therefore shows no picture of Jerusalem. That
+is a rights position rather than an editorial one, and the closing table names
+it.
+
+</Section>
+
+<Section id="memoria" title="The centre outlives the kingdom" rooms={['theatre', 'archive']}>
+
+In 1581, in Magdeburg, Heinrich Bünting printed the world as a clover leaf with
+three continents for petals, meeting at Jerusalem.
+
+Nearly three centuries after Acre fell, and a lifetime after the routes to the
+Indies had been sailed, the centring survives - not as a mistake about geography
+but as an emblem that had stopped needing to be about geography at all. That
+survival is the last thing the essay wants to record, and recording it correctly
+takes some care, because the temptation is to reach back with it. A
+sixteenth-century woodcut that centres Jerusalem looks like evidence for how the
+twelfth century thought.
+
+It is not, and in this corpus it cannot become so. The record for the clover leaf
+carries no source at all in the audit: it is joined to{' '}
+
+<a href="/collection/religion-bunting/">its catalogue entry</a> and nothing else, so no crusading
+claim can cite it. An early-modern map of the Holy Land is a witness to the early modern period.
+Letting it stand as a witness to the medieval one is precisely the mistake this project exists to
+avoid making tidily.
+
+</Section>
+
+<Section id="reliquum" title="What this essay cannot yet do" rooms={['archive', 'road']}>
+
+The honest way to end is with the list.
 
 The list used to be written here by hand, which meant it was a second copy of the
 project's state and therefore the copy that went out of date. It is now compiled
@@ -176,18 +382,26 @@ from the same registers the validator reads.
 
 <CrusadesGateState />
 
-One gap changes what the reader sees, and it is worth naming outside the table:
-no folio has been transcribed, so the comparison above shows the diagram's
-_sequence_ beside the ground and cannot yet show the diagram.
+One gap changes what a reader sees, and it is worth naming outside the table: not
+one folio or page has been transcribed. The comparison in the second act shows
+the diagram's _sequence_ beside the ground and cannot show the diagram; the Holy
+Land act argues about world images and shows none; and the two records resting on
+Sanudo carry low confidence because what they cite is a treatise's general
+position rather than a located passage.
 
-The route lines are generalisations between ports. The full flagship needs Acre
-and the Holy Land records, the sacred geography the itinerary was aiming at, and
-the century of maritime infrastructure between the two proofs.
+There is a smaller item that belongs here for the same reason. The Levant places
+in this corpus carry Arabic name forms, and those forms are romanisations taken
+from published reference works rather than readings of an Arabic source. A schema
+with a column for the name a place had for the people who lived there, filled in
+from someone else's transliteration, is still telling a crusader's story in one
+respect, and it is recorded as an open item rather than left as an impression of
+thoroughness.
 
 What exists is the argument and the machinery under it: a diagram that refuses to
-become a map, and a campaign that refuses to become a route. Both proofs are now
-interactive, and both are driven entirely by the compiled dataset - no route, date
-or day-mark is written into a component. When a witness is cleared, the manuscript
-appears in the first of them without the argument changing.
+become a map, a campaign that refuses to become a route, and a city that refuses
+to become a coordinate. All three are driven entirely by the compiled dataset -
+no route, date, day-mark or register is written into a component. When a witness
+is cleared, the manuscript appears in the first of them and the world image in
+the third, without the argument changing.
 
 </Section>

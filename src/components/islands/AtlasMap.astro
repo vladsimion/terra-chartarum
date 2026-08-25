@@ -1320,6 +1320,184 @@ const payload = {
       });
     };
 
+    /* The Crusades feature panel (KAN-387).
+     *
+     * The essay islands keep two distinctions the generic panel destroyed. A
+     * partition claim and a travelled route are different kinds of statement,
+     * and a field list shows them alike; a register that records what a city
+     * meant is not a record of where it was, and a pin with a fields table under
+     * it says otherwise. A reader who arrives from the Atlas rather than from
+     * the prose has to be told the same thing the prose tells, or the map
+     * quietly makes the argument the essay refuses. */
+    const CRU_STATE_CLAIMS: Record<string, string> = {
+      intended_destination: 'A clause in a contract. Not a place the fleet approached.',
+      negotiated_diversion: 'A change of terms, agreed under debt. Not a course correction.',
+      travelled_route: 'Where the ships went, generalised between ports.',
+      attack: 'An assault at a place, on a date.',
+      partition_claim: 'What a treaty assigned. Not what anyone occupied.',
+      durable_control: 'What was actually held, and for how long.',
+    };
+
+    const CRU_ROLE_CLAIMS: Record<string, string> = {
+      sacred_centre: 'The world is arranged around this city. Not where the city is.',
+      pilgrimage_destination: 'What the journey was for. Not that anyone arrived.',
+      textual_construct: 'The land has an order. Not that the order is a survey.',
+      cartographic_construct: 'The land ruled into squares, for an expedition that never sailed.',
+      network_node: 'Something passed through here: pilgrims, cargo, government.',
+      cartographic_memory: 'A later map remembering. Evidence about its own century only.',
+    };
+
+    const CRU_HELD_LABELS: Record<string, string> = {
+      held: 'held',
+      claimed_not_held: 'claimed, not held',
+      not_applicable: 'not a territorial claim',
+    };
+
+    const cruLocator = (properties: Record<string, unknown>) => {
+      const locator = String(properties.sourceLocator ?? '').trim();
+      if (!properties.sourceId) return 'no source record; see the catalogue';
+      if (!locator || locator === 'pending') return 'folio not transcribed';
+      return locator;
+    };
+
+    /* What a Crusades feature is claiming, in one line. The state kinds and the
+       Holy Land registers are different vocabularies over the same idea, and the
+       panel reads whichever the feature carries. */
+    const cruClaim = (properties: Record<string, unknown>) => {
+      const state = String(properties.stateKind ?? '');
+      if (state) return CRU_STATE_CLAIMS[state] ?? readable(state);
+      const role = String(properties.roleKind ?? '');
+      if (role) return CRU_ROLE_CLAIMS[role] ?? readable(role);
+      // The itinerary layer: a stage of a strip diagram, drawn where the town is.
+      return 'A stage of a drawn itinerary, placed at the modern position of the town it names.';
+    };
+
+    const cruTitle = (properties: Record<string, unknown>) =>
+      String(properties.title || properties.manuscriptLabel || properties.modernName || 'Feature');
+
+    const cruKindLabel = (properties: Record<string, unknown>) =>
+      readable(String(properties.stateKind || properties.roleKind || properties.mode || 'stage'));
+
+    const cruDates = (properties: Record<string, unknown>) => {
+      const from = String(properties.dateFrom ?? '').trim();
+      const to = String(properties.dateTo ?? '').trim();
+      if (!from) return '';
+      return from === to ? from : `${from}–${to}`;
+    };
+
+    const crusadesPopupHtml = (properties: Record<string, unknown>) => {
+      const held = String(properties.held ?? '');
+      const dates = cruDates(properties);
+      const days = properties.depictedDays;
+      return (
+        `<div class="am-pop am-cru-pop">` +
+        (dates ? `<span class="am-pop-year">${escapeHtml(dates)}</span>` : '') +
+        `<strong class="am-pop-title">${escapeHtml(cruTitle(properties))}</strong>` +
+        `<span class="am-pop-meta">${escapeHtml(cruKindLabel(properties))}</span>` +
+        `<span class="am-pop-blurb">${escapeHtml(cruClaim(properties))}</span>` +
+        (held && held !== 'not_applicable'
+          ? `<span class="am-pop-held" data-held="${escapeHtml(held)}">${escapeHtml(
+              CRU_HELD_LABELS[held] ?? readable(held),
+            )}</span>`
+          : '') +
+        (typeof days === 'number'
+          ? `<span class="am-pop-meta">${days} day-mark${days === 1 ? '' : 's'} in the diagram, ` +
+            `not a travel time</span>`
+          : '') +
+        `<span class="am-pop-meta">${escapeHtml(
+          readable(String(properties.geometryProvenance ?? '')),
+        )} · ${escapeHtml(cruLocator(properties))}</span>` +
+        `<span class="am-pop-blurb am-pop-warn">Unreviewed research record ` +
+        `(${escapeHtml(String(properties.reviewState ?? 'raw'))}). Not citable as established ` +
+        `evidence.</span>` +
+        `</div>`
+      );
+    };
+
+    const showCrusadesContext = (
+      layerId: string,
+      properties: Record<string, unknown>,
+      persist = true,
+    ) => {
+      const layer = geoLayers.find((candidate) => candidate.id === layerId);
+      const essayLink = reverseEssayLink(layerId);
+      const held = String(properties.held ?? '');
+      const dates = cruDates(properties);
+      showContext(
+        {
+          id: `feature:${String(properties.id ?? '')}`,
+          title: cruTitle(properties),
+          summary: cruClaim(properties),
+          meta:
+            `${cruKindLabel(properties)}${
+              held && held !== 'not_applicable' ? ` · ${CRU_HELD_LABELS[held] ?? held}` : ''
+            } · ` +
+            `${readable(String(properties.geometryProvenance ?? ''))} · ` +
+            `${cruLocator(properties)}${dates ? ` · ${dates}` : ''} · unreviewed`,
+          // While the essay is held the registry filters its slug out, so this
+          // falls back to the Atlas rather than linking at a 404.
+          href: essayLink?.href ?? '/atlas/',
+          linkLabel: essayLink?.label ? `${essayLink.label} →` : 'Explore the Atlas →',
+          year: Number(yearIn.value),
+          documents: layer?.documentationLinks ?? [],
+        },
+        persist,
+      );
+    };
+
+    const bindCrusadesInteractions = (layerId: string, renderLayerId: string) => {
+      if (!map || !PopupCtor) return;
+      let popup: MLPopup | null = null;
+      let pinned = false;
+      const show = (event: MapLayerMouseEvent, isPinned: boolean) => {
+        const feature = event.features?.[0];
+        if (!feature || !map || !PopupCtor) return;
+        popup?.remove();
+        pinned = isPinned;
+        // Points anchor on themselves; a generalised route line has no single
+        // position to speak from, so it speaks from where it was clicked.
+        const at =
+          feature.geometry.type === 'Point'
+            ? ((feature.geometry as GeoJSON.Point).coordinates as [number, number])
+            : ([event.lngLat.lng, event.lngLat.lat] as [number, number]);
+        popup = new PopupCtor({ closeButton: isPinned, closeOnClick: false, offset: 12 })
+          .setLngLat(at)
+          .setHTML(crusadesPopupHtml((feature.properties ?? {}) as Record<string, unknown>))
+          .addTo(map);
+        popup.on('close', () => {
+          pinned = false;
+        });
+      };
+      const enter = (event: MapLayerMouseEvent) => {
+        if (map) map.getCanvas().style.cursor = 'pointer';
+        if (!pinned) show(event, false);
+      };
+      const leave = () => {
+        if (map) map.getCanvas().style.cursor = '';
+        if (!pinned) popup?.remove();
+      };
+      const click = (event: MapLayerMouseEvent) => show(event, true);
+      const select = (event: MapLayerMouseEvent) => {
+        const feature = event.features?.[0];
+        if (feature) {
+          showCrusadesContext(layerId, (feature.properties ?? {}) as Record<string, unknown>);
+        }
+      };
+      map.on('mouseenter', renderLayerId, enter);
+      map.on('mouseleave', renderLayerId, leave);
+      map.on('click', renderLayerId, click);
+      map.on('click', renderLayerId, select);
+      layerCleanups.set(layerId, () => {
+        map?.off('mouseenter', renderLayerId, enter);
+        map?.off('mouseleave', renderLayerId, leave);
+        map?.off('click', renderLayerId, click);
+        map?.off('click', renderLayerId, select);
+        popup?.remove();
+        popup = null;
+        pinned = false;
+      });
+    };
+
     const bindHanseInteractions = (renderLayerId: string) => {
       if (!map || !PopupCtor) return;
       const show = (event: MapLayerMouseEvent, pinned: boolean) => {
@@ -1584,6 +1762,9 @@ const payload = {
       }
       if (l.id.startsWith('dacia-attestations') && built[0]) {
         bindDaciaInteractions(l.id, built[0].layer.id as string);
+      }
+      if (l.id.startsWith('crusades-') && built[0]) {
+        bindCrusadesInteractions(l.id, built[0].layer.id as string);
       }
       syncLayerTime(Number(yearIn.value));
     };
@@ -1968,6 +2149,11 @@ const payload = {
         // shared link quietly shows less provenance than the map does (KAN-311).
         if (sourceLayerId === 'hanseatic-places') {
           showHanseContext(properties, false);
+        } else if (sourceLayerId.startsWith('crusades-')) {
+          // The same rule one programme along (KAN-387). A shared link to a
+          // partition claim that came back as a field list would drop the
+          // distinction the proof is built on.
+          showCrusadesContext(sourceLayerId, properties, false);
         } else {
           showContext(
             {
@@ -3059,6 +3245,22 @@ const payload = {
     color: var(--gold);
     margin-top: 0.2rem;
   }
+  /* Claimed and held are the two words the Sea proof turns on, so they are the
+     two the map is never allowed to render alike (KAN-387). */
+  :global(.am-pop-held) {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--gold);
+  }
+  :global(.am-pop-held[data-held='claimed_not_held']) {
+    font-style: italic;
+  }
+  :global(.am-pop-held[data-held='claimed_not_held'])::before {
+    content: '⌇ ';
+  }
+  :global(.am-pop-held[data-held='held']) {
+    font-weight: 600;
+  }
 
   /* --- Layer inspector (KAN-402) --- */
   .am-dossier-title {
@@ -3269,8 +3471,10 @@ const payload = {
     font-size: 0.62rem;
     color: var(--ink-muted);
   }
-  /* An unreviewed record says so in the popup rather than looking like evidence. */
-  .am-pop-warn {
+  /* An unreviewed record says so in the popup rather than looking like evidence.
+     Global, because popup markup is injected outside this component's tree and a
+     scoped rule never reached it - the warning has been rendering unstyled. */
+  :global(.am-pop-warn) {
     color: var(--minium, #9e3b2b);
   }
 

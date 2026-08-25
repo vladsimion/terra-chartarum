@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "geo-40f732f7c12fd04e",
+  "release": "geo-6e3ab044672af114",
   "generatedBy": "scripts/geo-release.mjs",
   "assets": [
     {
@@ -497,6 +497,25 @@
       "sha256": "33e5199247efa618ae863a07b3cc285a2a2dad106c6699ff39ce1f4079c53149",
       "version": "33e5199247ef",
       "url": "/geo/crusades-fourth-crusade-events.geojson?v=33e5199247ef"
+    },
+    {
+      "id": "crusades-jerusalem-network",
+      "file": "crusades-jerusalem-network.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": [
+        "Point"
+      ],
+      "featureCount": 4,
+      "yearFrom": 1099,
+      "yearTo": 1372,
+      "source": "Terra Chartarum (compiled) - Crusades pilot cru-pilot-0.1, KAN-438",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; positions are modern reference context, and no Holy Land witness is cleared",
+      "bytes": 4760,
+      "sha256": "4b704b4f19098408d28169790b36ea294a3e6450c0ef0a3d6d49bfba30dce76b",
+      "version": "4b704b4f1909",
+      "url": "/geo/crusades-jerusalem-network.geojson?v=4b704b4f1909"
     }
   ]
 }

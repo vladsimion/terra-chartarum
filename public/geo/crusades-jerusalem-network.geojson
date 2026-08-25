@@ -1,0 +1,153 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          34.75,
+          32.05
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "catalogueObjectId": null,
+        "confidence": "medium",
+        "dateFrom": "1099",
+        "datePrecision": "year",
+        "dateTo": "1268",
+        "evidenceClass": "network_inference",
+        "geometryProvenance": "modern_reference",
+        "id": "cru-jer-jaffa-landfall",
+        "nameArabic": "Yafa",
+        "notes": "The sacred centre is reached through a working port and a day's road inland. The position is the modern town's, as everywhere in this corpus.",
+        "placeId": "cru-plc-jaffa",
+        "placeIds": [
+          "cru-plc-jaffa"
+        ],
+        "placeName": "Jaffa",
+        "placeNames": [
+          "Jaffa"
+        ],
+        "reviewState": "raw",
+        "roleKind": "network_node",
+        "sequence": 4,
+        "sourceId": "cru-jer-burchard",
+        "sourceLocator": "pending",
+        "title": "Jaffa: where a pilgrim actually landed",
+        "vmnReference": null
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          35.07,
+          32.92
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "catalogueObjectId": null,
+        "confidence": "medium",
+        "dateFrom": "1191",
+        "datePrecision": "year",
+        "dateTo": "1291",
+        "evidenceClass": "network_inference",
+        "geometryProvenance": "modern_reference",
+        "id": "cru-jer-acre-capital",
+        "nameArabic": "Akka",
+        "notes": "For most of the thirteenth century the kingdom of Jerusalem was administered from a port that is not Jerusalem. The Venetian Maritime Network already publishes the eastern ports with their own evidence; this row points at that layer rather than re-authoring it.",
+        "placeId": "cru-plc-acre",
+        "placeIds": [
+          "cru-plc-acre"
+        ],
+        "placeName": "Acre",
+        "placeNames": [
+          "Acre"
+        ],
+        "reviewState": "raw",
+        "roleKind": "network_node",
+        "sequence": 5,
+        "sourceId": "cru-jer-burchard",
+        "sourceLocator": "pending",
+        "title": "Acre: the port the kingdom was run from",
+        "vmnReference": "venetian-ports"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          29.92,
+          31.2
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "catalogueObjectId": null,
+        "confidence": "low",
+        "dateFrom": "1291",
+        "datePrecision": "year",
+        "dateTo": "1321",
+        "evidenceClass": "network_inference",
+        "geometryProvenance": "modern_reference",
+        "id": "cru-jer-alexandria-pivot",
+        "nameArabic": "al-Iskandariyya",
+        "notes": "By the fourteenth century the argument about how to reach Jerusalem is an argument about Egyptian trade. Confidence is low because the reading here is the treatise's general position and no passage has been located.",
+        "placeId": "cru-plc-alexandria",
+        "placeIds": [
+          "cru-plc-alexandria"
+        ],
+        "placeName": "Alexandria",
+        "placeNames": [
+          "Alexandria"
+        ],
+        "reviewState": "raw",
+        "roleKind": "network_node",
+        "sequence": 8,
+        "sourceId": "cru-jer-sanudo",
+        "sourceLocator": "pending",
+        "title": "Alexandria: the trade the recovery plans proposed to cut",
+        "vmnReference": "venetian-routes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          33.94,
+          35.12
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "catalogueObjectId": null,
+        "confidence": "low",
+        "dateFrom": "1291",
+        "datePrecision": "year",
+        "dateTo": "1372",
+        "evidenceClass": "network_inference",
+        "geometryProvenance": "modern_reference",
+        "id": "cru-jer-famagusta-after",
+        "nameArabic": null,
+        "notes": "The kingdom ends and the network does not. Cyprus takes the eastern traffic, which is why the last act of a crusading geography is a commercial one.",
+        "placeId": "cru-plc-famagusta",
+        "placeIds": [
+          "cru-plc-famagusta"
+        ],
+        "placeName": "Famagusta",
+        "placeNames": [
+          "Famagusta"
+        ],
+        "reviewState": "raw",
+        "roleKind": "network_node",
+        "sequence": 9,
+        "sourceId": "cru-jer-sanudo",
+        "sourceLocator": "pending",
+        "title": "Famagusta: where the traffic went after 1291",
+        "vmnReference": "venetian-ports"
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

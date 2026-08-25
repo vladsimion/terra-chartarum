@@ -392,7 +392,7 @@
         "layerId": "hanseatic-routes",
         "coverage": "partial",
         "missing": ["sources-evidence", "layer-explanation"],
-        "note": "As hanseatic-places. Additionally the evidence_type width scale (documented route / repeated connection / generalized reconstruction) is the layer\u2019s central epistemic claim and is only explained inside the technical dictionary."
+        "note": "As hanseatic-places. Additionally the evidence_type width scale (documented route / repeated connection / generalized reconstruction) is the layer’s central epistemic claim and is only explained inside the technical dictionary."
       },
       {
         "layerId": "hanseatic-events",
@@ -483,6 +483,12 @@
         "coverage": "covered",
         "missing": [],
         "note": "Born after the KAN-418 cutover rather than migrated through it: the layer shipped with a public Handbook record already in place, so it has no legacy documentationLinks to classify and nothing to migrate. Covered by /atlas/layers/crusades-fourth-crusade-events/ and the shared Crusades data fields."
+      },
+      {
+        "layerId": "crusades-jerusalem-network",
+        "coverage": "covered",
+        "missing": [],
+        "note": "Born after the KAN-418 cutover rather than migrated through it: the layer shipped with a public Handbook record already in place, so it has no legacy documentationLinks to classify and nothing to migrate. Covered by /atlas/layers/crusades-jerusalem-network/ and the shared Crusades data fields."
       }
     ]
   },

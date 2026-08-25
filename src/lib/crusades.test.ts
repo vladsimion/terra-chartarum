@@ -15,7 +15,14 @@ import {
   debtByTicket,
   gateProgress,
   vmnReferences,
+  JERUSALEM_REGISTERS,
+  getJerusalemRoles,
+  rolesInRegister,
+  placedRoles,
+  unplacedRoles,
+  catalogueObjects,
 } from './crusades';
+import { getCorpus } from './corpus';
 
 describe('the Road proof: a diagram is not a map', () => {
   const stages = getItinerary();
@@ -124,6 +131,7 @@ describe('the Atlas reads what the essay reads', () => {
     'crusades-itinerary',
     'crusades-fourth-crusade-routes',
     'crusades-fourth-crusade-events',
+    'crusades-jerusalem-network',
   ];
   const features = layers.flatMap(
     (layer) =>
@@ -182,9 +190,9 @@ describe('the flagship records why it is stopped (KAN-384, KAN-385)', () => {
   const gates = getProofGates();
   const debts = getOpenDebts();
 
-  it('gives both proofs all six gates', () => {
+  it('gives all three registers all six gates', () => {
     const proofs = [...new Set(gates.map((g) => g.proof))];
-    expect(proofs.sort()).toEqual(['fourth_crusade', 'matthew_paris']);
+    expect(proofs.sort()).toEqual(['fourth_crusade', 'jerusalem', 'matthew_paris']);
     for (const proof of proofs) {
       const forProof = gates.filter((g) => g.proof === proof);
       expect(forProof.map((g) => g.gate).sort(), proof).toEqual([
@@ -198,10 +206,15 @@ describe('the flagship records why it is stopped (KAN-384, KAN-385)', () => {
     }
   });
 
-  it('never claims a gate has passed while the corpus is untranscribed', () => {
-    // The single fact this whole register exists to keep honest. Every locator
-    // reads `pending`, so nothing may report as done.
-    expect(gates.filter((g) => g.status === 'passed')).toEqual([]);
+  it('never claims an evidence gate has passed while the corpus is untranscribed', () => {
+    // The single fact this register exists to keep honest, stated precisely.
+    // Research, rights, data, editorial and release all rest on reading a folio
+    // and clearing a witness, and no folio has been read. `interaction` does
+    // not: it asks whether the thing is built and reachable, and the Sea proof's
+    // is, on both the essay and the Atlas (KAN-387). Asserting zero across all
+    // six would have made the register unable to record work that was finished.
+    const evidenceGates = gates.filter((gate) => gate.gate !== 'interaction');
+    expect(evidenceGates.filter((gate) => gate.status === 'passed')).toEqual([]);
   });
 
   it('names the ticket that owns every gate', () => {
@@ -210,11 +223,15 @@ describe('the flagship records why it is stopped (KAN-384, KAN-385)', () => {
     }
   });
 
-  it('reaches every ticket in this batch from the debt that blocks it', () => {
+  it('reaches every blocked ticket from the debt that blocks it', () => {
     const tickets = debtByTicket().map(({ ticket }) => ticket);
-    for (const ticket of ['KAN-384', 'KAN-385', 'KAN-386', 'KAN-387', 'KAN-389']) {
+    for (const ticket of ['KAN-384', 'KAN-385', 'KAN-386', 'KAN-389', 'KAN-438']) {
       expect(tickets, ticket).toContain(ticket);
     }
+    // KAN-387 is off this list on purpose: its gate passed, so nothing blocks
+    // it any more. A ticket that stays here after its work lands is a register
+    // that cannot tell finished from stuck.
+    expect(tickets).not.toContain('KAN-387');
   });
 
   it('gives every open item a gate to block and a way out', () => {
@@ -239,7 +256,73 @@ describe('the flagship records why it is stopped (KAN-384, KAN-385)', () => {
     expect(kinds).toContain('verification');
   });
 
-  it('reports no progress it has not made', () => {
-    for (const { passed } of gateProgress()) expect(passed).toBe(0);
+  it('reports exactly the progress the registers record', () => {
+    const byProof = Object.fromEntries(gateProgress().map((p) => [p.proof, p]));
+    expect(byProof.matthew_paris.passed).toBe(0);
+    expect(byProof.fourth_crusade.passed).toBe(1);
+    expect(byProof.jerusalem.passed).toBe(0);
+    for (const { total } of gateProgress()) expect(total).toBe(6);
+  });
+
+  it('covers the third register with its own gates', () => {
+    expect(gates.filter((gate) => gate.proof === 'jerusalem')).toHaveLength(6);
+  });
+});
+
+describe('the Holy Land register: a city that is not one kind of thing', () => {
+  const roles = getJerusalemRoles();
+
+  it('holds every register the act argues in', () => {
+    for (const register of JERUSALEM_REGISTERS) {
+      expect(rolesInRegister(register).length, register).toBeGreaterThan(0);
+    }
+    expect(roles.map((role) => role.sequence)).toEqual(roles.map((_, index) => index + 1));
+  });
+
+  it('draws the ports and nothing else', () => {
+    // The rule the whole act rests on. A world image's centre, an itinerary's
+    // aim, a described land, a gridded sheet and a later emblem are claims
+    // about meaning, and a claim about meaning has no coordinate.
+    expect(placedRoles().every((role) => role.roleKind === 'network_node')).toBe(true);
+    expect(placedRoles()).toHaveLength(4);
+    expect(unplacedRoles().length).toBe(roles.length - placedRoles().length);
+    for (const role of unplacedRoles()) {
+      expect(role.geometryProvenance, role.id).toBe('not_spatial');
+    }
+  });
+
+  it('keeps later cartographic memory out of the source corpus', () => {
+    const memory = rolesInRegister('cartographic_memory');
+    expect(memory.length).toBeGreaterThan(0);
+    for (const role of memory) {
+      // An early-modern woodcut cited as a source is a witness to the twelfth
+      // century by accident. It has a catalogue record and nothing else.
+      expect(role.sourceId, role.id).toBeNull();
+      expect(role.catalogueObjectId, role.id).toBeTruthy();
+      expect(Number(role.dateFrom), role.id).toBeGreaterThanOrEqual(1291);
+    }
+  });
+
+  it('resolves every catalogue object it points at', () => {
+    // The join to the collection (KAN-391). A stable id that names nothing is a
+    // cross-reference the reader finds broken and the build does not.
+    const known = new Set(getCorpus().map((map) => map.id));
+    expect(catalogueObjects().length).toBeGreaterThan(0);
+    for (const id of catalogueObjects()) expect(known, id).toContain(id);
+  });
+
+  it('leaves every record unread', () => {
+    for (const role of roles) {
+      expect(role.reviewState, role.id).toBe('raw');
+      if (role.sourceId !== null) expect(role.sourceLocator, role.id).toBe('pending');
+    }
+  });
+
+  it('points at Venetian layers rather than re-authoring them', () => {
+    const referenced = roles.map((role) => role.vmnReference).filter(Boolean);
+    expect(referenced.length).toBeGreaterThan(0);
+    for (const layer of referenced) {
+      expect(['venetian-ports', 'venetian-routes', 'venetian-possessions']).toContain(layer);
+    }
   });
 });

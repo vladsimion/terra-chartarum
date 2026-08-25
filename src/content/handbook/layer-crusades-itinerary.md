@@ -18,7 +18,7 @@ citation:
   version: 'cru-pilot-0.1'
   licence: 'CC BY 4.0'
 technicalLinks:
-  - label: The two proofs
+  - label: The three registers
     href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/crusades/two-proofs.md'
   - label: Crusades source and rights audit
     href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/crusades/source-audit.md'

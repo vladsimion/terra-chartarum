@@ -26,8 +26,21 @@ RELEASE = DATA / "release" / "cru-pilot-0.1"
 PENDING = "pending"
 SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 
-PROOFS = {"matthew_paris", "fourth_crusade"}
-SOURCE_KINDS = {"manuscript_witness", "critical_edition", "primary_narrative", "instrument"}
+# Three registers, not three subjects. The two prototypes argue a road and a
+# campaign; the third argues the place both of them are pointed at, and it is a
+# separate proof because its evidence behaves differently - a world image is not
+# a witness to where anything was (KAN-438).
+PROOFS = {"matthew_paris", "fourth_crusade", "jerusalem"}
+PILOT_PROOFS = {"matthew_paris", "fourth_crusade"}
+SOURCE_KINDS = {
+    "manuscript_witness",
+    "critical_edition",
+    "primary_narrative",
+    "instrument",
+    # A single object with a holder and a name and no shelfmark in the ordinary
+    # sense: a cathedral's map, a church floor, a loose printed sheet.
+    "map_object",
+}
 RIGHTS = {
     "public_domain_text",
     "no_known_restrictions",
@@ -58,6 +71,7 @@ TABLE = "source-audit.csv"
 PLACES = "places.csv"
 STAGES = "itinerary-stages.csv"
 STATES = "fourth-crusade-states.csv"
+ROLES = "jerusalem-roles.csv"
 
 # CRU-3. A stage of the itinerary is a cell in a strip diagram, not a point on a
 # map, and `manuscript_depiction` is the only class it can have. The distinction
@@ -87,9 +101,11 @@ CONFIDENCE = {"high", "medium", "low", "contested", "unresolved"}
 # it may not re-author what is behind it.
 VMN_LAYERS = {"venetian-ports", "venetian-routes", "venetian-possessions"}
 
-# 15-25 core places is the pilot's own bound (KAN-385): enough to carry both
-# proofs, few enough that every one can be argued for.
-PLACE_RANGE = (15, 25)
+# 15-25 core places was the pilot's own bound (KAN-385): enough to carry both
+# proofs, few enough that every one can be argued for. The Holy Land register
+# gets its own bound rather than widening that one, because a flagship that
+# quietly relaxes a limit it set for itself has stopped having a limit.
+PLACE_RANGES = {"pilot": (15, 25), "jerusalem": (4, 10)}
 PLACE_ROLES = {
     "itinerary_stage",
     "itinerary_pass",
@@ -100,7 +116,47 @@ PLACE_ROLES = {
     "landfall",
     "objective",
     "post_1204_control",
+    # The Holy Land register (KAN-438). A sacred centre is a role a place holds
+    # in an argument, and it is the one role here that is never drawn.
+    "sacred_centre",
+    "levant_port",
+    "pilgrim_landfall",
+    "egyptian_port",
+    "successor_port",
 }
+
+# CRU-7. The registers the Holy Land act argues in. Each one is a different kind
+# of claim about the same city, and the difference is the act's subject: a world
+# image putting Jerusalem in the middle, a text ordering the land from Acre and a
+# port with a quay are not three versions of one statement.
+ROLE_KINDS = {
+    "sacred_centre",
+    "pilgrimage_destination",
+    "textual_construct",
+    "cartographic_construct",
+    "network_node",
+    "cartographic_memory",
+}
+ROLE_EVIDENCE = {
+    "world_image",
+    "manuscript_depiction",
+    "described_geography",
+    "cartographic_construction",
+    "network_inference",
+    "later_impression",
+}
+# Registers that are claims about meaning rather than about position. Giving one
+# of these a coordinate answers the question the act asks.
+UNPLACEABLE_ROLES = {
+    "sacred_centre",
+    "pilgrimage_destination",
+    "textual_construct",
+    "cartographic_construct",
+    "cartographic_memory",
+}
+# The year the last mainland crusader port fell. A record of later cartographic
+# memory has to be later than the thing it remembers.
+MEMORY_AFTER = 1291
 # The one basis a modern coordinate may have here. A medieval source gives
 # no coordinates, so a row claiming one would be inventing a precision the
 # record does not have.
@@ -184,6 +240,17 @@ def validate_inputs(*, include_release: bool = True) -> list[str]:
                 if stage not in REQUIRED_STAGES:
                     errors.append(f"{label}: '{stage}' is not a stage of the sequence")
                 stages.add(stage)
+        # The Holy Land sources say which register they can speak in, so a text
+        # cannot be silently recruited as evidence for a picture.
+        if proof == "jerusalem":
+            for register in pipe(row["covers"]):
+                if register not in ROLE_KINDS:
+                    errors.append(f"{label}: '{register}' is not a Holy Land register")
+                if register == "cartographic_memory":
+                    errors.append(
+                        f"{label}: later cartographic memory is carried by a catalogue record, "
+                        "not by a source in this audit"
+                    )
 
     # Both proofs need witnesses, and the Sea proof needs its whole sequence:
     # a set that cannot reach the partition cannot say what was claimed after
@@ -206,6 +273,7 @@ def validate_inputs(*, include_release: bool = True) -> list[str]:
 
     validate_stages(errors, place_ids)
     validate_states(errors, place_ids, seen)
+    validate_roles(errors, place_ids, seen)
     if include_release:
         validate_release(errors)
     return errors
@@ -225,11 +293,15 @@ def validate_places(errors: list[str]) -> set[str]:
     seen: set[str] = set()
     proofs: dict[str, int] = {}
 
-    if not PLACE_RANGE[0] <= len(rows) <= PLACE_RANGE[1]:
-        errors.append(
-            f"places: the pilot holds {PLACE_RANGE[0]}-{PLACE_RANGE[1]} core places, "
-            f"found {len(rows)}"
-        )
+    counts = {"pilot": 0, "jerusalem": 0}
+    for row in rows:
+        counts["jerusalem" if row["proof"] == "jerusalem" else "pilot"] += 1
+    for group, (low, high) in sorted(PLACE_RANGES.items()):
+        if not low <= counts[group] <= high:
+            errors.append(
+                f"places: the {group} register holds {low}-{high} core places, "
+                f"found {counts[group]}"
+            )
 
     for row in rows:
         place_id = row["place_id"]
@@ -264,14 +336,27 @@ def validate_places(errors: list[str]) -> set[str]:
             errors.append(
                 f"{label}: a Greek form must say in script_note how it relates to the Latin one"
             )
+        if row["name_arabic"] and "Arabic" not in row["script_note"]:
+            errors.append(
+                f"{label}: an Arabic form must say in script_note how it relates to the others"
+            )
+        # The Holy Land rule (KAN-438). A place in the Levant register that
+        # carries only the names its conquerors used, with nothing saying why,
+        # publishes the crusaders' map of the place as the place.
+        if row["proof"] == "jerusalem" and not row["name_arabic"]:
+            if "Arabic" not in row["script_note"]:
+                errors.append(
+                    f"{label}: a Holy Land place needs an Arabic form, or a script_note saying "
+                    "why it has none"
+                )
 
         try:
             lon, lat = float(row["lon"]), float(row["lat"])
         except ValueError:
             errors.append(f"{label}: coordinates are not numbers")
         else:
-            if not (-25.0 <= lon <= 45.0 and 30.0 <= lat <= 60.0):
-                errors.append(f"{label}: {lon},{lat} is outside the Road-to-Sea window")
+            if not (-25.0 <= lon <= 45.0 and 29.0 <= lat <= 60.0):
+                errors.append(f"{label}: {lon},{lat} is outside the London-to-Jerusalem window")
         if row["coordinate_basis"] not in COORDINATE_BASES:
             errors.append(
                 f"{label}: '{row['coordinate_basis']}' is not a basis these coordinates can have; "
@@ -421,6 +506,125 @@ def validate_states(errors: list[str], places: set[str], sources: set[str]) -> N
         errors.append(f"fourth-crusade-states: no record for the '{missing}' state")
 
 
+def validate_roles(errors: list[str], places: set[str], sources: set[str]) -> None:
+    """The Holy Land register (KAN-438).
+
+    The act this table carries is that Jerusalem is not one kind of thing. It is
+    the middle of a world image, the end of a road that stops at Otranto, a land
+    described in divisions taken from a port, a grid drawn for an expedition
+    nobody mounted, a set of quays with cargo on them, and - centuries later - an
+    emblem. Six registers, and the rules below exist to stop them collapsing
+    into a list of places with dates.
+
+    Two of the rules do most of the work. A register that is a claim about
+    meaning may not carry a position, because giving the sacred centre a
+    coordinate answers the question the act asks: the centre of a mappa mundi is
+    not at 31.78N, it is in the middle. And later cartographic memory may not
+    cite a source in the audit at all - an early-modern woodcut that centres
+    Jerusalem is evidence about the sixteenth century, and the only way to keep
+    it from becoming evidence about the twelfth is to give it nowhere in the
+    corpus to stand.
+    """
+    rows = read(ROLES)
+    seen: set[str] = set()
+    sequences: set[int] = set()
+    kinds: set[str] = set()
+
+    for row in rows:
+        role_id = row["role_id"]
+        label = f"jerusalem-roles[{role_id}]"
+        if not role_id.startswith("cru-jer-") or not SLUG.match(role_id):
+            errors.append(f"{label}: role_id must be a cru-jer- slug")
+        if role_id in seen:
+            errors.append(f"{label}: duplicate role_id")
+        seen.add(role_id)
+
+        kind = row["role_kind"]
+        if kind not in ROLE_KINDS:
+            errors.append(f"{label}: role_kind '{kind}' is not a Holy Land register")
+        kinds.add(kind)
+        if row["evidence_class"] not in ROLE_EVIDENCE:
+            errors.append(f"{label}: evidence_class '{row['evidence_class']}' is not recognised")
+        if row["geometry_provenance"] not in {"modern_reference", "not_spatial"}:
+            errors.append(f"{label}: geometry_provenance is not recognised")
+        if row["confidence"] not in CONFIDENCE:
+            errors.append(f"{label}: confidence '{row['confidence']}' is not recognised")
+        if row["review_state"] not in REVIEW_STATES:
+            errors.append(f"{label}: review_state '{row['review_state']}' is not recognised")
+        for field in ("display_name", "notes"):
+            if not row[field]:
+                errors.append(f"{label}: {field} is required")
+
+        if not row["sequence"].isdigit():
+            errors.append(f"{label}: sequence must be a number")
+        else:
+            value = int(row["sequence"])
+            if value in sequences:
+                errors.append(f"{label}: duplicate sequence {value}")
+            sequences.add(value)
+
+        named = pipe(row["place_ids"])
+        if not named:
+            errors.append(f"{label}: a register record must name the place it is about")
+        for place_id in named:
+            if place_id not in places:
+                errors.append(f"{label}: place '{place_id}' does not resolve")
+
+        for field in ("date_from", "date_to"):
+            if not row[field].lstrip("-").isdigit():
+                errors.append(f"{label}: {field} must be a year")
+        if row["date_from"].isdigit() and row["date_to"].isdigit():
+            if int(row["date_from"]) > int(row["date_to"]):
+                errors.append(f"{label}: the record ends before it starts")
+
+        # The rule the act rests on.
+        if kind in UNPLACEABLE_ROLES and row["geometry_provenance"] != "not_spatial":
+            errors.append(
+                f"{label}: '{kind}' is a claim about what the city means, not about where it is; "
+                "a position here answers the question the register asks"
+            )
+        if kind == "network_node":
+            if row["geometry_provenance"] != "modern_reference":
+                errors.append(f"{label}: a node in the network is a port and is drawn at one")
+            if len(named) != 1:
+                errors.append(f"{label}: a node is one place, not {len(named)}")
+
+        if kind == "cartographic_memory":
+            # An early-modern map of the Holy Land is not a witness to medieval
+            # geography, and the surest way to keep it from becoming one is to
+            # refuse it a row in the source corpus.
+            if row["source_id"]:
+                errors.append(
+                    f"{label}: later cartographic memory rests on its catalogue record, not on a "
+                    "source in the audit; citing one would make a later map evidence for an "
+                    "earlier geography"
+                )
+            if not row["catalogue_object_id"]:
+                errors.append(f"{label}: later cartographic memory must name its catalogue object")
+            if row["date_from"].isdigit() and int(row["date_from"]) < MEMORY_AFTER:
+                errors.append(
+                    f"{label}: memory of the crusader Holy Land cannot predate {MEMORY_AFTER}"
+                )
+        else:
+            if row["source_id"] not in sources:
+                errors.append(f"{label}: source_id '{row['source_id']}' does not resolve")
+            if not row["source_locator"]:
+                errors.append(f"{label}: source_locator is required, pending if unread")
+            if row["review_state"] != "raw" and row["source_locator"] == PENDING:
+                errors.append(f"{label}: a record above raw needs the page it was read from")
+
+        if row["catalogue_object_id"] and not SLUG.match(row["catalogue_object_id"]):
+            errors.append(f"{label}: catalogue_object_id must be a catalogue slug")
+        if row["vmn_reference"] and row["vmn_reference"] not in VMN_LAYERS:
+            errors.append(f"{label}: vmn_reference '{row['vmn_reference']}' is not a VMN layer")
+
+    if sequences and sequences != set(range(1, len(rows) + 1)):
+        errors.append("jerusalem-roles: the sequence must run 1..n with no gaps")
+    # An act missing a register is an act making a different argument.
+    for missing in sorted(ROLE_KINDS - kinds):
+        errors.append(f"jerusalem-roles: no record in the '{missing}' register")
+
+
 def validate_release(errors: list[str]) -> None:
     """Check the compiled pilot against the hashes it recorded (KAN-388).
 
@@ -565,10 +769,12 @@ def validate_debts(errors: list[str], pairs: set[tuple[str, str]]) -> None:
 
 def readiness(rows: list[dict[str, str]], places: list[dict[str, str]]) -> list[str]:
     cleared = [row for row in rows if row["production_role"] != "research_only"]
-    itinerary = [row for row in rows if row["proof"] == "matthew_paris"]
+    by_proof = {proof: sum(1 for row in rows if row["proof"] == proof) for proof in sorted(PROOFS)}
+    roles = read(ROLES)
     return [
-        f"  sources: {len(rows)} audited across two proofs "
-        f"({len(itinerary)} Matthew Paris, {len(rows) - len(itinerary)} Fourth Crusade)",
+        f"  sources: {len(rows)} audited across three registers "
+        f"({by_proof['matthew_paris']} Matthew Paris, "
+        f"{by_proof['fourth_crusade']} Fourth Crusade, {by_proof['jerusalem']} Holy Land)",
         f"  verification: {sum(1 for r in rows if r['verification_state'] == 'verified')} verified, "
         f"{sum(1 for r in rows if r['locator'] == PENDING)} with untranscribed folios",
         f"  rights: {len(cleared)} cleared for publication; "
@@ -581,6 +787,10 @@ def readiness(rows: list[dict[str, str]], places: list[dict[str, str]]) -> list[
         f"  Sea proof: {len(read(STATES))} states across "
         f"{len({r['state_kind'] for r in read(STATES)})} kinds; "
         f"{sum(1 for r in read(STATES) if r['held'] == 'claimed_not_held')} claimed but not held",
+        f"  Holy Land register: {len(roles)} records across "
+        f"{len({r['role_kind'] for r in roles})} registers; "
+        f"{sum(1 for r in roles if r['geometry_provenance'] == 'not_spatial')} of them carry no "
+        f"position, because what they record is not a position",
     ]
 
 

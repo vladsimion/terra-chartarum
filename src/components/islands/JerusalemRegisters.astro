@@ -1,0 +1,477 @@
+---
+/**
+ * Jerusalem in six registers (KAN-438).
+ *
+ * The two prototypes argue a road and a campaign. This one argues the city both
+ * of them are pointed at, and the difficulty is that the city is not one kind of
+ * object. It is the middle of a world image, the end of a road that stops in
+ * Apulia, a land described in divisions taken from a working port, a grid ruled
+ * for an expedition nobody mounted, four quays with cargo on them, and - three
+ * centuries after the last of it fell - an emblem printed in Magdeburg.
+ *
+ * A map of "crusader Jerusalem" would show one dot in Judaea and lose all six.
+ * So the island puts the registers first and the records second: you choose a
+ * kind of claim, and it tells you what that kind can assert and what it cannot.
+ * Five of the six carry no position at all, which is why four of the ten records
+ * reach a layer.
+ *
+ * Nothing here shows an object. The register whose subject is pictures of
+ * Jerusalem can show no picture of Jerusalem: no world image and no gridded
+ * sheet in this corpus is cleared for reproduction, and the caption says so
+ * rather than leaving a reader to notice the absence.
+ */
+import {
+  JERUSALEM_REGISTERS,
+  getJerusalemRoles,
+  placedRoles,
+  unplacedRoles,
+  type JerusalemRegister,
+} from '../../lib/crusades';
+
+const roles = getJerusalemRoles();
+const placed = placedRoles();
+const unplaced = unplacedRoles();
+
+const REGISTER_LABELS: Record<JerusalemRegister, string> = {
+  sacred_centre: 'The centre of the world',
+  pilgrimage_destination: 'The end of the road',
+  textual_construct: 'The land described',
+  cartographic_construct: 'The land ruled into squares',
+  network_node: 'The ports',
+  cartographic_memory: 'The afterlife',
+};
+
+/**
+ * What each register can say, and what it cannot. Written out because the
+ * whole act turns on the second column: a world image that centres Jerusalem is
+ * evidence about how the world was imagined and evidence about nothing else,
+ * and a label alone lets a reader borrow its authority for the wrong claim.
+ */
+const REGISTER_ASSERTS: Record<JerusalemRegister, string> = {
+  sacred_centre: 'The world is arranged around this city.',
+  pilgrimage_destination: 'This is what the journey was for.',
+  textual_construct: 'The land has an order, and this is the order.',
+  cartographic_construct: 'The land can be ruled into squares and planned over.',
+  network_node: 'Something passed through here - pilgrims, cargo, government.',
+  cartographic_memory: 'The centring outlived the thing it was about.',
+};
+
+const REGISTER_CANNOT: Record<JerusalemRegister, string> = {
+  sacred_centre:
+    'Where the city is. A centre in a world image is a position in an argument, not on the ground.',
+  pilgrimage_destination:
+    'That anyone arrived. The drawn road stops at a port in Apulia and the sea beyond it has no day-marks.',
+  textual_construct:
+    'That the order is a survey. Divisions taken from a centre are a way of writing a land down, not of measuring it.',
+  cartographic_construct:
+    'That the squares were surveyed, or that the expedition they were drawn for ever sailed.',
+  network_node:
+    'That the place mattered for the reason the sacred geography gives. A quay is evidence of traffic.',
+  cartographic_memory:
+    'Anything whatever about the twelfth century. This is a sixteenth-century object and it is in the register that says so.',
+};
+
+const registers = JERUSALEM_REGISTERS.map((register) => ({
+  id: register,
+  label: REGISTER_LABELS[register],
+  asserts: REGISTER_ASSERTS[register],
+  cannot: REGISTER_CANNOT[register],
+  records: roles.filter((role) => role.roleKind === register),
+}));
+
+function dateLabel(role: (typeof roles)[number]): string {
+  return role.dateFrom === role.dateTo ? role.dateFrom : `${role.dateFrom} – ${role.dateTo}`;
+}
+---
+
+<figure class="registers" data-registers>
+  <div class="registers-grid">
+    <div class="registers-side">
+      <h3 class="registers-heading">Six registers</h3>
+      <p class="registers-sub">
+        The same city, in six kinds of claim. Choose one and the panel says what it can carry.
+      </p>
+      <ol class="register-list" aria-label="Registers in which Jerusalem appears">
+        {
+          registers.map((register, index) => (
+            <li>
+              <button
+                type="button"
+                class:list={['register', index === 0 && 'is-selected', `is-${register.id}`]}
+                aria-pressed={index === 0 ? 'true' : 'false'}
+                data-register={register.id}
+                tabindex={index === 0 ? 0 : -1}
+              >
+                <span class="register-label">{register.label}</span>
+                <span class="register-meta">
+                  <span class="register-count">
+                    {register.records.length} record{register.records.length === 1 ? '' : 's'}
+                  </span>
+                  <span
+                    class="register-placed"
+                    data-placed={
+                      register.records.every(
+                        (role) => role.geometryProvenance === 'modern_reference',
+                      )
+                        ? 'yes'
+                        : 'no'
+                    }
+                  >
+                    {register.records.every(
+                      (role) => role.geometryProvenance === 'modern_reference',
+                    )
+                      ? 'on the map'
+                      : 'no position'}
+                  </span>
+                </span>
+              </button>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+
+    <div class="registers-side" aria-live="polite">
+      {
+        registers.map((register, index) => (
+          <div class="panel" data-panel={register.id} hidden={index !== 0}>
+            <h3 class="registers-heading">{register.label}</h3>
+            <dl class="panel-claim">
+              <div>
+                <>
+                  <dt>Asserts</dt>
+                  <dd>{register.asserts}</dd>
+                </>
+              </div>
+              <div class="panel-cannot">
+                <>
+                  <dt>Cannot assert</dt>
+                  <dd>{register.cannot}</dd>
+                </>
+              </div>
+            </dl>
+
+            <ol class="record-list">
+              {register.records.map((role) => (
+                <li class="record">
+                  <header class="record-head">
+                    <span class="record-place">{role.placeNames.join(' · ')}</span>
+                    <span class="record-date">{dateLabel(role)}</span>
+                  </header>
+                  <h4 class="record-title">{role.title}</h4>
+                  <p class="record-note">{role.notes}</p>
+                  <dl class="record-evidence">
+                    <div>
+                      <>
+                        <dt>Evidence</dt>
+                        <dd>{role.evidenceClass.replaceAll('_', ' ')}</dd>
+                      </>
+                    </div>
+                    <div>
+                      <>
+                        <dt>Position</dt>
+                        <dd>
+                          {role.geometryProvenance === 'not_spatial' ? (
+                            <em>none - what this records is not one</em>
+                          ) : (
+                            'modern reference'
+                          )}
+                        </dd>
+                      </>
+                    </div>
+                    <div>
+                      <>
+                        <dt>Confidence</dt>
+                        <dd>{role.confidence}</dd>
+                      </>
+                    </div>
+                    <div>
+                      <>
+                        <dt>Locator</dt>
+                        <dd>
+                          {role.sourceId === null ? (
+                            <em>no source record - see the catalogue</em>
+                          ) : role.sourceLocator === 'pending' ? (
+                            <em>not read</em>
+                          ) : (
+                            role.sourceLocator
+                          )}
+                        </dd>
+                      </>
+                    </div>
+                    {role.catalogueObjectId && (
+                      <div>
+                        <>
+                          <dt>Object</dt>
+                          <dd>
+                            <a href={`/collection/${role.catalogueObjectId}/`}>
+                              {role.catalogueObjectId}
+                            </a>
+                          </dd>
+                        </>
+                      </div>
+                    )}
+                    {role.vmnReference && (
+                      <div>
+                        <>
+                          <dt>Reuses</dt>
+                          <dd>
+                            <code>{role.vmnReference}</code>
+                          </dd>
+                        </>
+                      </div>
+                    )}
+                  </dl>
+                </li>
+              ))}
+            </ol>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <figcaption>
+    <strong>
+      {roles.length} records, of which {placed.length} are on a layer and {unplaced.length} are on none.
+    </strong>{' '}
+    The five registers that carry no position are not incomplete. The middle of a mappa mundi is not at
+    31.78° N, and pinning it there would convert a claim about what the world is arranged around into
+    a claim about where a city is - which is the substitution this act exists to refuse. No object is
+    shown: the Psalter map, the Hereford map and the manuscript carrying the gridded Holy Land all need
+    a rights review, so the register whose subject is pictures of Jerusalem shows no picture of Jerusalem.
+    Every locator here reads <em>not read</em>.
+  </figcaption>
+</figure>
+
+<script>
+  function initialise(root: HTMLElement) {
+    if (root.dataset.ready) return;
+    root.dataset.ready = 'true';
+
+    const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-register]'));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-panel]'));
+
+    function select(id: string, focus: boolean) {
+      for (const button of buttons) {
+        const on = button.dataset.register === id;
+        button.classList.toggle('is-selected', on);
+        button.setAttribute('aria-pressed', on ? 'true' : 'false');
+        // Roving tabindex: six registers are one tab stop, not six.
+        button.tabIndex = on ? 0 : -1;
+        if (on && focus) button.focus();
+      }
+      for (const panel of panels) {
+        panel.hidden = panel.dataset.panel !== id;
+      }
+    }
+
+    buttons.forEach((button, index) => {
+      button.addEventListener('click', () => select(button.dataset.register!, false));
+      button.addEventListener('keydown', (event) => {
+        const delta =
+          event.key === 'ArrowDown' || event.key === 'ArrowRight'
+            ? 1
+            : event.key === 'ArrowUp' || event.key === 'ArrowLeft'
+              ? -1
+              : event.key === 'Home'
+                ? -index
+                : event.key === 'End'
+                  ? buttons.length - 1 - index
+                  : 0;
+        if (!delta) return;
+        event.preventDefault();
+        const next = Math.min(buttons.length - 1, Math.max(0, index + delta));
+        select(buttons[next].dataset.register!, true);
+      });
+    });
+  }
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-registers]')) {
+    initialise(root);
+  }
+</script>
+
+<style>
+  .registers {
+    margin: 2.5rem 0;
+    padding: 1.25rem;
+    border: 1px solid var(--rule, #3a3226);
+    border-radius: 4px;
+    background: var(--surface-raised, #17130e);
+  }
+
+  .registers-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 46rem) {
+    .registers-grid {
+      grid-template-columns: minmax(0, 17rem) minmax(0, 1fr);
+    }
+  }
+
+  .registers-heading {
+    margin: 0 0 0.15rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .registers-sub {
+    margin: 0 0 0.9rem;
+    font-size: 0.8rem;
+    opacity: 0.7;
+  }
+
+  .register-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .register {
+    width: 100%;
+    display: grid;
+    gap: 0.2rem;
+    padding: 0.55rem 0.7rem;
+    text-align: left;
+    color: inherit;
+    font: inherit;
+    background: transparent;
+    border: 1px solid var(--rule, #3a3226);
+    border-left-width: 3px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  .register:hover {
+    border-color: color-mix(in srgb, var(--gold, #d4b87a) 45%, transparent);
+  }
+
+  .register.is-selected {
+    border-left-color: var(--gold, #d4b87a);
+    background: color-mix(in srgb, var(--gold, #d4b87a) 8%, transparent);
+  }
+
+  /* The register that is not evidence for the period the essay is about reads
+     differently from the five that are. */
+  .register.is-cartographic_memory {
+    border-left-style: dashed;
+  }
+
+  .register-label {
+    font-size: 0.9rem;
+  }
+
+  .register-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.65;
+  }
+
+  .register-placed[data-placed='no'] {
+    font-style: italic;
+  }
+
+  .panel-claim {
+    display: grid;
+    gap: 0.45rem;
+    margin: 0 0 1rem;
+    padding: 0.75rem 0.85rem;
+    border: 1px solid var(--rule, #3a3226);
+    border-radius: 3px;
+    font-size: 0.85rem;
+  }
+
+  .panel-claim dt {
+    font-size: 0.7rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+
+  .panel-claim dd {
+    margin: 0.15rem 0 0;
+    line-height: 1.5;
+  }
+
+  .panel-cannot dd {
+    color: var(--gold, #d4b87a);
+  }
+
+  .record-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .record {
+    padding: 0.8rem 0.9rem;
+    border: 1px solid var(--rule, #3a3226);
+    border-radius: 3px;
+  }
+
+  .record-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  .record-title {
+    margin: 0.35rem 0 0.3rem;
+    font-size: 0.98rem;
+  }
+
+  .record-note {
+    margin: 0 0 0.7rem;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    opacity: 0.82;
+  }
+
+  .record-evidence {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 1.25rem;
+    margin: 0;
+    font-size: 0.75rem;
+  }
+
+  .record-evidence div {
+    display: flex;
+    gap: 0.35rem;
+  }
+
+  .record-evidence dt {
+    opacity: 0.55;
+  }
+
+  .record-evidence dd {
+    margin: 0;
+  }
+
+  figcaption {
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule, #3a3226);
+    font-size: 0.8rem;
+    line-height: 1.55;
+    opacity: 0.72;
+  }
+</style>

@@ -207,13 +207,14 @@ const RAW: unknown[] = [
     id: 'maps-for-a-crusade',
     title: 'Maps for a Crusade',
     summary:
-      'A drawn road that is not a map, and a sea campaign whose intention, diversion, claim and possession were four different things.',
+      'A drawn road that is not a map, a sea campaign whose intention, diversion, claim and possession were four different things, and the city all of it was pointed at.',
     description:
-      'The two bounded proofs of the Crusades flagship, held together because the argument runs between them: a thirteenth-century itinerary organises the world as a sequence of days, and fifty years earlier a fleet had already organised it as ports, contracts and control. No member has a default, because no witness in this corpus is cleared for publication and no folio has been transcribed.',
+      'The three registers of the Crusades flagship, held together because the argument runs between them: a thirteenth-century itinerary organises the world as a sequence of days, fifty years earlier a fleet had already organised it as ports, contracts and control, and Jerusalem is the middle of a world image, the end of a road and a working port in different registers at once. No member has a default, because no witness in this corpus is cleared for publication and no folio has been transcribed.',
     layerIds: [
       'crusades-itinerary',
       'crusades-fourth-crusade-routes',
       'crusades-fourth-crusade-events',
+      'crusades-jerusalem-network',
     ],
     defaultLayerIds: [],
     room: 'road',
@@ -226,6 +227,8 @@ const RAW: unknown[] = [
       'constantinople',
       'itinerary',
       'pilgrimage',
+      'jerusalem',
+      'holy land',
     ],
     featured: false,
     sortWeight: 60,
