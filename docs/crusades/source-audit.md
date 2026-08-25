@@ -1,10 +1,11 @@
 # Crusades flagship: Phase 0 source and rights audit
 
-Two bounded proofs share one audit in
+Three registers share one audit in
 [`data/crusades/source-audit.csv`](../../data/crusades/source-audit.csv):
-Matthew Paris's itinerary from London to Apulia, and the Fourth Crusade's
-Venice-Zara-Constantinople sequence. Nine sources, gated by
-`npm run crusades:validate`, which also runs inside `npm run build`.
+Matthew Paris's itinerary from London to Apulia, the Fourth Crusade's
+Venice-Zara-Constantinople sequence, and the Holy Land the first two are pointed
+at. Fourteen sources, gated by `npm run crusades:validate`, which also runs
+inside `npm run build`.
 
 ## The gap this audit keeps open
 
@@ -16,7 +17,10 @@ pending. Today **every folio reference is pending**: the audit identifies the
 witnesses and stops there.
 
 A manuscript witness must carry its shelfmark or it is not identified, and the
-validator refuses `n/a` for that kind.
+validator refuses `n/a` for that kind. `map_object` was added for the Holy Land
+register (KAN-438): the Hereford Mappa Mundi has a holder and a name and no
+shelfmark in the ordinary sense, and recording it as a manuscript witness with an
+invented one would be worse than recording what it is.
 
 ## What is not cleared
 
@@ -54,18 +58,45 @@ of Clari and Niketas Choniates are in the set. Villehardouin negotiated the
 contract he describes; a sequence told only by its negotiators is not the
 sequence, and the prototype has to surface that rather than smooth it over.
 
+## What the Holy Land register may cite (KAN-438)
+
+Five sources carry the third register: the Psalter world map and the Hereford
+Mappa Mundi for the sacred centre, Burchard of Mount Sion's description and
+Marino Sanudo Torsello's recovery treatise for the described and planned land,
+and the British Library manuscript of that treatise for the maps attributed to
+Pietro Vesconte. Each declares which register it may speak in, in the same
+`covers` field the Sea proof uses for its sequence, so a text cannot be silently
+recruited as evidence about a picture.
+
+One register is closed to the audit entirely. `cartographic_memory` records later
+maps that go on centring Jerusalem, and a source row for one of those would make
+an early-modern object a witness to a medieval geography. The validator refuses a
+source declaring it covers that register, and refuses a memory record that cites
+a source at all: what such a record has is a catalogue id, and that is the whole
+of its standing.
+
+Two of the five are open as texts, in nineteenth- and seventeenth-century printed
+editions. Three need a rights review, which is why the register whose subject is
+pictures of Jerusalem can show no picture of Jerusalem.
+
 ## Dealer imagery
 
 Auction and aggregator listings are not publication sources, and the rule is
 data rather than an instruction: a `repository_url` on a dealer or aggregator
 host fails validation, so a later addition cannot forget it.
 
-## The pilot place authority (KAN-385)
+## The place authority (KAN-385)
 
-Twenty core places in [`data/crusades/places.csv`](../../data/crusades/places.csv),
-fourteen carrying the Matthew Paris itinerary from London to Otranto and six
-carrying the Fourth Crusade from the Venetian contract to Adrianople. Both
-prototypes read this one table; neither keeps a copy.
+Twenty-five core places in
+[`data/crusades/places.csv`](../../data/crusades/places.csv): fourteen carrying
+the Matthew Paris itinerary from London to Otranto, six carrying the Fourth
+Crusade from the Venetian contract to Adrianople, and five carrying the Holy Land
+register from Jerusalem to Famagusta. All three registers read this one table;
+none keeps a copy.
+
+The pilot's bound of 15-25 was not widened to fit the third register. It counts
+separately, at 4-10, because a limit that relaxes whenever it binds has stopped
+being a limit.
 
 **Modern coordinates are reference context and nothing else.** No source in
 either proof gives a position - an itinerary counts days and a chronicle names
@@ -81,6 +112,15 @@ difference is much of what the Sea proof is about - so a row carrying a Greek
 form must say in `script_note` how it stands to the Latin one. A core place with
 neither a Latin nor a Greek form fails: without one it is a modern town with a
 crusade attached to it.
+
+**A Levant place must be able to carry its own name.** The table gained
+`name_arabic` for the Holy Land register, and a place there must either fill it
+or say in `script_note` why it has none - as Famagusta does, whose working
+languages were Greek, French and Italian. A Holy Land corpus recording only the
+names its conquerors used, with nothing saying why, publishes the crusaders' map
+of the place as the place. What is in the column today is romanisation from
+published reference works rather than reading of an Arabic source, and that is
+recorded as open item `vd-cru-arabic-forms`.
 
 One place carries two events. Constantinople was restored to an emperor in 1203
 and sacked in 1204, and a single point cannot hold both: the interaction

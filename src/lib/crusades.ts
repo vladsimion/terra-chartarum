@@ -1,7 +1,8 @@
 /**
- * Crusades pilot: the Road and the Sea (KAN-386 to KAN-389)
+ * Crusades flagship: the Road, the Sea and the city both were pointed at
+ * (KAN-386 to KAN-389, extended by KAN-438)
  *
- * Two bounded proofs, and one distinction each that the software has to keep.
+ * Three registers, and one distinction each that the software has to keep.
  *
  * **Road.** Matthew Paris's itinerary is a strip diagram: a vertical sequence of
  * stages with day-marks between them, and no projection of any kind. A stage
@@ -226,4 +227,80 @@ export function gateProgress(): Array<{ proof: string; passed: number; total: nu
       total: gates.length,
     };
   });
+}
+
+/**
+ * The Holy Land register (KAN-438).
+ *
+ * `sourceId` is null for later cartographic memory, and only for that: an
+ * early-modern map that centres Jerusalem is a witness to the sixteenth
+ * century, and the validator refuses it a row in the medieval source corpus so
+ * that it cannot become a witness to the twelfth. What it has instead is a
+ * catalogue record, which is the whole of its standing here.
+ */
+export interface JerusalemRole {
+  id: string;
+  sequence: number;
+  roleKind: string;
+  title: string;
+  dateFrom: string;
+  dateTo: string;
+  datePrecision: string;
+  placeIds: string[];
+  placeNames: string[];
+  evidenceClass: string;
+  geometryProvenance: 'modern_reference' | 'not_spatial';
+  confidence: string;
+  reviewState: string;
+  sourceId: string | null;
+  sourceLocator: string | null;
+  /** A record in this site's own catalogue, joined by its stable id. */
+  catalogueObjectId: string | null;
+  vmnReference: string | null;
+  notes: string;
+}
+
+/** The registers, in the order the essay argues them. */
+export const JERUSALEM_REGISTERS = [
+  'sacred_centre',
+  'pilgrimage_destination',
+  'textual_construct',
+  'cartographic_construct',
+  'network_node',
+  'cartographic_memory',
+] as const;
+export type JerusalemRegister = (typeof JERUSALEM_REGISTERS)[number];
+
+const ROLES = pilot.roles as JerusalemRole[];
+
+export function getJerusalemRoles(): JerusalemRole[] {
+  return [...ROLES].sort((a, b) => a.sequence - b.sequence);
+}
+
+export function rolesInRegister(register: JerusalemRegister): JerusalemRole[] {
+  return getJerusalemRoles().filter((role) => role.roleKind === register);
+}
+
+/**
+ * The records that are about a place on the ground, and therefore the only ones
+ * on a layer. Everything else in the register is a claim about what the city
+ * meant, and a claim about meaning has no coordinate.
+ */
+export function placedRoles(): JerusalemRole[] {
+  return getJerusalemRoles().filter((role) => role.geometryProvenance === 'modern_reference');
+}
+
+export function unplacedRoles(): JerusalemRole[] {
+  return getJerusalemRoles().filter((role) => role.geometryProvenance === 'not_spatial');
+}
+
+/** Catalogue records this register points at rather than describing again. */
+export function catalogueObjects(): string[] {
+  return [
+    ...new Set(
+      getJerusalemRoles()
+        .map((role) => role.catalogueObjectId)
+        .filter((value): value is string => Boolean(value)),
+    ),
+  ].sort();
 }

@@ -1380,7 +1380,7 @@ const RAW: unknown[] = [
     license: 'CC BY 4.0',
     attribution:
       'Terra Chartarum; witnesses held by the British Library and the Parker Library, none cleared for publication',
-    essaySlugs: [],
+    essaySlugs: ['maps-for-a-crusade'],
     geometry: 'circle',
     color: '#b0563f',
     perFeatureTime: false,
@@ -1420,7 +1420,7 @@ const RAW: unknown[] = [
     source: 'Terra Chartarum (compiled) - Crusades pilot cru-pilot-0.1, KAN-387',
     license: 'CC BY 4.0',
     attribution: 'Terra Chartarum; all linework editorial generalisation between named ports',
-    essaySlugs: [],
+    essaySlugs: ['maps-for-a-crusade'],
     geometry: 'line',
     color: '#4f7f8b',
     perFeatureTime: false,
@@ -1454,11 +1454,49 @@ const RAW: unknown[] = [
     license: 'CC BY 4.0',
     attribution:
       'Terra Chartarum; positions are modern reference context, and no witness is cleared',
-    essaySlugs: [],
+    essaySlugs: ['maps-for-a-crusade'],
     geometry: 'circle',
     color: '#c9a227',
     perFeatureTime: false,
     facets: ['stateKind', 'held', 'evidenceClass', 'confidence', 'reviewState'],
+    defaultOn: false,
+  },
+  {
+    // CRU-7 / KAN-438. The Holy Land register, and the only part of it that is
+    // about a quay. Jerusalem's centrality, the itinerary's aim, Burchard's
+    // divisions, Vesconte's grid and Buenting's clover leaf are all in the same
+    // dataset and none of them is here, because a claim about what a city means
+    // has no coordinate and pinning one would be this project answering the
+    // question the essay asks. What is drawn is four ports: the landfall for
+    // Jerusalem, the port the kingdom was actually run from, the Egyptian trade
+    // the recovery treatises wanted cut, and where the traffic went after 1291.
+    id: 'crusades-jerusalem-network',
+    role: 'historical',
+    category: 'networks-circulation',
+    subcategory: 'holy-land-network',
+    collectionIds: ['maps-for-a-crusade'],
+    tags: ['crusades', 'holy land', 'jerusalem', 'acre', 'ports', 'pilgrimage', 'unreviewed'],
+    sortWeight: 623,
+    lifecycle: 'in-review',
+    room: 'road',
+    secondaryRooms: ['city'],
+    title: 'The Holy Land as a network: the ports (unreviewed)',
+    description:
+      'Four ports the sacred centre was reached, administered and supplied through. The other six records in this register - the world images, the itinerary\u2019s destination, the described land, the gridded sheet and the later emblem - carry no position at all, because what they record is not one.',
+    kind: 'vector',
+    format: 'geojson',
+    url: '/geo/crusades-jerusalem-network.geojson',
+    yearFrom: 1099,
+    yearTo: 1372,
+    source: 'Terra Chartarum (compiled) - Crusades pilot cru-pilot-0.1, KAN-438',
+    license: 'CC BY 4.0',
+    attribution:
+      'Terra Chartarum; positions are modern reference context, and no Holy Land witness is cleared',
+    essaySlugs: ['maps-for-a-crusade'],
+    geometry: 'circle',
+    color: '#8a7fb5',
+    perFeatureTime: false,
+    facets: ['roleKind', 'evidenceClass', 'confidence', 'reviewState'],
     defaultOn: false,
   },
 ];

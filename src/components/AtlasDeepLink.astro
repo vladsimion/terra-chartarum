@@ -70,6 +70,17 @@ const href = atlasDeepLink({
     text-underline-offset: 0.15em;
   }
 
+  /* MDX wraps slot content that sits on its own line in a paragraph, so the
+     anchor can arrive with a <p> inside it. Left alone that renders as a block
+     with its own margins; the essays therefore call this component without a
+     paragraph wrapper of their own, since <p><a><p> is invalid and the browser
+     resolves it by emptying the anchor - which axe correctly reports as a link
+     with no accessible name. */
+  .atlas-deep-link :global(p) {
+    display: inline;
+    margin: 0;
+  }
+
   .adl-arrow {
     /* Kept out of the accessible name: the link text already says where it
        goes, and "→" read aloud is noise. */

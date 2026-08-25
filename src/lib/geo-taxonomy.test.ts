@@ -145,6 +145,7 @@ describe('taxonomy is additive: no stable contract changes', () => {
       'crusades-itinerary',
       'crusades-fourth-crusade-routes',
       'crusades-fourth-crusade-events',
+      'crusades-jerusalem-network',
     ]);
   });
 

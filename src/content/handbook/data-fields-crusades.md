@@ -1,30 +1,31 @@
 ---
 id: data-fields-crusades
 title: Crusades data fields
-summary: What the Crusades layers commit to when they say a stage, a route, a claim or a possession.
+summary: What the Crusades layers commit to when they say a stage, a route, a claim, a possession or a centre.
 docType: data-fields
 pattern: B
 programme: crusades
 routeSlug: crusades
 lifecycle: in-review
-lastReviewed: '2026-08-24'
+lastReviewed: '2026-08-25'
 relatedLayerIds:
   - crusades-itinerary
   - crusades-fourth-crusade-routes
   - crusades-fourth-crusade-events
+  - crusades-jerusalem-network
 relatedCollectionIds:
   - maps-for-a-crusade
 technicalLinks:
   - label: Crusades source and rights audit
     href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/crusades/source-audit.md'
-  - label: The two proofs
+  - label: The three registers
     href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/crusades/two-proofs.md'
 ---
 
 ## Why these fields exist
 
-The Crusades pilot makes two arguments, and each rests on a distinction that is
-easy to lose in a spreadsheet.
+The Crusades flagship makes three arguments, and each rests on a distinction
+that is easy to lose in a spreadsheet.
 
 ## Stage, and why it has no position
 
@@ -64,6 +65,31 @@ Three states carry no geometry at all, and that is a finding rather than a gap.
 The intended destination was a clause in a contract; the partition's boundaries
 are disputed in the scholarship; and what was durably held is contested
 throughout and already modelled properly by the Venetian possessions layer.
+
+## The six registers of a city
+
+Jerusalem is not one kind of object, and a table that held it as one row would
+have made the essay's argument impossible to state. `roleKind` carries which
+kind of claim a record is:
+
+| `roleKind`               | What it asserts                        | Drawn |
+| ------------------------ | -------------------------------------- | ----- |
+| `sacred_centre`          | The world is arranged around this city | no    |
+| `pilgrimage_destination` | What the journey was for               | no    |
+| `textual_construct`      | The land has an order, and this is it  | no    |
+| `cartographic_construct` | The land ruled into squares            | no    |
+| `network_node`           | Something passed through here          | yes   |
+| `cartographic_memory`    | The centring outlived its subject      | no    |
+
+Only the ports are drawn. The middle of a mappa mundi is not at 31.78° N; it is
+in the middle, and a pin there would convert a claim about what the world is
+arranged around into a claim about where a city is.
+
+`catalogueObjectId` joins a record to an object in this site's own collection.
+`sourceId` is null for exactly one register: later cartographic memory cites no
+source in the audit, because an early-modern map that centres Jerusalem is a
+witness to the early modern period and nothing in this corpus may use it as a
+witness to the twelfth century.
 
 ## Geometry provenance
 

@@ -153,10 +153,18 @@ export const CROSSWALK: Record<string, Partial<Record<CanonicalDimension, number
   // than a space measured; a contract and a diversion are both exercises of
   // power over where a fleet goes; and dominium is the distinction the whole
   // prototype protects, between a claim and a possession.
+  //
+  // The flagship (CRU-7) adds the city both proofs are pointed at. `centrum` is
+  // a cosmological arrangement before it is a place - Jerusalem in the middle of
+  // a world image is a claim about what the world is around. `memoria` is what a
+  // sixteenth-century woodcut testifies to, which is its own century and the
+  // survival of a convention, and not the geography it appears to depict.
   itinerarium: { use: 0.75, cosmos: 0.25 },
   contractus: { power: 0.5, use: 0.5 },
   deviatio: { power: 0.75, use: 0.25 },
   dominium: { power: 1 },
+  centrum: { cosmos: 0.75, use: 0.25 },
+  memoria: { cosmos: 0.5, witness: 0.5 },
 };
 
 export interface LensAuditEssay {

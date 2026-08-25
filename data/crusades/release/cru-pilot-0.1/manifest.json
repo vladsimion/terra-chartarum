@@ -3,14 +3,16 @@
   "counts": {
     "fourth-crusade-states": 8,
     "itinerary-stages": 14,
-    "places": 20,
-    "source-audit": 9
+    "jerusalem-roles": 10,
+    "places": 25,
+    "source-audit": 14
   },
   "inputs": {
     "data/crusades/fourth-crusade-states.csv": "30a9d12ea5b75e6d8320f471d92a6ba1ac00934e65fc4ec1980b9fd244df02b4",
     "data/crusades/itinerary-stages.csv": "1930ad66f926ea7ecaa177b8506f348be350b05163418e28f22ea1e2927d9ac0",
-    "data/crusades/places.csv": "314557f4dc062214beaca40344b6691e4a552686070fe7c9303e8b96cfd942d1",
-    "data/crusades/source-audit.csv": "52f122784794d2c34a0930ec5ba2b3fdb219348cd5e79db2032d816e79e207b2"
+    "data/crusades/jerusalem-roles.csv": "db921996494f79e019eeed8a114cfd4d5ce4813cb788f354b8f47b05429aa63e",
+    "data/crusades/places.csv": "f9b2be0f3f5872f56c1c377e7b22e0b7b8a8094ec9f9e496936c4e62625d832c",
+    "data/crusades/source-audit.csv": "cc0ae8171c0d9e8bbb4340c6c491265c82212e055753dbf22c325247840e06de"
   },
   "kind": "pilot_research_release",
   "licence": "CC BY 4.0 for the compiled records; every witness carries its own rights status, and no witness in this release is cleared for publication.",
@@ -23,13 +25,17 @@
       "bytes": 4300,
       "sha256": "1930ad66f926ea7ecaa177b8506f348be350b05163418e28f22ea1e2927d9ac0"
     },
+    "data/crusades/release/cru-pilot-0.1/jerusalem-roles.csv": {
+      "bytes": 4825,
+      "sha256": "db921996494f79e019eeed8a114cfd4d5ce4813cb788f354b8f47b05429aa63e"
+    },
     "data/crusades/release/cru-pilot-0.1/places.csv": {
-      "bytes": 5491,
-      "sha256": "314557f4dc062214beaca40344b6691e4a552686070fe7c9303e8b96cfd942d1"
+      "bytes": 7962,
+      "sha256": "f9b2be0f3f5872f56c1c377e7b22e0b7b8a8094ec9f9e496936c4e62625d832c"
     },
     "data/crusades/release/cru-pilot-0.1/source-audit.csv": {
-      "bytes": 5452,
-      "sha256": "52f122784794d2c34a0930ec5ba2b3fdb219348cd5e79db2032d816e79e207b2"
+      "bytes": 8444,
+      "sha256": "cc0ae8171c0d9e8bbb4340c6c491265c82212e055753dbf22c325247840e06de"
     },
     "public/geo/crusades-fourth-crusade-events.geojson": {
       "bytes": 3052,
@@ -43,13 +49,33 @@
       "bytes": 12563,
       "sha256": "b9a61ee12ba7538f1853f8e961e9c9d7ecf1193f4c8c2fcb39e377a98b53c5da"
     },
+    "public/geo/crusades-jerusalem-network.geojson": {
+      "bytes": 4760,
+      "sha256": "4b704b4f19098408d28169790b36ea294a3e6450c0ef0a3d6d49bfba30dce76b"
+    },
     "src/data/crusades/generated/pilot.json": {
-      "bytes": 26696,
-      "sha256": "a3620c5012fc204ed2c75a59a94b953031017721f24e301eece05bb2a90bbb9e"
+      "bytes": 39878,
+      "sha256": "6f970daaf5fd656bb34ce38c17137aa2572d5aa47443e1cf53dd9c4f162f6f2f"
     }
   },
   "publicRecords": 0,
   "release": "cru-pilot-0.1",
+  "roleKinds": [
+    "cartographic_construct",
+    "cartographic_memory",
+    "network_node",
+    "pilgrimage_destination",
+    "sacred_centre",
+    "textual_construct"
+  ],
+  "rolesWithoutGeometry": [
+    "cru-jer-bunting-emblem",
+    "cru-jer-burchard-divisions",
+    "cru-jer-hereford-centre",
+    "cru-jer-itinerary-aim",
+    "cru-jer-psalter-centre",
+    "cru-jer-vesconte-grid"
+  ],
   "schemaVersion": 1,
   "stateKinds": [
     "attack",
@@ -64,5 +90,5 @@
     "cru-fcs-intent",
     "cru-fcs-partitio"
   ],
-  "untranscribedFolios": 9
+  "untranscribedFolios": 14
 }

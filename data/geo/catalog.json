@@ -338,6 +338,19 @@
       "source": "Terra Chartarum (compiled) - Crusades pilot cru-pilot-0.1, KAN-387",
       "license": "CC BY 4.0",
       "attribution": "Terra Chartarum; positions are modern reference context, and no witness is cleared"
+    },
+    {
+      "id": "crusades-jerusalem-network",
+      "file": "crusades-jerusalem-network.geojson",
+      "format": "geojson",
+      "crs": "EPSG:4326",
+      "geometry": ["Point"],
+      "featureCount": 4,
+      "yearFrom": 1099,
+      "yearTo": 1372,
+      "source": "Terra Chartarum (compiled) - Crusades pilot cru-pilot-0.1, KAN-438",
+      "license": "CC BY 4.0",
+      "attribution": "Terra Chartarum; positions are modern reference context, and no Holy Land witness is cleared"
     }
   ]
 }

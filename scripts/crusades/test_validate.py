@@ -17,7 +17,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import validate  # noqa: E402
-from validate import STAGES, STATES, TABLE, validate_inputs  # noqa: E402
+from validate import ROLES, STAGES, STATES, TABLE, validate_inputs  # noqa: E402
 
 
 @pytest.fixture()
@@ -331,7 +331,7 @@ def test_an_open_gate_must_have_something_naming_it(dataset):
     A gate below `passed` with no open debt pointing at it is a gate nobody can
     act on: the register says work remains and names none of it.
     """
-    edit(dataset, lambda rows: [r for r in rows if r["debt_id"] != "vd-cru-feature-panel-evidence"],
+    edit(dataset, lambda rows: [r for r in rows if r["debt_id"] != "vd-cru-jerusalem-rights"],
          table=DEBTS)
     refuses("with no open debt naming it")
 
@@ -339,3 +339,107 @@ def test_an_open_gate_must_have_something_naming_it(dataset):
 def test_a_blocker_must_carry_a_way_out(dataset):
     edit(dataset, lambda rows: [{**r, "resolution_path": ""} for r in rows], table=DEBTS)
     refuses("resolution_path is required")
+
+
+def edit_role(dataset, role_id, changes):
+    def mutate(rows):
+        for row in rows:
+            if row["role_id"] == role_id:
+                row.update(changes)
+    edit(dataset, mutate, ROLES)
+
+
+# --- The Holy Land register (CRU-7 / KAN-438) -------------------------------
+#
+# Five of these six rules exist to stop one substitution: a claim about what a
+# city meant becoming a claim about where it was.
+
+
+def test_a_sacred_centre_may_not_carry_a_position(dataset):
+    """The middle of a mappa mundi is not at 31.78N. It is in the middle."""
+    edit_role(dataset, "cru-jer-psalter-centre", {"geometry_provenance": "modern_reference"})
+    refuses("a claim about what the city means")
+
+
+def test_a_described_land_may_not_carry_a_position_either(dataset):
+    edit_role(dataset, "cru-jer-burchard-divisions", {"geometry_provenance": "modern_reference"})
+    refuses("a claim about what the city means")
+
+
+def test_later_cartographic_memory_may_not_cite_a_source(dataset):
+    """The rule that keeps a 1581 woodcut from becoming medieval evidence."""
+    edit_role(dataset, "cru-jer-bunting-emblem", {"source_id": "cru-jer-burchard"})
+    refuses("would make a later map evidence for an earlier geography")
+
+
+def test_later_cartographic_memory_must_name_its_catalogue_object(dataset):
+    edit_role(dataset, "cru-jer-bunting-emblem", {"catalogue_object_id": ""})
+    refuses("must name its catalogue object")
+
+
+def test_memory_cannot_predate_the_thing_it_remembers(dataset):
+    edit_role(dataset, "cru-jer-bunting-emblem", {"date_from": "1200", "date_to": "1200"})
+    refuses("cannot predate 1291")
+
+
+def test_a_node_in_the_network_is_one_place(dataset):
+    edit_role(dataset, "cru-jer-acre-capital",
+              {"place_ids": "cru-plc-acre|cru-plc-jaffa"})
+    refuses("a node is one place")
+
+
+def test_a_node_in_the_network_is_drawn_where_it_is(dataset):
+    edit_role(dataset, "cru-jer-jaffa-landfall", {"geometry_provenance": "not_spatial"})
+    refuses("a port and is drawn at one")
+
+
+def test_a_register_record_must_name_a_real_source(dataset):
+    edit_role(dataset, "cru-jer-vesconte-grid", {"source_id": "cru-jer-invented"})
+    refuses("does not resolve")
+
+
+def test_a_record_above_raw_needs_the_page_it_was_read_from(dataset):
+    edit_role(dataset, "cru-jer-burchard-divisions", {"review_state": "reviewed"})
+    refuses("needs the page it was read from")
+
+
+def test_every_register_is_present(dataset):
+    """An act missing a register is an act making a different argument."""
+    edit(dataset, lambda rows: [r for r in rows if r["role_kind"] != "cartographic_construct"],
+         ROLES)
+    refuses("no record in the 'cartographic_construct' register")
+
+
+def test_a_holy_land_source_may_not_cover_the_memory_register(dataset):
+    edit(dataset, lambda rows: find(rows, "cru-jer-burchard").update(
+        {"covers": "cartographic_memory"}))
+    refuses("carried by a catalogue record, not by a source in this audit")
+
+
+def test_a_holy_land_place_needs_an_arabic_form_or_a_reason(dataset):
+    """A Levant place carrying only its conquerors' names, with nothing saying
+    why, publishes the crusaders' map of the place as the place."""
+    def mutate(rows):
+        for row in rows:
+            if row["place_id"] == "cru-plc-acre":
+                row.update({"name_arabic": "", "script_note": "Latin and Greek forms"})
+    edit_places(dataset, mutate)
+    refuses("needs an Arabic form, or a script_note saying why")
+
+
+def test_an_arabic_form_must_say_what_it_is(dataset):
+    def mutate(rows):
+        for row in rows:
+            if row["place_id"] == "cru-plc-jerusalem":
+                row.update({"script_note": "Latin and Greek forms both current"})
+    edit_places(dataset, mutate)
+    refuses("an Arabic form must say in script_note")
+
+
+def test_the_holy_land_register_has_its_own_bound(dataset):
+    """Widening the pilot's 15-25 to make room would have made the bound
+    meaningless; the third register counts separately."""
+    def mutate(rows):
+        return [r for r in rows if r["proof"] != "jerusalem"]
+    edit_places(dataset, mutate)
+    refuses("the jerusalem register holds 4-10 core places")

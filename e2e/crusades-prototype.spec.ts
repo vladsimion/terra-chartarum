@@ -30,6 +30,7 @@ test.describe('the Atlas half keeps the two distinctions', () => {
       'crusades-itinerary',
       'crusades-fourth-crusade-routes',
       'crusades-fourth-crusade-events',
+      'crusades-jerusalem-network',
     ]) {
       const response = await page.goto(`/atlas/layers/${layer}/`, {
         waitUntil: 'domcontentloaded',
@@ -53,8 +54,62 @@ test.describe('the Atlas half keeps the two distinctions', () => {
     expect(body).toContain('publish a claim as a map');
   });
 
+  test('the Holy Land record says why five of six registers are absent', async ({ page }) => {
+    await page.goto('/atlas/layers/crusades-jerusalem-network/');
+    const body = (await page.locator('#main-content').innerText()).toLowerCase();
+    expect(body).toContain('four records out of ten');
+    expect(body).toContain('not at 31.78');
+  });
+
   test('the Crusades collection offers no default composition', async ({ page }) => {
     await page.goto('/atlas/?collection=maps-for-a-crusade');
     await expect(page.locator('[data-active-layer]')).toHaveCount(0);
+  });
+});
+
+test.describe('the Atlas panel makes the same distinctions the essay does', () => {
+  /**
+   * KAN-387. The layers were registered and the feature panel was generic, so a
+   * partition claim and a travelled route arrived on the map looking alike -
+   * the one thing the Sea proof exists to prevent. A reader who comes to the
+   * Atlas from a search engine rather than through the prose has to be told
+   * what the prose tells.
+   *
+   * Driven by deep link rather than by clicking the canvas: the click path and
+   * the link path share `showCrusadesContext`, and only one of them can be
+   * asserted without pixel arithmetic over a software-GL map.
+   */
+  // The partition claim itself cannot be deep-linked: it has no geometry and is
+  // on no layer, which is the point. The diversion is the nearest state that
+  // reaches the map, and it has to arrive saying what kind of claim it is.
+  test('a deep-linked state says what kind of claim it is', async ({ page }) => {
+    await page.goto(
+      '/atlas/?layers=crusades-fourth-crusade-events&collection=maps-for-a-crusade' +
+        '&feature=cru-fcs-zara',
+    );
+    await expect(page.locator('[data-active-layer="crusades-fourth-crusade-events"]')).toHaveCount(
+      1,
+      { timeout: 20_000 },
+    );
+    const context = page.locator('.am-context');
+    await expect(context).toContainText('negotiated diversion', { timeout: 20_000 });
+    await expect(context).toContainText('A change of terms');
+    // Nothing on this map may read as settled evidence.
+    await expect(context).toContainText('unreviewed');
+    await expect(context).toContainText('folio not transcribed');
+  });
+
+  test('a deep-linked Holy Land port says its position is borrowed', async ({ page }) => {
+    await page.goto(
+      '/atlas/?layers=crusades-jerusalem-network&collection=maps-for-a-crusade' +
+        '&feature=cru-jer-acre-capital',
+    );
+    await expect(page.locator('[data-active-layer="crusades-jerusalem-network"]')).toHaveCount(1, {
+      timeout: 20_000,
+    });
+    const context = page.locator('.am-context');
+    await expect(context).toContainText('network node', { timeout: 20_000 });
+    await expect(context).toContainText('modern reference');
+    await expect(context).toContainText('unreviewed');
   });
 });

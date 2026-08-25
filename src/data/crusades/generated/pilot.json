@@ -2,6 +2,16 @@
   "debts": [
     {
       "blocks": [
+        "jerusalem:data"
+      ],
+      "id": "vd-cru-arabic-forms",
+      "kind": "verification",
+      "resolutionPath": "Check each form against an Arabic geographical source or a standard reference and record the authority, or mark the column unfilled where none can be found.",
+      "statement": "The Arabic forms on the Levant places are romanisations taken from published reference works, not readings of an Arabic source. A schema that has a column for the name a place carried for the people who lived there, filled in from someone else's transliteration, still tells a crusader's story in one respect.",
+      "status": "open"
+    },
+    {
+      "blocks": [
         "fourth_crusade:rights"
       ],
       "id": "vd-cru-choniates-copyright",
@@ -14,23 +24,15 @@
       "blocks": [
         "matthew_paris:editorial",
         "fourth_crusade:editorial",
+        "jerusalem:editorial",
         "matthew_paris:release",
-        "fourth_crusade:release"
+        "fourth_crusade:release",
+        "jerusalem:release"
       ],
       "id": "vd-cru-editorial-review",
       "kind": "verification",
       "resolutionPath": "Close the research and data gates first. Editorial review of claims resting on unreviewed rows would certify the prose against material that is itself uncertified.",
       "statement": "No prose in the prototype has been read against its evidence by a named editor, and it may not be, because the evidence it would be read against is not yet reviewed.",
-      "status": "open"
-    },
-    {
-      "blocks": [
-        "fourth_crusade:interaction"
-      ],
-      "id": "vd-cru-feature-panel-evidence",
-      "kind": "verification",
-      "resolutionPath": "Give the Atlas feature panel the claimed-versus-held distinction the dataset already carries, so a reader who arrives from the Atlas rather than the essay sees the same separation.",
-      "statement": "The Fourth Crusade Atlas layers render through the generic feature panel, which shows a feature's fields but not the distinction the proof is built on. A partition claim and a travelled route are presented alike on the map even though the essay island keeps them apart.",
       "status": "open"
     },
     {
@@ -44,6 +46,28 @@
       "kind": "verification",
       "resolutionPath": "Read the folios the prototypes use and record the locator on each row. The stage validator refuses a stage above raw without one, so this single act moves both proofs' data gates.",
       "statement": "Not one folio in the Crusades corpus has been transcribed. Every locator in source-audit.csv, itinerary-stages.csv and fourth-crusade-states.csv reads pending, which is why all twenty-two data rows sit at raw.",
+      "status": "open"
+    },
+    {
+      "blocks": [
+        "jerusalem:research",
+        "jerusalem:data"
+      ],
+      "id": "vd-cru-jerusalem-locators",
+      "kind": "verification",
+      "resolutionPath": "Read the Laurent and Bongars editions for the passages the register actually uses and record the page on each row. Both are out of copyright and neither needs a rights decision first.",
+      "statement": "Not one page of the Holy Land register has been read. Burchard's divisions and Sanudo's argument are both recorded from their published positions rather than from a located passage, which is why ten records sit at raw and two of them carry low confidence.",
+      "status": "open"
+    },
+    {
+      "blocks": [
+        "jerusalem:rights",
+        "jerusalem:interaction"
+      ],
+      "id": "vd-cru-jerusalem-rights",
+      "kind": "rights",
+      "resolutionPath": "Read the British Library and Hereford Cathedral terms and clear one world image, or record the decision to argue from the catalogue records and a description instead.",
+      "statement": "No Holy Land witness is cleared for reproduction. The Psalter map, the Hereford map and the Vesconte manuscript all need a rights review, so the register whose subject is pictures of Jerusalem can show no picture of Jerusalem.",
       "status": "open"
     },
     {
@@ -112,10 +136,10 @@
       "evidence": "src/components/islands/FourthCrusadeStates.astro",
       "gate": "interaction",
       "jiraKey": "KAN-387",
-      "note": "The six states render as six distinct kinds of claim, with claimed and held visibly different. Atlas layers are registered; the feature panels still inherit generic evidence rendering.",
+      "note": "Both halves are built. The essay island renders the eight records as six kinds of claim, and the Atlas feature panel now carries the same claimed-against-held distinction, so a reader arriving on the map sees what a reader arriving from the prose sees. The gate is about the interaction and not about the evidence under it: every row it draws is still raw.",
       "order": 4,
       "proof": "fourth_crusade",
-      "status": "partial"
+      "status": "passed"
     },
     {
       "evidence": null,
@@ -133,6 +157,60 @@
       "note": "Essay is held behind releaseAt 2099-01-01 and may not publish while research and rights are open.",
       "order": 6,
       "proof": "fourth_crusade",
+      "status": "pending"
+    },
+    {
+      "evidence": "data/crusades/source-audit.csv",
+      "gate": "research",
+      "jiraKey": "KAN-438",
+      "note": "Five sources registered across the Holy Land registers: two world images, two texts and the manuscript carrying the maps. None is verified and every locator reads pending.",
+      "order": 1,
+      "proof": "jerusalem",
+      "status": "partial"
+    },
+    {
+      "evidence": "data/crusades/source-audit.csv",
+      "gate": "rights",
+      "jiraKey": "KAN-384",
+      "note": "Three of the five need a rights review before any image may be shown. The two editions are open as texts, which is what the register can argue from meanwhile.",
+      "order": 2,
+      "proof": "jerusalem",
+      "status": "pending"
+    },
+    {
+      "evidence": "data/crusades/jerusalem-roles.csv",
+      "gate": "data",
+      "jiraKey": "KAN-385",
+      "note": "Ten records across six registers, resting on five new places. All ten sit at raw, and the Arabic name forms are romanised from published forms rather than read from an Arabic source.",
+      "order": 3,
+      "proof": "jerusalem",
+      "status": "partial"
+    },
+    {
+      "evidence": "src/components/islands/JerusalemRegisters.astro",
+      "gate": "interaction",
+      "jiraKey": "KAN-438",
+      "note": "The six registers render as six kinds of claim, and the four that are places on the ground are the only ones drawn. What is missing is the objects: no world image and no gridded sheet may be reproduced, so the register that is about pictures shows none.",
+      "order": 4,
+      "proof": "jerusalem",
+      "status": "partial"
+    },
+    {
+      "evidence": null,
+      "gate": "editorial",
+      "jiraKey": "KAN-438",
+      "note": "The Holy Land act is drafted and has not been read against reviewed evidence by a named editor.",
+      "order": 5,
+      "proof": "jerusalem",
+      "status": "pending"
+    },
+    {
+      "evidence": "src/content/essays/maps-for-a-crusade.mdx",
+      "gate": "release",
+      "jiraKey": "KAN-389",
+      "note": "Held with the rest of the essay behind releaseAt 2099-01-01, and for the same reason: nothing in the register has been read against its source.",
+      "order": 6,
+      "proof": "jerusalem",
       "status": "pending"
     },
     {
@@ -503,9 +581,258 @@
   "layerIds": [
     "crusades-itinerary",
     "crusades-fourth-crusade-routes",
-    "crusades-fourth-crusade-events"
+    "crusades-fourth-crusade-events",
+    "crusades-jerusalem-network"
   ],
   "release": "cru-pilot-0.1",
+  "roles": [
+    {
+      "catalogueObjectId": "religion-psalter",
+      "confidence": "medium",
+      "dateFrom": "1250",
+      "datePrecision": "year",
+      "dateTo": "1250",
+      "evidenceClass": "world_image",
+      "geometryProvenance": "not_spatial",
+      "id": "cru-jer-psalter-centre",
+      "notes": "A world drawn as a disc with Jerusalem at its middle, made in England within a few years of the itinerary. The centrality is a statement about what the world is arranged around, and it has no position: giving this record a coordinate at 31.78N would answer the question the essay asks.",
+      "placeIds": [
+        "cru-plc-jerusalem"
+      ],
+      "placeNames": [
+        "Jerusalem"
+      ],
+      "reviewState": "raw",
+      "roleKind": "sacred_centre",
+      "sequence": 1,
+      "sourceId": "cru-jer-psalter",
+      "sourceLocator": "pending",
+      "title": "Jerusalem at the centre of a world image",
+      "vmnReference": null
+    },
+    {
+      "catalogueObjectId": "hereford",
+      "confidence": "medium",
+      "dateFrom": "1300",
+      "datePrecision": "year",
+      "dateTo": "1300",
+      "evidenceClass": "world_image",
+      "geometryProvenance": "not_spatial",
+      "id": "cru-jer-hereford-centre",
+      "notes": "Recorded as a second witness rather than as a better one. Two independent objects a half-century apart make the centring a convention; one would make it an example.",
+      "placeIds": [
+        "cru-plc-jerusalem"
+      ],
+      "placeNames": [
+        "Jerusalem"
+      ],
+      "reviewState": "raw",
+      "roleKind": "sacred_centre",
+      "sequence": 2,
+      "sourceId": "cru-jer-hereford",
+      "sourceLocator": "pending",
+      "title": "The same centre, on a monumental skin",
+      "vmnReference": null
+    },
+    {
+      "catalogueObjectId": "religion-matthew-paris",
+      "confidence": "medium",
+      "dateFrom": "1250",
+      "datePrecision": "year",
+      "dateTo": "1259",
+      "evidenceClass": "manuscript_depiction",
+      "geometryProvenance": "not_spatial",
+      "id": "cru-jer-itinerary-aim",
+      "notes": "The itinerary stops at Otranto, where the road stops. What lies beyond is a sea the diagram has no units for, and the destination is carried by the direction of the columns rather than by anything drawn. This record cites the Road proof's own witness: the registers are views of one corpus, not separate corpora.",
+      "placeIds": [
+        "cru-plc-jerusalem",
+        "cru-plc-otranto"
+      ],
+      "placeNames": [
+        "Jerusalem",
+        "Otranto"
+      ],
+      "reviewState": "raw",
+      "roleKind": "pilgrimage_destination",
+      "sequence": 3,
+      "sourceId": "cru-mp-royal-14-c-vii",
+      "sourceLocator": "pending",
+      "title": "The destination the drawn road does not reach",
+      "vmnReference": null
+    },
+    {
+      "catalogueObjectId": null,
+      "confidence": "medium",
+      "dateFrom": "1099",
+      "datePrecision": "year",
+      "dateTo": "1268",
+      "evidenceClass": "network_inference",
+      "geometryProvenance": "modern_reference",
+      "id": "cru-jer-jaffa-landfall",
+      "notes": "The sacred centre is reached through a working port and a day's road inland. The position is the modern town's, as everywhere in this corpus.",
+      "placeIds": [
+        "cru-plc-jaffa"
+      ],
+      "placeNames": [
+        "Jaffa"
+      ],
+      "reviewState": "raw",
+      "roleKind": "network_node",
+      "sequence": 4,
+      "sourceId": "cru-jer-burchard",
+      "sourceLocator": "pending",
+      "title": "Jaffa: where a pilgrim actually landed",
+      "vmnReference": null
+    },
+    {
+      "catalogueObjectId": null,
+      "confidence": "medium",
+      "dateFrom": "1191",
+      "datePrecision": "year",
+      "dateTo": "1291",
+      "evidenceClass": "network_inference",
+      "geometryProvenance": "modern_reference",
+      "id": "cru-jer-acre-capital",
+      "notes": "For most of the thirteenth century the kingdom of Jerusalem was administered from a port that is not Jerusalem. The Venetian Maritime Network already publishes the eastern ports with their own evidence; this row points at that layer rather than re-authoring it.",
+      "placeIds": [
+        "cru-plc-acre"
+      ],
+      "placeNames": [
+        "Acre"
+      ],
+      "reviewState": "raw",
+      "roleKind": "network_node",
+      "sequence": 5,
+      "sourceId": "cru-jer-burchard",
+      "sourceLocator": "pending",
+      "title": "Acre: the port the kingdom was run from",
+      "vmnReference": "venetian-ports"
+    },
+    {
+      "catalogueObjectId": null,
+      "confidence": "medium",
+      "dateFrom": "1283",
+      "datePrecision": "year",
+      "dateTo": "1283",
+      "evidenceClass": "described_geography",
+      "geometryProvenance": "not_spatial",
+      "id": "cru-jer-burchard-divisions",
+      "notes": "Burchard organises the land as divisions running out from a centre, and the centre he takes them from is Acre. A description is a geography, and this one puts the working port where the sacred city is on the world maps. It carries no geometry: the divisions are a way of ordering a description, and drawing them as sectors would turn a rhetorical scheme into a survey.",
+      "placeIds": [
+        "cru-plc-acre",
+        "cru-plc-jerusalem"
+      ],
+      "placeNames": [
+        "Acre",
+        "Jerusalem"
+      ],
+      "reviewState": "raw",
+      "roleKind": "textual_construct",
+      "sequence": 6,
+      "sourceId": "cru-jer-burchard",
+      "sourceLocator": "pending",
+      "title": "The Holy Land described in divisions taken from Acre",
+      "vmnReference": null
+    },
+    {
+      "catalogueObjectId": null,
+      "confidence": "medium",
+      "dateFrom": "1321",
+      "datePrecision": "year",
+      "dateTo": "1321",
+      "evidenceClass": "cartographic_construction",
+      "geometryProvenance": "not_spatial",
+      "id": "cru-jer-vesconte-grid",
+      "notes": "Sanudo's recovery treatise travels with maps, and the Holy Land in them is ruled into squares. It is the most modern-looking object in this corpus and it is planning an expedition nobody mounted. No geometry is recorded because this project has not read the sheet; a grid transcribed from a description would be this project's grid.",
+      "placeIds": [
+        "cru-plc-acre",
+        "cru-plc-jerusalem"
+      ],
+      "placeNames": [
+        "Acre",
+        "Jerusalem"
+      ],
+      "reviewState": "raw",
+      "roleKind": "cartographic_construct",
+      "sequence": 7,
+      "sourceId": "cru-jer-vesconte",
+      "sourceLocator": "pending",
+      "title": "The Holy Land on a grid, for a crusade that did not sail",
+      "vmnReference": null
+    },
+    {
+      "catalogueObjectId": null,
+      "confidence": "low",
+      "dateFrom": "1291",
+      "datePrecision": "year",
+      "dateTo": "1321",
+      "evidenceClass": "network_inference",
+      "geometryProvenance": "modern_reference",
+      "id": "cru-jer-alexandria-pivot",
+      "notes": "By the fourteenth century the argument about how to reach Jerusalem is an argument about Egyptian trade. Confidence is low because the reading here is the treatise's general position and no passage has been located.",
+      "placeIds": [
+        "cru-plc-alexandria"
+      ],
+      "placeNames": [
+        "Alexandria"
+      ],
+      "reviewState": "raw",
+      "roleKind": "network_node",
+      "sequence": 8,
+      "sourceId": "cru-jer-sanudo",
+      "sourceLocator": "pending",
+      "title": "Alexandria: the trade the recovery plans proposed to cut",
+      "vmnReference": "venetian-routes"
+    },
+    {
+      "catalogueObjectId": null,
+      "confidence": "low",
+      "dateFrom": "1291",
+      "datePrecision": "year",
+      "dateTo": "1372",
+      "evidenceClass": "network_inference",
+      "geometryProvenance": "modern_reference",
+      "id": "cru-jer-famagusta-after",
+      "notes": "The kingdom ends and the network does not. Cyprus takes the eastern traffic, which is why the last act of a crusading geography is a commercial one.",
+      "placeIds": [
+        "cru-plc-famagusta"
+      ],
+      "placeNames": [
+        "Famagusta"
+      ],
+      "reviewState": "raw",
+      "roleKind": "network_node",
+      "sequence": 9,
+      "sourceId": "cru-jer-sanudo",
+      "sourceLocator": "pending",
+      "title": "Famagusta: where the traffic went after 1291",
+      "vmnReference": "venetian-ports"
+    },
+    {
+      "catalogueObjectId": "religion-bunting",
+      "confidence": "medium",
+      "dateFrom": "1581",
+      "datePrecision": "year",
+      "dateTo": "1581",
+      "evidenceClass": "later_impression",
+      "geometryProvenance": "not_spatial",
+      "id": "cru-jer-bunting-emblem",
+      "notes": "Printed nearly three centuries after the last crusader port fell, and centring Jerusalem anyway. It carries no source_id on purpose: an early-modern woodcut is not a witness to medieval geography, and letting it into the source corpus would make it one. The catalogue record is the whole of its evidential standing here.",
+      "placeIds": [
+        "cru-plc-jerusalem"
+      ],
+      "placeNames": [
+        "Jerusalem"
+      ],
+      "reviewState": "raw",
+      "roleKind": "cartographic_memory",
+      "sequence": 10,
+      "sourceId": null,
+      "sourceLocator": null,
+      "title": "Three continents as a clover leaf, meeting at Jerusalem",
+      "vmnReference": null
+    }
+  ],
   "schemaVersion": 1,
   "states": [
     {

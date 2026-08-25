@@ -22,6 +22,7 @@ const debts = getOpenDebts();
 const PROOF_LABELS: Record<string, string> = {
   matthew_paris: 'Road · the itinerary',
   fourth_crusade: 'Sea · the Fourth Crusade',
+  jerusalem: 'City · the Holy Land registers',
 };
 
 const GATE_LABELS: Record<string, string> = {
@@ -33,23 +34,24 @@ const GATE_LABELS: Record<string, string> = {
   release: 'Release',
 };
 
-// Road before Sea, because that is the order the essay argues them in. The
-// register sorts alphabetically, which would put the Fourth Crusade first and
-// silently invert the argument's sequence.
-const PROOF_ORDER = ['matthew_paris', 'fourth_crusade'];
+// Road, then Sea, then the city both are pointed at, because that is the order
+// the essay argues them in. The register sorts alphabetically, which would put
+// the Fourth Crusade first and silently invert the argument's sequence.
+const PROOF_ORDER = ['matthew_paris', 'fourth_crusade', 'jerusalem'];
 const proofs = [...new Set(gates.map((gate) => gate.proof))].sort(
   (a, b) => PROOF_ORDER.indexOf(a) - PROOF_ORDER.indexOf(b),
 );
 const totalGates = gates.length;
 const totalPassed = gates.filter((gate) => gate.status === 'passed').length;
 const rightsDebts = debts.filter((debt) => debt.kind === 'rights').length;
+const gatesPerProof = gates.length / proofs.length;
 ---
 
 <section class="gate-state" aria-labelledby="gate-state-heading">
-  <h3 id="gate-state-heading">Where the two proofs actually stand</h3>
+  <h3 id="gate-state-heading">Where the three registers actually stand</h3>
   <p class="gate-intro">
-    Six gates each, of which <strong>{totalPassed} of {totalGates}</strong> have passed. Compiled from
-    the project's own registers, so this list cannot quietly fall out of date with the work.
+    {gatesPerProof} gates each, of which <strong>{totalPassed} of {totalGates}</strong> have passed. Compiled
+    from the project's own registers, so this list cannot quietly fall out of date with the work.
   </p>
 
   <div class="gate-grid">
