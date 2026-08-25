@@ -329,10 +329,17 @@ def test_the_flow_never_draws_an_unreviewed_relationship():
         if relation["kind"] == "continuity":
             assert relation["evidenceAttestationId"], relation["id"]
 
-    # Today the corpus has adjudicated rows but no relationship a person has
-    # cleared. The production figure must say that rather than drawing them.
-    assert slice_["relations"] == []
-    assert slice_["withheldRelations"]
+    # Both outcomes have to be present or the gate is not actually being tested.
+    # Eight edges join two visible nodes and are drawn; two are reviewed rows
+    # that land on a use still below review, and the endpoint rule withholds
+    # them. A reviewed edge is not by itself permission to draw a line.
+    assert len(slice_["relations"]) == 8
+    assert {relation["id"] for relation in slice_["withheldRelations"]} == {
+        "nue-dacia-antiquarian-reception",
+        "nue-dacia-scandinavia-church",
+    }
+    for relation in slice_["withheldRelations"]:
+        assert not {relation["from"], relation["to"]} <= public, relation["id"]
 
 
 def test_a_reviewed_relationship_reaches_the_flow_from_the_ledger():

@@ -138,12 +138,15 @@ line only when its own row is `reviewed` or higher and both endpoint nodes are
 visible. A continuity row still has the stricter validator rule that it must
 cite an attestation.
 
-The current result is deliberately six nodes and no lines. Ten Dacia edge rows
-are recorded - five `normalized`, five `raw` - and none has had a human review,
-so the generated slice reports all ten in `withheldRelations`. The
-figure says so instead of promoting chronological order to continuity. A later
-human promotion will add the corresponding directed line on the next
-`make dacia`; no component edit is required.
+The current result is six nodes and eight lines. All ten Dacia edge rows have
+now had a human review, and eight of them connect two visible nodes. The other
+two do not: `nue-dacia-antiquarian-reception` and `nue-dacia-scandinavia-church`
+each land on a use that is still `normalized`, and an edge becomes a line only
+when both endpoints are visible. The generated slice reports those two in
+`withheldRelations` and the figure counts them rather than drawing them, so a
+reviewed edge to an unreviewed referent still promotes nothing. Promoting either
+endpoint use will add its directed line on the next `make dacia`; no component
+edit is required.
 
 ## The rights package
 
