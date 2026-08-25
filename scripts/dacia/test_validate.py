@@ -450,7 +450,7 @@ def test_every_fate_class_has_a_worked_example(dataset):
     """The fixtures the ticket asks for are the committed rows themselves."""
     _, uses = read(dataset, "name_uses")
     covered = {row["fate_class"] for row in uses}
-    assert {"translatio", "restitutio", "inventio", "applicatio", "commercium"} <= covered
+    assert {"translatio", "restitutio", "inventio", "applicatio"} <= covered
 
 
 def test_continuity_edge_must_cite_evidence(dataset):
@@ -503,7 +503,7 @@ def test_shared_lexical_form_must_be_adjudicated(dataset):
         lambda rows: [
             r
             for r in rows
-            if "nmu-dacia-marque" not in (r["from_name_use"], r["to_name_use"])
+            if "nmu-dacia-reception" not in (r["from_name_use"], r["to_name_use"])
         ],
     )
     refuses("is joined to none of them")
@@ -1132,17 +1132,17 @@ def test_a_pending_locator_cannot_be_normalized(dataset):
     """The rule that keeps institution-only uses honest about what they lack."""
 
     def mutate(rows):
-        find(rows, "name_use_id", "nmu-dacia-marque-renault")["review_state"] = "normalized"
+        find(rows, "name_use_id", "nmu-dacia-ecclesiastical")["review_state"] = "normalized"
 
     edit(dataset, "name_uses", mutate)
     refuses("locator is still pending at review_state normalized")
 
 
 def test_an_obvious_line_still_cannot_be_continuity_without_evidence(dataset):
-    """The marque under Renault is plainly the same marque, and that is not evidence."""
+    """Cluj-Napoca is plainly the Roman name returning, and that is not evidence."""
 
     def mutate(rows):
-        find(rows, "edge_id", "nue-dacia-marque-renault")["edge_kind"] = "continuity"
+        find(rows, "edge_id", "nue-napoca-roman-restored")["edge_kind"] = "continuity"
 
     edit(dataset, "name_use_edges", mutate)
     refuses("a continuity edge must cite an attestation")

@@ -5,10 +5,10 @@ ledger it argues from: [`name-uses.csv`](../../data/dacia/name-uses.csv),
 [`name-use-edges.csv`](../../data/dacia/name-use-edges.csv) and
 [`reference/nomen-errans-witnesses.csv`](../../data/dacia/reference/nomen-errans-witnesses.csv).
 
-## Twelve careers of one word
+## Ten careers of one word
 
-Ten uses of _Dacia_ and two of _Napoca_, across five fate classes and five kinds
-of evidence:
+Eight uses of _Dacia_ and two of _Napoca_, across four fate classes and six
+kinds of source:
 
 | Use                        | Referent                          | Period    | Fate         |
 | -------------------------- | --------------------------------- | --------- | ------------ |
@@ -19,8 +19,6 @@ of evidence:
 | `nmu-dacia-scandinavia`    | Denmark, in medieval Latin        | c. 1300   | `translatio` |
 | `nmu-dacia-ecclesiastical` | The Dominican province of Dacia   | 1228–1536 | `translatio` |
 | `nmu-dacia-antiquarian`    | Ortelius's restored province      | 1595      | `restitutio` |
-| `nmu-dacia-marque`         | The marque founded at Colibași    | 1966–     | `commercium` |
-| `nmu-dacia-marque-renault` | The same marque under Renault     | 1999–     | `commercium` |
 | `nmu-dacia-reception`      | Dacia as an identity claim        | 1970–     | `inventio`   |
 | `nmu-napoca-roman`         | The Roman town                    | 106–271   | `applicatio` |
 | `nmu-napoca-restored`      | Cluj-Napoca, by decree            | 1974–     | `restitutio` |
@@ -28,54 +26,82 @@ of evidence:
 The evidence is deliberately not all cartographic. Trench A's `source_family`
 vocabulary was, because Trench A was; KAN-344 extends it with
 `administrative_register`, `numismatic` and `scholarly_edition`, and adds the
-_Notitia Dignitatum_ and the Dacia coin types as sources. Two of the strongest
-cases are not sources at all: **a use exercised by an institution needs no
-witness to be real.** The Dominican province of Dacia and the Automobile Dacia
-marque are attested by the order and the company that used the name, and the
-schema has allowed that since KAN-336 - `source_id` or `institution`, either
-will do.
+_Notitia Dignitatum_ and the Dacia coin types as sources. One of the strongest
+cases is not a source at all: **a use exercised by an institution needs no
+witness to be real.** The Dominican province of Dacia is attested by the order
+that used the name, and the schema has allowed that since KAN-336 -
+`source_id` or `institution`, either will do.
+
+## The commercial career, and why it is not here
+
+The word did not stop in 1974. From 1966 a Romanian carmaker took it, and from
+1999 Renault took the carmaker, and the name now reaches more people on a boot
+lid than it ever did on a map. The ledger carried both phases as a
+`commercium` fate class until KAN-344's review pass, and they are gone
+deliberately.
+
+The reason is scope, not evidence. Trench C argues how a place-name migrates
+between referents; following it into trademark registers and marque management
+turns a question about historical geography into one about branding, which is a
+different essay and not one this programme is writing. Terra Chartarum's
+subject is the map and the territory. A corporate identity that happens to
+reuse a provincial name is a real use of the word and an uninteresting one for
+the argument at hand.
+
+Excised with the rows: the `commercium` fate class and the `product`
+`referent_kind`, both now unused; the two edges that reached the marque; and
+the Dacia 1300 photograph from the rights package, whose own assessment already
+observed that no publishable image of a modern car exists. Nothing about the
+removal is reversible by accident - restoring the career means restoring the
+vocabulary terms too, which is the point of writing it down here.
 
 ## What the edges refuse to say
 
-Thirteen edges, four of them explicit non-relationships. The rule from KAN-336
+Eleven edges, four of them explicit non-relationships. The rule from KAN-336
 is that a shared string is not a relationship, and this trench is where it
 earns its keep: a Roman mint striking DACIA and a medieval clerk writing
 _Dacia_ for Denmark are joined by `homonym_only`, in a row, so no reader has to
 decide for themselves whether the coin is evidence about Denmark.
 
-The instructive case is `nue-dacia-marque-renault`. Anyone can see that the
-marque under Renault from 1999 is the same marque founded in 1966. The schema
-still will not let that be a `continuity` edge, because continuity has to cite
-an attestation and none has been cited. **Obviousness is not evidence**, and the
-edge is recorded as a `derivation` until somebody produces the document.
+The instructive case is `nue-napoca-roman-restored`. Anyone can see that the
+Napoca restored to Cluj by decree in 1974 is the Roman town's name coming back.
+The schema still will not let that be a `continuity` edge, because continuity
+has to cite an attestation and none asserts that the name stayed in use across
+the seventeen centuries between. **Obviousness is not evidence**, and the edge
+is recorded as a `revival` - which at least has to name the instrument that
+reinstated the name. Not one of the eleven edges is a `continuity`, and that is
+the ledger's most substantive claim: nothing here has yet been shown to be an
+unbroken line.
 
-## Readiness, and why nothing is reviewed
+## Readiness
 
 | State        | Uses | Why                                                       |
 | ------------ | ---- | --------------------------------------------------------- |
-| `normalized` | 7    | Source, locator, referent, period, fate class, confidence |
-| `raw`        | 5    | Locator still `pending`                                   |
-| `reviewed`   | 0    | No person has cleared a row against its source            |
+| `reviewed`   | 3    | A person has cleared the row against its source           |
+| `normalized` | 4    | Source, locator, referent, period, fate class, confidence |
+| `raw`        | 3    | Locator still `pending`                                   |
 
-Both numbers are structural rather than incidental.
+**Three rows are reviewed**, one for each fate class that had a promotable
+candidate: `nmu-dacia-province` (`applicatio`), `nmu-dacia-antiquarian`
+(`restitutio`) and `nmu-dacia-scandinavia` (`translatio`), cleared by Vlad
+Simion on 2026-08-25. Nothing reached `reviewed` by machine: the promotion
+ladder refuses `llm_assisted` above `normalized` without a named reviewer, and a
+reviewed row also needs a real locator. That is the gate working as designed,
+and the three promotions are what a human pass looks like when it happens.
 
-**Nothing is reviewed** because machine-assisted work cannot review itself. The
-promotion ladder refuses `llm_assisted` above `normalized` without a named
-reviewer, and a reviewed row also needs a real locator. That is the gate working
-as designed, and it is what `vd-nomen-errans-review` records: KAN-345, KAN-346
-and KAN-347 all require reviewed records, so the rest of Trench C waits on a
-human pass.
+`vd-nomen-errans-review` stays open. KAN-345, KAN-346 and KAN-347 need a
+reviewed example of each class the essay argues, and `inventio` has none.
 
-**Five rows are raw** because a use exercised by an institution has no locator
-to give until somebody cites the instrument - the 1974 decree, a trademark
-record, a bibliographic anchor for the Dominican province. `pending` is not a
+**Three rows are raw** because a use exercised by an institution has no locator
+to give until somebody cites the instrument - the 1974 decree, a bibliographic
+anchor for the Dominican province, a reception artefact for the identity claim. `pending` is not a
 value a normalized row may carry, so those rows stay where they are and
 `vd-nomen-errans-locators` says what would move them.
 
 ## The rights package
 
-Six candidate visual witnesses are assessed, and **none is cleared for
-publication**: two need permission from the holding institution, three need a
+Five candidate visual witnesses are assessed, and **none is cleared for
+publication**: one needs permission from the holding institution, three need a
 rights review, and no reproduction has been resolved for any of them. The
 production bar is the same one the other research packages hold - open reuse
 rights, a sufficient reproduction, and a repository object identifier - and no
@@ -103,7 +129,7 @@ python3 scripts/dacia/review.py queue --table name_uses --verbose
 ```
 
 That trial-promotes each row against the real validator and prints what stands
-in its way, so the queue can never drift from the rules. Seven rows currently
+in its way, so the queue can never drift from the rules. Four rows currently
 report `ready to promote`: everything machine-assisted work can do to them has
 been done, and only a person can do the rest.
 
@@ -120,34 +146,26 @@ source at the locator the row claims and confirming it says what the row says.
 
 KAN-344's criterion is one reviewed example per fate class, and KAN-345, KAN-346
 and KAN-347 all wait on it. "Not reviewed" is the wrong unit to plan with,
-though, because the five classes are not blocked on the same thing:
+though, because the four classes are not blocked on the same thing:
 
 ```bash
 python3 scripts/dacia/review.py coverage
 ```
 
-| Fate class   | Rows | What stands in the way                              |
-| ------------ | ---- | --------------------------------------------------- |
-| `applicatio` | 5    | A name. `nmu-dacia-province` is ready to promote    |
-| `restitutio` | 2    | A name. `nmu-dacia-antiquarian` is ready to promote |
-| `translatio` | 2    | A name. `nmu-dacia-scandinavia` is ready to promote |
-| `commercium` | 2    | A citation. Both rows have `locator: pending`       |
-| `inventio`   | 1    | A citation. The only row has `locator: pending`     |
+| Fate class   | Rows | What stands in the way                          |
+| ------------ | ---- | ----------------------------------------------- |
+| `applicatio` | 5    | Satisfied by `nmu-dacia-province`               |
+| `restitutio` | 2    | Satisfied by `nmu-dacia-antiquarian`            |
+| `translatio` | 2    | Satisfied by `nmu-dacia-scandinavia`            |
+| `inventio`   | 1    | A citation. The only row has `locator: pending` |
 
-Three of the five need somebody to open the source at the locator the row
-already claims, confirm it says what the row says, and put their name to it.
-That is one command each.
+Three of the four are closed: somebody opened the source at the locator the row
+claimed, confirmed it said what the row said, and put their name to it. That was
+one command each.
 
-The other two need a citation found first, and they are unusual cases worth
-naming rather than leaving as a generic gap:
+The fourth needs a citation found first, and it is an unusual case worth naming
+rather than leaving as a generic gap:
 
-- **`commercium`** (`nmu-dacia-marque`, `nmu-dacia-marque-renault`). The row's
-  own note argues that a trademark is a use of a name by an institution and
-  needs no textual witness. That may well be right, but the validator does not
-  know it: `locator: pending` blocks promotion whatever the reasoning. Either a
-  registration record is cited, or the ledger needs an explicit locator type for
-  a use evidenced by an institution rather than by a text - a schema decision,
-  not a research one, and one somebody has to take deliberately.
 - **`inventio`** (`nmu-dacia-reception`). Deliberately low-confidence and
   open-ended, and the note points at Trench F. A reception claim's evidence is a
   reception artefact, which is the material Trench F is meant to gather. It may

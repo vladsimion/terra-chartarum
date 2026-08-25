@@ -210,8 +210,8 @@ What a name meant, when, and to whom. A `name_use` pairs a `lexical_form` with a
 referent, a period, a `fate_class` and either a source or the institution that
 exercised it. The fate classes are `translatio` (the name is carried to another
 referent), `restitutio` (restored to one it formerly held), `inventio` (coined
-for a referent that never carried it), `applicatio` (applied to a new
-administrative entity) and `commercium` (passed into branded use).
+for a referent that never carried it) and `applicatio` (applied to a new
+administrative entity).
 
 **Relationships are rows, never inferences.** `name-use-edges.csv` holds the
 links, and the four kinds are `continuity`, `derivation`, `revival` and

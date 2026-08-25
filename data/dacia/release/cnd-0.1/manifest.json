@@ -5,16 +5,16 @@
   },
   "counts": {
     "attestations": 129,
-    "name-use-edges": 13,
-    "name-uses": 12,
+    "name-use-edges": 11,
+    "name-uses": 10,
     "places": 120,
     "sources": 25,
     "transcriptions": 104
   },
   "inputs": {
     "data/dacia/attestations.csv": "4f2a3b43e6535297e3330080525568858c862fa6089a58b91568dbc0ca880942",
-    "data/dacia/name-use-edges.csv": "0860728e09b1c0413a5a8252dbf553259cb795465b3ff28c5a5338f263c3ff17",
-    "data/dacia/name-uses.csv": "a1e2236adf6233fa850cb4683145a01946adf0d621077f4d5b0974f0b17173df",
+    "data/dacia/name-use-edges.csv": "3045d6f7432b44b61bc52c18e530ca7f2dac6887f31a8f4afe32a18ccb1e0cba",
+    "data/dacia/name-uses.csv": "3eea069135bc73c934c1856921496d719a6f7a5f6a7f4ed5f2280ab20269bf95",
     "data/dacia/places.csv": "c5a2ed3917e1d42db72d388df2a5abe3d5b7b3513612e861864a21f8d0a83e76",
     "data/dacia/sources.csv": "aba3ef0a1d6fbb208f0af1c6c98f03890f3aa92e91b09aa3aa7002a6bcab1d9e",
     "data/dacia/transcriptions.csv": "7daba7bc764ba4356761256c06483cd2e9453235cd2d9d315126f2e7f38b1cd9"
@@ -31,24 +31,24 @@
       "sha256": "96917f9323ade7a38983154270f8c7aa661ec36efbee6d830dd9ea749835b51f"
     },
     "data/dacia/release/cnd-0.1/cnd.jsonld": {
-      "bytes": 281824,
-      "sha256": "6a2e662ddfe22ddfb6be4b2a2c6bf6c05f785b81523092f78e2f91eb1f41eb0c"
+      "bytes": 278715,
+      "sha256": "a74a132d9e4991c7c18fd52626a03e3e6275d6442cbcfdb61aaf5a45081f9a4e"
     },
     "data/dacia/release/cnd-0.1/name-use-edges.csv": {
-      "bytes": 4165,
-      "sha256": "bbe8607b857ad9e4018470aaad4f1318773d968259b3d5d80df2fc203a386270"
+      "bytes": 3580,
+      "sha256": "1f414620ac4c558b494a5835feaed1c5f7bc226022fac27a3f6fc71228ad1f73"
     },
     "data/dacia/release/cnd-0.1/name-use-edges.parquet": {
-      "bytes": 3869,
-      "sha256": "9f2769df51b5fbbb281c7880fcf1de9a4b35a95002ca0354e426b3cfe1f74be5"
+      "bytes": 3666,
+      "sha256": "cc46165f57894f28feb6234fff29b0852d5930d912d3374ed2a1fdb2b7f60201"
     },
     "data/dacia/release/cnd-0.1/name-uses.csv": {
-      "bytes": 5045,
-      "sha256": "73a9986bb493e576407fbc0bc1c92b3ac5d1deea3fa6f87d6d8739cc01d649b6"
+      "bytes": 4217,
+      "sha256": "c00970d007e7aa5d674df9340729db82dce71a882404f80ae817fe2ea0e49000"
     },
     "data/dacia/release/cnd-0.1/name-uses.parquet": {
-      "bytes": 5732,
-      "sha256": "6f8ef466fd39cee2a3df36133bec7e75ab26b88d56ee83f21f5dcd2b11a6e506"
+      "bytes": 5409,
+      "sha256": "bd2d0189da1c72f099f2d6849c1c2e2b077f01bcebc0695c56f178a9ff75e45c"
     },
     "data/dacia/release/cnd-0.1/places.csv": {
       "bytes": 31525,
