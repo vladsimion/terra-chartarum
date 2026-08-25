@@ -7,8 +7,9 @@
  * with it, and the test suite says so.
  *
  * The programme is currently NOT release-ready, and the reasons are structural
- * rather than incidental: nothing has been read against a source, and no image
- * may be reproduced. Those are the two gates a machine cannot close on its own.
+ * rather than incidental: most records have not been read against a source, no
+ * claim has completed scholarly review and no image may be reproduced. Those
+ * are gates a machine cannot close on its own.
  */
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -122,7 +123,7 @@ export function assessRelease(
       question: 'Is any historical map cleared for reproduction?',
       passed: false,
       finding:
-        'No object in the register is cleared. Both verified Greenwich records state no reuse licence and one carries a Crown copyright credit line.',
+        'No object in the register is cleared. The verified Greenwich records state no reuse licence and the ice charts carry Crown copyright credit lines; the Rumsey scan use remains undetermined.',
       closedBy: 'rights',
     },
   ];

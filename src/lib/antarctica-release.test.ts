@@ -66,7 +66,7 @@ describe('the essay cannot be released ahead of its evidence', () => {
 
   it('would fail if someone gave it a release date without doing the review', async () => {
     // The point of the check: editing one line of frontmatter must not be enough
-    // to publish an essay whose every claim rests on a source nobody has opened.
+    // to publish an essay while its corpus still has pending review and rights.
     const state = await essayReleaseAgreesWithCorpus();
     expect(state.shouldBeHeld).toBe(true);
     expect(ESSAY_SLUG).toBe('terra-incognita');
