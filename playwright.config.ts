@@ -63,6 +63,16 @@ export default defineConfig({
     command: 'npm run build && npm run preview -- --port ' + PORT,
     port: PORT,
     reuseExistingServer: !process.env.CI && !process.env.PLAYWRIGHT_PORT,
-    timeout: 120_000,
+    /*
+     * Matches playwright.held.config.ts, which runs the same build behind the
+     * same webServer and already allows 300s. The build is ~28s on an idle
+     * machine and comfortably inside 120s on CI, so this is headroom rather
+     * than a fix for an observed timeout: the repo is worked in several
+     * checkouts at once, and a build sharing a machine with two Playwright
+     * runs is not a 28s build. Slack here costs nothing when the build is
+     * quick, and a webServer timeout is an expensive thing to debug - it
+     * surfaces as every test failing at once, which reads as broken code.
+     */
+    timeout: 300_000,
   },
 });
