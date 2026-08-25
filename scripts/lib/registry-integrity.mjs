@@ -509,9 +509,14 @@ export function validateExecutableAlignment(contract, lighthouse, playwrightSour
   const errors = [];
   const matrix = lighthouse.ci?.assert?.assertMatrix ?? [];
   const shared = assertion(matrix, '.*');
+  // Written out rather than derived, so that widening the set of routes held to
+  // the content budget has to be done deliberately in two files. It must track
+  // lighthouserc.json exactly: an entry that no longer matches reads here as an
+  // empty assertion set, and every content-budget check below then fails loudly
+  // rather than silently passing an unmeasured route.
   const content = assertion(
     matrix,
-    '(localhost/index|essays/(index|cities-remember|the-league-that-left-no-map)/index)\\.html$',
+    '(localhost/index|essays/(index|cities-remember|invisible-maps-religion|maps-that-age|the-league-that-left-no-map)/index)\\.html$',
   );
   const atlas = assertion(matrix, 'atlas/index\\.html$');
   const budgets = contract.support.budgets;

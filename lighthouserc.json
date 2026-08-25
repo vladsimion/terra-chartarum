@@ -6,6 +6,8 @@
         "http://localhost/index.html",
         "http://localhost/essays/index.html",
         "http://localhost/essays/cities-remember/index.html",
+        "http://localhost/essays/invisible-maps-religion/index.html",
+        "http://localhost/essays/maps-that-age/index.html",
         "http://localhost/essays/the-league-that-left-no-map/index.html",
         "http://localhost/atlas/index.html"
       ],
@@ -53,8 +55,8 @@
           }
         },
         {
-          "comment": "Content routes are light; hold them to the full >=0.9 budget.",
-          "matchingUrlPattern": "(localhost/index|essays/(index|cities-remember|the-league-that-left-no-map)/index)\\.html$",
+          "comment": "Content routes are light; hold them to the full >=0.9 budget. Invisible Maps of Religion and Maps That Age join the list here rather than arriving with exceptions of their own. Both carried scholarly plates at archival size - the 2,350,999-byte Hereford mappa mundi, the heaviest committed image in the project, plus 579,360 for Matthew Paris and 981,271 and 350,421 for the two Ortelius impressions - and neither route appeared in collect.url, so those bytes were real and unmeasured at the same time. Both sliders now request display derivatives out of images/<essay>/display/, which is what lets the routes enter the list at the same 1,250,000 every other content route holds instead of raising a ceiling to meet them. The canonical plates are unchanged on disk and still served from the collection catalogue, which is where a reader who wants the archival pixels goes.",
+          "matchingUrlPattern": "(localhost/index|essays/(index|cities-remember|invisible-maps-religion|maps-that-age|the-league-that-left-no-map)/index)\\.html$",
           "assertions": {
             "categories:performance": [
               "error",
