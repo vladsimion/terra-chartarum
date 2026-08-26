@@ -261,6 +261,9 @@ const payload = {
     width: l.width ?? null,
     documentationLinks: l.documentationLinks,
     essayLinks: l.essayLinks.map((link) => ({
+      // The slug travels with the link so the map can pick the passage the
+      // reader actually arrived from, not just the first one (KAN-345).
+      slug: link.slug,
       href: `/essays/${link.slug}/#${link.sectionId}`,
       label: link.label,
     })),
@@ -599,7 +602,7 @@ const payload = {
     dash: DashHint | null;
     width: WidthHint | null;
     documentationLinks: { label: string; href: string }[];
-    essayLinks: { href: string; label: string }[];
+    essayLinks: { slug: string; href: string; label: string }[];
     available: boolean;
     defaultOn: boolean;
     facets: { field: string; label: string; values: { value: string; label: string }[] }[];
@@ -655,8 +658,17 @@ const payload = {
     const vmnLinks = parsed.vmnLinks ?? [];
     const coverage = parsed.coverage ?? [];
     const toponyms = parsed.toponyms ?? [];
-    const reverseEssayLink = (layer: string) =>
-      geoLayers.find((candidate) => candidate.id === layer)?.essayLinks[0];
+    // Which essay the reader arrived from, captured once from the deep link.
+    // A layer can be discussed by more than one essay, and the way back should
+    // be to the passage that sent the reader here rather than to whichever
+    // passage happens to be listed first (KAN-345). Links to held essays are
+    // already filtered out server-side, so an unreleased essay simply finds no
+    // match and the layer's own default answers instead.
+    const arrivedFromEssay = parseAtlasShareState(location.search).essay;
+    const reverseEssayLink = (layer: string) => {
+      const links = geoLayers.find((candidate) => candidate.id === layer)?.essayLinks ?? [];
+      return links.find((link) => link.slug === arrivedFromEssay) ?? links[0];
+    };
 
     // Ray-casting point-in-ring, inlined (no turf.js) for the footprint filter.
     const pointInRing = (x: number, y: number, ring: [number, number][]) => {
@@ -957,16 +969,37 @@ const payload = {
       );
     };
 
-    const showEssayContext = (slug: string, persist = true) => {
+    /**
+     * The passage an essay-sourced link should return to (KAN-345).
+     *
+     * A reader who followed a deep link out of a paragraph is owed the way back
+     * to that paragraph, not to the top of the essay. The passage is looked up
+     * on the layers the link switched on, so a section that is renamed moves
+     * the return with it. No passage on any of them is a normal answer, and the
+     * essay's own route is the honest fallback.
+     */
+    const essayReturnLink = (slug: string, layers: string[]) => {
+      for (const layer of layers) {
+        const link = (geoLayers.find((candidate) => candidate.id === layer)?.essayLinks ?? []).find(
+          (entry) => entry.slug === slug,
+        );
+        if (link) return link;
+      }
+      return undefined;
+    };
+
+    const showEssayContext = (slug: string, persist = true, layers: string[] = []) => {
       const essay = essayDetails.find((candidate) => candidate.slug === slug);
       if (!essay) return;
+      const passage = essayReturnLink(slug, layers);
       showContext(
         {
           id: `essay:${slug}`,
           title: essay.title,
           summary: essay.summary,
           meta: `${readable(essay.room)} · ${fmt(essay.yearFrom)}–${fmt(essay.yearTo)}`,
-          href: `/essays/${slug}/`,
+          href: passage?.href ?? `/essays/${slug}/`,
+          linkLabel: passage ? `${passage.label} →` : undefined,
           essaySlug: slug,
         },
         persist,
@@ -2920,7 +2953,10 @@ const payload = {
     document.addEventListener('atlas:essay', receiveEssaySelection);
 
     apply();
-    if (requestedEssay) showEssayContext(requestedEssay, false);
+    // The reader arrived from a passage, so the panel offers the way back to
+    // that passage rather than to the top of the essay - the layers the link
+    // switched on are what say which passage it was (KAN-345).
+    if (requestedEssay) showEssayContext(requestedEssay, false, sharedState.layers ?? []);
     document.dispatchEvent(
       new CustomEvent('atlas:time', { detail: { year: Number(yearIn.value) } }),
     );

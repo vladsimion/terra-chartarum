@@ -1448,3 +1448,45 @@ def test_a_claim_cannot_relate_an_item_to_itself(dataset):
 
     edit(dataset, "reception_claims", mutate)
     refuses("cannot relate an item to itself")
+
+
+def test_every_reviewed_use_must_say_where_it_lands(dataset):
+    def mutate(rows):
+        return [row for row in rows if row["state_id"] != "nes-dacia-scandinavia"]
+
+    edit(dataset, "nomen_errans_atlas_states", mutate)
+    refuses("reviewed name use 'nmu-dacia-scandinavia' has no Atlas routing")
+
+
+def test_a_route_with_no_coverage_cannot_also_name_a_layer(dataset):
+    """Denmark is off the Dacia layers, and a link would say otherwise."""
+
+    def mutate(rows):
+        find(rows, "state_id", "nes-dacia-scandinavia")["layers"] = "dacia-roman-sites"
+
+    edit(dataset, "nomen_errans_atlas_states", mutate)
+    refuses("coverage out_of_coverage cannot also carry a layers")
+
+
+def test_a_routed_use_must_carry_a_year_for_the_time_slider(dataset):
+    def mutate(rows):
+        find(rows, "state_id", "nes-dacia-province")["year"] = ""
+
+    edit(dataset, "nomen_errans_atlas_states", mutate)
+    refuses("in_coverage requires a year for the time slider")
+
+
+def test_a_route_cannot_open_on_a_feature_nothing_compiles(dataset):
+    def mutate(rows):
+        find(rows, "state_id", "nes-dacia-antiquarian")["feature"] = "att-9999"
+
+    edit(dataset, "nomen_errans_atlas_states", mutate)
+    refuses("feature 'att-9999' resolves to no compiled feature")
+
+
+def test_one_use_cannot_be_routed_two_ways(dataset):
+    def mutate(rows):
+        find(rows, "state_id", "nes-dacia-coin-legend")["name_use_id"] = "nmu-dacia-province"
+
+    edit(dataset, "nomen_errans_atlas_states", mutate)
+    refuses("name use 'nmu-dacia-province' is routed twice")

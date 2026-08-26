@@ -30,12 +30,27 @@ interface Props {
   layer?: string;
   year?: number;
   feature?: string;
+  /**
+   * The essay the reader is arriving from. Carried so the Atlas can offer the
+   * way back to the passage rather than to the essay's top (KAN-345); like
+   * `collection`, it is context and activates nothing.
+   */
+  essay?: string;
   lens?: AtlasShareLens;
   /** Extra class for the anchor, so callers can place it without :global(). */
   class?: string;
 }
 
-const { layers = [], collection, layer, year, feature, lens, class: className } = Astro.props;
+const {
+  layers = [],
+  collection,
+  layer,
+  year,
+  feature,
+  lens,
+  essay,
+  class: className,
+} = Astro.props;
 
 const known = new Set(GEO_LAYERS.map((entry) => entry.id));
 const unknown = [...layers, ...(layer ? [layer] : [])].filter((id) => !known.has(id));
@@ -54,6 +69,7 @@ const href = atlasDeepLink({
   year,
   feature,
   lens,
+  essay,
 });
 ---
 

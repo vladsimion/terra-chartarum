@@ -52,6 +52,14 @@ OPEN_ENDED = 9999
 
 TABLES = ["places", "sources", "attestations", "transcriptions", "name-uses", "name-use-edges"]
 INVENTORY = DATA / "pilot" / "trench-a-inventory.csv"
+# Trench C is a single-name slice: one lexical form, followed through every
+# referent it was made to carry (KAN-345).
+NOMEN_ERRANS_FORM = "Dacia"
+NOMEN_ERRANS_ESSAY = "nomen-errans"
+# A career is put in front of a reader only once a person has cleared it. The
+# rest are named as withheld, with their state, rather than dropped - a corpus
+# that hides its unreviewed rows looks finished when it is not.
+NOMEN_ERRANS_PUBLIC_STATES = {"reviewed", "approved", "published"}
 GIS = DATA / "gis"
 REFERENCE = DATA / "reference"
 
@@ -371,6 +379,151 @@ def trench_a_bridge(tables: dict[str, list[dict[str, str]]]) -> dict:
         "stelae": sorted(stelae, key=lambda s: s["stela"]),
         "pits": sorted(pits, key=lambda p: p["pit"]),
         "local": sorted(local, key=lambda l: l["ref"]),
+    }
+
+
+def vocabulary_definitions() -> dict[tuple[str, str], str]:
+    """The definition behind a controlled term, for the same reason as its label."""
+    path = DATA / "reference" / "vocabularies.csv"
+    with path.open(encoding="utf-8", newline="") as handle:
+        return {
+            (row["vocabulary"], row["term"]): row["definition"]
+            for row in csv.DictReader(handle)
+            if row.get("status") == "approved"
+        }
+
+
+def _period_label(row: dict[str, str]) -> str:
+    """One readable line for a period, decided by the row's own date_precision.
+
+    Written here rather than in the component because the same period has to
+    read the same way in the essay, in a citation and in a panel, and three
+    formatters would eventually disagree about what `terminus_post_quem` means.
+    """
+    start, end, precision = row["period_from"], row["period_to"], row["date_precision"]
+    if precision == "circa":
+        return f"c. {start}" if start else "undated"
+    if precision == "terminus_post_quem":
+        return f"from {start}" if start else "undated"
+    if precision == "terminus_ante_quem":
+        return f"before {end or start}"
+    if precision == "exact_year":
+        return start or "undated"
+    if start and end and start != end:
+        return f"{start}\u2013{end}"
+    return start or end or "undated"
+
+
+def _year(value: str) -> int | None:
+    return int(value) if value.lstrip("-").isdigit() else None
+
+
+def nomen_errans_slice(tables: dict[str, list[dict[str, str]]]) -> dict:
+    """Trench C's vertical slice: one word, its careers, and where each one lands (KAN-345).
+
+    The essay reads only this file. Nothing in it is authored twice - the
+    chronology is the `name_uses` ledger, the citation is the `sources` row, and
+    the Atlas composition is the reviewed routing table - so a period corrected
+    in the corpus corrects the essay on the next `make dacia`, and a career
+    whose route is withdrawn loses its link rather than keeping a stale one.
+
+    Two thresholds are applied here, not in the component. Only a career at or
+    above `reviewed` is presented; the rest are listed as withheld with their
+    state. And a career is only linked to the Atlas where the routing table says
+    a layer honestly covers its referent, because a link that opens an empty map
+    reads to a reader exactly like a link that works.
+    """
+    labels = vocabulary_labels()
+    definitions = vocabulary_definitions()
+    sources = {row["source_id"]: row for row in tables["sources"]}
+    routes = {row["name_use_id"]: row for row in _read_reference("nomen-errans-atlas-states")}
+
+    careers, withheld = [], []
+    for row in tables["name-uses"]:
+        if row["lexical_form"] != NOMEN_ERRANS_FORM:
+            continue
+        if row["review_state"] not in NOMEN_ERRANS_PUBLIC_STATES:
+            withheld.append({
+                "id": row["name_use_id"],
+                "referentLabel": row["referent_label"],
+                "fateClass": row["fate_class"],
+                "fateClassLabel": labels.get(("fate_class", row["fate_class"]), row["fate_class"]),
+                "reviewState": row["review_state"],
+            })
+            continue
+
+        source = sources.get(row["source_id"])
+        route = routes.get(row["name_use_id"])
+        careers.append({
+            "id": row["name_use_id"],
+            "lexicalForm": row["lexical_form"],
+            "institution": row["institution"],
+            "referentKind": row["referent_kind"],
+            "referentKindLabel": labels.get(
+                ("referent_kind", row["referent_kind"]), row["referent_kind"]
+            ),
+            "referentLabel": row["referent_label"],
+            "referentPlaceId": row["referent_place_id"] or None,
+            "periodFrom": _year(row["period_from"]),
+            "periodTo": _year(row["period_to"]),
+            "periodLabel": _period_label(row),
+            "datePrecision": row["date_precision"],
+            "datePrecisionLabel": labels.get(
+                ("date_precision", row["date_precision"]), row["date_precision"]
+            ),
+            "fateClass": row["fate_class"],
+            "fateClassLabel": labels.get(("fate_class", row["fate_class"]), row["fate_class"]),
+            "fateClassDefinition": definitions.get(("fate_class", row["fate_class"]), ""),
+            "locatorType": row["locator_type"],
+            "locatorTypeLabel": labels.get(
+                ("locator_type", row["locator_type"]), row["locator_type"]
+            ),
+            "locator": row["locator"],
+            "confidence": row["confidence"],
+            "confidenceLabel": labels.get(("confidence", row["confidence"]), row["confidence"]),
+            "confidenceDefinition": definitions.get(("confidence", row["confidence"]), ""),
+            "reviewState": row["review_state"],
+            "reviewer": row["reviewer"],
+            "reviewDate": row["review_date"],
+            "note": row["note"],
+            # The witness, carried whole: a career the reader cannot cite is a
+            # claim, and this slice exists to prove the citation path closes.
+            "source": {
+                "id": source["source_id"],
+                "shortTitle": source["short_title"],
+                "title": source["title"],
+                "creator": source["creator"],
+                "family": source["source_family"],
+                "dateLabel": source["date_label"],
+                "repository": source["repository"],
+                "citation": source["citation"],
+                "rightsStatement": source["rights_statement"],
+                "reviewState": source["review_state"],
+            } if source else None,
+            "atlas": {
+                "coverage": route["coverage"],
+                "layers": [part for part in route["layers"].split("|") if part],
+                "year": _year(route["year"]),
+                "feature": route["feature"] or None,
+                "note": route["note"],
+                "reviewState": route["review_state"],
+            } if route else None,
+        })
+
+    # Chronological, then by id: two careers can start in the same year, and the
+    # order a reader steps through has to be the same on every build.
+    careers.sort(key=lambda c: (c["periodFrom"] if c["periodFrom"] is not None else 9999, c["id"]))
+    withheld.sort(key=lambda c: c["id"])
+
+    return {
+        "schemaVersion": SCHEMA_VERSION,
+        "generatedBy": "scripts/dacia/build.py",
+        "release": RELEASE_VERSION,
+        "kind": RELEASE_KIND,
+        "lexicalForm": NOMEN_ERRANS_FORM,
+        "essaySlug": NOMEN_ERRANS_ESSAY,
+        "careers": careers,
+        "withheld": withheld,
     }
 
 
@@ -1310,6 +1463,7 @@ def build_outputs() -> dict[Path, bytes]:
     outputs[GENERATED_DIR / "trench-a.json"] = canonical_json(trench_a_bridge(tables))
     outputs[GENERATED_DIR / "hiatus-timeline.json"] = canonical_json(hiatus_timeline())
     outputs[GENERATED_DIR / "programme.json"] = canonical_json(programme_graph(tables))
+    outputs[GENERATED_DIR / "nomen-errans.json"] = canonical_json(nomen_errans_slice(tables))
     outputs[GENERATED_DIR / "borroczyn.json"] = canonical_json(borroczyn_package())
     outputs[GENERATED_DIR / "in-manibus.json"] = canonical_json(in_manibus_package())
 

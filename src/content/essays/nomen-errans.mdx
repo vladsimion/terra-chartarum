@@ -1,0 +1,117 @@
+---
+title: Nomen Errans
+subtitle: The migration of a word
+summary: >-
+  One name, Dacia, followed through the referents it was made to carry, with
+  each career resolving to the witness that attests it and to the map that can
+  honestly show it.
+cover: /images/rooms/border-cover.webp
+hero: /images/rooms/border-hero.webp
+status: native
+eras: [Classical, Late Antique, Medieval, Early Modern]
+regions: [Dacia, Denmark, Balkans]
+lenses: [nomina, auctoritas, silentium]
+yearFrom: 106
+yearTo: 1595
+mapCount: 0
+readingMinutes: 6
+accent: '#9e7b52'
+order: 15
+featured: false
+room: border
+secondaryRooms: [archive, map]
+sections:
+  - id: slice
+    title: One word, taken at its word
+    room: border
+    secondaryRooms: [archive]
+  - id: careers
+    title: The careers of the word
+    room: border
+    secondaryRooms: [archive, map]
+  - id: path
+    title: What the slice proves, and what it does not
+    room: archive
+    secondaryRooms: [border]
+publishedAt: '2026-08-26'
+updatedAt: '2026-08-26'
+# HELD. This is the KAN-345 vertical slice, not the Nomen Errans essay: it
+# proves the source -> corpus -> build -> Atlas -> essay -> citation path closes
+# on one name, and stops there. The referent-migration map (KAN-346) and the
+# written argument, rights package and release checks (KAN-347) are still to
+# come, and the route stays out of navigation, search and the sitemap until
+# they land.
+releaseAt: '2099-01-01'
+metaScores:
+  measure: 0.2
+  witness: 0.8
+  use: 0.75
+  cosmos: 0.2
+  power: 0.7
+  silence: 0.6
+---
+
+import NameCareers from '../../components/islands/NameCareers.astro';
+import Section from '../../components/Section.astro';
+
+<p class="essay-kicker">
+  Campaign I &#183; Trench C &#183; <strong>vertical slice, held pending the full trench</strong>
+</p>
+
+# A name is not a thing. It is a job, and the same word can be given several.
+
+Dacia is a Roman province, and then a different province on the other bank of
+the river, and then a civil diocese that contains the second, and then a legend
+struck on coinage, and then - for four centuries of Latin writers who had never
+heard of the Carpathians - Denmark. The word does not change. Everything it
+points at does.
+
+<Section id="slice" title="One word, taken at its word" rooms={['border', 'archive']}>
+
+This page is deliberately smaller than the trench it belongs to. It follows one
+lexical form through the uses the corpus has actually cleared, and it exists to
+prove that a single career can be traced end to end: from the witness that
+attests it, through the compiled corpus, into the Atlas, and back out to a
+citation a reader can check.
+
+Nothing on this page is written twice. The periods, referents, fate classes,
+locators and confidences below are the `name_uses` ledger of the Corpus Nominum
+Daciae, compiled by the release build. Correcting a date in the corpus corrects
+this page on the next build; demoting a use below review removes it from this
+page on the same run. There is no second copy of the chronology to drift.
+
+</Section>
+
+<Section id="careers" title="The careers of the word" rooms={['border', 'archive', 'map']}>
+
+Each step is one documented use: who used the name, what they meant by it, when,
+on what witness, at what locator, and how far the editor is prepared to stand
+behind it. The fate class names what the use did to the word - applied it,
+carried it elsewhere, gave it back.
+
+<NameCareers caption="Uses of the name Dacia cleared for publication. Compiled from the Corpus Nominum Daciae name-use ledger; unreviewed uses are counted in the ledger below rather than shown." />
+
+The two uses on either side of 1300 are the reason the trench exists. A Roman
+province on the Danube and a Latin name for Denmark share a string and nothing
+else, and the corpus records that as an explicit non-relationship rather than
+leaving a reader to infer descent from the spelling.
+
+</Section>
+
+<Section id="path" title="What the slice proves, and what it does not" rooms={['archive', 'border']}>
+
+Three careers open the Atlas on the ground their referent occupied, and the map
+offers the way back to this passage. Three do not, and say so: Dacia Aureliana
+and the civil diocese lie south of the Danube, where no layer has been compiled
+yet, and the Scandinavian usage lies outside the extent of every Dacia layer
+there is. That last one is the argument, not a gap in the software. The word
+left the ground the map covers.
+
+What this slice does not do is draw the migration. A referent that moves needs a
+figure that shows it moving, and every edge in such a figure has to be a
+reviewed relationship rather than an inference from the spelling; that is the
+next piece of work. Nor is the trench's evidence complete: two further uses of
+the name are compiled and withheld because nobody has cleared them, and no
+visual witness in the ledger yet carries rights that permit publication.
+
+</Section>
