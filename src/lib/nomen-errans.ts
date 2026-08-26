@@ -1,7 +1,7 @@
 /**
- * Nomen Errans, the single-name interaction suite (KAN-345/346)
+ * Nomen Errans, the single-name production interaction suite (KAN-345/346/347)
  *
- * Trench C's proving run: one word, Dacia, followed through every referent it
+ * Trench C's proving run: one word, Dacia, followed through each reviewed referent it
  * was made to carry, with each career resolving to the source that attests it
  * and - where the Atlas honestly covers the referent - to a map composition.
  *

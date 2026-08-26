@@ -2,46 +2,48 @@
 title: Nomen Errans
 subtitle: The migration of a word
 summary: >-
-  One name, Dacia, followed through the referents it was made to carry, with
-  each career resolving to the witness that attests it and to the map that can
-  honestly show it.
+  Dacia looks like one continuous name. Its witnesses tell a different story:
+  provinces, a diocese, a coin legend, Scandinavia and an antiquarian
+  reconstruction, joined only where evidence permits a line.
 cover: /images/rooms/border-cover.webp
 hero: /images/rooms/border-hero.webp
 status: native
-eras: [Classical, Late Antique, Medieval, Early Modern]
-regions: [Dacia, Denmark, Balkans]
+eras: [Classical, Late Antique, Medieval, Early Modern, Modern]
+regions: [Dacia, Denmark, Romania, Balkans]
 lenses: [nomina, auctoritas, silentium]
 yearFrom: 106
-yearTo: 1595
+yearTo: 1974
 mapCount: 0
-readingMinutes: 6
+readingMinutes: 13
 accent: '#9e7b52'
 order: 15
 featured: false
 room: border
 secondaryRooms: [archive, map]
 sections:
-  - id: slice
-    title: One word, taken at its word
+  - id: premise
+    title: A word is not a territory
     room: border
     secondaryRooms: [archive]
   - id: careers
     title: The careers of the word
     room: border
     secondaryRooms: [archive, map]
-  - id: path
-    title: What the slice proves, and what it does not
+  - id: migration
+    title: A sequence without a line
+    room: map
+    secondaryRooms: [border, archive]
+  - id: witness
+    title: The witness at the release boundary
     room: archive
     secondaryRooms: [border]
+  - id: afterword
+    title: What a name can and cannot prove
+    room: border
+    secondaryRooms: [archive, map]
 publishedAt: '2026-08-26'
 updatedAt: '2026-08-26'
-# HELD. This is the KAN-345 vertical slice, not the Nomen Errans essay: it
-# proves the source -> corpus -> build -> Atlas -> essay -> citation path closes
-# on one name, and KAN-346 adds the reviewed referent-map/flow gate. The full
-# written argument, rights package and release checks (KAN-347) are still to
-# come, and the route stays out of navigation, search and the sitemap until
-# they land.
-releaseAt: '2099-01-01'
+releaseAt: '2026-08-26'
 metaScores:
   measure: 0.2
   witness: 0.8
@@ -53,72 +55,229 @@ metaScores:
 
 import NameCareers from '../../components/islands/NameCareers.astro';
 import NameMigration from '../../components/islands/NameMigration.astro';
+import DocumentWitness from '../../components/DocumentWitness.astro';
+import EssayLink from '../../components/EssayLink.astro';
 import Section from '../../components/Section.astro';
 
-<p class="essay-kicker">
-  Campaign I &#183; Trench C &#183; <strong>vertical slice, held pending the full trench</strong>
-</p>
+<p class="essay-kicker">The Border &#183; The Archive &#183; The Map &#183; AD 106–1974</p>
 
-# A name is not a thing. It is a job, and the same word can be given several.
+# Nomen Errans
 
-Dacia is a Roman province, and then a different province on the other bank of
-the river, and then a civil diocese that contains the second, and then a legend
-struck on coinage, and then - for four centuries of Latin writers who had never
-heard of the Carpathians - Denmark. The word does not change. Everything it
-points at does.
+## A name is not a thing. It is a job, and the same word can be given several.
 
-<Section id="slice" title="One word, taken at its word" rooms={['border', 'archive']}>
+Dacia can name a Roman province north of the Danube. It can name a later province
+south of it, a civil diocese, a figure on imperial coinage, the Scandinavian north
+on a medieval world map, or a province restored by an antiquarian more than a
+millennium after Roman administration withdrew. The letters remain remarkably
+stable. The thing indicated by them does not.
 
-This page is deliberately smaller than the trench it belongs to. It follows one
-lexical form through the uses the corpus has actually cleared, and it exists to
-prove that a single career can be traced end to end: from the witness that
-attests it, through the compiled corpus, into the Atlas, and back out to a
-citation a reader can check.
+That instability creates a familiar cartographic temptation. Put the uses in date
+order, place them on one map, and the eye will invent a journey: the name appears
+to flow from one territory into the next. But chronological adjacency is not
+transmission, a shared spelling is not continuity, and a map that connects every
+node would make a stronger historical claim than the surviving evidence allows.
 
-Nothing on this page is written twice. The periods, referents, fate classes,
-locators and confidences below are the `name_uses` ledger of the Corpus Nominum
-Daciae, compiled by the release build. Correcting a date in the corpus corrects
-this page on the next build; demoting a use below review removes it from this
-page on the same run. There is no second copy of the chronology to drift.
+This essay follows a stricter route. Each public career comes from a reviewed row
+in the Corpus Nominum Daciae. Each row states who used the word, what it referred
+to, when, on which source, at what locator and with what confidence. The map opens
+only where a compiled Atlas layer honestly covers that referent. A line between
+careers appears only when the relationship itself has passed review. An empty
+space is therefore not unfinished design. It is the visible form of a claim the
+evidence has not earned.
+
+Read this beside <EssayLink slug="dacia">Terra Sigillata</EssayLink>, which asks
+how maps and catalogues name the ground. _Nomen Errans_ asks the inverse question:
+what happens when the name leaves that ground behind?
+
+<Section id="premise" title="A word is not a territory" rooms={['border', 'archive']}>
+
+Historical geography often begins with a proper noun and quietly treats it as a
+stable key. A place record called Dacia seems to promise that every occurrence of
+the word can be joined to the same object. That is convenient for a database and
+dangerous for an argument.
+
+The corpus separates three things that prose too easily collapses. The **lexical
+form** is the written word. The **referent** is what a particular use makes the
+word indicate. The **relationship** is an evidenced claim about how two uses are
+connected. Repeating the first does not establish either of the other two.
+
+This distinction matters even inside Roman administration. The Trajanic province,
+the later Dacia south of the Danube and the _dioecesis Daciae_ are not three dates
+for one stable polygon. They are different administrative objects. The coin legend
+is another kind of use again: a mint makes the name circulate without supplying a
+boundary. Ptolemy's coordinate catalogue, Eutropius's narrative, the _Notitia
+Dignitatum_ and the imperial coin series answer different questions. The ledger
+keeps their source families because their silences differ as much as their words.
+
+The release page does not copy their chronology into prose. The panels below are
+compiled from the same tables as the data release. Correcting a date or locator in
+the corpus changes the essay on the next deterministic build; demoting a row below
+review removes it from the public sequence. The text cannot preserve an older,
+more confident version by accident.
 
 </Section>
 
 <Section id="careers" title="The careers of the word" rooms={['border', 'archive', 'map']}>
 
-Each step is one documented use: who used the name, what they meant by it, when,
-on what witness, at what locator, and how far the editor is prepared to stand
-behind it. The fate class names what the use did to the word - applied it,
-carried it elsewhere, gave it back.
+Each step is one reviewed use. The fate class names the operation performed on the
+word: **applicatio** applies it to an administrative or representational referent;
+**translatio** carries it to different ground; **restitutio** deliberately restores
+an earlier name. These labels classify what the source does. They do not claim a
+genealogy between sources.
 
-<NameCareers caption="Uses of the name Dacia cleared for publication. Compiled from the Corpus Nominum Daciae name-use ledger; unreviewed uses are counted in the ledger below rather than shown." />
+<NameCareers caption="Reviewed uses of Dacia, compiled from the Corpus Nominum Daciae. Source, locator, confidence and Atlas coverage travel with every career; normalized rows remain counted but withheld." />
 
-The two uses on either side of 1300 are the reason the trench exists. A Roman
-province on the Danube and a Latin name for Denmark share a string and nothing
-else, and the corpus records that as an explicit non-relationship rather than
-leaving a reader to infer descent from the spelling.
+The medieval step is the fracture that makes the method necessary. On the Hereford
+Mappa Mundi, around 1300, _Dacia_ belongs to the Scandinavian north. The source is
+one membrane and therefore has no page or sheet number to pretend to precision;
+the whole work is the locator. Its reviewed row says what the map calls the region.
+It does not say that Denmark descends from the Roman province, that the name moved
+there by one recoverable route, or that a medieval reader understood every earlier
+career gathered on this page.
 
-<NameMigration caption="Reviewed careers projected against their compiled Atlas coverage. Relationship lines are emitted only when the corresponding name-use edge has passed human review." />
+The early-modern return is different again. Ortelius's _Daciarum Moesiarumque
+vetus descriptio_ belongs to the _Parergon_, the historical supplement to the
+_Theatrum_. Its Dacia is an antiquarian reconstruction: an ancient province made
+present on a printed sheet through a Renaissance reading of old authorities. The
+fate class is therefore _restitutio_, not continuity. The map's date tells us when
+Ortelius restored the province to view, not that the province had persisted until 1595.
+
+The source apparatus beneath the panels is as important as the sequence above
+them. A repository, citation and locator let a reader ask whether a row says only
+what its witness can support. Confidence is spelled out rather than encoded by
+colour. Careers without an honest Atlas layer say so instead of opening the nearest
+available geometry and hoping proximity will be mistaken for evidence.
+
+</Section>
+
+<Section id="migration" title="A sequence without a line" rooms={['map', 'border', 'archive']}>
+
+The diagram below makes the problem deliberately uncomfortable. It has reviewed
+nodes, a chronological direction and no relationship lines. The corpus contains
+candidate relationships - derivation, revival and explicit non-relationship - but none
+has passed the separate human-review threshold required for drawing. The figure
+does not convert their order into an arrow.
+
+<NameMigration caption="Reviewed careers projected against their compiled Atlas coverage. A relationship line is emitted only after its own ledger row passes human review; chronology alone never draws one." />
+
+Some careers can still open useful map states. The Trajanic province opens the
+Roman sites and network at AD 150. The coin legend opens the province it names,
+not a guessed findspot for an unspecified coin. Ortelius opens the research-tier
+attestation that records the reconstruction. Every link carries the essay slug,
+so the Atlas can return the reader to this passage rather than dropping them at a
+generic catalogue.
+
+Other careers correctly open nothing. The southern province and the civil diocese
+have no compiled geometry. Pointing either at the Trajanic layer would turn the
+same word into the same territory. Scandinavia is outside the extent of every
+Dacia layer; that absence is the essay's finding, not a missing feature request.
+
+The result is a map that distinguishes three answers: **mapped**, **not compiled**
+and **outside coverage**. Most digital maps offer only present or absent. Here the
+reason for absence carries the argument, because an unbuilt layer and an irrelevant
+extent are not the same epistemic state.
 
 </Section>
 
-<Section id="path" title="What the slice proves, and what it does not" rooms={['archive', 'border']}>
+<Section id="witness" title="The witness at the release boundary" rooms={['archive', 'border']}>
 
-Three careers open the Atlas on the ground their referent occupied, and the map
-offers the way back to this passage. Three do not, and say so: Dacia Aureliana
-and the civil diocese lie south of the Danube, where no layer has been compiled
-yet, and the Scandinavian usage lies outside the extent of every Dacia layer
-there is. That last one is the argument, not a gap in the software. The word
-left the ground the map covers.
+Historical-map rights do not follow automatically from the age of the work. The
+ledger assessed six candidate witnesses. The Hereford Mappa Mundi photograph needs
+permission; the Tabula Peutingeriana digitisation, an Ortelius impression and a
+coin specimen need object-level rights review; the exact _Notitia_ page remains
+unlocated. They stay research-only, so this essay describes them and reproduces
+none of their images.
 
-The map and flow figure do not manufacture a migration to make the sequence
-look complete. Every reviewed use becomes a node and an inspectable Atlas state;
-a relationship becomes a line only after a person clears its own ledger row.
-The current ledger has ten Dacia relationship records and no reviewed
-relationship, so no line is drawn. Chronology is visible, but chronology is not
-continuity.
+One later document clears the production bar. Decree no. 194 of 16 October 1974
+survives on page 1 of the Romanian official bulletin. The scan is sufficient, its
+object identity is fixed, and the source page records the official text and its
+document photograph as exempt from Romanian copyright protection. The operative
+article adds _Napoca_ to _Cluj_. That makes it a useful boundary object for this
+essay: rights permit the page to be shown, but the two name-use readings attached
+to it remain normalized rather than human-reviewed, so neither is promoted into
+the career sequence above.
 
-Nor is the trench's evidence complete: two further uses of the name are
-compiled and withheld because nobody has cleared them, and no visual witness in
-the ledger yet carries rights that permit publication.
+<DocumentWitness
+  sourceUrl="https://commons.wikimedia.org/wiki/File:Decretul_Consiliului_de_Stat_nr._194,_16_octombrie_1974.jpg"
+  imageUrl="https://upload.wikimedia.org/wikipedia/commons/6/6b/Decretul_Consiliului_de_Stat_nr._194%2C_16_octombrie_1974.jpg"
+  alt="Page one of the Romanian official bulletin of 18 October 1974, showing Decree 194 and its sole article adding Napoca to the name of Cluj."
+  width={1129}
+  height={1129}
+>
+  Decretul Consiliului de Stat nr. 194/1974, <em>Buletinul Oficial al R.S. România</em>, anul X,
+  partea I, nr. 125, p. 1. Official-text scan, PD-RO-exempt / no known restrictions, via Wikimedia
+  Commons. The image is source-checked; its normalized name-use rows remain withheld pending a named
+  human review.
+</DocumentWitness>
+
+That asymmetry is deliberate. Reuse permission answers whether the page may be
+shown. Scholarly review answers what claims the publication is prepared to make
+from it. A permissive licence cannot promote an interpretation, and an excellent
+interpretation cannot supply image rights. The two gates meet only at release.
 
 </Section>
+
+<Section id="afterword" title="What a name can and cannot prove" rooms={['border', 'archive', 'map']}>
+
+The wandering in _Nomen Errans_ is not a biography of a word with every missing
+year filled. It is a record of distinct, inspectable employments. Between them lie
+gaps in evidence, changes of institution, shifts of medium and, in the Scandinavian
+case, different ground altogether.
+
+This changes what an atlas can responsibly do. It can compare referents without
+merging them. It can direct a reader from a reviewed use to a relevant layer and
+back. It can expose the reason a layer is absent. It can record a candidate
+relationship without drawing it. What it cannot do is make sameness of spelling
+stand in for sameness of territory, people or authority.
+
+The most consequential mark in the diagram is therefore the line that is not
+there. A continuous path would be visually satisfying and historically premature.
+Leaving it blank makes a smaller claim, but a more useful one: every connection in
+an atlas should be able to say who reviewed it, what source supports it and what
+kind of relationship it asserts.
+
+Continue through <a href="/rooms/border/">The Border</a>, inspect naming as an
+archival problem in <a href="/rooms/archive/">The Archive</a>, or return to{' '}
+
+<EssayLink slug="dacia">Terra Sigillata</EssayLink> for the longer history of how Dacia was
+measured, depicted and withheld.
+
+</Section>
+
+## Sources and evidence
+
+<ul class="linklist">
+  <li>
+    Ptolemy, <em>Geographia</em> III.8.
+  </li>
+  <li>
+    Eutropius, <em>Breviarium ab urbe condita</em> 9.15.
+  </li>
+  <li>
+    <em>Notitia Dignitatum</em>, Oriens, <em>dioecesis Daciae</em>; edition of Otto Seeck, Berlin,
+    1876.
+  </li>
+  <li>
+    <em>Roman Imperial Coinage</em>, reverse types carrying DACIA and DACIA FELIX.
+  </li>
+  <li>Hereford Mappa Mundi, single membrane, Hereford Cathedral, c. 1300.</li>
+  <li>
+    Abraham Ortelius, <em>Daciarum Moesiarumque vetus descriptio</em>, <em>Parergon</em>, 1595.
+  </li>
+  <li>
+    <em>Constitutiones Ordinis Fratrum Praedicatorum</em>, Paris general chapter, 1228, transcribed
+    in the <a href="https://jggj.dk/DiplOPdacie.htm">Diplomatarium OP Dacie</a>.
+  </li>
+  <li>
+    Decretul Consiliului de Stat nr. 194/1974, <em>Buletinul Oficial al R.S. România</em>, anul X,
+    partea I, nr. 125, 18 October 1974, p. 1;
+    <a href="https://commons.wikimedia.org/wiki/File:Decretul_Consiliului_de_Stat_nr._194,_16_octombrie_1974.jpg">
+      source and rights record
+    </a>
+    .
+  </li>
+</ul>
+
+The public panels and Atlas links are compiled from reviewed CND rows. The source
+list also names the normalized 1228 and 1974 boundary records so their withheld
+status can be inspected rather than hidden.

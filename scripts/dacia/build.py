@@ -606,9 +606,13 @@ def programme_graph(tables: dict[str, list[dict[str, str]]]) -> dict:
             debts_by_subject[row["subject_id"]] = debts_by_subject.get(row["subject_id"], 0) + 1
 
     # What each trench actually consumes from the shared authorities. Trench A
-    # is the only one with corpus records today, and saying so is the point:
-    # the index reports consumption, it does not assert it.
-    corpus_by_trench = {"ccd-a": len([r for r in inventory if r["migration_state"] == "done"])}
+    # owns completed migration rows; Nomen Errans is compiled from the shared
+    # name-use table. Counting both from their source records makes Campaign I's
+    # second consumer verifiable without adding a hand-authored declaration.
+    corpus_by_trench = {
+        "ccd-a": len([r for r in inventory if r["migration_state"] == "done"]),
+        "ccd-c": len(tables["name-uses"]),
+    }
 
     entries = []
     for row in sorted(programme, key=lambda r: (r["kind"] != "trench", r["id"])):

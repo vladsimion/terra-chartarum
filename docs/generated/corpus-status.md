@@ -6,8 +6,8 @@
 
 | Content type         | Count |
 | -------------------- | ----: |
-| Live essays          |     8 |
-| Held essays          |    14 |
+| Live essays          |     9 |
+| Held essays          |    13 |
 | Map records          |    59 |
 | Cartographers        |    19 |
 | Bibliography entries |    37 |
@@ -24,7 +24,7 @@ Geo release: `geo-fcb63902971f009a`.
 | 1. The Earth   |     1 | [The Shape of a Civilization](https://terra-chartarum.pages.dev/essays/the-shape-of-a-civilization/)                                                                                    |
 | 2. The Map     |     1 | [The Cartographic Sacrifice](https://terra-chartarum.pages.dev/essays/cartography/)                                                                                                     |
 | 3. The City    |     1 | [Cities Remember](https://terra-chartarum.pages.dev/essays/cities-remember/)                                                                                                            |
-| 4. The Border  |     1 | [Terra Sigillata · Lapidarium Dacicum](https://terra-chartarum.pages.dev/essays/dacia/)                                                                                                 |
+| 4. The Border  |     2 | [Terra Sigillata · Lapidarium Dacicum](https://terra-chartarum.pages.dev/essays/dacia/) · [Nomen Errans](https://terra-chartarum.pages.dev/essays/nomen-errans/)                        |
 | 5. The Road    |     2 | [La Rotta e il Catasto](https://terra-chartarum.pages.dev/essays/venice-sicily/) · [The League That Left No Map](https://terra-chartarum.pages.dev/essays/the-league-that-left-no-map/) |
 | 6. The Archive |     1 | [Maps That Age](https://terra-chartarum.pages.dev/essays/maps-that-age/)                                                                                                                |
 | 7. The Theatre |     1 | [Invisible Maps of Religion](https://terra-chartarum.pages.dev/essays/invisible-maps-religion/)                                                                                         |
@@ -38,7 +38,6 @@ Geo release: `geo-fcb63902971f009a`.
 | Invisible Maps of Migration                        | road         | unscheduled |
 | Invisible Maps of Trade                            | road         | unscheduled |
 | Maps for a Crusade                                 | road         | unscheduled |
-| Nomen Errans                                       | border       | unscheduled |
 | Palimpsest Landscapes                              | archive      | unscheduled |
 | Projection and Perspective                         | map          | unscheduled |
 | Speculum Chartarum                                 | theatre      | unscheduled |

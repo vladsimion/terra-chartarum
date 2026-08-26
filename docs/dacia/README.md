@@ -143,27 +143,29 @@ FK column fails rather than silently matching nothing.
 [`/programmes/corpus-chartarum-daciae/`](../../src/pages/programmes/corpus-chartarum-daciae.astro)
 is the public index of the cycle (KAN-370). All seven trenches are discoverable
 from it whether or not they have been written, each with its primary room, its
-gate tally, its open verification debts and the number of records it has
-actually migrated into the shared corpus.
+gate tally, its open verification debts and the number of shared records it
+demonstrably produces or consumes.
 
 Nothing about a trench's state is written into that page. `make dacia` compiles
 `src/data/dacia/generated/programme.json` from `programme-ids.csv`,
-`trench-gates.csv`, `verification-debt.csv` and the migration inventory, and the
-page renders it - because a hand-maintained index is a second copy of the
-programme's state and the copy is the one that goes stale.
+`trench-gates.csv`, `verification-debt.csv`, the migration inventory and the CND
+tables, and the page renders it - because a hand-maintained index is a second
+copy of the programme's state and the copy is the one that goes stale.
 
 Two things the index is careful about. **Consumption is counted, not claimed**:
-a trench appears as reading the shared corpus by having records in it, which
-today only Trench A does. And the shared datasets are listed once, as programme
-infrastructure, rather than under the essay that happens to show them first.
+a trench appears as reading the shared corpus only when its compiler counts the
+records it uses. Trench A contributes completed migration rows; Trench C consumes
+all ten CND name-use rows to compile _Nomen Errans_. The shared datasets are
+listed once, as programme infrastructure, rather than under the essay that
+happens to show them first.
 
 The index also publishes the cross-registry paths the committed identifiers can
 actually prove. A path begins with a migrated Terra Sigillata source and follows
 its period, sample attestation and place through the canonical collection object,
 cartographer, Atlas layer, corpus record, trench and essay stratum. Planned
-relationships do not appear early: while Trench A is the only demonstrated corpus
-consumer, it is also the only trench allowed to emit these paths. The linked
-attestations retain their research review state on the page.
+relationships do not appear early: Trench A is still the only trench whose data
+resolves that particular ten-step object path. The linked attestations retain
+their research review state on the page.
 
 Terra Sigillata is presented there as the cycle's intellectual index and is not
 extended as one: no stone was added and none will be. The index is discoverable
@@ -206,6 +208,8 @@ rubric that keeps reception from becoming evidence,
 families and what each still has to establish,
 [`nomen-errans-ledger.md`](./nomen-errans-ledger.md) for what the word
 Dacia has meant and what may be shown beside it,
+[`nomen-errans-release.md`](./nomen-errans-release.md) for the Campaign I
+consumer proof and release checks,
 [`shared-gis-layers.md`](./shared-gis-layers.md) for the shared Atlas layers,
 [`data-dictionary.md`](./data-dictionary.md) for the schemas,
 [`definition-of-done.md`](./definition-of-done.md) for the gates, and

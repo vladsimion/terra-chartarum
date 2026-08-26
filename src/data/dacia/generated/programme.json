@@ -94,9 +94,9 @@
     },
     {
       "campaign": "i",
-      "corpusRecords": 0,
+      "corpusRecords": 10,
       "epicKey": "KAN-320",
-      "essaySlug": "",
+      "essaySlug": "nomen-errans",
       "gates": [
         {
           "gate": "research",
@@ -110,33 +110,33 @@
         },
         {
           "gate": "data",
-          "note": "",
-          "status": "pending"
+          "note": "The deterministic Dacia build compiles reviewed careers, source apparatus, routing decisions and withheld counts from the shared CND tables; the essay owns no private chronology.",
+          "status": "passed"
         },
         {
           "gate": "interaction",
-          "note": "",
-          "status": "pending"
+          "note": "The career stepper and referent-migration figure consume the generated slice, restore honest Atlas states and withhold every relationship below named human review.",
+          "status": "passed"
         },
         {
           "gate": "editorial",
-          "note": "",
-          "status": "pending"
+          "note": "The complete five-section argument uses only reviewed public careers, labels the sole cleared witness and preserves the review/rights boundary around the normalized 1974 readings.",
+          "status": "passed"
         },
         {
           "gate": "release",
-          "note": "",
-          "status": "pending"
+          "note": "All six gates are closed. The released route, discovery surfaces, Atlas round trip, desktop/mobile interaction, axe and reduced-motion checks are recorded with the shared-CND consumer proof.",
+          "status": "passed"
         }
       ],
-      "gatesPassed": 2,
+      "gatesPassed": 6,
       "id": "ccd-c",
       "kind": "trench",
       "label": "Nomen Errans · The Migration of a Word",
-      "note": "proving vertical slice for the corpus",
+      "note": "published proving trench consuming the shared CND release",
       "openDebts": 0,
       "room": "border",
-      "state": "planned"
+      "state": "live"
     },
     {
       "campaign": "ii",

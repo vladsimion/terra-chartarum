@@ -38,7 +38,7 @@ export interface ProgrammeEntry {
   gates: ProgrammeGate[];
   gatesPassed: number;
   openDebts: number;
-  /** Records this trench has actually migrated into the shared corpus. */
+  /** Shared corpus records this trench demonstrably produces or consumes. */
   corpusRecords: number;
 }
 
@@ -195,8 +195,8 @@ export function getProgrammeRelationshipPaths(): ProgrammeRelationshipPath[] {
 
 /**
  * Which trenches demonstrably read the shared corpus rather than keeping their
- * own copy. Counted from the migration inventory, so a trench appears here by
- * having records in the corpus and not by being described as using it.
+ * own copy. Counted from the records their compiler consumes, not from prose
+ * describing an intended relationship.
  */
 export function getCorpusConsumers(): ProgrammeEntry[] {
   return getTrenches().filter((entry) => entry.corpusRecords > 0);

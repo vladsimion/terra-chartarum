@@ -37,10 +37,11 @@ describe('Corpus Chartarum Daciae programme index (KAN-370)', () => {
   });
 
   it('counts corpus consumers from the data rather than from a description', () => {
-    // A trench appears here by having records in the shared corpus. Today only
-    // Trench A does, and the index must not claim otherwise.
+    // Trench A contributes migrated records; Nomen Errans compiles the shared
+    // name-use table. Neither appears because a prose note merely claims it.
     const consumers = getCorpusConsumers();
-    expect(consumers.map((entry) => entry.id)).toEqual(['ccd-a']);
+    expect(consumers.map((entry) => entry.id)).toEqual(['ccd-a', 'ccd-c']);
+    expect(consumers.find((entry) => entry.id === 'ccd-c')?.corpusRecords).toBe(10);
     for (const consumer of consumers) expect(consumer.corpusRecords).toBeGreaterThan(0);
   });
 
@@ -59,7 +60,7 @@ describe('Corpus Chartarum Daciae programme index (KAN-370)', () => {
 
   it('resolves a published trench to its essay and leaves the rest without one', () => {
     const withEssay = getProgrammeEntries().filter((entry) => entry.essaySlug);
-    expect(withEssay.map((entry) => entry.essaySlug)).toEqual(['dacia']);
+    expect(withEssay.map((entry) => entry.essaySlug)).toEqual(['dacia', 'nomen-errans']);
   });
 
   it('builds cross-registry paths only from identifiers that resolve now', () => {

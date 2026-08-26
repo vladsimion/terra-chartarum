@@ -1,0 +1,44 @@
+---
+interface Props {
+  sourceUrl: string;
+  imageUrl: string;
+  alt: string;
+  width: number;
+  height: number;
+}
+
+const { sourceUrl, imageUrl, alt, width, height } = Astro.props;
+---
+
+<figure class="document-witness">
+  <a href={sourceUrl}>
+    <img src={imageUrl} {alt} loading="lazy" {width} {height} />
+  </a>
+  <figcaption><slot /></figcaption>
+</figure>
+
+<style>
+  .document-witness {
+    margin: 2.5rem 0;
+  }
+
+  .document-witness a {
+    display: block;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--panel);
+  }
+
+  .document-witness img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .document-witness figcaption {
+    margin-top: 0.75rem;
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+  }
+</style>
