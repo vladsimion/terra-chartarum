@@ -37,7 +37,7 @@ const { title, description, eyebrow, breadcrumbs, headings = [], schema } = Astr
       </ol>
     </nav>
 
-    <div class="hb-body">
+    <div class:list={['hb-body', { 'hb-body--with-toc': headings.length > 1 }]}>
       <div class="hb-main">
         <header class="hb-head">
           {eyebrow && <p class="eyebrow">{eyebrow}</p>}
@@ -97,7 +97,7 @@ const { title, description, eyebrow, breadcrumbs, headings = [], schema } = Astr
     min-width: 0;
   }
   @media (min-width: 60rem) {
-    .hb-body {
+    .hb-body--with-toc {
       grid-template-columns: minmax(0, 1fr) 15rem;
     }
     .hb-toc {

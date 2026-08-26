@@ -1,8 +1,8 @@
 import { test, expect, type Page } from '@playwright/test';
 
-// Content measures across the editorial surfaces (#127, #128).
+// Content measures across the editorial surfaces (#127, #128, #146).
 //
-// The two issues asked for the same thing in different words: text that had been
+// These issues ask for the same thing in different words: text that had been
 // pinned to a column narrower than the page around it should use the page. The
 // fix is one shared token, --content-max, applied to the surfaces they name -
 // see the comment beside it in tokens.css.
@@ -28,6 +28,8 @@ const SHELL_SURFACES = [
   { path: '/rooms/road/', selector: '.room' },
   { path: '/cartographers/battista-agnese/', selector: '.person' },
   { path: '/essays/dacia/', selector: '.native-essay' },
+  { path: '/collection/hereford/', selector: '.detail' },
+  { path: '/collection/trade-agnese-1544/', selector: '.detail' },
 ];
 
 /** Blocks inside a shell that used to be narrower than the content beside them. */
@@ -39,7 +41,11 @@ const FLUSH_BLOCKS = [
   { path: '/cartographers/battista-agnese/', selector: '.bio' },
   { path: '/', selector: '.start-head' },
   { path: '/atlas/handbook/', selector: '.handbook-home .lede' },
+  { path: '/atlas/handbook/layers/', selector: '.hb-main' },
+  { path: '/atlas/handbook/methods/', selector: '.hb-main' },
   { path: '/atlas/handbook/methods/dacia-shared-gis/', selector: '.hb-main p' },
+  { path: '/atlas/layers/ne-land/', selector: '.hb-head .lede' },
+  { path: '/collection/', selector: '.catalogue-head' },
 ];
 
 const ALL_PATHS = [
@@ -125,6 +131,14 @@ test.describe('editorial content width', () => {
     const note = await boxOf(page, '.review-note');
     const column = await boxOf(page, '.hb-main');
     expect(note.width).toBeLessThan(column.width);
+
+    // Map credits are labels for an image rather than the page's principal
+    // description, so widening the map record must not turn them into a full
+    // shell-width line.
+    await page.goto('/collection/hereford/');
+    const caption = await boxOf(page, '.detail-figure figcaption');
+    const detail = await boxOf(page, '.detail');
+    expect(caption.width).toBeLessThan(detail.contentWidth);
   });
 
   test('no surface overflows sideways at any common breakpoint', async ({ page }) => {

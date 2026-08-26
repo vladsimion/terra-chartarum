@@ -51,10 +51,11 @@
   /* Two content measures, chosen by what the text is for.
 
      --content-max is the page's standard content width, and it is what the
-     editorial surfaces use: essays, rooms, the Atlas Handbook, cartographers,
-     the landing page, bibliography and About (#127, #128). Their text had been
-     pinned to a column narrower than the grid of cards, maps and chrome around
-     it, so the copy read as boxed in rather than as part of the composition.
+     editorial surfaces use: essays, rooms, the Atlas Handbook, the Collection,
+     cartographers, the landing page, bibliography and About (#127, #128,
+     #146). Their text had been pinned to a column narrower than the grid of
+     cards, maps and chrome around it, so the copy read as boxed in rather than
+     as part of the composition.
 
      It is the shell width rather than 100% because several of these containers
      *are* the .shell element: 100% would resolve against the viewport and push
