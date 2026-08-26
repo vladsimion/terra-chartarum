@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 
 /**
  * The Nomen Errans slice, checked on the page it will actually ship on
- * (CCD-C2 / KAN-345).
+ * (CCD-C2/C3 / KAN-345/KAN-346).
  *
  * Runs only under `playwright.held.config.ts`, against a build made with
  * SHOW_UNRELEASED=1. The ordinary suite proves the essay is not served; this
@@ -18,6 +18,9 @@ const ESSAY = '/essays/nomen-errans/';
 const FIGURE = '[data-name-careers]';
 const BUTTONS = `${FIGURE} .nc-button`;
 const PANELS = `${FIGURE} .nc-panel`;
+const MIGRATION = '[data-name-migration]';
+const MIGRATION_STEPS = `${MIGRATION} [data-migration-step]`;
+const MIGRATION_READOUTS = `${MIGRATION} [data-migration-readout]`;
 
 test.describe('the held slice renders', () => {
   test('the route is served when the hold is lifted', async ({ page }) => {
@@ -147,6 +150,69 @@ test.describe('accessibility', () => {
   });
 });
 
+test.describe('the migration map and relationship gate', () => {
+  test('every reviewed career is a map state with inspectable evidence', async ({ page }) => {
+    await page.goto(ESSAY);
+    const steps = page.locator(MIGRATION_STEPS);
+    const readouts = page.locator(MIGRATION_READOUTS);
+
+    expect(await steps.count()).toBe(await page.locator(BUTTONS).count());
+    expect(await readouts.count()).toBe(await steps.count());
+    await expect(page.locator(`${MIGRATION_READOUTS}:not([hidden])`)).toHaveCount(1);
+
+    const selected = page.locator(`${MIGRATION_READOUTS}:not([hidden])`);
+    for (const term of ['Period', 'Fate', 'Source', 'Locator', 'Confidence', 'Relationship']) {
+      await expect(selected.locator('dt', { hasText: term })).toHaveCount(1);
+    }
+    for (const value of await selected.locator('dd').allInnerTexts()) {
+      expect(value.trim().length).toBeGreaterThan(0);
+    }
+  });
+
+  test('keyboard stepping keeps the timeline, map, readout and flow node together', async ({
+    page,
+  }) => {
+    await page.goto(ESSAY);
+    const steps = page.locator(MIGRATION_STEPS);
+
+    await steps.first().focus();
+    await page.keyboard.press('ArrowRight');
+    const selectedId = await steps.nth(1).getAttribute('data-migration-step');
+
+    await expect(steps.nth(1)).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator(`${MIGRATION} [data-migration-map="${selectedId}"]`)).toHaveClass(
+      /is-selected/,
+    );
+    await expect(
+      page.locator(`${MIGRATION} [data-migration-readout="${selectedId}"]`),
+    ).toBeVisible();
+    await expect(page.locator(`${MIGRATION} [data-flow-node="${selectedId}"]`)).toHaveClass(
+      /is-selected/,
+    );
+  });
+
+  test('unreviewed relationships are counted but never drawn', async ({ page }) => {
+    await page.goto(ESSAY);
+
+    await expect(page.locator(`${MIGRATION} [data-flow-node]`)).toHaveCount(6);
+    await expect(page.locator(`${MIGRATION} .nm-flow-edge`)).toHaveCount(0);
+    await expect(page.locator(`${MIGRATION} .nm-flow-gate`)).toContainText('No line is drawn.');
+    await expect(page.locator(`${MIGRATION} .nm-flow-gate`)).toContainText(
+      '10 relationship records',
+    );
+  });
+
+  test('fate and confidence remain explicit without colour', async ({ page }) => {
+    await page.goto(ESSAY);
+    const steps = page.locator(MIGRATION_STEPS);
+
+    for (let i = 0; i < (await steps.count()); i += 1) {
+      await expect(steps.nth(i).locator('.nm-step-meta')).not.toBeEmpty();
+      expect(await steps.nth(i).getAttribute('data-fate')).toMatch(/\w+/);
+    }
+  });
+});
+
 test.describe('the page works on a phone', () => {
   test('nothing overflows the viewport horizontally', async ({ page }) => {
     await page.goto(ESSAY);
@@ -162,6 +228,20 @@ test.describe('the page works on a phone', () => {
     const box = await page.locator(FIGURE).boundingBox();
     expect(box).not.toBeNull();
     expect(box!.width).toBeLessThanOrEqual(viewport);
+  });
+
+  test('the migration figure fits while its flow diagram scrolls internally', async ({ page }) => {
+    await page.goto(ESSAY);
+    const viewport = page.viewportSize()!.width;
+    const box = await page.locator(MIGRATION).boundingBox();
+    expect(box).not.toBeNull();
+    expect(box!.width).toBeLessThanOrEqual(viewport);
+
+    const scroller = page.locator(`${MIGRATION} .nm-flow-scroll`);
+    await expect(scroller).toHaveCount(1);
+    expect(await scroller.evaluate((node) => node.scrollWidth)).toBeGreaterThan(
+      await scroller.evaluate((node) => node.clientWidth),
+    );
   });
 
   test('the ledger table scrolls inside the figure, not the page', async ({ page }) => {

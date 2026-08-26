@@ -123,6 +123,21 @@ The threshold sits in the compiler, not the table. A use demoted below
 `reviewed` leaves the essay on the next `make dacia` whatever its routing says,
 so the two cannot disagree about what a reader is shown.
 
+## What the flow is allowed to connect
+
+KAN-346 applies the same threshold to `name-use-edges.csv`. Every reviewed name
+use becomes a flow node and an inspectable map state, but an edge becomes a
+line only when its own row is `reviewed` or higher and both endpoint nodes are
+visible. A continuity row still has the stricter validator rule that it must
+cite an attestation.
+
+The current result is deliberately six nodes and no lines. Ten Dacia edge rows
+are recorded - five `normalized`, five `raw` - and none has had a human review,
+so the generated slice reports all ten in `withheldRelations`. The
+figure says so instead of promoting chronological order to continuity. A later
+human promotion will add the corresponding directed line on the next
+`make dacia`; no component edit is required.
+
 ## The rights package
 
 Five candidate visual witnesses are assessed, and **none is cleared for

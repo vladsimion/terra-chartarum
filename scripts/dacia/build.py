@@ -419,7 +419,7 @@ def _year(value: str) -> int | None:
 
 
 def nomen_errans_slice(tables: dict[str, list[dict[str, str]]]) -> dict:
-    """Trench C's vertical slice: one word, its careers, and where each one lands (KAN-345).
+    """Trench C: one word, its careers, Atlas states and reviewed relations (KAN-345/346).
 
     The essay reads only this file. Nothing in it is authored twice - the
     chronology is the `name_uses` ledger, the citation is the `sources` row, and
@@ -439,6 +439,11 @@ def nomen_errans_slice(tables: dict[str, list[dict[str, str]]]) -> dict:
     routes = {row["name_use_id"]: row for row in _read_reference("nomen-errans-atlas-states")}
 
     careers, withheld = [], []
+    slice_use_ids = {
+        row["name_use_id"]
+        for row in tables["name-uses"]
+        if row["lexical_form"] == NOMEN_ERRANS_FORM
+    }
     for row in tables["name-uses"]:
         if row["lexical_form"] != NOMEN_ERRANS_FORM:
             continue
@@ -515,6 +520,50 @@ def nomen_errans_slice(tables: dict[str, list[dict[str, str]]]) -> dict:
     careers.sort(key=lambda c: (c["periodFrom"] if c["periodFrom"] is not None else 9999, c["id"]))
     withheld.sort(key=lambda c: c["id"])
 
+    # A line in the flow figure is a historical claim in its own right. Keep
+    # the same human-review threshold as the career nodes, and require both
+    # endpoints to be visible: otherwise the component would either imply a
+    # relationship the ledger has not cleared or draw a line to a hidden node.
+    public_use_ids = {career["id"] for career in careers}
+    relations, withheld_relations = [], []
+    for row in tables["name-use-edges"]:
+        endpoints = {row["from_name_use"], row["to_name_use"]}
+        if not endpoints <= slice_use_ids:
+            continue
+
+        edge_kind = row["edge_kind"]
+        relation = {
+            "id": row["edge_id"],
+            "from": row["from_name_use"],
+            "to": row["to_name_use"],
+            "kind": edge_kind,
+            "kindLabel": labels.get(("edge_kind", edge_kind), edge_kind),
+            "kindDefinition": definitions.get(("edge_kind", edge_kind), ""),
+            "evidenceAttestationId": row["evidence_attestation_id"] or None,
+            "evidenceNote": row["evidence_note"],
+            "confidence": row["confidence"],
+            "confidenceLabel": labels.get(("confidence", row["confidence"]), row["confidence"]),
+            "confidenceDefinition": definitions.get(("confidence", row["confidence"]), ""),
+            "reviewState": row["review_state"],
+            "reviewer": row["reviewer"],
+            "reviewDate": row["review_date"],
+            "note": row["note"],
+        }
+        if row["review_state"] in NOMEN_ERRANS_PUBLIC_STATES and endpoints <= public_use_ids:
+            relations.append(relation)
+        else:
+            withheld_relations.append({
+                "id": relation["id"],
+                "from": relation["from"],
+                "to": relation["to"],
+                "kind": relation["kind"],
+                "kindLabel": relation["kindLabel"],
+                "reviewState": relation["reviewState"],
+            })
+
+    relations.sort(key=lambda relation: (relation["from"], relation["to"], relation["id"]))
+    withheld_relations.sort(key=lambda relation: relation["id"])
+
     return {
         "schemaVersion": SCHEMA_VERSION,
         "generatedBy": "scripts/dacia/build.py",
@@ -524,6 +573,8 @@ def nomen_errans_slice(tables: dict[str, list[dict[str, str]]]) -> dict:
         "essaySlug": NOMEN_ERRANS_ESSAY,
         "careers": careers,
         "withheld": withheld,
+        "relations": relations,
+        "withheldRelations": withheld_relations,
     }
 
 

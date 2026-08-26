@@ -294,6 +294,7 @@
   "generatedBy": "scripts/dacia/build.py",
   "kind": "pilot_research_release",
   "lexicalForm": "Dacia",
+  "relations": [],
   "release": "cnd-0.1",
   "schemaVersion": 1,
   "withheld": [
@@ -310,6 +311,88 @@
       "id": "nmu-dacia-reception",
       "referentLabel": "Territories claimed on reception maps",
       "reviewState": "raw"
+    }
+  ],
+  "withheldRelations": [
+    {
+      "from": "nmu-dacia-antiquarian",
+      "id": "nue-dacia-antiquarian-reception",
+      "kind": "homonym_only",
+      "kindLabel": "Homonym only",
+      "reviewState": "raw",
+      "to": "nmu-dacia-reception"
+    },
+    {
+      "from": "nmu-dacia-aureliana",
+      "id": "nue-dacia-aureliana-diocese",
+      "kind": "derivation",
+      "kindLabel": "Derivation",
+      "reviewState": "normalized",
+      "to": "nmu-dacia-diocese"
+    },
+    {
+      "from": "nmu-dacia-coin-legend",
+      "id": "nue-dacia-coin-scandinavia",
+      "kind": "homonym_only",
+      "kindLabel": "Homonym only",
+      "reviewState": "normalized",
+      "to": "nmu-dacia-scandinavia"
+    },
+    {
+      "from": "nmu-dacia-province",
+      "id": "nue-dacia-danube-north-south",
+      "kind": "derivation",
+      "kindLabel": "Derivation",
+      "reviewState": "raw",
+      "to": "nmu-dacia-aureliana"
+    },
+    {
+      "from": "nmu-dacia-diocese",
+      "id": "nue-dacia-diocese-scandinavia",
+      "kind": "homonym_only",
+      "kindLabel": "Homonym only",
+      "reviewState": "normalized",
+      "to": "nmu-dacia-scandinavia"
+    },
+    {
+      "from": "nmu-dacia-province",
+      "id": "nue-dacia-province-antiquarian",
+      "kind": "revival",
+      "kindLabel": "Revival",
+      "reviewState": "raw",
+      "to": "nmu-dacia-antiquarian"
+    },
+    {
+      "from": "nmu-dacia-province",
+      "id": "nue-dacia-province-coin",
+      "kind": "derivation",
+      "kindLabel": "Derivation",
+      "reviewState": "normalized",
+      "to": "nmu-dacia-coin-legend"
+    },
+    {
+      "from": "nmu-dacia-province",
+      "id": "nue-dacia-province-diocese",
+      "kind": "derivation",
+      "kindLabel": "Derivation",
+      "reviewState": "normalized",
+      "to": "nmu-dacia-diocese"
+    },
+    {
+      "from": "nmu-dacia-province",
+      "id": "nue-dacia-province-scandinavia",
+      "kind": "homonym_only",
+      "kindLabel": "Homonym only",
+      "reviewState": "raw",
+      "to": "nmu-dacia-scandinavia"
+    },
+    {
+      "from": "nmu-dacia-scandinavia",
+      "id": "nue-dacia-scandinavia-church",
+      "kind": "derivation",
+      "kindLabel": "Derivation",
+      "reviewState": "raw",
+      "to": "nmu-dacia-ecclesiastical"
     }
   ]
 }
