@@ -37,7 +37,7 @@ publishedAt: '2026-08-26'
 updatedAt: '2026-08-26'
 # HELD. This is the KAN-345 vertical slice, not the Nomen Errans essay: it
 # proves the source -> corpus -> build -> Atlas -> essay -> citation path closes
-# on one name, and stops there. The referent-migration map (KAN-346) and the
+# on one name, and KAN-346 adds the reviewed referent-map/flow gate. The full
 # written argument, rights package and release checks (KAN-347) are still to
 # come, and the route stays out of navigation, search and the sitemap until
 # they land.
@@ -52,6 +52,7 @@ metaScores:
 ---
 
 import NameCareers from '../../components/islands/NameCareers.astro';
+import NameMigration from '../../components/islands/NameMigration.astro';
 import Section from '../../components/Section.astro';
 
 <p class="essay-kicker">
@@ -96,6 +97,8 @@ province on the Danube and a Latin name for Denmark share a string and nothing
 else, and the corpus records that as an explicit non-relationship rather than
 leaving a reader to infer descent from the spelling.
 
+<NameMigration caption="Reviewed careers projected against their compiled Atlas coverage. Relationship lines are emitted only when the corresponding name-use edge has passed human review." />
+
 </Section>
 
 <Section id="path" title="What the slice proves, and what it does not" rooms={['archive', 'border']}>
@@ -107,11 +110,15 @@ yet, and the Scandinavian usage lies outside the extent of every Dacia layer
 there is. That last one is the argument, not a gap in the software. The word
 left the ground the map covers.
 
-What this slice does not do is draw the migration. A referent that moves needs a
-figure that shows it moving, and every edge in such a figure has to be a
-reviewed relationship rather than an inference from the spelling; that is the
-next piece of work. Nor is the trench's evidence complete: two further uses of
-the name are compiled and withheld because nobody has cleared them, and no
-visual witness in the ledger yet carries rights that permit publication.
+The map and flow figure do not manufacture a migration to make the sequence
+look complete. Every reviewed use becomes a node and an inspectable Atlas state;
+a relationship becomes a line only after a person clears its own ledger row.
+The current ledger has ten Dacia relationship records and no reviewed
+relationship, so no line is drawn. Chronology is visible, but chronology is not
+continuity.
+
+Nor is the trench's evidence complete: two further uses of the name are
+compiled and withheld because nobody has cleared them, and no visual witness in
+the ledger yet carries rights that permit publication.
 
 </Section>

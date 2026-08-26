@@ -7,7 +7,9 @@ import {
   atlasUrlFor,
   getNameCareer,
   getNameCareers,
+  getNameRelations,
   getWithheldCareers,
+  getWithheldRelations,
   nameCareerLayers,
   NOMEN_ERRANS_BEAT,
   NOMEN_ERRANS_ESSAY,
@@ -133,5 +135,47 @@ describe('lookup', () => {
   it('finds a career by its corpus id and refuses one it does not hold', () => {
     expect(getNameCareer(careers[0].id)?.referentLabel).toBe(careers[0].referentLabel);
     expect(getNameCareer('nmu-not-a-use')).toBeUndefined();
+  });
+});
+
+describe('the referent-migration map and flow gate', () => {
+  it('builds every map state from a reviewed career and its recorded route', () => {
+    for (const career of careers) {
+      expect(['reviewed', 'approved', 'published'], career.id).toContain(career.reviewState);
+      expect(career.atlas, career.id).not.toBeNull();
+      expect(career.source?.citation, career.id).toBeTruthy();
+      expect(career.locatorTypeLabel, career.id).toBeTruthy();
+      expect(career.confidenceLabel, career.id).toBeTruthy();
+    }
+  });
+
+  it('never exposes a relationship line below human review', () => {
+    const publicIds = new Set(careers.map((career) => career.id));
+    for (const relation of getNameRelations()) {
+      expect(['reviewed', 'approved', 'published'], relation.id).toContain(relation.reviewState);
+      expect(relation.reviewer, relation.id).toBeTruthy();
+      expect(publicIds, relation.from).toContain(relation.from);
+      expect(publicIds, relation.to).toContain(relation.to);
+      if (relation.kind === 'continuity') {
+        expect(relation.evidenceAttestationId, relation.id).toBeTruthy();
+      }
+    }
+
+    expect(getNameRelations()).toHaveLength(0);
+    expect(getWithheldRelations()).toHaveLength(10);
+  });
+
+  it('does not hardcode a second copy of the chronology into the component', async () => {
+    const component = await readFile(
+      join(process.cwd(), 'src', 'components', 'islands', 'NameMigration.astro'),
+      'utf8',
+    );
+    for (const career of careers) {
+      expect(component, career.id).not.toContain(career.id);
+      expect(component, career.periodLabel).not.toContain(career.periodLabel);
+    }
+    expect(component).toContain('getNameCareers()');
+    expect(component).toContain('getNameRelations()');
+    expect(component).toContain('prefers-reduced-motion: reduce');
   });
 });

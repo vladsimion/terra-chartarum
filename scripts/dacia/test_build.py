@@ -317,3 +317,40 @@ def test_a_career_with_no_honest_layer_gets_no_link():
 def test_careers_are_ordered_by_when_the_word_was_used():
     starts = [career["periodFrom"] for career in _slice()["careers"]]
     assert starts == sorted(starts)
+
+
+def test_the_flow_never_draws_an_unreviewed_relationship():
+    slice_ = _slice()
+    public = {career["id"] for career in slice_["careers"]}
+    for relation in slice_["relations"]:
+        assert relation["reviewState"] in build.NOMEN_ERRANS_PUBLIC_STATES
+        assert relation["reviewer"], relation["id"]
+        assert {relation["from"], relation["to"]} <= public
+        if relation["kind"] == "continuity":
+            assert relation["evidenceAttestationId"], relation["id"]
+
+    # Today the corpus has adjudicated rows but no relationship a person has
+    # cleared. The production figure must say that rather than drawing them.
+    assert slice_["relations"] == []
+    assert slice_["withheldRelations"]
+
+
+def test_a_reviewed_relationship_reaches_the_flow_from_the_ledger():
+    tables = {name: build.read_table(name) for name in build.TABLES}
+    relation = next(
+        row
+        for row in tables["name-use-edges"]
+        if row["edge_id"] == "nue-dacia-province-antiquarian"
+    )
+    relation.update({
+        "review_state": "reviewed",
+        "reviewer": "A Human Reviewer",
+        "review_date": "2026-08-26",
+    })
+
+    slice_ = build.nomen_errans_slice(tables)
+    emitted = next(row for row in slice_["relations"] if row["id"] == relation["edge_id"])
+    assert emitted["from"] == relation["from_name_use"]
+    assert emitted["to"] == relation["to_name_use"]
+    assert emitted["kindLabel"] == "Revival"
+    assert emitted["confidenceLabel"] == "Medium"

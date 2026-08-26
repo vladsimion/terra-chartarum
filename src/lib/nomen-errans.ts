@@ -1,5 +1,5 @@
 /**
- * Nomen Errans, the single-name vertical slice (KAN-345)
+ * Nomen Errans, the single-name interaction suite (KAN-345/346)
  *
  * Trench C's proving run: one word, Dacia, followed through every referent it
  * was made to carry, with each career resolving to the source that attests it
@@ -89,8 +89,39 @@ export interface WithheldCareer {
   reviewState: string;
 }
 
+/** A directed semantic/genealogical claim that a person has cleared. */
+export interface NameRelation {
+  id: string;
+  from: string;
+  to: string;
+  kind: string;
+  kindLabel: string;
+  kindDefinition: string;
+  evidenceAttestationId: string | null;
+  evidenceNote: string;
+  confidence: string;
+  confidenceLabel: string;
+  confidenceDefinition: string;
+  reviewState: string;
+  reviewer: string;
+  reviewDate: string;
+  note: string;
+}
+
+/** A recorded relation that is counted but may not be drawn yet. */
+export interface WithheldRelation {
+  id: string;
+  from: string;
+  to: string;
+  kind: string;
+  kindLabel: string;
+  reviewState: string;
+}
+
 const CAREERS = slice.careers as NameCareer[];
 const WITHHELD = slice.withheld as WithheldCareer[];
+const RELATIONS = slice.relations as NameRelation[];
+const WITHHELD_RELATIONS = slice.withheldRelations as WithheldRelation[];
 
 /** The word the slice follows. One name, by design: this is the proving run. */
 export const NOMEN_ERRANS_FORM = slice.lexicalForm;
@@ -113,6 +144,16 @@ export function getNameCareer(id: string): NameCareer | undefined {
 /** Compiled but not cleared. The essay counts these rather than dropping them. */
 export function getWithheldCareers(): WithheldCareer[] {
   return WITHHELD;
+}
+
+/** Only relationships that passed the same human-review gate as the nodes. */
+export function getNameRelations(): NameRelation[] {
+  return RELATIONS;
+}
+
+/** Recorded relationships below the display threshold, named rather than hidden. */
+export function getWithheldRelations(): WithheldRelation[] {
+  return WITHHELD_RELATIONS;
 }
 
 /**

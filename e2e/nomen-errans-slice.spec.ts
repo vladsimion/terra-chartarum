@@ -1,11 +1,11 @@
 import { expect, test } from '@playwright/test';
 
 /**
- * The Nomen Errans vertical slice, checked in an ordinary build (CCD-C2 / KAN-345).
+ * The Nomen Errans vertical slice, checked in an ordinary build (CCD-C2/C3 / KAN-345/KAN-346).
  *
  * The slice is held: it proves the source to citation path closes on one name
- * and stops there, and the trench's map, argument and rights package are still
- * to come. These checks prove the hold is real - that the essay is not served,
+ * and now includes the reviewed referent map/flow gate. The trench's full
+ * argument and rights package are still to come. These checks prove the hold is real - that the essay is not served,
  * indexed or linked - and that the Atlas half of the slice survives the hold
  * rather than shipping a dangling return link to a page nobody can load.
  *

@@ -375,7 +375,7 @@ it from the essay without anyone having to remember to edit this table too.
 Routes are promoted through `review.py` like every other record, under the
 `nes-` prefix.
 
-## `generated/nomen-errans.json` (KAN-345)
+## `generated/nomen-errans.json` (KAN-345 / KAN-346)
 
 Trench C's vertical slice, compiled by `make dacia` from `name-uses.csv`,
 `sources.csv` and the routing table above, and consumed through
@@ -389,6 +389,14 @@ its state, because a corpus that hides its unreviewed rows looks finished when
 it is not. And `atlas` carries a link only where the routing says a layer
 honestly covers the referent - a deep link that opens an empty map reads to a
 reader exactly like a deep link that works.
+
+KAN-346 adds the relationship gate. `relations` contains only edge rows at or
+above `reviewed` whose two endpoint uses are also visible; `withheldRelations`
+counts the remaining Dacia edge rows without exposing their notes as claims.
+The map/flow component therefore always gets its nodes from reviewed name uses
+and can never turn chronological adjacency or a shared word into an authored
+line. With the current Dacia slice it correctly renders six nodes and no
+relation lines: all ten Dacia edge rows remain below human review.
 
 ## `generated/hiatus-timeline.json` (KAN-349)
 

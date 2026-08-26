@@ -1,0 +1,854 @@
+---
+/**
+ * The referent-migration map and directed-flow gate (KAN-346).
+ *
+ * Career nodes come from reviewed `name_uses` rows. Map marks come only from
+ * the Atlas layers each reviewed route names; a use with no honest coverage is
+ * an explicit empty state, never a guessed point. Relationship lines have a
+ * stricter rule still: the compiler emits them only after the corresponding
+ * `name-use-edges.csv` row passes human review. Today that means the figure has
+ * nodes and no lines, which is the accurate state of the evidence rather than
+ * an unfinished graphic disguised as continuity.
+ */
+import type { FeatureCollection, Position } from 'geojson';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { GEO_LAYERS } from '../../lib/geo';
+import {
+  getNameCareers,
+  getNameRelations,
+  getWithheldRelations,
+  NOMEN_ERRANS_FORM,
+} from '../../lib/nomen-errans';
+
+interface Props {
+  caption?: string;
+}
+
+const { caption } = Astro.props;
+const careers = getNameCareers();
+const relations = getNameRelations();
+const withheldRelations = getWithheldRelations();
+const careersById = new Map(careers.map((career) => [career.id, career]));
+
+// A modern reference frame for Europe. It is a neutral backdrop, not evidence
+// for any name use; only the compiled Atlas layers below carry historical marks.
+const FRAME = { minLon: -12, maxLon: 34, minLat: 34, maxLat: 62 } as const;
+const MAP_WIDTH = 920;
+const MAP_HEIGHT = 560;
+const project = ([lon, lat]: Position): [number, number] => [
+  ((lon - FRAME.minLon) / (FRAME.maxLon - FRAME.minLon)) * MAP_WIDTH,
+  ((FRAME.maxLat - lat) / (FRAME.maxLat - FRAME.minLat)) * MAP_HEIGHT,
+];
+
+const linePath = (coordinates: Position[]): string =>
+  coordinates
+    .map((coordinate, index) => `${index === 0 ? 'M' : 'L'}${project(coordinate).join(' ')}`)
+    .join(' ');
+
+const ringPath = (coordinates: Position[]): string => `${linePath(coordinates)}Z`;
+const overlapsFrame = (coordinates: Position[]): boolean => {
+  const longitudes = coordinates.map(([longitude]) => longitude);
+  const latitudes = coordinates.map(([, latitude]) => latitude);
+  return !(
+    Math.max(...longitudes) < FRAME.minLon ||
+    Math.min(...longitudes) > FRAME.maxLon ||
+    Math.max(...latitudes) < FRAME.minLat ||
+    Math.min(...latitudes) > FRAME.maxLat
+  );
+};
+
+const landRaw = await readFile(
+  join(process.cwd(), 'public', 'geo', 'ne_110m_land.geojson'),
+  'utf8',
+);
+const land = JSON.parse(landRaw) as FeatureCollection;
+const landPaths: string[] = [];
+for (const feature of land.features) {
+  const geometry = feature.geometry;
+  const polygons =
+    geometry.type === 'Polygon'
+      ? [geometry.coordinates]
+      : geometry.type === 'MultiPolygon'
+        ? geometry.coordinates
+        : [];
+  for (const polygon of polygons) {
+    if (polygon.some((ring) => overlapsFrame(ring))) {
+      landPaths.push(polygon.map((ring) => ringPath(ring)).join(' '));
+    }
+  }
+}
+
+type LayerFeature = FeatureCollection['features'][number];
+const layerRegistry = new Map(GEO_LAYERS.map((layer) => [layer.id, layer]));
+const requiredLayers = new Set(careers.flatMap((career) => career.atlas?.layers ?? []));
+const layerFeatures = new Map<string, LayerFeature[]>();
+for (const id of requiredLayers) {
+  const layer = layerRegistry.get(id);
+  if (!layer || layer.format !== 'geojson') continue;
+  const raw = await readFile(join(process.cwd(), 'public', layer.url.replace(/^\//, '')), 'utf8');
+  layerFeatures.set(id, (JSON.parse(raw) as FeatureCollection).features);
+}
+
+const featureId = (feature: LayerFeature): string =>
+  String(feature.id ?? (feature.properties as Record<string, unknown> | null)?.id ?? 'feature');
+
+const activeAt = (feature: LayerFeature, year: number | null): boolean => {
+  if (year === null) return true;
+  const properties = (feature.properties ?? {}) as Record<string, unknown>;
+  const from = Number(properties.valid_from ?? Number.NEGATIVE_INFINITY);
+  const to = Number(properties.valid_to ?? Number.POSITIVE_INFINITY);
+  return from <= year && year <= to;
+};
+
+const mapStates = careers.map((career) => {
+  const route = career.atlas;
+  const points: Array<{ id: string; x: number; y: number; selected: boolean }> = [];
+  const lines: Array<{ id: string; d: string; selected: boolean }> = [];
+
+  if (route?.coverage === 'in_coverage') {
+    for (const layerId of route.layers) {
+      for (const feature of layerFeatures.get(layerId) ?? []) {
+        if (!activeAt(feature, route.year)) continue;
+        const id = featureId(feature);
+        const selected = id === route.feature;
+        const geometry = feature.geometry;
+        if (geometry.type === 'Point') {
+          const [x, y] = project(geometry.coordinates);
+          points.push({ id, x, y, selected });
+        } else if (geometry.type === 'MultiPoint') {
+          geometry.coordinates.forEach((coordinate, index) => {
+            const [x, y] = project(coordinate);
+            points.push({ id: `${id}-${index}`, x, y, selected });
+          });
+        } else if (geometry.type === 'LineString') {
+          lines.push({ id, d: linePath(geometry.coordinates), selected });
+        } else if (geometry.type === 'MultiLineString') {
+          geometry.coordinates.forEach((coordinates, index) => {
+            lines.push({ id: `${id}-${index}`, d: linePath(coordinates), selected });
+          });
+        }
+      }
+    }
+  }
+
+  return {
+    career,
+    route,
+    points,
+    lines,
+    layerTitles: route?.layers.map((id) => layerRegistry.get(id)?.title ?? id) ?? [],
+    incoming: relations.filter((relation) => relation.to === career.id),
+  };
+});
+
+const COVERAGE_LABELS = {
+  in_coverage: 'Mapped from compiled Atlas layers',
+  no_layer_yet: 'No compiled geometry',
+  out_of_coverage: 'Outside the Dacia Atlas extent',
+} as const;
+
+const FLOW_WIDTH = Math.max(960, careers.length * 180);
+const fateClasses = [...new Set(careers.map((career) => career.fateClass))];
+const lane = new Map(fateClasses.map((fate, index) => [fate, 76 + index * 92]));
+const FLOW_HEIGHT = Math.max(250, 122 + fateClasses.length * 92);
+const flowNodes = careers.map((career, index) => ({
+  career,
+  x: 90 + index * ((FLOW_WIDTH - 180) / Math.max(1, careers.length - 1)),
+  y: lane.get(career.fateClass) ?? 76,
+}));
+const flowNodeById = new Map(flowNodes.map((node) => [node.career.id, node]));
+const flowEdges = relations.flatMap((relation) => {
+  const from = flowNodeById.get(relation.from);
+  const to = flowNodeById.get(relation.to);
+  if (!from || !to) return [];
+  const direction = to.x >= from.x ? 1 : -1;
+  const startX = from.x + direction * 72;
+  const endX = to.x - direction * 72;
+  const middleX = (startX + endX) / 2;
+  return [
+    {
+      relation,
+      d: `M${startX} ${from.y} C${middleX} ${from.y}, ${middleX} ${to.y}, ${endX} ${to.y}`,
+    },
+  ];
+});
+
+const shortLabel = (label: string): string =>
+  label.length > 24 ? `${label.slice(0, 23)}…` : label;
+---
+
+<figure class="migration" data-name-migration>
+  <div class="nm-heading">
+    <div>
+      <p class="nm-kicker">Reviewed uses only</p>
+      <h3>The word moves; the evidence decides whether a line follows</h3>
+    </div>
+    <p class="nm-count">{careers.length} states · {relations.length} reviewed relations</p>
+  </div>
+
+  <ol
+    class="nm-steps"
+    aria-label={`Reviewed referents of ${NOMEN_ERRANS_FORM} in chronological order`}
+  >
+    {
+      careers.map((career, index) => (
+        <li>
+          <button
+            type="button"
+            class:list={['nm-step', index === 0 && 'is-selected']}
+            data-migration-step={career.id}
+            data-fate={career.fateClass}
+            aria-pressed={index === 0 ? 'true' : 'false'}
+            aria-controls={`nm-state-${career.id}`}
+            tabindex={index === 0 ? 0 : -1}
+          >
+            <span class="nm-step-period">{career.periodLabel}</span>
+            <span class="nm-step-name">{career.referentLabel}</span>
+            <span class="nm-step-meta">
+              {career.fateClassLabel} · {career.confidenceLabel}
+            </span>
+          </button>
+        </li>
+      ))
+    }
+  </ol>
+
+  <div class="nm-map-grid">
+    <div class="nm-map-wrap">
+      <svg
+        class="nm-map"
+        viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
+        role="img"
+        aria-labelledby="nm-map-title nm-map-description"
+      >
+        <title id="nm-map-title">Atlas coverage for the selected use of {NOMEN_ERRANS_FORM}</title>
+        <desc id="nm-map-description">
+          A modern reference outline of Europe. Historical marks are drawn only from the compiled
+          Atlas layers named by the selected reviewed use; states without coverage remain empty and
+          say why.
+        </desc>
+        <g class="nm-land" aria-hidden="true">
+          {landPaths.map((d) => <path d={d} />)}
+        </g>
+        {
+          mapStates.map((state, index) => (
+            <g
+              class:list={['nm-map-state', index === 0 && 'is-selected']}
+              data-migration-map={state.career.id}
+              aria-hidden={index === 0 ? 'false' : 'true'}
+            >
+              {state.lines.map((line) => (
+                <path class:list={['nm-layer-line', line.selected && 'is-feature']} d={line.d}>
+                  <title>{line.id}</title>
+                </path>
+              ))}
+              {state.points.map((point) => (
+                <g class:list={['nm-layer-point', point.selected && 'is-feature']}>
+                  <circle cx={point.x} cy={point.y} r={point.selected ? 8 : 4} />
+                  {point.selected && (
+                    <circle class="nm-feature-ring" cx={point.x} cy={point.y} r="14" />
+                  )}
+                  <title>{point.id}</title>
+                </g>
+              ))}
+            </g>
+          ))
+        }
+      </svg>
+      <p class="nm-map-key">
+        <span><i class="nm-key-mark"></i> compiled layer evidence</span>
+        <span><i class="nm-key-selected"></i> selected feature</span>
+      </p>
+    </div>
+
+    <div class="nm-readouts" aria-live="polite">
+      {
+        mapStates.map((state, index) => {
+          const career = state.career;
+          const coverage = state.route?.coverage ?? 'no_layer_yet';
+          return (
+            <section
+              id={`nm-state-${career.id}`}
+              class="nm-readout"
+              data-migration-readout={career.id}
+              hidden={index !== 0}
+            >
+              <p class="nm-coverage" data-coverage={coverage}>
+                {COVERAGE_LABELS[coverage]}
+              </p>
+              <h4>{career.referentLabel}</h4>
+              <p class="nm-route-note">
+                {state.route?.note ?? 'No Atlas route has been recorded.'}
+              </p>
+              {state.layerTitles.length > 0 && (
+                <p class="nm-layers">Layers: {state.layerTitles.join(' · ')}</p>
+              )}
+              <dl>
+                <div>
+                  <>
+                    <dt>Period</dt>
+                    <dd>{career.periodLabel}</dd>
+                  </>
+                </div>
+                <div>
+                  <>
+                    <dt>Fate</dt>
+                    <dd>
+                      {career.fateClassLabel} - {career.fateClassDefinition}
+                    </dd>
+                  </>
+                </div>
+                <div>
+                  <>
+                    <dt>Source</dt>
+                    <dd>{career.source?.citation ?? 'Institutional use; no witness cited'}</dd>
+                  </>
+                </div>
+                <div>
+                  <dt>Locator</dt>
+                  <dd>
+                    {career.locatorType !== 'none' && career.locator
+                      ? career.locator
+                      : career.locatorTypeLabel}
+                  </dd>
+                </div>
+                <div>
+                  <>
+                    <dt>Confidence</dt>
+                    <dd>
+                      <strong>{career.confidenceLabel}</strong> - {career.confidenceDefinition}
+                    </dd>
+                  </>
+                </div>
+                <div>
+                  <dt>Relationship</dt>
+                  <dd>
+                    {state.incoming.length > 0
+                      ? state.incoming
+                          .map((relation) => `${relation.kindLabel}: ${relation.evidenceNote}`)
+                          .join(' · ')
+                      : 'No reviewed relationship line reaches this state.'}
+                  </dd>
+                </div>
+              </dl>
+            </section>
+          );
+        })
+      }
+    </div>
+  </div>
+
+  <section class="nm-flow-section" aria-labelledby="nm-flow-heading">
+    <div class="nm-flow-head">
+      <div>
+        <p class="nm-kicker">Directed-flow diagram</p>
+        <h3 id="nm-flow-heading">Same word, separately reviewed referents</h3>
+      </div>
+      <p>{relations.length} lines cleared</p>
+    </div>
+    <div class="nm-flow-scroll" tabindex="0" aria-label="Scrollable referent-flow diagram">
+      <svg
+        class="nm-flow"
+        viewBox={`0 0 ${FLOW_WIDTH} ${FLOW_HEIGHT}`}
+        role="img"
+        aria-labelledby="nm-flow-title nm-flow-desc"
+      >
+        <title id="nm-flow-title">
+          Reviewed referents and relationships for {NOMEN_ERRANS_FORM}
+        </title>
+        <desc id="nm-flow-desc">
+          {careers.length} reviewed referent nodes arranged chronologically. {relations.length} relationship
+          lines have passed human review; {withheldRelations.length} recorded lines remain withheld.
+        </desc>
+        <defs>
+          <marker
+            id="nm-arrow"
+            viewBox="0 0 10 10"
+            refX="9"
+            refY="5"
+            markerWidth="6"
+            markerHeight="6"
+            orient="auto-start-reverse"
+          >
+            <path d="M 0 0 L 10 5 L 0 10 z"></path>
+          </marker>
+        </defs>
+        {
+          fateClasses.map((fate) => (
+            <g class="nm-lane">
+              <line x1="20" x2={FLOW_WIDTH - 20} y1={lane.get(fate)} y2={lane.get(fate)} />
+              <text x="20" y={(lane.get(fate) ?? 0) - 34}>
+                {careers.find((career) => career.fateClass === fate)?.fateClassLabel}
+              </text>
+            </g>
+          ))
+        }
+        {
+          flowEdges.map(({ relation, d }) => (
+            <path
+              class:list={['nm-flow-edge', `is-${relation.kind}`]}
+              d={d}
+              marker-end={relation.kind === 'homonym_only' ? undefined : 'url(#nm-arrow)'}
+            >
+              <title>
+                {relation.kindLabel}: {careersById.get(relation.from)?.referentLabel} to{' '}
+                {careersById.get(relation.to)?.referentLabel}. {relation.confidenceLabel}{' '}
+                confidence. {relation.evidenceNote}
+              </title>
+            </path>
+          ))
+        }
+        {
+          flowNodes.map(({ career, x, y }, index) => (
+            <g
+              class:list={['nm-flow-node', index === 0 && 'is-selected']}
+              data-flow-node={career.id}
+              data-fate={career.fateClass}
+            >
+              <rect x={x - 72} y={y - 26} width="144" height="52" rx="8" />
+              <text class="nm-flow-period" x={x} y={y - 5}>
+                {career.periodLabel}
+              </text>
+              <text class="nm-flow-label" x={x} y={y + 14}>
+                {shortLabel(career.referentLabel)}
+              </text>
+              <title>
+                {career.referentLabel}. {career.fateClassLabel}. {career.confidenceLabel}{' '}
+                confidence.
+              </title>
+            </g>
+          ))
+        }
+      </svg>
+    </div>
+    <p class="nm-flow-gate">
+      {
+        relations.length > 0 ? (
+          <>
+            Every line above resolves to a human-reviewed relationship row. Dashed lines mean
+            “homonym only”, an explicit non-relationship.
+          </>
+        ) : (
+          <>
+            <strong>No line is drawn.</strong> The ledger holds {withheldRelations.length}{' '}
+            relationship records, but none has passed human review. Chronological placement is not
+            being promoted to continuity.
+          </>
+        )
+      }
+    </p>
+  </section>
+
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<script>
+  function initNameMigration(root: HTMLElement) {
+    if (root.dataset.nameMigrationReady) return;
+    root.dataset.nameMigrationReady = '1';
+
+    const steps = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-migration-step]'));
+    const maps = Array.from(root.querySelectorAll<SVGGElement>('[data-migration-map]'));
+    const readouts = Array.from(root.querySelectorAll<HTMLElement>('[data-migration-readout]'));
+    const flowNodes = Array.from(root.querySelectorAll<SVGGElement>('[data-flow-node]'));
+
+    const select = (index: number, focus: boolean) => {
+      const bounded = Math.max(0, Math.min(steps.length - 1, index));
+      const id = steps[bounded]?.dataset.migrationStep;
+      if (!id) return;
+      steps.forEach((step, current) => {
+        const selected = current === bounded;
+        step.classList.toggle('is-selected', selected);
+        step.setAttribute('aria-pressed', String(selected));
+        step.tabIndex = selected ? 0 : -1;
+        if (selected && focus) step.focus();
+      });
+      maps.forEach((map) => {
+        const selected = map.dataset.migrationMap === id;
+        map.classList.toggle('is-selected', selected);
+        map.setAttribute('aria-hidden', String(!selected));
+      });
+      readouts.forEach((readout) => {
+        readout.hidden = readout.dataset.migrationReadout !== id;
+      });
+      flowNodes.forEach((node) =>
+        node.classList.toggle('is-selected', node.dataset.flowNode === id),
+      );
+    };
+
+    steps.forEach((step, index) => {
+      step.addEventListener('click', () => select(index, false));
+      step.addEventListener('keydown', (event) => {
+        const next =
+          event.key === 'ArrowRight' || event.key === 'ArrowDown'
+            ? index + 1
+            : event.key === 'ArrowLeft' || event.key === 'ArrowUp'
+              ? index - 1
+              : event.key === 'Home'
+                ? 0
+                : event.key === 'End'
+                  ? steps.length - 1
+                  : null;
+        if (next === null) return;
+        event.preventDefault();
+        select(next, true);
+      });
+    });
+
+    select(0, false);
+  }
+
+  const bootNameMigration = () =>
+    document.querySelectorAll<HTMLElement>('[data-name-migration]').forEach(initNameMigration);
+  bootNameMigration();
+  document.addEventListener('astro:page-load', bootNameMigration);
+</script>
+
+<style>
+  .migration {
+    margin: 2.5rem 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    overflow: hidden;
+  }
+
+  .nm-heading,
+  .nm-flow-head {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .nm-heading h3,
+  .nm-flow-head h3,
+  .nm-readout h4 {
+    margin: 0;
+  }
+
+  .nm-kicker,
+  .nm-count,
+  .nm-flow-head > p {
+    margin: 0 0 0.2rem;
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .nm-steps {
+    list-style: none;
+    margin: 0;
+    padding: 0.75rem 1rem 1rem;
+    display: flex;
+    gap: 0.55rem;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .nm-steps li {
+    flex: 0 0 min(14rem, 72vw);
+  }
+
+  .nm-step {
+    width: 100%;
+    min-height: 5.4rem;
+    padding: 0.65rem 0.75rem;
+    display: grid;
+    gap: 0.15rem;
+    border: 2px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--canvas);
+    color: var(--ink);
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+  }
+
+  .nm-step[data-fate='translatio'] {
+    border-style: dashed;
+  }
+  .nm-step[data-fate='restitutio'] {
+    border-style: double;
+    border-width: 4px;
+  }
+  .nm-step[data-fate='inventio'] {
+    border-style: dotted;
+  }
+  .nm-step.is-selected {
+    border-color: var(--gold);
+  }
+  .nm-step:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
+  .nm-step-period {
+    color: var(--gold);
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+  }
+  .nm-step-name {
+    line-height: 1.2;
+  }
+  .nm-step-meta {
+    color: var(--ink-muted);
+    font-size: var(--step--2);
+  }
+
+  .nm-map-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.85fr);
+    gap: 0;
+  }
+
+  .nm-map-wrap {
+    min-width: 0;
+    padding: 1rem;
+    border-right: 1px solid var(--line);
+  }
+
+  .nm-map {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--canvas);
+  }
+
+  .nm-land path {
+    fill: color-mix(in srgb, var(--ink) 8%, transparent);
+    stroke: var(--line);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .nm-map-state {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 320ms ease;
+  }
+
+  .nm-map-state.is-selected {
+    opacity: 1;
+  }
+  .nm-layer-line {
+    fill: none;
+    stroke: var(--gold);
+    stroke-width: 3;
+    stroke-dasharray: 8 5;
+    vector-effect: non-scaling-stroke;
+  }
+  .nm-layer-line.is-feature {
+    stroke-width: 6;
+    stroke-dasharray: none;
+  }
+  .nm-layer-point circle {
+    fill: var(--gold);
+    stroke: var(--canvas);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+  }
+  .nm-layer-point.is-feature circle:first-of-type {
+    fill: var(--ink);
+    stroke: var(--gold);
+    stroke-width: 3;
+  }
+  .nm-layer-point .nm-feature-ring {
+    fill: none;
+    stroke: var(--gold);
+    stroke-width: 2;
+    stroke-dasharray: 3 3;
+  }
+
+  .nm-map-key {
+    margin: 0.6rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    color: var(--ink-muted);
+    font-size: var(--step--2);
+  }
+
+  .nm-map-key span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .nm-map-key i {
+    width: 1.4rem;
+    height: 0;
+    border-top: 2px dashed var(--gold);
+  }
+  .nm-map-key .nm-key-selected {
+    height: 0.7rem;
+    width: 0.7rem;
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+  }
+
+  .nm-readouts {
+    padding: 1rem;
+  }
+  .nm-readout[hidden] {
+    display: none;
+  }
+  .nm-coverage {
+    display: inline-block;
+    margin: 0 0 0.65rem;
+    padding: 0.2rem 0.45rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+  }
+  .nm-coverage[data-coverage='no_layer_yet'] {
+    border-style: dashed;
+  }
+  .nm-coverage[data-coverage='out_of_coverage'] {
+    border-style: dotted;
+  }
+  .nm-route-note {
+    margin: 0.55rem 0;
+  }
+  .nm-layers {
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+  }
+  .nm-readout dl {
+    margin: 1rem 0 0;
+    display: grid;
+    gap: 0.55rem;
+  }
+  .nm-readout dl > div {
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    gap: 0.65rem;
+  }
+  .nm-readout dt {
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    text-transform: uppercase;
+  }
+  .nm-readout dd {
+    margin: 0;
+    font-size: var(--step--1);
+  }
+
+  .nm-flow-section {
+    border-top: 1px solid var(--line);
+    padding-bottom: 1rem;
+  }
+  .nm-flow-scroll {
+    margin: 0 1rem;
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--canvas);
+  }
+  .nm-flow-scroll:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
+  .nm-flow {
+    display: block;
+    width: max(100%, 60rem);
+    height: auto;
+  }
+  .nm-lane line {
+    stroke: var(--line);
+    stroke-width: 1;
+    stroke-dasharray: 2 5;
+  }
+  .nm-lane text {
+    fill: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+  .nm-flow-edge {
+    fill: none;
+    stroke: var(--gold);
+    stroke-width: 2.5;
+  }
+  .nm-flow-edge.is-homonym_only {
+    stroke-dasharray: 5 5;
+  }
+  #nm-arrow path {
+    fill: var(--gold);
+  }
+  .nm-flow-node rect {
+    fill: var(--panel);
+    stroke: var(--line);
+    stroke-width: 2;
+  }
+  .nm-flow-node[data-fate='translatio'] rect {
+    stroke-dasharray: 7 4;
+  }
+  .nm-flow-node[data-fate='restitutio'] rect {
+    stroke-width: 4;
+  }
+  .nm-flow-node[data-fate='inventio'] rect {
+    stroke-dasharray: 2 3;
+  }
+  .nm-flow-node.is-selected rect {
+    stroke: var(--gold);
+  }
+  .nm-flow-node text {
+    fill: var(--ink);
+    text-anchor: middle;
+  }
+  .nm-flow-period {
+    fill: var(--gold) !important;
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .nm-flow-label {
+    font-size: 11px;
+  }
+  .nm-flow-gate {
+    margin: 0.8rem 1rem 0;
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+  }
+
+  figcaption {
+    padding: 0.85rem 1rem;
+    border-top: 1px solid var(--line);
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+  }
+
+  @media (max-width: 52rem) {
+    .nm-map-grid {
+      grid-template-columns: 1fr;
+    }
+    .nm-map-wrap {
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+    }
+  }
+
+  @media (max-width: 34rem) {
+    .nm-heading,
+    .nm-flow-head {
+      align-items: start;
+      flex-direction: column;
+    }
+    .nm-readout dl > div {
+      grid-template-columns: 1fr;
+      gap: 0.1rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nm-map-state {
+      transition: none;
+    }
+  }
+</style>
