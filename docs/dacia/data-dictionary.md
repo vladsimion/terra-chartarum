@@ -349,6 +349,47 @@ if unknown. Nothing currently clears the bar, which is reported in the gate's
 readiness lines rather than raised as an error: an essay may be written from
 description alone. See [`nomen-errans-ledger.md`](./nomen-errans-ledger.md).
 
+## `reference/nomen-errans-atlas-states.csv` (KAN-345)
+
+Where each career of the word lands on the Atlas, or why it lands nowhere. One
+row per reviewed name use, and the validator refuses a reviewed use that has no
+row: a career the slice silently cannot show is worse than one that says so.
+
+`coverage` is the answer. `in_coverage` must name at least one `dacia-` layer
+and a `year` for the time slider, and may name a `feature` that some compiled
+asset actually carries. `out_of_coverage` and `no_layer_yet` must name none of
+the three - a row that says "no layer" and then names one is two answers - and
+the difference between them matters: `no_layer_yet` is work not done, while
+`out_of_coverage` is the trench's argument, that the referent left the ground
+the Atlas draws. `note` is required either way, because the reason is the point
+of the row when there is no route and the justification for the composition when
+there is one.
+
+That the named layer ids exist is checked where the link is built:
+`AtlasDeepLink` fails `astro build` on an unknown layer, and the registry is
+TypeScript this validator cannot read.
+
+A route is not a promotion. Whether the use behind it may be shown at all is the
+ledger's own `review_state`, applied by the build, so demoting a use withdraws
+it from the essay without anyone having to remember to edit this table too.
+Routes are promoted through `review.py` like every other record, under the
+`nes-` prefix.
+
+## `generated/nomen-errans.json` (KAN-345)
+
+Trench C's vertical slice, compiled by `make dacia` from `name-uses.csv`,
+`sources.csv` and the routing table above, and consumed through
+`src/lib/nomen-errans.ts`. One lexical form - `Dacia` - and every career of it
+that a person has cleared, each carrying referent, period, source, locator,
+confidence and fate class, so no chronology is written twice.
+
+Two thresholds are applied in the compiler rather than in a component. A career
+below `reviewed` is not in `careers` at all; it is counted in `withheld` with
+its state, because a corpus that hides its unreviewed rows looks finished when
+it is not. And `atlas` carries a link only where the routing says a layer
+honestly covers the referent - a deep link that opens an empty map reads to a
+reader exactly like a deep link that works.
+
 ## `generated/hiatus-timeline.json` (KAN-349)
 
 The Hiatus states, their witness families and the absence taxonomy, compiled by

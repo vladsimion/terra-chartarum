@@ -44,6 +44,10 @@ OWNERS = {
     # way a review workflow can fail without anybody noticing.
     "nmu-": ("name_uses", "name_use_id"),
     "nue-": ("name_use_edges", "edge_id"),
+    # KAN-345: the Atlas routing is promoted here too. It is an editorial
+    # decision about what a reader is shown, and a decision nobody can promote
+    # is a decision nobody ever revisits.
+    "nes-": ("nomen_errans_atlas_states", "state_id"),
 }
 LADDER = ["raw", "normalized", "reviewed", "approved", "published"]
 

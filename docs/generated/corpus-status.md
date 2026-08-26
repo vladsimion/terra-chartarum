@@ -7,7 +7,7 @@
 | Content type         | Count |
 | -------------------- | ----: |
 | Live essays          |     8 |
-| Held essays          |    13 |
+| Held essays          |    14 |
 | Map records          |    59 |
 | Cartographers        |    19 |
 | Bibliography entries |    37 |
@@ -38,6 +38,7 @@ Geo release: `geo-fcb63902971f009a`.
 | Invisible Maps of Migration                        | road         | unscheduled |
 | Invisible Maps of Trade                            | road         | unscheduled |
 | Maps for a Crusade                                 | road         | unscheduled |
+| Nomen Errans                                       | border       | unscheduled |
 | Palimpsest Landscapes                              | archive      | unscheduled |
 | Projection and Perspective                         | map          | unscheduled |
 | Speculum Chartarum                                 | theatre      | unscheduled |

@@ -75,19 +75,19 @@ unbroken line.
 
 ## Readiness
 
-| State        | Uses | Why                                                       |
-| ------------ | ---- | --------------------------------------------------------- |
-| `reviewed`   | 3    | A person has cleared the row against its source           |
-| `normalized` | 4    | Source, locator, referent, period, fate class, confidence |
-| `raw`        | 3    | Locator still `pending`                                   |
+| State      | Uses | Why                                             |
+| ---------- | ---- | ----------------------------------------------- |
+| `reviewed` | 7    | A person has cleared the row against its source |
+| `raw`      | 3    | Locator still `pending`                         |
 
-**Three rows are reviewed**, one for each fate class that had a promotable
-candidate: `nmu-dacia-province` (`applicatio`), `nmu-dacia-antiquarian`
-(`restitutio`) and `nmu-dacia-scandinavia` (`translatio`), cleared by Vlad
-Simion on 2026-08-25. Nothing reached `reviewed` by machine: the promotion
-ladder refuses `llm_assisted` above `normalized` without a named reviewer, and a
-reviewed row also needs a real locator. That is the gate working as designed,
-and the three promotions are what a human pass looks like when it happens.
+**Seven rows are reviewed**, cleared by Vlad Simion on 2026-08-25: five
+`applicatio` (`nmu-dacia-province`, `nmu-dacia-aureliana`, `nmu-dacia-diocese`,
+`nmu-dacia-coin-legend`, `nmu-napoca-roman`), one `translatio`
+(`nmu-dacia-scandinavia`) and one `restitutio` (`nmu-dacia-antiquarian`).
+Nothing reached `reviewed` by machine: the promotion ladder refuses
+`llm_assisted` above `normalized` without a named reviewer, and a reviewed row
+also needs a real locator. That is the gate working as designed, and the seven
+promotions are what a human pass looks like when it happens.
 
 `vd-nomen-errans-review` stays open. KAN-345, KAN-346 and KAN-347 need a
 reviewed example of each class the essay argues, and `inventio` has none.
@@ -97,6 +97,31 @@ to give until somebody cites the instrument - the 1974 decree, a bibliographic
 anchor for the Dominican province, a reception artefact for the identity claim. `pending` is not a
 value a normalized row may carry, so those rows stay where they are and
 `vd-nomen-errans-locators` says what would move them.
+
+## Where each career lands on the Atlas
+
+KAN-345 routes the reviewed uses to map compositions in
+[`reference/nomen-errans-atlas-states.csv`](../../data/dacia/reference/nomen-errans-atlas-states.csv),
+one row per reviewed use, and the gate refuses a reviewed use with no row.
+
+| Use                     | Coverage          | Opens                                             |
+| ----------------------- | ----------------- | ------------------------------------------------- |
+| `nmu-dacia-province`    | `in_coverage`     | Roman sites and network, 150                      |
+| `nmu-dacia-coin-legend` | `in_coverage`     | Roman sites, 150 - the referent, not the coin     |
+| `nmu-dacia-antiquarian` | `in_coverage`     | The research tier on Ortelius's own reading, 1595 |
+| `nmu-napoca-roman`      | `in_coverage`     | The research tier on the Peutinger station, 150   |
+| `nmu-dacia-aureliana`   | `no_layer_yet`    | Nothing: south of the Danube is not compiled      |
+| `nmu-dacia-diocese`     | `no_layer_yet`    | Nothing: the diocese is not the province          |
+| `nmu-dacia-scandinavia` | `out_of_coverage` | Nothing: Denmark is off every Dacia layer         |
+
+The last three are the interesting rows. `no_layer_yet` is work not done and may
+one day become a link; `out_of_coverage` is the argument itself, and never will.
+Distinguishing them costs a column and stops the trench's own finding - that the
+word left the ground the map covers - reading as a missing feature.
+
+The threshold sits in the compiler, not the table. A use demoted below
+`reviewed` leaves the essay on the next `make dacia` whatever its routing says,
+so the two cannot disagree about what a reader is shown.
 
 ## The rights package
 

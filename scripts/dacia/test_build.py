@@ -262,3 +262,58 @@ def test_in_manibus_emits_no_object_without_inspection():
         "objects": 0,
         "evidence": 0,
     }
+
+
+def _slice():
+    tables = {name: build.read_table(name) for name in build.TABLES}
+    return build.nomen_errans_slice(tables)
+
+
+def test_the_slice_follows_one_word_only():
+    """KAN-345 is a single-name vertical slice: Napoca is a different word."""
+    careers = _slice()["careers"]
+    assert careers
+    assert {career["lexicalForm"] for career in careers} == {build.NOMEN_ERRANS_FORM}
+
+
+def test_only_a_cleared_career_reaches_the_essay():
+    slice_ = _slice()
+    for career in slice_["careers"]:
+        assert career["reviewState"] in build.NOMEN_ERRANS_PUBLIC_STATES
+        assert career["reviewer"], career["id"]
+    # Withheld, not dropped: the essay says how much of the word it is holding.
+    for held in slice_["withheld"]:
+        assert held["reviewState"] not in build.NOMEN_ERRANS_PUBLIC_STATES
+
+
+def test_every_career_carries_what_a_reader_needs_to_check_it():
+    for career in _slice()["careers"]:
+        assert career["referentLabel"], career["id"]
+        assert career["periodLabel"] != "undated", career["id"]
+        assert career["confidenceLabel"], career["id"]
+        assert career["source"] and career["source"]["citation"], career["id"]
+        # `locator_type: none` is an honest answer, so what is required is the
+        # locator field saying something, not that a folio exists.
+        assert career["locatorTypeLabel"], career["id"]
+
+
+def test_a_career_with_no_honest_layer_gets_no_link():
+    routes = {career["id"]: career["atlas"] for career in _slice()["careers"]}
+    assert routes, "the slice compiled no careers at all"
+    for use_id, atlas in routes.items():
+        assert atlas, f"{use_id} has no recorded Atlas routing"
+        assert atlas["note"], use_id
+        if atlas["coverage"] == "in_coverage":
+            assert atlas["layers"], use_id
+            assert atlas["year"] is not None, use_id
+        else:
+            assert atlas["layers"] == [], use_id
+    # The argument only closes if both outcomes are actually present.
+    coverages = {atlas["coverage"] for atlas in routes.values()}
+    assert "in_coverage" in coverages
+    assert coverages - {"in_coverage"}
+
+
+def test_careers_are_ordered_by_when_the_word_was_used():
+    starts = [career["periodFrom"] for career in _slice()["careers"]]
+    assert starts == sorted(starts)

@@ -896,6 +896,17 @@ const RAW: unknown[] = [
       },
     ],
     essaySlugs: ['dacia'],
+    // The Nomen Errans slice opens this layer on a career of the name, so the
+    // layer carries the way back to that passage (KAN-345). The essay is held,
+    // and AtlasMap drops links to unreleased essays, so this stays inert until
+    // Trench C ships.
+    essayLinks: [
+      {
+        slug: 'nomen-errans',
+        sectionId: 'careers',
+        label: 'The careers of the word',
+      },
+    ],
     geometry: 'circle',
     color: '#6f9e8a',
     perFeatureTime: true,
@@ -946,6 +957,17 @@ const RAW: unknown[] = [
       },
     ],
     essaySlugs: ['dacia'],
+    // The Nomen Errans slice opens this layer on a career of the name, so the
+    // layer carries the way back to that passage (KAN-345). The essay is held,
+    // and AtlasMap drops links to unreleased essays, so this stays inert until
+    // Trench C ships.
+    essayLinks: [
+      {
+        slug: 'nomen-errans',
+        sectionId: 'careers',
+        label: 'The careers of the word',
+      },
+    ],
     geometry: 'circle',
     color: '#c08a3e',
     perFeatureTime: true,
@@ -987,6 +1009,17 @@ const RAW: unknown[] = [
       },
     ],
     essaySlugs: ['dacia'],
+    // The Nomen Errans slice opens this layer on a career of the name, so the
+    // layer carries the way back to that passage (KAN-345). The essay is held,
+    // and AtlasMap drops links to unreleased essays, so this stays inert until
+    // Trench C ships.
+    essayLinks: [
+      {
+        slug: 'nomen-errans',
+        sectionId: 'careers',
+        label: 'The careers of the word',
+      },
+    ],
     geometry: 'line',
     color: '#c08a3e',
     perFeatureTime: true,

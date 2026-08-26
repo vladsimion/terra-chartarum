@@ -158,6 +158,10 @@ FRONTIER_LINE_TYPES = {"proposal", "treaty_line", "reconstruction"}
 FRONTIER_LEDGERS = {"treaty_frontier_sources", "carta_rubra_sources"}
 FRONTIER_FROM = 1829
 NOMEN_ERRANS_WITNESS_TYPES = {"map_witness", "object_witness", "text_witness"}
+# How a name use reaches the Atlas, or why it does not (KAN-345). Held apart
+# from the evidence: a use can be perfectly well attested and still have no
+# layer to open, and the two failures are different failures.
+NOMEN_ERRANS_COVERAGE = {"in_coverage", "out_of_coverage", "no_layer_yet"}
 ROMAN_FEATURE_TYPES = {"site", "road", "limes"}
 PRINCIPALITY_SOVEREIGNTY = {
     "autonomous_tributary",
@@ -257,6 +261,7 @@ TABLES = {
     "carta_rubra_sources": f"{REFERENCE}/carta-rubra-sources.csv",
     "carta_rubra_claims": f"{REFERENCE}/carta-rubra-claims.csv",
     "nomen_errans_witnesses": f"{REFERENCE}/nomen-errans-witnesses.csv",
+    "nomen_errans_atlas_states": f"{REFERENCE}/nomen-errans-atlas-states.csv",
     "acquisition_dossiers": f"{REFERENCE}/acquisition-dossiers.csv",
     "reception_corpus": f"{REFERENCE}/reception-corpus.csv",
     "reception_rubric": f"{REFERENCE}/reception-review-rubric.csv",
@@ -2717,6 +2722,79 @@ def validate_nomen_errans_witnesses(terms, ranks, name_uses, errors: list[str]) 
     del publishable
 
 
+def validate_nomen_errans_atlas_states(terms, ranks, name_uses, features, errors: list[str]) -> None:
+    """KAN-345: which career of the word the Atlas can open on, and which it cannot.
+
+    The vertical slice needs a route from a name use to a map composition, and
+    the route is an editorial decision - which layers, which year, which feature
+    - rather than something derivable from the ledger. Keeping it in a table
+    means a component cannot invent a link, and a use with no honest layer is
+    recorded as having none, with the reason, instead of being pointed at the
+    nearest map that happens to be in the right century.
+
+    A route is not a promotion. Whether the use behind it may be shown at all is
+    the ledger's own review state, applied by the build, so that demoting a use
+    withdraws it from the essay without anyone having to remember to edit this
+    table too. What this table must not do is leave a reviewed use unaccounted
+    for - that is a silent gap in the slice, and it is checked below.
+    """
+    rows = _read("nomen_errans_atlas_states", errors)
+    _check_unique(rows, "state_id", "nomen-errans-atlas-states", errors)
+    routed: set[str] = set()
+
+    for row in rows:
+        state_id = row["state_id"]
+        label = f"nomen-errans-atlas-states[{state_id}]"
+        if not state_id.startswith("nes-") or not SLUG.match(state_id):
+            errors.append(f"{label}: state_id must be an nes- slug")
+        use_id = row["name_use_id"]
+        if use_id not in name_uses:
+            errors.append(f"{label}: name_use_id '{use_id}' does not resolve")
+        elif use_id in routed:
+            errors.append(f"{label}: name use '{use_id}' is routed twice")
+        else:
+            routed.add(use_id)
+        # The reason is the point of the row when there is no route, and the
+        # justification for the composition when there is one.
+        if not row["note"]:
+            errors.append(f"{label}: note is required")
+        coverage = row["coverage"]
+        if coverage not in NOMEN_ERRANS_COVERAGE:
+            errors.append(f"{label}: coverage '{coverage}' is not recognised")
+            continue
+
+        layers = _pipe_set(row["layers"])
+        if coverage == "in_coverage":
+            if not layers:
+                errors.append(f"{label}: in_coverage requires at least one layer")
+            # That each id exists in the layer registry is checked where the link
+            # is built: AtlasDeepLink fails the site build on an unknown layer,
+            # and the registry is TypeScript this validator cannot read.
+            for layer in layers:
+                if not layer.startswith("dacia-") or not SLUG.match(layer):
+                    errors.append(f"{label}: layer '{layer}' is not a dacia- layer id")
+            if not row["year"].lstrip("-").isdigit():
+                errors.append(f"{label}: in_coverage requires a year for the time slider")
+            feature = row["feature"]
+            if feature and feature not in features:
+                errors.append(f"{label}: feature '{feature}' resolves to no compiled feature")
+        else:
+            # A row that says "no layer" and then names one is two answers.
+            for field in ("layers", "year", "feature"):
+                if row[field]:
+                    errors.append(f"{label}: coverage {coverage} cannot also carry a {field}")
+
+        _validate_review(row, label, terms, ranks, errors)
+
+    reviewed = ranks.get("reviewed", 2)
+    for use_id, state in sorted(name_uses.items()):
+        if ranks.get(state, 0) >= reviewed and use_id not in routed:
+            errors.append(
+                f"nomen-errans-atlas-states: reviewed name use '{use_id}' has no Atlas routing; "
+                "record the composition it opens, or the reason it has none"
+            )
+
+
 def validate_roman_dacia(terms, places, errors: list[str]) -> None:
     """KAN-341: a baseline that never authors a coordinate the corpus already holds."""
     rows = _read("roman_dacia", errors)
@@ -3082,8 +3160,23 @@ def validate_inputs() -> list[str]:
     validate_carta_rubra_package(errors)
     validate_borroczyn_package(errors)
     validate_borroczyn_georeferencing(errors)
-    name_uses = {row["name_use_id"] for row in _read("name_uses", errors)}
+    name_use_states = {
+        row["name_use_id"]: row["review_state"] for row in _read("name_uses", errors)
+    }
+    name_uses = set(name_use_states)
     validate_nomen_errans_witnesses(terms, ranks, name_uses, errors)
+    # Everything the Atlas can be asked to open on, so a routing cannot name a
+    # feature that no compiled asset carries.
+    compiled_features = attestation_ids | {
+        row["feature_id"] for row in _read("roman_dacia", errors)
+    } | {
+        row["phase_id"] for row in _read("principalities", errors)
+    } | {
+        row["sheet_id"] for row in _read("josephinian_sheets", errors)
+    } | {
+        row["segment_id"] for row in _read("treaty_frontier", errors)
+    }
+    validate_nomen_errans_atlas_states(terms, ranks, name_use_states, compiled_features, errors)
     place_points = {
         row["place_id"]: (float(row["ref_lon"]), float(row["ref_lat"]))
         for row in _read("places", errors)
@@ -3143,6 +3236,8 @@ def readiness_lines() -> list[str]:
     uses = _read("name_uses", errors)
     edges = _read("name_use_edges", errors)
     denied = sum(1 for row in edges if row["edge_kind"] == "homonym_only")
+    routes = _read("nomen_errans_atlas_states", errors)
+    routed = sum(1 for row in routes if row["coverage"] == "in_coverage")
 
     return [
         f"  corpus: {len(places)} places, {len(sources)} sources, "
@@ -3167,6 +3262,8 @@ def readiness_lines() -> list[str]:
         f"{len(witnesses)} candidate witnesses, "
         f"{sum(1 for row in witnesses if row['production_role'] != 'research_only')} cleared "
         f"for publication",
+        f"  Nomen Errans Atlas routes: {len(routes)} reviewed uses routed, {routed} of them to a "
+        f"layer and {len(routes) - routed} recorded as having none",
         f"  shared GIS: {len(roman)} Roman baseline features "
         f"({sum(1 for row in roman if row['feature_type'] == 'site')} joined to CND places), "
         f"{len(phases)} principality phases across "

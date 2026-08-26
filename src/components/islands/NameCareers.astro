@@ -1,0 +1,481 @@
+---
+/**
+ * The careers of one word (KAN-345)
+ *
+ * Trench C's vertical slice. Each step is a documented use of the name Dacia:
+ * who used it, what they meant by it, when, on what witness, at what locator,
+ * and with what confidence. The reader can step between them and, where the
+ * Atlas honestly covers the referent, open the map on it.
+ *
+ * Static first. Every career and its evidence is in the server-rendered markup
+ * and the whole ledger sits below the figure as an ordinary table, so the
+ * argument survives with no JavaScript, in print, and for a reader who would
+ * rather read than operate a stepper. The script only hides panels that are
+ * already there.
+ *
+ * Nothing here is authored. The careers come from the compiled slice through
+ * `src/lib/nomen-errans.ts`; a use that has not been reviewed is not in the
+ * list at all, and a use with no honest layer says so in place of a link
+ * rather than being pointed at the nearest map in the right century.
+ */
+import {
+  atlasStateFor,
+  getNameCareers,
+  getWithheldCareers,
+  NOMEN_ERRANS_FORM,
+} from '../../lib/nomen-errans';
+import AtlasDeepLink from '../AtlasDeepLink.astro';
+
+interface Props {
+  caption?: string;
+}
+const { caption } = Astro.props;
+
+const careers = getNameCareers();
+const withheld = getWithheldCareers();
+const routes = new Map(careers.map((career) => [career.id, atlasStateFor(career)]));
+
+/**
+ * Why a career has no map, in the reader's words rather than the schema's.
+ * `no_layer_yet` is work not done; `out_of_coverage` is the trench's argument.
+ */
+const NO_LAYER = {
+  out_of_coverage: 'Outside the Atlas',
+  no_layer_yet: 'No layer compiled',
+  in_coverage: '',
+} as const;
+---
+
+<figure class="careers" data-name-careers>
+  <div
+    class="nc-controls"
+    role="group"
+    aria-label={`Documented uses of the name ${NOMEN_ERRANS_FORM}`}
+  >
+    {
+      careers.map((career, index) => (
+        <button
+          type="button"
+          class="nc-button"
+          data-goto={career.id}
+          aria-pressed={index === 0 ? 'true' : 'false'}
+        >
+          <span class="nc-period">{career.periodLabel}</span>
+          <span class="nc-referent">{career.referentLabel}</span>
+        </button>
+      ))
+    }
+  </div>
+
+  <div class="nc-stage">
+    {
+      careers.map((career, index) => (
+        <section class="nc-panel" data-panel={career.id} data-ordinal={index + 1}>
+          <header class="nc-head">
+            <p class="nc-fate">
+              <span class="nc-fate-term">{career.fateClassLabel}</span>
+              <span class="nc-fate-gloss">{career.fateClassDefinition}</span>
+            </p>
+            <h3>
+              <em>{career.lexicalForm}</em>, {career.referentLabel}
+            </h3>
+            <p class="nc-institution">
+              {career.referentKindLabel} &#183; {career.institution}
+            </p>
+          </header>
+
+          <dl class="nc-evidence">
+            <div>
+              <dt>Period</dt>
+              <dd>
+                {career.periodLabel}{' '}
+                <span class="nc-qualifier">({career.datePrecisionLabel.toLowerCase()})</span>
+              </dd>
+            </div>
+            <div>
+              <dt>Source</dt>
+              <dd>
+                {career.source ? career.source.citation : 'No witness cited; an institutional use.'}
+              </dd>
+            </div>
+            <div>
+              <dt>Locator</dt>
+              <dd>
+                {career.locator && career.locatorType !== 'none' ? (
+                  <>
+                    {career.locator}{' '}
+                    <span class="nc-qualifier">({career.locatorTypeLabel.toLowerCase()})</span>
+                  </>
+                ) : (
+                  <span class="nc-absent">None recorded - {career.locatorTypeLabel}</span>
+                )}
+              </dd>
+            </div>
+            <div>
+              <dt>Confidence</dt>
+              <dd>
+                <span class:list={['nc-confidence', `is-${career.confidence}`]}>
+                  {career.confidenceLabel}
+                </span>{' '}
+                <span class="nc-qualifier">{career.confidenceDefinition}</span>
+              </dd>
+            </div>
+          </dl>
+
+          <p class="nc-note">{career.note}</p>
+
+          <p class="nc-atlas">
+            {routes.get(career.id) ? (
+              <AtlasDeepLink
+                class="nc-atlas-link"
+                layers={routes.get(career.id)!.layers}
+                year={routes.get(career.id)!.year}
+                feature={routes.get(career.id)!.feature}
+                essay={routes.get(career.id)!.essay}
+              >
+                Open this referent in the Atlas
+              </AtlasDeepLink>
+            ) : (
+              <span class="nc-no-atlas">
+                <strong>{NO_LAYER[career.atlas?.coverage ?? 'no_layer_yet']}.</strong>{' '}
+                {career.atlas?.note}
+              </span>
+            )}
+          </p>
+        </section>
+      ))
+    }
+  </div>
+
+  <details class="nc-ledger">
+    <summary>Read the ledger as a table</summary>
+    <div class="nc-scroll">
+      <table>
+        <caption>
+          Documented uses of the name {NOMEN_ERRANS_FORM}, cleared for publication.
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Period</th>
+            <th scope="col">Referent</th>
+            <th scope="col">Fate</th>
+            <th scope="col">Source and locator</th>
+            <th scope="col">Confidence</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            careers.map((career) => (
+              <tr>
+                <td>{career.periodLabel}</td>
+                <td>{career.referentLabel}</td>
+                <td>{career.fateClassLabel}</td>
+                <td>
+                  {career.source ? career.source.citation : 'Institutional use, no witness cited'}
+                  {career.locatorType !== 'none' && career.locator ? ` - ${career.locator}` : ''}
+                </td>
+                <td>{career.confidenceLabel}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    {
+      withheld.length > 0 && (
+        <p class="nc-withheld">
+          {withheld.length} further {withheld.length === 1 ? 'use is' : 'uses are'} compiled and not
+          shown, because nobody has cleared {withheld.length === 1 ? 'it' : 'them'} yet:{' '}
+          {withheld.map((held) => `${held.referentLabel} (${held.reviewState})`).join('; ')}.
+        </p>
+      )
+    }
+  </details>
+
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<script>
+  function initNameCareers(root: HTMLElement) {
+    if (root.dataset.nameCareersReady) return;
+    root.dataset.nameCareersReady = '1';
+    // Only now does the figure become a stepper. Before this runs every career
+    // is on the page and the argument reads top to bottom.
+    root.classList.add('nc-interactive');
+
+    const panels = Array.from(root.querySelectorAll<HTMLElement>('.nc-panel'));
+    const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>('.nc-button'));
+    if (panels.length < 2 || buttons.length !== panels.length) return;
+
+    const show = (next: number) => {
+      const index = Math.max(0, Math.min(panels.length - 1, next));
+      panels.forEach((panel, i) => {
+        panel.hidden = i !== index;
+      });
+      buttons.forEach((button, i) => button.setAttribute('aria-pressed', String(i === index)));
+    };
+
+    buttons.forEach((button, i) => {
+      button.addEventListener('click', () => show(i));
+      button.addEventListener('keydown', (event) => {
+        const delta =
+          event.key === 'ArrowRight' || event.key === 'ArrowDown'
+            ? 1
+            : event.key === 'ArrowLeft' || event.key === 'ArrowUp'
+              ? -1
+              : event.key === 'Home'
+                ? -panels.length
+                : event.key === 'End'
+                  ? panels.length
+                  : 0;
+        if (!delta) return;
+        event.preventDefault();
+        const target = Math.max(0, Math.min(panels.length - 1, i + delta));
+        buttons[target].focus();
+        show(target);
+      });
+    });
+
+    show(0);
+  }
+
+  const boot = () =>
+    document.querySelectorAll<HTMLElement>('[data-name-careers]').forEach(initNameCareers);
+  boot();
+  document.addEventListener('astro:page-load', boot);
+</script>
+
+<style>
+  .careers {
+    margin: 2.5rem 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+  }
+
+  .nc-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.85rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .nc-button {
+    flex: 1 1 8rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.15rem;
+    /* 44px minimum target on every axis. */
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+    padding: 0.5rem 0.8rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--canvas);
+    color: var(--ink-muted);
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+  }
+
+  .nc-button[aria-pressed='true'] {
+    border-color: var(--gold);
+    color: var(--ink);
+  }
+
+  .nc-button:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
+
+  .nc-period {
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    letter-spacing: 0.04em;
+  }
+
+  .nc-referent {
+    font-size: var(--step--1);
+    line-height: 1.25;
+  }
+
+  .nc-stage {
+    padding: clamp(1rem, 3vw, 1.75rem);
+  }
+
+  /* Before the script runs the careers stack; the rule between them keeps the
+     unscripted reading legible rather than looking like one long panel. */
+  .nc-panel + .nc-panel {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .nc-interactive .nc-panel + .nc-panel {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .nc-panel[hidden] {
+    display: none;
+  }
+
+  .nc-fate {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .nc-fate-term {
+    color: var(--gold);
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .nc-fate-gloss,
+  .nc-qualifier {
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+  }
+
+  .nc-head h3 {
+    margin: 0.35rem 0 0.2rem;
+  }
+
+  .nc-institution {
+    margin: 0 0 1rem;
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+  }
+
+  .nc-evidence {
+    margin: 0;
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .nc-evidence > div {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    gap: 0.75rem;
+  }
+
+  .nc-evidence dt {
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding-top: 0.15em;
+  }
+
+  .nc-evidence dd {
+    margin: 0;
+  }
+
+  /* Confidence is a word first. The border weight repeats it for a reader
+     scanning the stepper, so nothing is carried by colour alone. */
+  .nc-confidence {
+    border-bottom: 2px solid var(--gold);
+    padding-bottom: 0.05em;
+  }
+
+  .nc-confidence.is-medium {
+    border-bottom-style: dashed;
+  }
+
+  .nc-confidence.is-low,
+  .nc-confidence.is-editorial_reconstruction {
+    border-bottom-style: dotted;
+  }
+
+  .nc-absent {
+    color: var(--ink-muted);
+    font-style: italic;
+  }
+
+  .nc-note {
+    margin: 1rem 0 0;
+  }
+
+  .nc-atlas {
+    margin: 0.9rem 0 0;
+  }
+
+  .nc-no-atlas {
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+  }
+
+  .nc-ledger {
+    border-top: 1px solid var(--line);
+    padding: 0.85rem 1rem;
+  }
+
+  .nc-ledger summary {
+    cursor: pointer;
+  }
+
+  .nc-scroll {
+    overflow-x: auto;
+    margin-top: 0.75rem;
+  }
+
+  .nc-ledger table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--step--1);
+  }
+
+  .nc-ledger caption {
+    text-align: start;
+    color: var(--ink-muted);
+    padding-bottom: 0.5rem;
+  }
+
+  .nc-ledger th,
+  .nc-ledger td {
+    text-align: start;
+    vertical-align: top;
+    padding: 0.4rem 0.6rem 0.4rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .nc-withheld {
+    margin: 0.85rem 0 0;
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+  }
+
+  figcaption {
+    padding: 0.85rem 1rem;
+    border-top: 1px solid var(--line);
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+  }
+
+  @media (max-width: 34rem) {
+    .nc-button {
+      flex: 1 1 100%;
+    }
+
+    .nc-evidence > div {
+      grid-template-columns: 1fr;
+      gap: 0.1rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nc-panel,
+    .nc-button {
+      transition: none;
+    }
+  }
+</style>
