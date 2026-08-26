@@ -37,7 +37,7 @@ const dims = Object.keys(data.metaScores ?? {}).join('|');
       <p class="card-summary">{data.summary}</p>
       <ul class="card-tags" aria-label="Regions">
         {data.regions.slice(0, 3).map((r) => <li>{r}</li>)}
-        {data.mapCount && <li class="count">{data.mapCount} maps</li>}
+        {(data.mapCount ?? 0) > 0 ? <li class="count">{data.mapCount} maps</li> : null}
       </ul>
     </div>
   </a>
