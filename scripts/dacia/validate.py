@@ -3262,7 +3262,7 @@ def readiness_lines() -> list[str]:
         f"{len(witnesses)} candidate witnesses, "
         f"{sum(1 for row in witnesses if row['production_role'] != 'research_only')} cleared "
         f"for publication",
-        f"  Nomen Errans Atlas routes: {len(routes)} reviewed uses routed, {routed} of them to a "
+        f"  Nomen Errans Atlas routes: {len(routes)} routing decisions, {routed} of them to a "
         f"layer and {len(routes) - routed} recorded as having none",
         f"  shared GIS: {len(roman)} Roman baseline features "
         f"({sum(1 for row in roman if row['feature_type'] == 'site')} joined to CND places), "

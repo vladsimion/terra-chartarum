@@ -100,13 +100,13 @@
       "gates": [
         {
           "gate": "research",
-          "note": "Twelve name uses compiled across five fate classes and five source or institution types; seven normalized, none reviewed. The gate cannot pass until a person clears rows against their sources, which llm_assisted work cannot do for itself.",
-          "status": "partial"
+          "note": "Ten source-located uses span ancient, late-antique, medieval, early-modern and modern settings. Seven carry Vlad Simion's recorded human review and cover every fate class the released essay displays; three normalized rows remain withheld.",
+          "status": "passed"
         },
         {
           "gate": "rights",
-          "note": "Six candidate witnesses assessed; none cleared for publication. The essay can be written from description, but no image may be shown until a rights basis is settled.",
-          "status": "partial"
+          "note": "The 1974 official-gazette scan is the sole production witness and is source-checked as PD-RO-exempt/no known restrictions. Five uncleared candidates remain research-only and are not reproduced.",
+          "status": "passed"
         },
         {
           "gate": "data",
@@ -129,12 +129,12 @@
           "status": "pending"
         }
       ],
-      "gatesPassed": 0,
+      "gatesPassed": 2,
       "id": "ccd-c",
       "kind": "trench",
       "label": "Nomen Errans · The Migration of a Word",
       "note": "proving vertical slice for the corpus",
-      "openDebts": 3,
+      "openDebts": 0,
       "room": "border",
       "state": "planned"
     },
@@ -399,13 +399,13 @@
     }
   ],
   "generatedBy": "scripts/dacia/build.py",
-  "openDebts": 17,
+  "openDebts": 14,
   "programmeId": "ccd",
   "release": "cnd-0.1",
   "schemaVersion": 1,
   "sharedDatasets": [
     {
-      "detail": "120 places, 28 sources, 129 attestations",
+      "detail": "120 places, 29 sources, 129 attestations",
       "href": "https://github.com/vladsimion/terra-chartarum/tree/main/data/dacia/release/cnd-0.1",
       "id": "cnd",
       "kind": "corpus",

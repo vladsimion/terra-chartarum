@@ -302,15 +302,15 @@
       "fateClass": "translatio",
       "fateClassLabel": "Translatio",
       "id": "nmu-dacia-ecclesiastical",
-      "referentLabel": "The Danish church province",
-      "reviewState": "raw"
+      "referentLabel": "The Scandinavian province represented at the Dominican general chapter",
+      "reviewState": "normalized"
     },
     {
       "fateClass": "inventio",
       "fateClassLabel": "Inventio",
       "id": "nmu-dacia-reception",
-      "referentLabel": "Territories claimed on reception maps",
-      "reviewState": "raw"
+      "referentLabel": "Dacia Porolissensis made to support a Romanian historical-continuity claim",
+      "reviewState": "normalized"
     }
   ],
   "withheldRelations": [
