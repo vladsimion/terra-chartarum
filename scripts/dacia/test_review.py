@@ -172,6 +172,13 @@ def test_coverage_separates_a_missing_name_from_a_missing_source(dataset, capsys
             row["review_state"] = "normalized"
             row["reviewer"] = ""
             row["review_date"] = ""
+        if row["name_use_id"] == "nmu-dacia-reception":
+            # The committed corpus is now fully source-located. Reconstruct a
+            # valid raw candidate with a pending locator so this report keeps
+            # exercising the materially different research blocker.
+            row["review_state"] = "raw"
+            row["locator_type"] = "section"
+            row["locator"] = "pending"
     review._store(validate.DATA, "name_uses", fieldnames, uses)
 
     assert review.main(["coverage"]) == 0

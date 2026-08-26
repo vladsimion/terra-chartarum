@@ -94,49 +94,49 @@
     },
     {
       "campaign": "i",
-      "corpusRecords": 0,
+      "corpusRecords": 10,
       "epicKey": "KAN-320",
-      "essaySlug": "",
+      "essaySlug": "nomen-errans",
       "gates": [
         {
           "gate": "research",
-          "note": "Twelve name uses compiled across five fate classes and five source or institution types; seven normalized, none reviewed. The gate cannot pass until a person clears rows against their sources, which llm_assisted work cannot do for itself.",
-          "status": "partial"
+          "note": "Ten source-located uses span ancient, late-antique, medieval, early-modern and modern settings. Seven carry Vlad Simion's recorded human review and cover every fate class the released essay displays; three normalized rows remain withheld.",
+          "status": "passed"
         },
         {
           "gate": "rights",
-          "note": "Six candidate witnesses assessed; none cleared for publication. The essay can be written from description, but no image may be shown until a rights basis is settled.",
-          "status": "partial"
+          "note": "The 1974 official-gazette scan is the sole production witness and is source-checked as PD-RO-exempt/no known restrictions. Five uncleared candidates remain research-only and are not reproduced.",
+          "status": "passed"
         },
         {
           "gate": "data",
-          "note": "",
-          "status": "pending"
+          "note": "The deterministic Dacia build compiles reviewed careers, source apparatus, routing decisions and withheld counts from the shared CND tables; the essay owns no private chronology.",
+          "status": "passed"
         },
         {
           "gate": "interaction",
-          "note": "",
-          "status": "pending"
+          "note": "The career stepper and referent-migration figure consume the generated slice, restore honest Atlas states and withhold every relationship below named human review.",
+          "status": "passed"
         },
         {
           "gate": "editorial",
-          "note": "",
-          "status": "pending"
+          "note": "The complete five-section argument uses only reviewed public careers, labels the sole cleared witness and preserves the review/rights boundary around the normalized 1974 readings.",
+          "status": "passed"
         },
         {
           "gate": "release",
-          "note": "",
-          "status": "pending"
+          "note": "All six gates are closed. The released route, discovery surfaces, Atlas round trip, desktop/mobile interaction, axe and reduced-motion checks are recorded with the shared-CND consumer proof.",
+          "status": "passed"
         }
       ],
-      "gatesPassed": 0,
+      "gatesPassed": 6,
       "id": "ccd-c",
       "kind": "trench",
       "label": "Nomen Errans · The Migration of a Word",
-      "note": "proving vertical slice for the corpus",
-      "openDebts": 3,
+      "note": "published proving trench consuming the shared CND release",
+      "openDebts": 0,
       "room": "border",
-      "state": "planned"
+      "state": "live"
     },
     {
       "campaign": "ii",
@@ -399,13 +399,13 @@
     }
   ],
   "generatedBy": "scripts/dacia/build.py",
-  "openDebts": 17,
+  "openDebts": 14,
   "programmeId": "ccd",
   "release": "cnd-0.1",
   "schemaVersion": 1,
   "sharedDatasets": [
     {
-      "detail": "120 places, 28 sources, 129 attestations",
+      "detail": "120 places, 29 sources, 129 attestations",
       "href": "https://github.com/vladsimion/terra-chartarum/tree/main/data/dacia/release/cnd-0.1",
       "id": "cnd",
       "kind": "corpus",

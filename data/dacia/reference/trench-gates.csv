@@ -11,12 +11,12 @@ ccd-b,data,pending,KAN-349,,
 ccd-b,interaction,pending,KAN-350,,
 ccd-b,editorial,pending,KAN-350,,
 ccd-b,release,pending,KAN-350,,
-ccd-c,research,partial,KAN-344,data/dacia/name-uses.csv,"Twelve name uses compiled across five fate classes and five source or institution types; seven normalized, none reviewed. The gate cannot pass until a person clears rows against their sources, which llm_assisted work cannot do for itself."
-ccd-c,rights,partial,KAN-344,data/dacia/reference/nomen-errans-witnesses.csv,"Six candidate witnesses assessed; none cleared for publication. The essay can be written from description, but no image may be shown until a rights basis is settled."
-ccd-c,data,pending,KAN-345,,
-ccd-c,interaction,pending,KAN-346,,
-ccd-c,editorial,pending,KAN-347,,
-ccd-c,release,pending,KAN-347,,
+ccd-c,research,passed,KAN-344,data/dacia/name-uses.csv,"Ten source-located uses span ancient, late-antique, medieval, early-modern and modern settings. Seven carry Vlad Simion's recorded human review and cover every fate class the released essay displays; three normalized rows remain withheld."
+ccd-c,rights,passed,KAN-344,data/dacia/reference/nomen-errans-witnesses.csv,"The 1974 official-gazette scan is the sole production witness and is source-checked as PD-RO-exempt/no known restrictions. Five uncleared candidates remain research-only and are not reproduced."
+ccd-c,data,passed,KAN-345,src/data/dacia/generated/nomen-errans.json,"The deterministic Dacia build compiles reviewed careers, source apparatus, routing decisions and withheld counts from the shared CND tables; the essay owns no private chronology."
+ccd-c,interaction,passed,KAN-346,src/components/islands/NameMigration.astro,"The career stepper and referent-migration figure consume the generated slice, restore honest Atlas states and withhold every relationship below named human review."
+ccd-c,editorial,passed,KAN-347,src/content/essays/nomen-errans.mdx,"The complete five-section argument uses only reviewed public careers, labels the sole cleared witness and preserves the review/rights boundary around the normalized 1974 readings."
+ccd-c,release,passed,KAN-347,docs/dacia/nomen-errans-release.md,"All six gates are closed. The released route, discovery surfaces, Atlas round trip, desktop/mobile interaction, axe and reduced-motion checks are recorded with the shared-CND consumer proof."
 ccd-d,research,pending,KAN-354,,
 ccd-d,rights,pending,KAN-354,,
 ccd-d,data,pending,KAN-355,,

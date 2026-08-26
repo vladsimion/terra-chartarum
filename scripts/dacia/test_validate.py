@@ -1181,7 +1181,9 @@ def test_a_pending_locator_cannot_be_normalized(dataset):
     """The rule that keeps institution-only uses honest about what they lack."""
 
     def mutate(rows):
-        find(rows, "name_use_id", "nmu-dacia-ecclesiastical")["review_state"] = "normalized"
+        row = find(rows, "name_use_id", "nmu-dacia-ecclesiastical")
+        row["locator_type"] = "pending"
+        row["locator"] = "pending"
 
     edit(dataset, "name_uses", mutate)
     refuses("locator is still pending at review_state normalized")

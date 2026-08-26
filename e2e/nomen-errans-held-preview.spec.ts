@@ -2,17 +2,18 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
 /**
- * The Nomen Errans slice, checked on the page it will actually ship on
- * (CCD-C2/C3 / KAN-345/KAN-346).
+ * The complete Nomen Errans essay, checked on the page it ships on
+ * (CCD-C4 / KAN-347).
  *
  * Runs only under `playwright.held.config.ts`, against a build made with
- * SHOW_UNRELEASED=1. The ordinary suite proves the essay is not served; this
- * one proves the whole path closes when it is - a career selected, its evidence
+ * SHOW_UNRELEASED=1. That flag is now redundant for this released essay, but
+ * keeps this larger desktop/mobile suite alongside the other staged essays.
+ * It proves the whole path closes - a career selected, its evidence
  * shown, the Atlas opened on the referent, and the way back to the passage the
  * reader left.
  *
- * Everything here is verifiable without a reviewer: markup, keyboard, layout,
- * link targets. Nothing here asserts the trench is ready to publish.
+ * Everything here is verifiable in the built release: markup, keyboard,
+ * layout, source boundary and link targets.
  */
 const ESSAY = '/essays/nomen-errans/';
 const FIGURE = '[data-name-careers]';
@@ -22,18 +23,28 @@ const MIGRATION = '[data-name-migration]';
 const MIGRATION_STEPS = `${MIGRATION} [data-migration-step]`;
 const MIGRATION_READOUTS = `${MIGRATION} [data-migration-readout]`;
 
-test.describe('the held slice renders', () => {
-  test('the route is served when the hold is lifted', async ({ page }) => {
+test.describe('the released essay renders', () => {
+  test('the route is served', async ({ page }) => {
     const response = await page.goto(ESSAY, { waitUntil: 'domcontentloaded' });
     expect(response?.status()).toBe(200);
     await expect(page.locator('h1')).toHaveCount(1);
   });
 
-  test('the three beats are present and in order', async ({ page }) => {
+  test('the five sections are present and in order', async ({ page }) => {
     await page.goto(ESSAY);
-    const beats = ['slice', 'careers', 'path'];
+    const beats = ['premise', 'careers', 'migration', 'witness', 'afterword'];
     const ids = await page.locator('section[id]').evaluateAll((nodes) => nodes.map((n) => n.id));
     expect(ids.filter((id) => beats.includes(id))).toEqual(beats);
+  });
+
+  test('the cleared witness names its source, rights and review boundary', async ({ page }) => {
+    await page.goto(ESSAY);
+    const witness = page.locator('figure.document-witness');
+    await expect(witness).toHaveCount(1);
+    await expect(witness.locator('img')).toHaveAttribute('alt', /Decree 194/);
+    await expect(witness.locator('a')).toHaveAttribute('href', /commons\.wikimedia\.org/);
+    await expect(witness.locator('figcaption')).toContainText('PD-RO-exempt');
+    await expect(witness.locator('figcaption')).toContainText('remain withheld');
   });
 
   test('at least three distinct careers of the name are selectable', async ({ page }) => {

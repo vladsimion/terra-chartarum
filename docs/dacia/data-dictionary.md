@@ -345,15 +345,17 @@ The production bar is the one the other research packages hold: a witness may
 only be planned into the page once `rights_status` permits production-wide
 reuse, `resolution_status` is `sufficient`, and a repository object identifier
 has been transcribed. `repository_object_id` is required on every row, `pending`
-if unknown. Nothing currently clears the bar, which is reported in the gate's
-readiness lines rather than raised as an error: an essay may be written from
-description alone. See [`nomen-errans-ledger.md`](./nomen-errans-ledger.md).
+if unknown. The Decree 194/1974 official-gazette scan is the sole current
+production witness; its source page records PD-RO-exempt/no-known-restrictions
+status and a sufficient reproduction. Every other candidate remains
+`research_only`. See [`nomen-errans-ledger.md`](./nomen-errans-ledger.md).
 
 ## `reference/nomen-errans-atlas-states.csv` (KAN-345)
 
-Where each career of the word lands on the Atlas, or why it lands nowhere. One
-row per reviewed name use, and the validator refuses a reviewed use that has no
-row: a career the slice silently cannot show is worse than one that says so.
+Where each career of the word lands on the Atlas, or why it lands nowhere. A
+route may be prepared before its career is promoted, but the validator refuses a
+reviewed name use with no row: a career the slice silently cannot show is worse
+than one that says so.
 
 `coverage` is the answer. `in_coverage` must name at least one `dacia-` layer
 and a `year` for the time slider, and may name a `feature` that some compiled

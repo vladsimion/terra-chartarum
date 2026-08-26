@@ -53,6 +53,16 @@ describe('the Nomen Errans vertical slice', () => {
     }
   });
 
+  it('publishes only fate classes with a reviewed example', () => {
+    const publicFates = new Set(careers.map((career) => career.fateClass));
+    const withheld = getWithheldCareers();
+
+    expect(publicFates).toEqual(new Set(['applicatio', 'restitutio', 'translatio']));
+    expect(publicFates).not.toContain('inventio');
+    expect(withheld.some((career) => career.fateClass === 'inventio')).toBe(true);
+    expect(withheld.every((career) => career.reviewState === 'normalized')).toBe(true);
+  });
+
   it('reads the chronology from the corpus rather than repeating it', async () => {
     // The guard against the failure this ticket exists to avoid: a second copy
     // of the dates, in the essay, drifting from the ledger that owns them.

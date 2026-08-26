@@ -80,7 +80,7 @@ const published = trenches.filter((trench) => trench.essaySlug);
                   </dd>
                 </div>
                 <div>
-                  <dt>Corpus records</dt>
+                  <dt>Shared records</dt>
                   <dd>{trench.corpusRecords || 'none yet'}</dd>
                 </div>
                 <div>
@@ -128,11 +128,12 @@ const published = trenches.filter((trench) => trench.essaySlug);
       <h2 id="infrastructure">Shared infrastructure</h2>
       <p class="section-note">
         The corpus and the Atlas layers belong to the programme. A trench reads them; it does not
-        keep its own copy, and the migration inventory is what proves the difference.
+        keep its own copy. The generated graph counts the shared records each compiler actually
+        reads; a prose note cannot put a trench on this list.
         {
           consumers.length === 1
-            ? ' One trench currently has records in the corpus.'
-            : ` ${consumers.length} trenches currently have records in the corpus.`
+            ? ' One trench currently consumes shared corpus records.'
+            : ` ${consumers.length} trenches currently consume shared corpus records.`
         }
       </p>
       <ul class="dataset-list">

@@ -255,9 +255,8 @@ def command_coverage(args) -> int:
     """Fate-class coverage against the CCD-C1 acceptance criterion (KAN-344).
 
     The criterion is "at least one reviewed example exists for each fate class
-    used in the essay". Nothing in the corpus is reviewed yet, so the useful
-    question is not whether the criterion passes - it does not - but *what
-    stands between here and there*, per class.
+    used in the essay". The useful question is not only whether a class passes,
+    but *what stands between here and there* for any class still withheld.
 
     Two answers are very different in cost. A class whose best row is already
     ready to promote needs a person to run one command and put their name to
