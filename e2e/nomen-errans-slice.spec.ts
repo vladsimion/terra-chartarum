@@ -24,6 +24,12 @@ test.describe('the essay is released', () => {
     expect(sitemap).toContain('nomen-errans');
   });
 
+  test('the gallery counts the three historical maps read by the essay', async ({ page }) => {
+    await page.goto('/essays/');
+    const card = page.locator('article.card').filter({ hasText: 'Nomen Errans' });
+    await expect(card.getByText('3 maps', { exact: true })).toBeVisible();
+  });
+
   test('the Atlas return leg points into the released careers passage', async ({ page }) => {
     await page.goto(
       '/atlas/?layers=dacia-roman-network,dacia-roman-sites&year=150&essay=nomen-errans',
