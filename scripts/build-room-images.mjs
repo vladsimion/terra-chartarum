@@ -60,7 +60,7 @@ const VARIANTS = [
 // copy and they do not follow the <room>-proposal[-titled].png pattern.
 const ESSAY_PLATES = {
   'nomen-errans': {
-    cover: 'nomen errans.PNG',
+    cover: 'nomen errans no title.PNG',
     hero: 'nomen errans.PNG',
     position: 'left',
   },
