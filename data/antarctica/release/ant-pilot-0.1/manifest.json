@@ -52,7 +52,7 @@
     "data/antarctica/observations.csv": "9c99ee5a0ef0ad6f371860d8ed6c09df898adc69c0ad9736bfff8c932068ef3a",
     "data/antarctica/priority-claims.csv": "8bbb405d020a3656ee61cbd4b9ef29681f3e4954f1723eca51c9b6b7fc4c54c4",
     "data/antarctica/source-gaps.csv": "350373a0c0197693955e7d4adefd074ddae43cc96199e5dfb7e1e769533995ee",
-    "data/antarctica/sources.csv": "21c1c8ddf809367b1382f104414a09ea990af94ac6aa8772735dbe16d96d93a0",
+    "data/antarctica/sources.csv": "4a862decc891e38d2ee12bdad7a7a97b173940e5f76926d922fac94eb8ad0bf8",
     "data/antarctica/terminology.csv": "62cf5b1109f0a6582335ae136a6709b1edd4b77318182e8dc52ea8b0d82663f3",
     "data/antarctica/tracks.csv": "2c1400201b2916a0ac6028eca6d171bc562eed194796f92cd811fb09ca0d0fc7"
   },
@@ -133,8 +133,8 @@
       "sha256": "350373a0c0197693955e7d4adefd074ddae43cc96199e5dfb7e1e769533995ee"
     },
     "data/antarctica/release/ant-pilot-0.1/sources.csv": {
-      "bytes": 29156,
-      "sha256": "21c1c8ddf809367b1382f104414a09ea990af94ac6aa8772735dbe16d96d93a0"
+      "bytes": 30909,
+      "sha256": "4a862decc891e38d2ee12bdad7a7a97b173940e5f76926d922fac94eb8ad0bf8"
     },
     "data/antarctica/release/ant-pilot-0.1/terminology.csv": {
       "bytes": 6147,
