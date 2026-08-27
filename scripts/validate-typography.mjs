@@ -8,6 +8,7 @@
 // looks for the em dash in all three forms it appears in HTML (literal, named
 // entity, numeric entity). En dashes (U+2013) are correct in numeric and date
 // ranges like 1150-1750 and are deliberately not flagged.
+import { spawnSync } from 'node:child_process';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { relative, resolve } from 'node:path';
 
@@ -62,10 +63,33 @@ function textFiles(dir) {
   });
 }
 
+// Content git is told to ignore is not ours to police. Without this the walk
+// reaches anything parked in the checkout - a Confluence export, a vendor dump -
+// and fails the gate on prose nobody here wrote, while CI checks out clean and
+// passes. `git check-ignore` consults the index by default, so a tracked file is
+// never reported ignored however the patterns read, and a merely untracked file
+// is still checked: only deliberately ignored paths are skipped.
+function ignoredPaths(paths) {
+  if (!paths.length) return new Set();
+  const result = spawnSync('git', ['check-ignore', '--stdin', '-z'], {
+    cwd: ROOT,
+    input: paths.map((path) => relative(ROOT, path)).join('\0'),
+    encoding: 'utf8',
+  });
+  // 0 means some path matched. 1 means none did. Anything else - no git on the
+  // box, not a repository - means we cannot tell, and the safe answer there is
+  // to check every file rather than quietly skip one.
+  if (result.status !== 0) return new Set();
+  return new Set(result.stdout.split('\0').filter(Boolean));
+}
+
+const candidates = textFiles(ROOT);
+const ignored = ignoredPaths(candidates);
 const offences = [];
 
-for (const path of textFiles(ROOT)) {
+for (const path of candidates) {
   if (path === SELF) continue;
+  if (ignored.has(relative(ROOT, path))) continue;
   const lines = readFileSync(path, 'utf8').split('\n');
   lines.forEach((line, index) => {
     const form = FORMS.find((candidate) => line.includes(candidate));
