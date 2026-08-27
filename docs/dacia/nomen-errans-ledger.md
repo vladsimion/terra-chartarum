@@ -101,6 +101,26 @@ displays only the three fate classes with a reviewed example: `applicatio`,
 compiler's public threshold. Adding that class to the public argument still
 requires a named human review.
 
+## The coin row's citation, audited
+
+The fix that gave `nmu-dacia-coin-legend` a real locator (2026-08-27) named its
+source as RIC II.3, Hadrian 1648-1663 - Abdy and Mittag (Spink, 2019) - but
+said so as an assumption: neither RIC volume was open when the row was
+written, only OCRE, and the 1926 RIC II (Mattingly and Sydenham) numbers
+Hadrian's Dacia types differently. KAN-468 asked which volume the numbering
+actually belongs to.
+
+It settles from the citation alone. OCRE's own identifier for the type,
+`ric.2_3(2).hdn.1648`, glosses itself as "RIC II, Part 3 (second edition),
+Hadrian 1648" - the `2_3` names the 2019 volume, not the 1926 one. The two
+editions do not share a numbering space: Abdy and Mittag renumbered Hadrian's
+coinage from scratch, so the same type carries unrelated numbers in each
+edition (a published concordance pairs RIC II.3 1347 with the old RIC II 707,
+hundreds apart with no fixed offset). The 1926 edition's Hadrian section
+never reaches four digits, so 1648-1663 cannot be read as RIC II numbers
+under any concordance. The row's citation is confirmed as written; no source,
+name-use, or witness row changes.
+
 ## Where each career lands on the Atlas
 
 KAN-345 records an Atlas decision for every source-located use in
