@@ -900,6 +900,20 @@ def validate_name_uses(terms, ranks, places, sources, attestations, errors: list
         _check_period(row, label, row["date_precision"], errors)
         _validate_review(row, label, terms, ranks, errors)
 
+        # The same floor attestations have carried since KAN-335. The ledger
+        # tells readers that a reviewed row needs a real locator, and the
+        # `locator_type` vocabulary says `none` is "never sufficient for
+        # review", but neither was enforced here: a reviewed use could carry an
+        # empty locator and pass. Reviewing means opening the source at the
+        # locator the row claims, which is impossible when there is none.
+        if ranks.get(row["review_state"], 0) >= ranks.get("reviewed", 2):
+            if row["locator_type"] == "none" or row["locator"] in {"", PENDING}:
+                errors.append(f"{label}: a reviewed name use requires a real locator")
+            elif row["locator_type"] == "whole_work" and len(row["locator"]) < 10:
+                errors.append(
+                    f"{label}: whole_work must record why the witness has no finer locator"
+                )
+
         if row["referent_place_id"]:
             if row["referent_place_id"] not in places:
                 errors.append(f"{label}: referent_place_id does not resolve")

@@ -1189,6 +1189,33 @@ def test_a_pending_locator_cannot_be_normalized(dataset):
     refuses("locator is still pending at review_state normalized")
 
 
+def test_a_reviewed_name_use_cannot_lose_its_locator(dataset):
+    """Reviewing means opening the source at the locator, so there has to be one.
+
+    `pending` was already refused above `raw`, but an empty locator was not, and
+    `locator_type: none` is documented as "never sufficient for review" without
+    anything checking it. A row that has been signed for has to say where.
+    """
+
+    def mutate(rows):
+        row = find(rows, "name_use_id", "nmu-dacia-province")
+        row["locator_type"] = "none"
+        row["locator"] = ""
+
+    edit(dataset, "name_uses", mutate)
+    refuses("a reviewed name use requires a real locator")
+
+
+def test_a_reviewed_whole_work_use_must_say_why_nothing_is_finer(dataset):
+    """The Hereford membrane earns `whole_work` by explaining itself, not by asserting it."""
+
+    def mutate(rows):
+        find(rows, "name_use_id", "nmu-dacia-scandinavia")["locator"] = "the map"
+
+    edit(dataset, "name_uses", mutate)
+    refuses("whole_work must record why the witness has no finer locator")
+
+
 def test_an_obvious_line_still_cannot_be_continuity_without_evidence(dataset):
     """Cluj-Napoca is plainly the Roman name returning, and that is not evidence."""
 
