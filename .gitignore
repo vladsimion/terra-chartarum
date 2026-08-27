@@ -27,3 +27,11 @@ __pycache__/
 
 # local editor / tool settings
 .claude/
+
+# Confluence space exports dropped into the checkout for reference. They are
+# other people's prose, and both `prettier --check .` and the typography gate
+# walk the working tree: an export left here fails gates that CI, which checks
+# out clean, passes. Ignoring it keeps the local gate and CI saying the same
+# thing.
+Terra Chartarum Specification export*/
+Terra Chartarum Specification export*.zip
