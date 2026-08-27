@@ -276,8 +276,14 @@ command attributes them rather than carrying a second copy of the rules. It
 exits 0 either way: an unfinished cycle is the normal state here, and a command
 that failed CI for saying so would be out of CI within a week.
 
-**Two open items block no recorded gate at all** - `vd-roman-baseline-geometry`
-and `vd-principality-envelopes` have an empty `blocks` column, so no gate-driven
-view of the programme would ever have surfaced them. The report lists them
-separately rather than dropping them. They need either the gate they block named
-or the item closed; open debt that nothing points at is how an item is lost.
+**Two items that used to block no recorded gate now do.**
+`vd-roman-baseline-geometry` blocks Terra Sigillata's data gate (`ccd-a:data`):
+the roman-dacia baseline is that trench's Roman-era spatial evidence, and an
+`editorial_reconstruction` corridor is not yet a passable answer to the gate's
+question. `vd-principality-envelopes` blocks Dacia Rediviva's data gate
+(`ccd-f:data`): Trench F argues over how antiquity has been used in territorial
+claims, and the principality envelopes are its spatial register for that
+argument - the same pattern `vd-treaty-frontier-geometry` already set for Carta
+Rubra. Neither debt is resolved; the underlying geometry is still
+`editorial_reconstruction`. What changed is that both now count against a real
+gate instead of floating unattached, which is what KAN-371 asks for.

@@ -252,9 +252,28 @@ def test_blocked_reports_every_open_debt_item(dataset, capsys):
 
 
 def test_blocked_surfaces_open_debt_that_blocks_no_gate(dataset, capsys):
+    # KAN-371 (X1) gated the corpus's last two orphan debts (vd-roman-baseline-geometry
+    # and vd-principality-envelopes) to real trench gates, so the committed corpus no
+    # longer has one to read this off. Construct one in the fixture instead - the same
+    # move test_blocked_ignores_resolved_debt already makes below - so this keeps
+    # exercising the distinction as real work closes it, rather than quietly stopping.
+    path = validate.DATA / "reference" / "verification-debt.csv"
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        fieldnames = list(reader.fieldnames or [])
+        rows = list(reader)
+
+    target = rows[0]["debt_id"]
+    rows[0]["blocks"] = ""
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
     review.main(["blocked"])
     out = capsys.readouterr().out
     assert "block no recorded gate" in out
+    assert target in out
 
 
 def test_blocked_ignores_resolved_debt(dataset, capsys):

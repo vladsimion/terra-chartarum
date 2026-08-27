@@ -37,11 +37,14 @@ The audit's job at this stage is to make the distance between _we know this
 exists_ and _we have read it_ visible, and the open gaps are the measure of that
 distance rather than a defect in the record.
 
-Five gaps are closed, including the relationship between the 1874 and 1910 ice
+Nine gaps are closed, including the relationship between the 1874 and 1910 ice
 charts, the second Greenwich Cook impression, the identity and hemisphere of
-Coronelli's plate, and the distinction between his _Atlante Veneto_ and
-_Epitome_ polar texts. Three remain in progress after citable leads were located
-for the Endurance position, Worsley's logbook and the Wilkes atlas.
+Coronelli's plate, the distinction between his _Atlante Veneto_ and _Epitome_
+polar texts, the remaining _Atlante Veneto_ polar leaves, the southern calotte
+of the 1688 globe, the dependence on Debenham's Bellingshausen translation, and
+the absence of any peer-reviewed cause for a named ghost feature. Three remain
+in progress after citable leads were located for the Endurance position,
+Worsley's logbook and the Wilkes atlas.
 
 ## Running it
 
