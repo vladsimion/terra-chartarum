@@ -397,8 +397,9 @@ above `reviewed` whose two endpoint uses are also visible; `withheldRelations`
 counts the remaining Dacia edge rows without exposing their notes as claims.
 The map/flow component therefore always gets its nodes from reviewed name uses
 and can never turn chronological adjacency or a shared word into an authored
-line. With the current Dacia slice it correctly renders six nodes and no
-relation lines: all ten Dacia edge rows remain below human review.
+line. With the current Dacia slice it renders six nodes and eight relation
+lines; the other two Dacia edge rows are reviewed but each lands on a use that
+is not, so they are counted in `withheldRelations` rather than drawn.
 
 ## `generated/hiatus-timeline.json` (KAN-349)
 

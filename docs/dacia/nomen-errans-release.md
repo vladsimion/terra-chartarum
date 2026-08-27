@@ -22,8 +22,11 @@ production path is:
    narrative.
 
 The compiler exposes only rows at `reviewed` or above. Seven reviewed uses form
-the public career sequence; three normalized uses and all ten unreviewed
-relationship rows are counted but withheld.
+the public career sequence and three normalized uses are counted but withheld.
+All eleven relationship rows have since passed human review (KAN-344): eight of
+the ten Dacia edges are drawn, and the remaining two are withheld because each
+lands on a use that is still `normalized`. A reviewed edge is not by itself
+permission to draw a line.
 
 ## Evidence and rights boundary
 

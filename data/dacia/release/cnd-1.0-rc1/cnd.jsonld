@@ -3055,11 +3055,11 @@
         "fate_class": "applicatio",
         "institution": "The imperial mint",
         "lexical_form": "Dacia",
-        "locator": "Reverse types legended DACIA and DACIA FELIX",
+        "locator": "RIC II.3, Hadrian 1648-1663: reverse types legended DACIA",
         "locator_type": "section",
         "name_use_id": "nmu-dacia-coin-legend",
         "normalization_method": "llm_assisted",
-        "note": "The state naming its own province on the money, which is the use with the widest circulation and the shortest text. No specimen has been examined and no volume or catalogue number is transcribed.",
+        "note": "The state naming its own province on the money, which is the use with the widest circulation and the shortest text. Hadrian's province series is the reviewed reading; no specimen has been examined, so the row cites the catalogue rather than a coin.",
         "period_from": "106",
         "period_to": "271",
         "referent_kind": "region",
@@ -5862,13 +5862,13 @@
         "year_to": "150"
       },
       {
-        "citation": "Roman Imperial Coinage, 10 vols (London, 1923-1994)",
+        "citation": "Roman Imperial Coinage (London, 1923-2019); the Dacia types cited here are in vol. II.3, ed. R. A. Abdy and P. F. Mittag (2019), Hadrian 1648-1663",
         "creator": "H. Mattingly, E. A. Sydenham and successors",
-        "date_label": "1923-1994",
+        "date_label": "1923-2019",
         "date_precision": "year_range",
         "edition_state": "",
         "normalization_method": "llm_assisted",
-        "note": "The volume and number for each Dacia type is not transcribed here; the record cites the series and stays normalized until a specimen is checked.",
+        "note": "The Dacia types cited by this corpus are Hadrian's province series in RIC II.3 (2019); the record cites the series and stays normalized until a specimen is checked.",
         "repository": "Specimens in the major cabinets; the catalogue is widely held",
         "repository_object_id": "",
         "review_date": "",
@@ -5883,7 +5883,7 @@
         "trench_a_stela": "",
         "witness": "The coins themselves, catalogued as a series; the reference work is the access to them",
         "year_from": "1923",
-        "year_to": "1994"
+        "year_to": "2019"
       },
       {
         "citation": "Russian General Staff map, 1835",
