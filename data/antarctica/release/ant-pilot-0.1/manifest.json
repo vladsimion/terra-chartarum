@@ -37,7 +37,7 @@
   "highRiskClaims": 13,
   "inputs": {
     "data/antarctica/chart-contributions.csv": "b6b1a8c915a01e44a0e8d6b75af2dfbc0e53dfa4de27bd409f1a98cf6c5f560c",
-    "data/antarctica/claims.csv": "d57ca6c566effd70d7bb30f59b425de1d79f2e450d80f5f7e08b203bad529443",
+    "data/antarctica/claims.csv": "ab5341fd145e3879c7ef3fd08e19c90fea11fc1129a06e83a8e1306640bbd620",
     "data/antarctica/coastline-chronology.csv": "e271cae60095ac3352c65136dd340684b95ef34406a94baae53c352dbf1c4fca",
     "data/antarctica/coronelli-annotations.csv": "9a736fe51a15716900fc6fbb399349d07b2fa68ea1f8a9f321c7add9d300b7db",
     "data/antarctica/coronelli-lineage.csv": "0e05ddab08c3140c8fb0f9d1a28a8c771999b83d00a0b621feb2748861c3242d",
@@ -50,9 +50,9 @@
     "data/antarctica/map-objects.csv": "fb8cd34d5fbdf6671bf74e21cf05967dda001c829c745ab4a730586eb65181b3",
     "data/antarctica/names.csv": "aae02783537cb68bdda5e4f6e8d098613100f4de57c55013240a89897331c122",
     "data/antarctica/observations.csv": "9c99ee5a0ef0ad6f371860d8ed6c09df898adc69c0ad9736bfff8c932068ef3a",
-    "data/antarctica/priority-claims.csv": "8bbb405d020a3656ee61cbd4b9ef29681f3e4954f1723eca51c9b6b7fc4c54c4",
-    "data/antarctica/source-gaps.csv": "350373a0c0197693955e7d4adefd074ddae43cc96199e5dfb7e1e769533995ee",
-    "data/antarctica/sources.csv": "4a862decc891e38d2ee12bdad7a7a97b173940e5f76926d922fac94eb8ad0bf8",
+    "data/antarctica/priority-claims.csv": "d04f4a492a6165c735f29b4443e34da490506b03a9104768307d6c1672355d7c",
+    "data/antarctica/source-gaps.csv": "97daad74486c2956e3d8156a1d4932f0d8e1f70b5899d6a6c33b0e2f98a9e6c9",
+    "data/antarctica/sources.csv": "e0f0da69bdd9654f2d9d34429f9a0e961cb288547c997cfd993c7a7fcfb4cb3d",
     "data/antarctica/terminology.csv": "62cf5b1109f0a6582335ae136a6709b1edd4b77318182e8dc52ea8b0d82663f3",
     "data/antarctica/tracks.csv": "2c1400201b2916a0ac6028eca6d171bc562eed194796f92cd811fb09ca0d0fc7"
   },
@@ -66,15 +66,15 @@
   "licence": "CC BY 4.0 for the compiled records; every source and map object carries its own rights status, and no object in this release is cleared for reproduction.",
   "mappableRecords": 25,
   "objectsClearedForReproduction": 0,
-  "openSourceGaps": 12,
+  "openSourceGaps": 10,
   "outputs": {
     "data/antarctica/release/ant-pilot-0.1/chart-contributions.csv": {
       "bytes": 4551,
       "sha256": "b6b1a8c915a01e44a0e8d6b75af2dfbc0e53dfa4de27bd409f1a98cf6c5f560c"
     },
     "data/antarctica/release/ant-pilot-0.1/claims.csv": {
-      "bytes": 14200,
-      "sha256": "d57ca6c566effd70d7bb30f59b425de1d79f2e450d80f5f7e08b203bad529443"
+      "bytes": 15023,
+      "sha256": "ab5341fd145e3879c7ef3fd08e19c90fea11fc1129a06e83a8e1306640bbd620"
     },
     "data/antarctica/release/ant-pilot-0.1/coastline-chronology.csv": {
       "bytes": 2627,
@@ -125,16 +125,16 @@
       "sha256": "9c99ee5a0ef0ad6f371860d8ed6c09df898adc69c0ad9736bfff8c932068ef3a"
     },
     "data/antarctica/release/ant-pilot-0.1/priority-claims.csv": {
-      "bytes": 2981,
-      "sha256": "8bbb405d020a3656ee61cbd4b9ef29681f3e4954f1723eca51c9b6b7fc4c54c4"
+      "bytes": 3289,
+      "sha256": "d04f4a492a6165c735f29b4443e34da490506b03a9104768307d6c1672355d7c"
     },
     "data/antarctica/release/ant-pilot-0.1/source-gaps.csv": {
-      "bytes": 13091,
-      "sha256": "350373a0c0197693955e7d4adefd074ddae43cc96199e5dfb7e1e769533995ee"
+      "bytes": 13539,
+      "sha256": "97daad74486c2956e3d8156a1d4932f0d8e1f70b5899d6a6c33b0e2f98a9e6c9"
     },
     "data/antarctica/release/ant-pilot-0.1/sources.csv": {
-      "bytes": 30909,
-      "sha256": "4a862decc891e38d2ee12bdad7a7a97b173940e5f76926d922fac94eb8ad0bf8"
+      "bytes": 31059,
+      "sha256": "e0f0da69bdd9654f2d9d34429f9a0e961cb288547c997cfd993c7a7fcfb4cb3d"
     },
     "data/antarctica/release/ant-pilot-0.1/terminology.csv": {
       "bytes": 6147,
@@ -161,8 +161,8 @@
       "sha256": "e0b9a97439f1b8320ea47827f2d472ac819aa4b43bd7ebb6c90f8b4868ed8af9"
     },
     "src/data/antarctica/generated/pilot.json": {
-      "bytes": 90798,
-      "sha256": "7a5aee62920cf2ab2a24728b35f1a55c2317c0fff1ec65bd0ef7a4ba04e5e838"
+      "bytes": 91106,
+      "sha256": "fb62773a8a600d8eda469b5003f3c76d93adb001a6286ac642f83bcbc66aa7f9"
     }
   },
   "pilotByReviewState": {

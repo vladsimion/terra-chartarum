@@ -602,7 +602,7 @@
       "evidenceStrength": "contested",
       "expeditionId": "ant-exp-bellingshausen",
       "id": "ant-pri-bellingshausen-1820",
-      "notes": "The strongest case if an ice front observed from close inshore counts, and no case at all if the definition requires rock. That is a definitional question, not an evidential one, and the row records which definition it answers rather than whether it wins.",
+      "notes": "The strongest case if an ice front observed from close inshore counts, and no case at all if the definition requires rock. That is a definitional question, not an evidential one, and the row records which definition it answers rather than whether it wins. Dependence on Debenham's 1945 translation is declared rather than the Russian original consulted (ant-gap-bellingshausen-translation): the wording this row and its contest rest on is Debenham's English, and an upgrade to the Russian text is future work, not a precondition for holding this row at contested.",
       "observationId": "ant-obs-1820-sighting",
       "reviewStatus": "unreviewed"
     },
