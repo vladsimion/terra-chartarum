@@ -202,14 +202,19 @@ test.describe('the migration map and relationship gate', () => {
     );
   });
 
-  test('unreviewed relationships are counted but never drawn', async ({ page }) => {
+  test('reviewed relationships are drawn and withheld ones are only counted', async ({ page }) => {
     await page.goto(ESSAY);
 
     await expect(page.locator(`${MIGRATION} [data-flow-node]`)).toHaveCount(6);
-    await expect(page.locator(`${MIGRATION} .nm-flow-edge`)).toHaveCount(0);
-    await expect(page.locator(`${MIGRATION} .nm-flow-gate`)).toContainText('No line is drawn.');
+    await expect(page.locator(`${MIGRATION} .nm-flow-edge`)).toHaveCount(8);
     await expect(page.locator(`${MIGRATION} .nm-flow-gate`)).toContainText(
-      '10 relationship records',
+      'Every line above resolves to a human-reviewed relationship row.',
+    );
+    // The two edges whose endpoint use is still below review are counted in the
+    // figure's description and given no line, which is the gate working rather
+    // than the ledger being short.
+    await expect(page.locator(`${MIGRATION} #nm-flow-desc`)).toContainText(
+      '2 recorded lines remain withheld',
     );
   });
 
