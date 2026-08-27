@@ -6,9 +6,11 @@
  * the Atlas layers each reviewed route names; a use with no honest coverage is
  * an explicit empty state, never a guessed point. Relationship lines have a
  * stricter rule still: the compiler emits them only after the corresponding
- * `name-use-edges.csv` row passes human review. Today that means the figure has
- * nodes and no lines, which is the accurate state of the evidence rather than
- * an unfinished graphic disguised as continuity.
+ * `name-use-edges.csv` row passes human review *and* both endpoint uses are
+ * themselves visible, so a reviewed edge to an unreviewed referent is counted
+ * in `withheldRelations` and drawn nowhere. Whatever the ledger currently
+ * holds, the figure can never disguise chronological adjacency - or a shared
+ * word - as continuity.
  */
 import type { FeatureCollection, Position } from 'geojson';
 import { readFile } from 'node:fs/promises';
