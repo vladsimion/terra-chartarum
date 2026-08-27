@@ -59,6 +59,11 @@ const VARIANTS = [
 // media-src/ is gitignored, so renaming them would break the operator's backup
 // copy and they do not follow the <room>-proposal[-titled].png pattern.
 const ESSAY_PLATES = {
+  'nomen-errans': {
+    cover: 'nomen errans.PNG',
+    hero: 'nomen errans.PNG',
+    position: 'left',
+  },
   'the-league-that-left-no-map': {
     cover: 'Hanseatic towns.png',
     hero: 'Hanseatic towns titled.png',
@@ -77,9 +82,9 @@ async function exists(path) {
 }
 
 /** Crop one master to a derivative's geometry and write it as webp. */
-async function derive(srcPath, destPath, { width, height }) {
+async function derive(srcPath, destPath, { width, height, position = 'centre' }) {
   const buffer = await sharp(srcPath)
-    .resize(width, height, { fit: 'cover', position: 'centre' })
+    .resize(width, height, { fit: 'cover', position })
     .webp({ quality: QUALITY, effort: 6 })
     .toBuffer();
   await writeFile(destPath, buffer);
@@ -130,7 +135,10 @@ async function main() {
         continue;
       }
       const name = `${variant.out}.webp`;
-      const bytes = await derive(srcPath, join(essayDir, name), variant);
+      const bytes = await derive(srcPath, join(essayDir, name), {
+        ...variant,
+        position: masters.position,
+      });
       record(`${slug}/${name}`, variant, bytes);
     }
   }
