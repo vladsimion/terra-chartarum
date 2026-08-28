@@ -141,7 +141,11 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install pytest
-        run: pip install pytest
+        # pyarrow is not optional here: scripts/dacia/test_build.py opens with
+        # `pytest.importorskip("pyarrow")`, so without it the whole module -
+        # including the public-tier and unreviewed-relationship gates - skips
+        # silently and the job still reports green.
+        run: pip install pytest pyarrow
       - name: CND rule tests (schemas, promotion ladder, GIS packages)
         run: python -m pytest scripts/dacia -q
       - name: Crusades rule tests (source/rights audit, place authority)
