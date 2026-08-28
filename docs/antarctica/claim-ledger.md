@@ -106,13 +106,24 @@ the refusal and no file changes. `queue` derives each record's blockers by
 trial-promoting it against the real validator, so the tool never carries a second
 copy of the rules.
 
-Two limits worth stating rather than discovering:
+### Attribution
 
-- **These tables have no `reviewer` or `review_date` column.** `--reviewer` is
-  still required, so the name reaches the commit message and the shell history,
-  but the row itself cannot hold it. Dacia's tables can. Until those columns
-  exist here, a reviewed row records _that_ it was reviewed and not _by whom_,
-  and `promote` says so on every promotion rather than letting it pass unnoticed.
+All five reviewable tables carry `reviewer` and `review_date`, and the validator
+enforces both directions:
+
+- a row at `reviewed` must name its reviewer and carry an ISO `review_date`;
+- a row **below** `reviewed` may carry neither. A name on an unreviewed row is
+  either a half-finished promotion or somebody's note to themselves, and both
+  read as an adjudication that never happened.
+
+`promote` writes all three fields together, so the only way to reach `reviewed`
+is through a command that records who did it. No existing row was back-filled
+when the columns were added: every one of the 108 is below `reviewed`, and
+inventing a reviewer for them would be exactly the fabricated adjudication this
+workflow exists to prevent.
+
+One limit worth stating rather than discovering:
+
 - **The ladders differ from Dacia's.** These tables were built with a
   source-audit vocabulary (`candidate` / `source_checked` / `reviewed` for the
   audit tables, `unreviewed` / `source_checked` / `reviewed` for the ledgers).

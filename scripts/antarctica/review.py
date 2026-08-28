@@ -270,11 +270,11 @@ def command_promote(args) -> int:
     target = _next_state(row[review_column], args.to, ladder)
     changes = dict(pair.split("=", 1) for pair in args.set or [])
     changes[review_column] = target
-    # None of these tables carries a reviewer or review_date column today, so
-    # --reviewer is recorded in the commit message and the shell history rather
-    # than the row. It stays required: a promotion nobody has put their name to
-    # is the thing this workflow exists to prevent, and the requirement is what
-    # makes the omission visible when those columns are added.
+    # Every reviewable table carries reviewer/review_date, and validate.py
+    # refuses a reviewed row without them - so the name reaches the row rather
+    # than only the shell history. The guard stays because a table added later
+    # may not have the columns yet, and silently dropping the reviewer would be
+    # worse than the note below.
     for column, value in (("reviewer", args.reviewer), ("review_date", args.date)):
         if column in row:
             changes[column] = value
