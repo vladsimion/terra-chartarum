@@ -115,8 +115,8 @@ export function getTrenchAPlaces(): Map<string, TrenchAPitPlace> {
  * the essay is not asking the Atlas to take a position on when to look.
  */
 export function atlasUrl(feature?: string): string {
-  return buildAtlasShareUrl('https://terra-chartarum.pages.dev/atlas', {
+  return buildAtlasShareUrl('https://terra-chartarum.org/atlas', {
     layers: [CND_ATLAS_LAYER],
     feature: feature || undefined,
-  }).replace('https://terra-chartarum.pages.dev', '');
+  }).replace('https://terra-chartarum.org', '');
 }

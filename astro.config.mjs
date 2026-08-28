@@ -7,7 +7,7 @@ import rehypeProseTables from './src/lib/rehype-prose-tables.ts';
 
 // Production origin (KAN-56 / ATLAS-605). Drives canonical tags, absolute OG image URLs,
 // sitemap entries, RSS and citation URLs; keep public/robots.txt aligned.
-const SITE = 'https://terra-chartarum.pages.dev';
+const SITE = 'https://terra-chartarum.org';
 
 // Essay <lastmod> for the sitemap, keyed by the absolute URL the sitemap emits.
 // `updatedAt` is already required frontmatter, so the dates exist - they just

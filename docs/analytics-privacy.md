@@ -78,7 +78,7 @@ feature, storage or regulatory change triggers a new privacy review.
 ```sh
 PUBLIC_ANALYTICS_PROVIDER=plausible
 PUBLIC_PLAUSIBLE_SCRIPT_SRC=https://plausible.io/js/pa-XXXXX.js
-PUBLIC_PLAUSIBLE_DOMAIN=terra-chartarum.pages.dev
+PUBLIC_PLAUSIBLE_DOMAIN=terra-chartarum.org
 ```
 
 4. Build and verify:

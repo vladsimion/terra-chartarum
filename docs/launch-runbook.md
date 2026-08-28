@@ -12,12 +12,68 @@ ATLAS-606).
   preview deployments.
 - **Build command:** `npm run build` (Astro static output).
 - **Output directory:** `dist/`.
-- **Public URL:** `https://terra-chartarum.pages.dev` (matches `site` in
-  `astro.config.mjs`, which drives canonical URLs, the sitemap and RSS). Keep
-  `public/robots.txt` and the `ORIGIN` constant in `scripts/validate-indexing.mjs`
-  aligned with it.
+- **Public URL:** `https://terra-chartarum.org` - the apex, no `www` (matches
+  `site` in `astro.config.mjs`, which drives canonical URLs, the sitemap and
+  RSS). The origin is spelled out in five places that must stay in step:
+  `astro.config.mjs`, `public/robots.txt`, `ORIGIN` in
+  `scripts/validate-indexing.mjs`, `SITE` in
+  `scripts/generate-publication-reports.mjs`, and the `PRODUCTION_ORIGIN`
+  default in `scripts/verify-production.mjs` (plus the CI job that passes it).
+- **Build alias:** `https://terra-chartarum.pages.dev` keeps resolving and keeps
+  serving the same build. It is not canonical: every page carries a canonical
+  `<link>` to the apex, so search engines fold it away. Preview deploys stay on
+  their own `*.pages.dev` subdomains.
 - **Output mode:** `output: 'static'` - no server runtime; everything ships as
   pre-rendered HTML plus client islands.
+
+## 1a. Custom domain (terra-chartarum.org)
+
+The domain is registered through Tucows and was delegated to Wix nameservers on
+purchase. Cloudflare Pages can only attach an apex domain to a project when the
+zone is on Cloudflare DNS, so the nameservers move first. Steps, in order:
+
+1. **Add the zone.** Cloudflare dashboard -> _Add a site_ -> `terra-chartarum.org`
+   -> Free plan. The scan finds nothing (the zone is empty); continue. Cloudflare
+   shows two assigned nameservers, e.g. `xxx.ns.cloudflare.com` /
+   `yyy.ns.cloudflare.com`.
+2. **Repoint the nameservers at the registrar.** In the Wix/Tucows domain
+   settings, replace `ns0.wixdns.net` and `ns1.wixdns.net` with the two
+   Cloudflare nameservers from step 1. Delete nothing else. This is the only
+   step outside Cloudflare, and the only one with registrar-wide effect.
+3. **Wait for activation.** Cloudflare emails when the zone goes active
+   (minutes to a few hours). Confirm with `dig +short NS terra-chartarum.org`.
+4. **Attach the domain to the Pages project.** Pages -> the project ->
+   _Custom domains_ -> _Set up a domain_ -> `terra-chartarum.org`. Cloudflare
+   creates the CNAME itself and issues the certificate. Repeat for
+   `www.terra-chartarum.org`.
+5. **Redirect `www` to the apex.** Rules -> _Redirect Rules_ -> create:
+   - When incoming requests match: _Hostname_ equals `www.terra-chartarum.org`
+   - Then: _Dynamic_ redirect, expression
+     `concat("https://terra-chartarum.org", http.request.uri.path)`,
+     status **301**, _Preserve query string_ on.
+6. **Verify.** `curl -sI https://terra-chartarum.org/` returns 200;
+   `curl -sI https://www.terra-chartarum.org/` returns 301 to the apex;
+   `https://terra-chartarum.org/robots.txt` names the apex sitemap.
+7. **Merge the origin cutover PR** only after step 6 passes. Merging earlier
+   points canonical URLs, the sitemap and RSS at a host that does not resolve,
+   and `production-provenance` in CI fails the deploy.
+8. **Update Plausible.** Add `terra-chartarum.org` in the Plausible site
+   settings and set `PUBLIC_PLAUSIBLE_DOMAIN=terra-chartarum.org` in the
+   Cloudflare Pages production environment variables. Analytics stays off until
+   all three `PUBLIC_*` variables are set (see `docs/analytics-privacy.md`).
+
+Not done, deliberately: the CND identifiers under `data/dacia/release/` and in
+`scripts/dacia/build.py` still carry `terra-chartarum.pages.dev` - the `@vocab`
+`.../ns/cnd#` and the dataset `@id`s `.../data/cnd-0.1` and
+`.../data/cnd-1.0-rc1`. Neither resolves on the site under either domain (there
+is no `/ns/` or `/data/cnd-*` route), so nothing regresses by leaving them. They
+are persistent identifiers in a released graph, and rewriting a published
+`@vocab` changes the meaning of every term IRI that uses it; that is a
+data-versioning decision with its own ticket, not a side effect of a DNS change.
+
+The VMN reference annotation is a different case and did move: it is served at
+`/data/vmn/reference/<name>.json` by `src/pages/data/vmn/reference/[name].json.ts`,
+so its `id` is a live self-locator and has to match the origin serving it.
 
 ## 2. Pre-flight gates (must be green)
 

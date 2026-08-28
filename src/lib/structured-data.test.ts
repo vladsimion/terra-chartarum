@@ -11,7 +11,7 @@ import {
 import type { Cartographer } from './cartographers';
 import type { HistoricalMap } from './corpus';
 
-const SITE = new URL('https://terra-chartarum.pages.dev');
+const SITE = new URL('https://terra-chartarum.org');
 
 const essay: ArticleInput = {
   slug: 'cartography',
@@ -64,7 +64,7 @@ describe('websiteSchema', () => {
   it('identifies the site with an absolute url', () => {
     const schema = websiteSchema(SITE);
     expect(schema['@type']).toBe('WebSite');
-    expect(schema.url).toBe('https://terra-chartarum.pages.dev/');
+    expect(schema.url).toBe('https://terra-chartarum.org/');
     expect(schema.publisher['@type']).toBe('Organization');
   });
 });
@@ -78,8 +78,8 @@ describe('articleSchema', () => {
 
   it('points image, url and mainEntityOfPage at production', () => {
     const schema = articleSchema(essay, SITE);
-    expect(schema.url).toBe('https://terra-chartarum.pages.dev/essays/cartography/');
-    expect(schema.image).toBe('https://terra-chartarum.pages.dev/og/cartography.png');
+    expect(schema.url).toBe('https://terra-chartarum.org/essays/cartography/');
+    expect(schema.image).toBe('https://terra-chartarum.org/og/cartography.png');
     expect(schema.mainEntityOfPage['@id']).toBe(schema.url);
   });
 
@@ -152,7 +152,7 @@ describe('mapSchema', () => {
     expect(schema.dateCreated).toBe('1569');
     expect(schema.creator).toMatchObject({
       name: 'Gerardus Mercator',
-      url: 'https://terra-chartarum.pages.dev/cartographers/mercator/',
+      url: 'https://terra-chartarum.org/cartographers/mercator/',
     });
   });
 
@@ -181,13 +181,13 @@ describe('breadcrumbSchema', () => {
         '@type': 'ListItem',
         position: 1,
         name: 'Essays',
-        item: 'https://terra-chartarum.pages.dev/essays/',
+        item: 'https://terra-chartarum.org/essays/',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'The Cartographic Sacrifice',
-        item: 'https://terra-chartarum.pages.dev/essays/cartography/',
+        item: 'https://terra-chartarum.org/essays/cartography/',
       },
     ]);
   });

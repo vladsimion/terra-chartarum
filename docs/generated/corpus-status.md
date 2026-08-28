@@ -19,15 +19,15 @@ Geo release: `geo-bbc6dcb4c547a108`.
 
 ## Live essays by primary room
 
-| Room           | Count | Essays                                                                                                                                                                                  |
-| -------------- | ----: | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1. The Earth   |     1 | [The Shape of a Civilization](https://terra-chartarum.pages.dev/essays/the-shape-of-a-civilization/)                                                                                    |
-| 2. The Map     |     1 | [The Cartographic Sacrifice](https://terra-chartarum.pages.dev/essays/cartography/)                                                                                                     |
-| 3. The City    |     1 | [Cities Remember](https://terra-chartarum.pages.dev/essays/cities-remember/)                                                                                                            |
-| 4. The Border  |     2 | [Terra Sigillata · Lapidarium Dacicum](https://terra-chartarum.pages.dev/essays/dacia/) · [Nomen Errans](https://terra-chartarum.pages.dev/essays/nomen-errans/)                        |
-| 5. The Road    |     2 | [La Rotta e il Catasto](https://terra-chartarum.pages.dev/essays/venice-sicily/) · [The League That Left No Map](https://terra-chartarum.pages.dev/essays/the-league-that-left-no-map/) |
-| 6. The Archive |     1 | [Maps That Age](https://terra-chartarum.pages.dev/essays/maps-that-age/)                                                                                                                |
-| 7. The Theatre |     1 | [Invisible Maps of Religion](https://terra-chartarum.pages.dev/essays/invisible-maps-religion/)                                                                                         |
+| Room           | Count | Essays                                                                                                                                                                      |
+| -------------- | ----: | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1. The Earth   |     1 | [The Shape of a Civilization](https://terra-chartarum.org/essays/the-shape-of-a-civilization/)                                                                              |
+| 2. The Map     |     1 | [The Cartographic Sacrifice](https://terra-chartarum.org/essays/cartography/)                                                                                               |
+| 3. The City    |     1 | [Cities Remember](https://terra-chartarum.org/essays/cities-remember/)                                                                                                      |
+| 4. The Border  |     2 | [Terra Sigillata · Lapidarium Dacicum](https://terra-chartarum.org/essays/dacia/) · [Nomen Errans](https://terra-chartarum.org/essays/nomen-errans/)                        |
+| 5. The Road    |     2 | [La Rotta e il Catasto](https://terra-chartarum.org/essays/venice-sicily/) · [The League That Left No Map](https://terra-chartarum.org/essays/the-league-that-left-no-map/) |
+| 6. The Archive |     1 | [Maps That Age](https://terra-chartarum.org/essays/maps-that-age/)                                                                                                          |
+| 7. The Theatre |     1 | [Invisible Maps of Religion](https://terra-chartarum.org/essays/invisible-maps-religion/)                                                                                   |
 
 ## Held essays
 

@@ -116,7 +116,7 @@ tracked in the [shared component inventory](docs/component-library.md).
 
 `npm run build` emits a portable static `dist/` that deploys to **Cloudflare Pages**
 (output `dist/`, git integration with per-PR previews). The canonical origin is
-`site` in `astro.config.mjs` (`https://terra-chartarum.pages.dev`), which drives the
+`site` in `astro.config.mjs` (`https://terra-chartarum.org`), which drives the
 canonical tags, sitemap and RSS. The same `dist/` runs on any static host. Full
 procedure - gates, smoke tests, rollback - in the
 [launch runbook](docs/launch-runbook.md).
