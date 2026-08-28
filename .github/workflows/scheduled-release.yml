@@ -1,0 +1,94 @@
+# Scheduled release (staged release gate, KAN-263).
+#
+# The release gate in src/lib/release.ts is evaluated once, at build time: an
+# essay whose `releaseAt` date has passed stays invisible until the next build.
+# Cloudflare Pages builds only on a push to `main`, so without this workflow a
+# dated essay does not publish on its date - it publishes on whatever push
+# happens next. The failure mode is silently late, never early, because the
+# gate re-checks the date on every build.
+#
+# This fires a Pages deploy hook on the two days the publication calendar uses:
+# the 1st (queued essays) and the 15th (programme essays). It builds nothing
+# itself; Cloudflare does the build, and every ordinary CI gate has already run
+# on the commit being deployed.
+#
+# Requires one repository secret, CLOUDFLARE_DEPLOY_HOOK_URL. In the Cloudflare
+# dashboard: Workers & Pages -> terra-chartarum -> Settings -> Builds -> Add
+# deploy hook, with "Branch to build" set to `main`. Copy the generated URL and
+# add it in GitHub under Settings -> Secrets and variables -> Actions, or with
+# `gh secret set CLOUDFLARE_DEPLOY_HOOK_URL` (which prompts, so the value is
+# never echoed or stored in shell history).
+#
+# The hook URL is a credential: anyone holding it can trigger a production
+# build, so it belongs in the secret store and nowhere else - not in this file,
+# a commit message, or an issue.
+#
+# Until that secret exists this workflow reports what *would* have published and
+# exits cleanly, so a missing secret is a visible warning rather than a nightly
+# red cross.
+name: Scheduled release
+
+on:
+  schedule:
+    # 06:00 UTC on the 1st and the 15th. GitHub may delay scheduled runs under
+    # load; the gate is a date comparison, so a late run publishes the same set.
+    - cron: '0 6 1 * *'
+    - cron: '0 6 15 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: scheduled-release
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish essays whose release date has arrived
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use the pinned Node version
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+
+      # Reads the same `releaseAt` frontmatter the build reads, via the same
+      # helper, so this log cannot disagree with what Cloudflare then builds.
+      - name: Report what this deploy publishes
+        id: due
+        run: |
+          node --input-type=module <<'NODE' >> "$GITHUB_STEP_SUMMARY"
+          import { partitionEssays } from './scripts/lib/essay-release.mjs';
+          const { released, held } = partitionEssays();
+          console.log('## Scheduled release\n');
+          console.log(`Released in this build: **${released.length}** essays.\n`);
+          if (held.length === 0) {
+            console.log('Nothing is held.');
+          } else {
+            console.log('| Still held | Release date |');
+            console.log('| --- | --- |');
+            for (const essay of [...held].sort((a, b) => a.releaseAt.localeCompare(b.releaseAt))) {
+              const when = essay.releaseAt === '2099-01-01' ? 'unscheduled' : essay.releaseAt;
+              console.log(`| ${essay.slug} | ${when} |`);
+            }
+          }
+          NODE
+
+      - name: Trigger the Cloudflare Pages deploy
+        env:
+          DEPLOY_HOOK: ${{ secrets.CLOUDFLARE_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$DEPLOY_HOOK" ]; then
+            echo "::warning title=Deploy hook not configured::CLOUDFLARE_DEPLOY_HOOK_URL is unset, so no deploy was triggered. Any essay whose release date has arrived stays unpublished until the next push to main. See the header of this workflow for the one-time setup."
+            exit 0
+          fi
+          status=$(curl -sS -X POST -o /dev/null -w '%{http_code}' "$DEPLOY_HOOK")
+          echo "Deploy hook responded $status"
+          case "$status" in
+            2*) echo "Cloudflare Pages build requested." ;;
+            *) echo "::error title=Deploy hook failed::Cloudflare returned $status; the scheduled release did not start."; exit 1 ;;
+          esac
