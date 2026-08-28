@@ -5,7 +5,7 @@ interactive visual essays under one roof. This guide is the **end-to-end path**
 for adding an essay or otherwise contributing code, from a clean checkout to a
 merged, launch-ready pull request.
 
-New here? Read the [manifesto](https://terra-chartarum.pages.dev/about/) and
+New here? Read the [manifesto](https://terra-chartarum.org/about/) and
 `SPECS.md` first - they explain the seven-room cosmography and the editorial
 voice every essay shares.
 

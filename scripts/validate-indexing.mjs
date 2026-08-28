@@ -4,7 +4,7 @@ import { partitionEssays } from './lib/essay-release.mjs';
 
 const ROOT = resolve(import.meta.dirname, '..');
 const DIST = resolve(ROOT, 'dist');
-const ORIGIN = 'https://terra-chartarum.pages.dev';
+const ORIGIN = 'https://terra-chartarum.org';
 const errors = [];
 
 function check(condition, message) {

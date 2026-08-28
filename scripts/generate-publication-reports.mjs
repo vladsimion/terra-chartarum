@@ -4,7 +4,7 @@ import { dirname, resolve } from 'node:path';
 import { format } from 'prettier';
 
 const ROOT = resolve(import.meta.dirname, '..');
-const SITE = 'https://terra-chartarum.pages.dev';
+const SITE = 'https://terra-chartarum.org';
 const mode = process.argv.includes('--write') ? 'write' : 'check';
 
 function readJson(path) {

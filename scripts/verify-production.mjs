@@ -1,9 +1,6 @@
 import { setTimeout as sleep } from 'node:timers/promises';
 
-const origin = (process.env.PRODUCTION_ORIGIN ?? 'https://terra-chartarum.pages.dev').replace(
-  /\/$/,
-  '',
-);
+const origin = (process.env.PRODUCTION_ORIGIN ?? 'https://terra-chartarum.org').replace(/\/$/, '');
 const expectedSha = process.env.EXPECTED_GIT_SHA ?? process.argv[2];
 const retries = Number(process.env.PRODUCTION_VERIFY_RETRIES ?? 12);
 const delayMs = Number(process.env.PRODUCTION_VERIFY_DELAY_MS ?? 15000);

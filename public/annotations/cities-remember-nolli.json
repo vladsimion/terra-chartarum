@@ -3,20 +3,20 @@
     "http://www.w3.org/ns/anno.jsonld",
     "https://iiif.io/api/extension/georef/1/context.json"
   ],
-  "id": "https://terra-chartarum.pages.dev/annotations/cities-remember-nolli.json",
+  "id": "https://terra-chartarum.org/annotations/cities-remember-nolli.json",
   "type": "AnnotationPage",
   "label": {
     "en": ["Exploratory registration of Nolli sheet 1"]
   },
   "items": [
     {
-      "id": "https://terra-chartarum.pages.dev/annotations/cities-remember-nolli.json#annotation",
+      "id": "https://terra-chartarum.org/annotations/cities-remember-nolli.json#annotation",
       "type": "Annotation",
       "motivation": "georeferencing",
       "target": {
         "type": "SpecificResource",
         "source": {
-          "id": "https://terra-chartarum.pages.dev/images/cities-remember/nolli-sheet-01.jpg",
+          "id": "https://terra-chartarum.org/images/cities-remember/nolli-sheet-01.jpg",
           "type": "Image",
           "format": "image/jpeg",
           "width": 1920,

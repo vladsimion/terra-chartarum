@@ -8,7 +8,7 @@ const mercator: CiteInput = {
   author: 'Gerardus Mercator',
   publisher: 'Duisburg',
   place: 'Flanders',
-  url: 'https://terra-chartarum.pages.dev/collection/mercator-1569/',
+  url: 'https://terra-chartarum.org/collection/mercator-1569/',
 };
 
 const babylonian: CiteInput = {
@@ -25,7 +25,7 @@ describe('toBibTeX', () => {
     expect(out).toContain('author      = {Gerardus Mercator},');
     expect(out).toContain('year        = {1569},');
     expect(out).toContain(
-      'howpublished= {\\url{https://terra-chartarum.pages.dev/collection/mercator-1569/}},',
+      'howpublished= {\\url{https://terra-chartarum.org/collection/mercator-1569/}},',
     );
     expect(out.trimEnd().endsWith('}')).toBe(true);
   });
@@ -57,7 +57,7 @@ describe('toRIS', () => {
 describe('toChicago', () => {
   it('assembles author, title, imprint, year and url', () => {
     expect(toChicago(mercator)).toBe(
-      'Gerardus Mercator. Nova et Aucta Orbis Terrae Descriptio. Flanders: Duisburg, 1569. https://terra-chartarum.pages.dev/collection/mercator-1569/.',
+      'Gerardus Mercator. Nova et Aucta Orbis Terrae Descriptio. Flanders: Duisburg, 1569. https://terra-chartarum.org/collection/mercator-1569/.',
     );
   });
 
@@ -83,7 +83,7 @@ describe('resource types', () => {
       author: 'Terra Chartarum',
       year: 2026,
       containerTitle: 'Terra Chartarum',
-      url: 'https://terra-chartarum.pages.dev/essays/cities-remember/',
+      url: 'https://terra-chartarum.org/essays/cities-remember/',
     };
     expect(toRIS(essay)).toContain('TY  - ELEC');
     expect(toRIS(essay)).toContain('T2  - Terra Chartarum');
@@ -98,7 +98,7 @@ describe('resource types', () => {
       author: 'Terra Chartarum',
       version: '4440ae3946c6',
       license: 'CC BY',
-      url: 'https://terra-chartarum.pages.dev/geo/venetian-ports.fgb?v=4440ae3946c6',
+      url: 'https://terra-chartarum.org/geo/venetian-ports.fgb?v=4440ae3946c6',
     };
     expect(toRIS(dataset)).toContain('TY  - DATA');
     expect(toRIS(dataset)).not.toContain('PY  -');
@@ -114,7 +114,7 @@ describe('dataset access details (KAN-311)', () => {
     author: 'Terra Chartarum',
     version: 'd4b58778da67',
     license: 'CC BY 4.0',
-    url: 'https://terra-chartarum.pages.dev/geo/hanseatic-places.geojson?v=d4b58778da67',
+    url: 'https://terra-chartarum.org/geo/hanseatic-places.geojson?v=d4b58778da67',
     release: 'geo-6065acdaeddddd80',
     checksum: 'd4b58778da67aa11bb22cc33dd44ee55ff6677889900aabbccddeeff00112233',
   };

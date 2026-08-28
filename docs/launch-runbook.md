@@ -12,12 +12,101 @@ ATLAS-606).
   preview deployments.
 - **Build command:** `npm run build` (Astro static output).
 - **Output directory:** `dist/`.
-- **Public URL:** `https://terra-chartarum.pages.dev` (matches `site` in
-  `astro.config.mjs`, which drives canonical URLs, the sitemap and RSS). Keep
-  `public/robots.txt` and the `ORIGIN` constant in `scripts/validate-indexing.mjs`
-  aligned with it.
+- **Public URL:** `https://terra-chartarum.org` - the apex, no `www` (matches
+  `site` in `astro.config.mjs`, which drives canonical URLs, the sitemap and
+  RSS). The origin is spelled out in five places that must stay in step:
+  `astro.config.mjs`, `public/robots.txt`, `ORIGIN` in
+  `scripts/validate-indexing.mjs`, `SITE` in
+  `scripts/generate-publication-reports.mjs`, and the `PRODUCTION_ORIGIN`
+  default in `scripts/verify-production.mjs` (plus the CI job that passes it).
+- **Build alias:** `https://terra-chartarum.pages.dev` keeps resolving and keeps
+  serving the same build. It is not canonical: every page carries a canonical
+  `<link>` to the apex, so search engines fold it away. Preview deploys stay on
+  their own `*.pages.dev` subdomains.
 - **Output mode:** `output: 'static'` - no server runtime; everything ships as
   pre-rendered HTML plus client islands.
+
+## 1a. Custom domain (terra-chartarum.org)
+
+**Blocked until the domain leaves Wix. Do not merge the origin cutover PR yet.**
+
+The domain was bought through Wix (registrar of record Tucows) and sits on
+`ns0.wixdns.net` / `ns1.wixdns.net`. Three facts close off every shortcut:
+
+- **Wix will not let you change a Wix domain's nameservers.** Not a hidden
+  setting - Wix states it outright: "Currently, it's not possible to change name
+  servers (edit NS records) for a Wix domain." The NS rows in Wix's DNS editor
+  are rendered read-only.
+- **Cloudflare Pages can only serve an apex domain when the zone is on
+  Cloudflare DNS.** With external DNS you can attach a _subdomain_ by CNAME, but
+  an apex cannot be CNAMEd, and Cloudflare's partial (CNAME) zone setup is
+  Business plan and above.
+- **Cloudflare Registrar cannot take the transfer either**, because it requires
+  the domain to already be an active zone on Cloudflare nameservers - which is
+  the thing Wix blocks. The circle only breaks at a third registrar.
+
+So the apex needs a registrar move, and ICANN's 60-day post-registration
+transfer lock applies. Registered 2026-08-28; transferable from **2026-10-27**.
+
+### The sequence, once the lock lifts
+
+1. **Transfer the domain out of Wix** to a registrar that allows nameserver
+   edits (Porkbun, Namecheap, and most others do; Cloudflare Registrar cannot
+   be the direct destination - see above). Unlock the domain in Wix, get the
+   auth/EPP code, start the transfer at the receiving registrar.
+2. **Add the zone.** Cloudflare dashboard -> _Add a site_ -> `terra-chartarum.org`
+   -> Free plan. Delete every record the scan imports from Wix: the apex `A`
+   records point at Wix's shared hosting (`185.230.63.x`) and `www` CNAMEs to
+   `initial.wixdns.net`. The zone should be empty. There is no MX or TXT to
+   preserve.
+3. **Set the nameservers at the new registrar** to the two Cloudflare assigned
+   in step 2, then wait for the activation email. Confirm with
+   `dig +short NS terra-chartarum.org`.
+4. **Attach the domain to the Pages project.** Pages -> the project ->
+   _Custom domains_ -> _Set up a domain_ -> `terra-chartarum.org`. Cloudflare
+   writes the record and issues the certificate itself - do not hand-add
+   anything on the DNS tab. Repeat for `www.terra-chartarum.org`.
+5. **Redirect `www` to the apex.** Rules -> _Redirect Rules_ -> create:
+   - When incoming requests match: _Hostname_ equals `www.terra-chartarum.org`
+   - Then: _Dynamic_ redirect, expression
+     `concat("https://terra-chartarum.org", http.request.uri.path)`,
+     status **301**, _Preserve query string_ on.
+6. **Verify.** `curl -sI https://terra-chartarum.org/` returns 200;
+   `curl -sI https://www.terra-chartarum.org/` returns 301 to the apex;
+   `https://terra-chartarum.org/robots.txt` names the apex sitemap.
+7. **Merge the origin cutover PR** only after step 6 passes. Merging earlier
+   points canonical URLs, the sitemap and RSS at a host that does not resolve,
+   and `production-provenance` in CI fails the deploy.
+8. **Update Plausible.** Add `terra-chartarum.org` in the Plausible site
+   settings and set `PUBLIC_PLAUSIBLE_DOMAIN=terra-chartarum.org` in the
+   Cloudflare Pages production environment variables. Analytics stays off until
+   all three `PUBLIC_*` variables are set (see `docs/analytics-privacy.md`).
+
+### Interim alias, if a branded URL is wanted before the transfer
+
+`www.terra-chartarum.org` _can_ be made to serve the site today, without
+touching nameservers: add the domain in the Pages dashboard first, then add a
+`CNAME www -> terra-chartarum.pages.dev` in Wix's DNS editor. Adding the CNAME
+before the Pages entry yields a 522.
+
+Treat it as an alias only. `site` stays on the build alias, canonical tags keep
+pointing there, and the apex stays dead - Wix DNS has no ALIAS/ANAME and no URL
+forwarding, so `terra-chartarum.org` bare cannot reach Pages at all. Cutting the
+canonical origin to `www` now and to the apex in December would move every
+citable URL on a scholarly site twice in two months, which is worse than waiting.
+
+Not done, deliberately: the CND identifiers under `data/dacia/release/` and in
+`scripts/dacia/build.py` still carry `terra-chartarum.pages.dev` - the `@vocab`
+`.../ns/cnd#` and the dataset `@id`s `.../data/cnd-0.1` and
+`.../data/cnd-1.0-rc1`. Neither resolves on the site under either domain (there
+is no `/ns/` or `/data/cnd-*` route), so nothing regresses by leaving them. They
+are persistent identifiers in a released graph, and rewriting a published
+`@vocab` changes the meaning of every term IRI that uses it; that is a
+data-versioning decision with its own ticket, not a side effect of a DNS change.
+
+The VMN reference annotation is a different case and did move: it is served at
+`/data/vmn/reference/<name>.json` by `src/pages/data/vmn/reference/[name].json.ts`,
+so its `id` is a live self-locator and has to match the origin serving it.
 
 ## 2. Pre-flight gates (must be green)
 

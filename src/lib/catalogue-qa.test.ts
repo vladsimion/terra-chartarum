@@ -231,7 +231,7 @@ describe('citation export survives the enriched records', () => {
     author: map.cartographer,
     publisher: map.publisher,
     place: map.region,
-    url: `https://terra-chartarum.pages.dev/collection/${map.id}/`,
+    url: `https://terra-chartarum.org/collection/${map.id}/`,
   });
 
   it('renders all three formats for every record without throwing or emptying', () => {
