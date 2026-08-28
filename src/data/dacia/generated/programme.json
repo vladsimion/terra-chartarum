@@ -94,7 +94,7 @@
     },
     {
       "campaign": "i",
-      "corpusRecords": 10,
+      "corpusRecords": 13,
       "epicKey": "KAN-320",
       "essaySlug": "nomen-errans",
       "gates": [
@@ -405,7 +405,7 @@
   "schemaVersion": 1,
   "sharedDatasets": [
     {
-      "detail": "120 places, 29 sources, 129 attestations",
+      "detail": "120 places, 30 sources, 130 attestations",
       "href": "https://github.com/vladsimion/terra-chartarum/tree/main/data/dacia/release/cnd-0.1",
       "id": "cnd",
       "kind": "corpus",

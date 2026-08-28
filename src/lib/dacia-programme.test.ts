@@ -41,7 +41,7 @@ describe('Corpus Chartarum Daciae programme index (KAN-370)', () => {
     // name-use table. Neither appears because a prose note merely claims it.
     const consumers = getCorpusConsumers();
     expect(consumers.map((entry) => entry.id)).toEqual(['ccd-a', 'ccd-c']);
-    expect(consumers.find((entry) => entry.id === 'ccd-c')?.corpusRecords).toBe(10);
+    expect(consumers.find((entry) => entry.id === 'ccd-c')?.corpusRecords).toBe(13);
     for (const consumer of consumers) expect(consumer.corpusRecords).toBeGreaterThan(0);
   });
 

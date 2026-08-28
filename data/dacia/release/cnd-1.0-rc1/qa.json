@@ -28,7 +28,7 @@
       "target": 120
     },
     "sources": {
-      "current": 29,
+      "current": 30,
       "shortfall": 0,
       "target": 25
     }
@@ -161,7 +161,7 @@
   "schemaVersion": 1,
   "scholarlyReview": {
     "attestationsReviewedOrAbove": 0,
-    "capturesFromWitnessOrEdition": 80,
+    "capturesFromWitnessOrEdition": 81,
     "lowConfidencePendingReview": 3,
     "publishableAttestations": 0,
     "reconstructedPlaceGeometry": 10,

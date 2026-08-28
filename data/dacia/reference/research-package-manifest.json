@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "frozenOn": "2026-08-09",
+  "frozenOn": "2026-08-28",
   "packages": {
     "hiatus_absence_classes": {
       "ticket": "KAN-349",
@@ -19,16 +19,15 @@
     "hiatus_timeline": {
       "ticket": "KAN-349",
       "path": "reference/hiatus-timeline.csv",
-      "recordCount": 6,
+      "recordCount": 5,
       "recordIds": [
         "hs-charters",
         "hs-chronicles",
         "hs-papal-registers",
         "hs-notarial",
-        "hs-fiscal",
-        "hs-late-maps"
+        "hs-fiscal"
       ],
-      "sha256": "8422ebb3e665b69ad7e32103948718dc523570ebadd0fd1f0a9bce18d0c40630"
+      "sha256": "8b9ca5d3fc393ff2ce8d2a46b3ec91cd6b38f25aeb866d5f344daec894b2c4cf"
     },
     "carta_rubra_sources": {
       "ticket": "KAN-354",
