@@ -28,24 +28,44 @@ ATLAS-606).
 
 ## 1a. Custom domain (terra-chartarum.org)
 
-The domain is registered through Tucows and was delegated to Wix nameservers on
-purchase. Cloudflare Pages can only attach an apex domain to a project when the
-zone is on Cloudflare DNS, so the nameservers move first. Steps, in order:
+**Blocked until the domain leaves Wix. Do not merge the origin cutover PR yet.**
 
-1. **Add the zone.** Cloudflare dashboard -> _Add a site_ -> `terra-chartarum.org`
-   -> Free plan. The scan finds nothing (the zone is empty); continue. Cloudflare
-   shows two assigned nameservers, e.g. `xxx.ns.cloudflare.com` /
-   `yyy.ns.cloudflare.com`.
-2. **Repoint the nameservers at the registrar.** In the Wix/Tucows domain
-   settings, replace `ns0.wixdns.net` and `ns1.wixdns.net` with the two
-   Cloudflare nameservers from step 1. Delete nothing else. This is the only
-   step outside Cloudflare, and the only one with registrar-wide effect.
-3. **Wait for activation.** Cloudflare emails when the zone goes active
-   (minutes to a few hours). Confirm with `dig +short NS terra-chartarum.org`.
+The domain was bought through Wix (registrar of record Tucows) and sits on
+`ns0.wixdns.net` / `ns1.wixdns.net`. Three facts close off every shortcut:
+
+- **Wix will not let you change a Wix domain's nameservers.** Not a hidden
+  setting - Wix states it outright: "Currently, it's not possible to change name
+  servers (edit NS records) for a Wix domain." The NS rows in Wix's DNS editor
+  are rendered read-only.
+- **Cloudflare Pages can only serve an apex domain when the zone is on
+  Cloudflare DNS.** With external DNS you can attach a _subdomain_ by CNAME, but
+  an apex cannot be CNAMEd, and Cloudflare's partial (CNAME) zone setup is
+  Business plan and above.
+- **Cloudflare Registrar cannot take the transfer either**, because it requires
+  the domain to already be an active zone on Cloudflare nameservers - which is
+  the thing Wix blocks. The circle only breaks at a third registrar.
+
+So the apex needs a registrar move, and ICANN's 60-day post-registration
+transfer lock applies. Registered 2026-08-28; transferable from **2026-10-27**.
+
+### The sequence, once the lock lifts
+
+1. **Transfer the domain out of Wix** to a registrar that allows nameserver
+   edits (Porkbun, Namecheap, and most others do; Cloudflare Registrar cannot
+   be the direct destination - see above). Unlock the domain in Wix, get the
+   auth/EPP code, start the transfer at the receiving registrar.
+2. **Add the zone.** Cloudflare dashboard -> _Add a site_ -> `terra-chartarum.org`
+   -> Free plan. Delete every record the scan imports from Wix: the apex `A`
+   records point at Wix's shared hosting (`185.230.63.x`) and `www` CNAMEs to
+   `initial.wixdns.net`. The zone should be empty. There is no MX or TXT to
+   preserve.
+3. **Set the nameservers at the new registrar** to the two Cloudflare assigned
+   in step 2, then wait for the activation email. Confirm with
+   `dig +short NS terra-chartarum.org`.
 4. **Attach the domain to the Pages project.** Pages -> the project ->
    _Custom domains_ -> _Set up a domain_ -> `terra-chartarum.org`. Cloudflare
-   creates the CNAME itself and issues the certificate. Repeat for
-   `www.terra-chartarum.org`.
+   writes the record and issues the certificate itself - do not hand-add
+   anything on the DNS tab. Repeat for `www.terra-chartarum.org`.
 5. **Redirect `www` to the apex.** Rules -> _Redirect Rules_ -> create:
    - When incoming requests match: _Hostname_ equals `www.terra-chartarum.org`
    - Then: _Dynamic_ redirect, expression
@@ -61,6 +81,19 @@ zone is on Cloudflare DNS, so the nameservers move first. Steps, in order:
    settings and set `PUBLIC_PLAUSIBLE_DOMAIN=terra-chartarum.org` in the
    Cloudflare Pages production environment variables. Analytics stays off until
    all three `PUBLIC_*` variables are set (see `docs/analytics-privacy.md`).
+
+### Interim alias, if a branded URL is wanted before the transfer
+
+`www.terra-chartarum.org` _can_ be made to serve the site today, without
+touching nameservers: add the domain in the Pages dashboard first, then add a
+`CNAME www -> terra-chartarum.pages.dev` in Wix's DNS editor. Adding the CNAME
+before the Pages entry yields a 522.
+
+Treat it as an alias only. `site` stays on the build alias, canonical tags keep
+pointing there, and the apex stays dead - Wix DNS has no ALIAS/ANAME and no URL
+forwarding, so `terra-chartarum.org` bare cannot reach Pages at all. Cutting the
+canonical origin to `www` now and to the apex in December would move every
+citable URL on a scholarly site twice in two months, which is worse than waiting.
 
 Not done, deliberately: the CND identifiers under `data/dacia/release/` and in
 `scripts/dacia/build.py` still carry `terra-chartarum.pages.dev` - the `@vocab`
