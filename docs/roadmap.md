@@ -129,7 +129,7 @@ KAN-511 (the 1878 treaty omission) and KAN-512 (the reservoir flood-contour shee
 Both are library questions, not acquisition questions.
 
 Full proposal, corpus findings and verification ledger live in Confluence:
-[Ada Kaleh - The Island Drawn Out of Existence](https://vladsimion.atlassian.net/wiki/spaces/~7012186ee7d7085f34fff9bc2bf8fbe8de309/pages/21692418/Ada+Kaleh+The+Island+Drawn+Out+of+Existence+essay+proposal).
+[The Island Drawn Out of Existence - Ada Kaleh programme dossier](https://vladsimion.atlassian.net/wiki/spaces/~7012186ee7d7085f34fff9bc2bf8fbe8de309/pages/21692418/The+Island+Drawn+Out+of+Existence+Ada+Kaleh+Essay+Declassified-Imagery+Programme).
 
 ## Parked - The River Road (Danube programme)
 
