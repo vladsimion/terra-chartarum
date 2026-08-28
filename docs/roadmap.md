@@ -95,6 +95,54 @@ ownership labels, and candidate-specific interactive directions. The project doe
 not expose a Jira Components field for Tasks, so the `editorial` label is the
 machine-checked ownership mechanism.
 
+## Out of wave - Ada Kaleh (KAN-510)
+
+The first essay scoped outside the wave cadence, because it fills the room the waves
+left thinnest. **The Earth** still holds one live essay and nothing held; Ada Kaleh is
+its second anchor.
+
+| Field           | Value                                                                       |
+| --------------- | --------------------------------------------------------------------------- |
+| Slug            | `ada-kaleh`                                                                 |
+| Epic            | **KAN-510** (children KAN-511-519)                                          |
+| Primary room    | The Earth                                                                   |
+| Secondary rooms | The Archive, The Border                                                     |
+| Lens axes       | Omission; Survey; Contour; Displacement; Evidence; Silence                  |
+| Interactive     | `CompareSlider` + `DeepZoomViewer` + `Scrollytelling`, plus a contour raise |
+| Scope           | 3,500-4,500 words, ~8-10 maps, no new budgeted pattern                      |
+
+**Argument.** The Danube island submerged by the Iron Gates dam existed because of a
+documentary omission, ended because of a drawn contour, and survives only as the
+by-product of a reconnaissance programme aimed at something else. The claim the essay
+has to defend is that the map was the _instrument_ of the erasure, not its record.
+
+**Corpus is cleared on the modern half and blocked on the historical half.** Corona
+imagery is US-government public domain: 47 pre-flood frames confirmed to contain the
+island, six of them at KH-4B resolution, including a stereo pair. The Habsburg survey
+sheets are _not_ republishable - Arcanum/mapire's terms forbid uploading their scans to
+a public platform, the rights holder is BEV (or the Hungarian War Archives, per layer),
+and 1:25,000 sheets cannot be bought at all. Scope the comparison around Corona, not a
+mapire sheet.
+
+**Gate.** Two blocking spikes must return usable sources before authoring starts:
+KAN-511 (the 1878 treaty omission) and KAN-512 (the reservoir flood-contour sheet).
+Both are library questions, not acquisition questions.
+
+Full proposal, corpus findings and verification ledger live in Confluence:
+[Ada Kaleh - The Island Drawn Out of Existence](https://vladsimion.atlassian.net/wiki/spaces/~7012186ee7d7085f34fff9bc2bf8fbe8de309/pages/21692418/Ada+Kaleh+The+Island+Drawn+Out+of+Existence+essay+proposal).
+
+## Parked - The River Road (Danube programme)
+
+A Danube programme was proposed and **deliberately not tracked**. Its thesis holds, but
+its two load-bearing chapters rest on sheets absent from our registries (Valck, Cantelli,
+Seutter) and on 19th-century navigation and engineering material that is archival and
+largely undigitised - the weakest corpus sits under the strongest claims. It also aimed
+at The Road, already the most crowded room.
+
+It stays parked until Ada Kaleh ships, by which point Ada Kaleh will have built its Iron
+Gates section. Rationale and the kept/changed/removed record are in the Confluence page
+above.
+
 ## Per-essay epics from the starter
 
 Every essay on this roadmap is tracked as a **Jira epic** whose child tasks mirror
