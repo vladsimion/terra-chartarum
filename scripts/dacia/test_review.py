@@ -12,9 +12,12 @@ Run with `make dacia-test` (or `.venv/bin/python -m pytest scripts/dacia`).
 from __future__ import annotations
 
 import csv
+import hashlib
+import json
 import re
 import shutil
 import sys
+import tempfile
 from pathlib import Path
 
 import pytest
@@ -338,6 +341,97 @@ def test_reconcile_does_not_call_an_unreleased_cycle_closed(dataset, capsys):
     assert match, out
     met, total = int(match.group(1)), int(match.group(2))
     assert met < total
+
+
+def test_queue_lists_the_hiatus_source_ledger_tables(dataset, capsys):
+    """KAN-349: hs-/hw- are recognised owners, not just att-/nmu-/etc."""
+    assert review.main(["queue"]) == 0
+    out = capsys.readouterr().out
+    assert "hiatus_timeline" in out
+    assert "hiatus_witness_families" in out
+
+
+def test_hiatus_records_use_review_status_not_review_state(dataset, capsys):
+    """Both hiatus tables carry the three-rung candidate/source_checked/reviewed
+    vocabulary, not the five-rung review_state ladder every other owned table
+    uses - show must read the right column."""
+    assert review.main(["show", "hs-charters"]) == 0
+    out = capsys.readouterr().out
+    assert re.search(r"review_status\s+candidate", out)
+    assert "blocking promotion from candidate:" in out
+
+
+def test_hiatus_promotion_is_refused_by_the_frozen_package_manifest(dataset, capsys):
+    """hiatus_timeline is hash-frozen (KAN-349) independently of review_status.
+
+    That freeze is deliberate and predates this wiring: research-package-manifest.json
+    locks the table's exact bytes until someone deliberately re-freezes it, the
+    same way the CND pilot is frozen. Promoting a record changes those bytes,
+    so it is refused here until a person makes that a deliberate decision -
+    review.py cannot and should not do that re-freeze on its own.
+    """
+    before = (dataset / TABLES["hiatus_timeline"]).read_text(encoding="utf-8")
+    code = review.main(["promote", "hs-charters", "--reviewer", "A Reviewer"])
+    assert code == 1
+    assert "package changed since it was frozen" in capsys.readouterr().out
+    assert (dataset / TABLES["hiatus_timeline"]).read_text(encoding="utf-8") == before
+
+
+def test_show_does_not_report_a_frozen_hiatus_record_as_ready(dataset, capsys):
+    """Regression: `_blockers` used to filter errors by checking whether the
+    record's own id appeared in the error text. The package-freeze error names
+    the package, not the row, so that filter silently dropped it and reported
+    the record as ready to promote when `promote` would still refuse it - a
+    gap this wiring exposed rather than one it created, since no table owned
+    before hs-/hw- was covered by a package-level freeze."""
+    assert review.main(["show", "hs-charters"]) == 0
+    out = capsys.readouterr().out
+    assert "ready to promote" not in out
+    assert "package changed since it was frozen" in out
+
+
+def _refreeze_hiatus_timeline_after(dataset: Path, changes_by_id: dict[str, dict[str, str]]) -> None:
+    """Point research-package-manifest.json at the content `promote` is about
+    to write, the same way a person re-freezing the package by hand would -
+    without touching the committed CSV itself, which `promote` still has to
+    change on its own for the test to prove anything."""
+    with tempfile.TemporaryDirectory() as tmp:
+        scratch = Path(tmp) / "dacia"
+        shutil.copytree(dataset, scratch)
+        fieldnames, rows = review._load(scratch, "hiatus_timeline")
+        for row in rows:
+            if row["state_id"] in changes_by_id:
+                row.update(changes_by_id[row["state_id"]])
+        review._store(scratch, "hiatus_timeline", fieldnames, rows)
+        content = (scratch / TABLES["hiatus_timeline"]).read_bytes()
+
+    manifest_path = dataset / "reference" / "research-package-manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    package = manifest["packages"]["hiatus_timeline"]
+    package["recordCount"] = len(rows)
+    package["recordIds"] = sorted(r["state_id"] for r in rows)
+    package["sha256"] = hashlib.sha256(content).hexdigest()
+    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+
+
+def test_earned_hiatus_promotion_is_written_once_the_package_is_refrozen(dataset, capsys):
+    """Proves the generalised ladder machinery itself, with the one gate that
+    is specific to these tables (the freeze) deliberately cleared first - the
+    same way an earned attestation promotion needs `make_promotable` first.
+    """
+    _refreeze_hiatus_timeline_after(dataset, {"hs-charters": {"review_status": "source_checked"}})
+
+    code = review.main(["promote", "hs-charters", "--reviewer", "V. Simion", "--date", "2026-08-28"])
+    assert code == 0, capsys.readouterr().out
+
+    promoted = record(dataset, "hiatus_timeline", "state_id", "hs-charters")
+    assert promoted["review_status"] == "source_checked"
+    # Neither hiatus table has a reviewer/review_date column - the promotion
+    # still requires --reviewer above, but there is nowhere on the row to put
+    # it, the same gap KAN-344 found and left unfilled for name_uses' siblings.
+    assert "reviewer" not in promoted
+    assert "review_date" not in promoted
+    assert validate.validate_inputs() == []
 
 
 def test_reconcile_refuses_to_report_on_tables_that_do_not_validate(dataset, capsys):

@@ -34,25 +34,39 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import validate  # noqa: E402
 from validate import TABLES  # noqa: E402
 
-# Which table owns each identifier prefix, and the column holding the id.
+LADDER = ["raw", "normalized", "reviewed", "approved", "published"]
+# KAN-349: Hiatus's two reference tables - and, by the same convention, every
+# other trench's source-ledger tables - carry the shallower vocabulary
+# SOURCE_LEDGER_REVIEW_STATES names in validate.py. It tracks whether a
+# candidate witness or reading has been looked at, not whether an
+# argued-from evidence row has cleared review, and neither hs- nor hw- has a
+# reviewer/review_date column to go with it.
+SOURCE_LEDGER_LADDER = ["candidate", "source_checked", "reviewed"]
+
+# Which table owns each identifier prefix: the table key, the column holding
+# the id, the column that carries its review status, and the ladder that
+# column climbs.
 OWNERS = {
-    "plc-": ("places", "place_id"),
-    "src-": ("sources", "source_id"),
-    "att-": ("attestations", "attestation_id"),
+    "plc-": ("places", "place_id", "review_state", LADDER),
+    "src-": ("sources", "source_id", "review_state", LADDER),
+    "att-": ("attestations", "attestation_id", "review_state", LADDER),
     # KAN-344: Trench C is reviewed through this tool like everything else. The
     # ledger would otherwise be a table nobody could promote, which is the one
     # way a review workflow can fail without anybody noticing.
-    "nmu-": ("name_uses", "name_use_id"),
-    "nue-": ("name_use_edges", "edge_id"),
+    "nmu-": ("name_uses", "name_use_id", "review_state", LADDER),
+    "nue-": ("name_use_edges", "edge_id", "review_state", LADDER),
     # KAN-345: the Atlas routing is promoted here too. It is an editorial
     # decision about what a reader is shown, and a decision nobody can promote
     # is a decision nobody ever revisits.
-    "nes-": ("nomen_errans_atlas_states", "state_id"),
+    "nes-": ("nomen_errans_atlas_states", "state_id", "review_state", LADDER),
+    # KAN-349: the Hiatus timeline and its witness-family ledger, promoted on
+    # the source-ledger ladder above rather than the five-rung review_state one.
+    "hs-": ("hiatus_timeline", "state_id", "review_status", SOURCE_LEDGER_LADDER),
+    "hw-": ("hiatus_witness_families", "witness_id", "review_status", SOURCE_LEDGER_LADDER),
 }
-LADDER = ["raw", "normalized", "reviewed", "approved", "published"]
 
 
-def _table_for(record_id: str) -> tuple[str, str]:
+def _table_for(record_id: str) -> tuple[str, str, str, list[str]]:
     for prefix, owner in OWNERS.items():
         if record_id.startswith(prefix):
             return owner
@@ -94,7 +108,7 @@ def _validate_in_scratch(changes_by_record) -> list[str]:
         shutil.copytree(original, root)
         try:
             for record_id, changes in changes_by_record.items():
-                key, id_column = _table_for(record_id)
+                key, id_column, _review_column, _ladder = _table_for(record_id)
                 _apply(root, key, id_column, record_id, changes)
             validate.DATA = root
             return validate.validate_inputs()
@@ -102,37 +116,45 @@ def _validate_in_scratch(changes_by_record) -> list[str]:
             validate.DATA = original
 
 
-def _next_state(current: str, target: str | None) -> str:
+def _next_state(current: str, target: str | None, ladder: list[str]) -> str:
     if target:
-        if target not in LADDER:
+        if target not in ladder:
             raise SystemExit(f"unknown review state {target!r}")
         return target
-    if current not in LADDER:
+    if current not in ladder:
         raise SystemExit(f"record carries an unknown review state {current!r}")
-    if current == LADDER[-1]:
-        raise SystemExit("record is already published")
-    return LADDER[LADDER.index(current) + 1]
+    if current == ladder[-1]:
+        raise SystemExit(f"record is already at {ladder[-1]!r}")
+    return ladder[ladder.index(current) + 1]
 
 
 def _blockers(record_id: str, current: str) -> list[str]:
     """What stands between this record and the next rung, per the real validator."""
-    target = LADDER[LADDER.index(current) + 1] if current != LADDER[-1] else None
+    key, _id_column, review_column, ladder = _table_for(record_id)
+    target = ladder[ladder.index(current) + 1] if current != ladder[-1] else None
     if target is None:
         return []
     trial = {
-        "review_state": target,
+        review_column: target,
         "reviewer": "trial reviewer",
         "review_date": "2000-01-01",
         "last_verified": "2000-01-01",
     }
     # Not every promotable table carries every review column - a name use has no
-    # last_verified - and a trial that sets a column the table lacks reports the
-    # tool's own mistake as though it were the record's blocker.
-    key, _ = _table_for(record_id)
+    # last_verified, a source-ledger table like hiatus_timeline has neither
+    # reviewer nor review_date - and a trial that sets a column the table lacks
+    # reports the tool's own mistake as though it were the record's blocker.
     fieldnames, _rows = _load(validate.DATA, key)
     trial = {column: value for column, value in trial.items() if column in fieldnames}
+    # A package-level check (the research-package/source-ledger freeze that
+    # guards hiatus_timeline and hiatus_witness_families) never names the
+    # record in its own text, so filtering on "does this error mention the
+    # id" would drop a real blocker silently and report the promotion as
+    # ready when `promote` would still refuse it. Diffing against a clean
+    # baseline instead catches anything the trial change caused, named or not.
+    baseline = set(validate.validate_inputs())
     errors = _validate_in_scratch({record_id: trial})
-    return [e for e in errors if record_id in e]
+    return [e for e in errors if e not in baseline]
 
 
 def command_queue(args) -> int:
@@ -143,21 +165,21 @@ def command_queue(args) -> int:
             print(f"  ERROR: {error}")
         return 1
 
-    for key, id_column in [(k, c) for k, c in OWNERS.values()]:
+    for key, id_column, review_column, ladder in OWNERS.values():
         if args.table and args.table != key:
             continue
         _, rows = _load(validate.DATA, key)
-        waiting = [r for r in rows if r["review_state"] != LADDER[-1]]
+        waiting = [r for r in rows if r[review_column] != ladder[-1]]
         print(f"\n{key}: {len(waiting)} of {len(rows)} awaiting promotion")
         by_state: dict[str, int] = {}
         for row in rows:
-            by_state[row["review_state"]] = by_state.get(row["review_state"], 0) + 1
+            by_state[row[review_column]] = by_state.get(row[review_column], 0) + 1
         print("  " + ", ".join(f"{s}: {n}" for s, n in sorted(by_state.items())))
         if not args.verbose:
             continue
         for row in waiting[: args.limit]:
-            blockers = _blockers(row[id_column], row["review_state"])
-            print(f"  {row[id_column]} ({row['review_state']})")
+            blockers = _blockers(row[id_column], row[review_column])
+            print(f"  {row[id_column]} ({row[review_column]})")
             for blocker in blockers:
                 print(f"      - {blocker.split(': ', 1)[-1]}")
             if not blockers:
@@ -456,15 +478,15 @@ def command_reconcile(args) -> int:
 
 
 def command_show(args) -> int:
-    key, id_column = _table_for(args.record_id)
+    key, id_column, review_column, _ladder = _table_for(args.record_id)
     _, rows = _load(validate.DATA, key)
     for row in rows:
         if row[id_column] == args.record_id:
             width = max(len(k) for k in row)
             for column, value in row.items():
                 print(f"  {column.ljust(width)}  {value or '-'}")
-            blockers = _blockers(args.record_id, row["review_state"])
-            print(f"\n  blocking promotion from {row['review_state']}:")
+            blockers = _blockers(args.record_id, row[review_column])
+            print(f"\n  blocking promotion from {row[review_column]}:")
             for blocker in blockers or ["    (nothing - ready to promote)"]:
                 print(f"    - {blocker.split(': ', 1)[-1]}" if blockers else blocker)
             return 0
@@ -473,18 +495,23 @@ def command_show(args) -> int:
 
 
 def command_promote(args) -> int:
-    key, id_column = _table_for(args.record_id)
+    key, id_column, review_column, ladder = _table_for(args.record_id)
     _, rows = _load(validate.DATA, key)
     row = next((r for r in rows if r[id_column] == args.record_id), None)
     if row is None:
         print(f"no record {args.record_id!r} in {TABLES[key]}", file=sys.stderr)
         return 1
 
-    target = _next_state(row["review_state"], args.to)
+    target = _next_state(row[review_column], args.to, ladder)
     changes = dict(pair.split("=", 1) for pair in args.set or [])
-    changes["review_state"] = target
-    changes["reviewer"] = args.reviewer
-    changes["review_date"] = args.date
+    changes[review_column] = target
+    # A source-ledger table like hiatus_timeline has no reviewer/review_date
+    # column to write to - --reviewer is still required below, so the name is
+    # on the shell history even where the row has nowhere to hold it.
+    if "reviewer" in row:
+        changes["reviewer"] = args.reviewer
+    if "review_date" in row:
+        changes["review_date"] = args.date
     if "last_verified" in row:
         changes["last_verified"] = args.date
 
@@ -497,7 +524,7 @@ def command_promote(args) -> int:
         return 1
 
     _apply(validate.DATA, key, id_column, args.record_id, changes)
-    print(f"{args.record_id}: {row['review_state']} -> {target}, reviewed by {args.reviewer}")
+    print(f"{args.record_id}: {row[review_column]} -> {target}, reviewed by {args.reviewer}")
     for column, value in sorted(changes.items()):
         print(f"  {column} = {value}")
     return 0
@@ -508,7 +535,7 @@ def main(argv: list[str] | None = None) -> int:
     sub = parser.add_subparsers(dest="command", required=True)
 
     queue = sub.add_parser("queue", help="what is waiting for a reviewer")
-    queue.add_argument("--table", choices=sorted({k for k, _ in OWNERS.values()}))
+    queue.add_argument("--table", choices=sorted({owner[0] for owner in OWNERS.values()}))
     queue.add_argument("--verbose", "-v", action="store_true", help="list records and blockers")
     queue.add_argument("--limit", type=int, default=20)
     queue.set_defaults(func=command_queue)

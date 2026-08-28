@@ -46,3 +46,24 @@ sample, inspect the witness or edition, verify its locator and scope, and then
 promote states individually. That work is registered as
 `vd-hiatus-witness-review`; until it is closed, KAN-349 has reached the
 machine-buildable boundary but not the reviewed-content boundary.
+
+## Reviewing it
+
+`hs-` and `hw-` records are recognised owners in
+[`review.py`](../../scripts/dacia/review.py), on the same
+`candidate -> source_checked -> reviewed` ladder every other trench's source
+ledger uses, not the five-rung `review_state` ladder the corpus tables climb:
+
+```bash
+python3 scripts/dacia/review.py queue --table hiatus_timeline --verbose
+python3 scripts/dacia/review.py show hs-charters
+python3 scripts/dacia/review.py promote hs-charters --reviewer "Your Name"
+```
+
+`queue` and `show` trial-promote against the real validator like every other
+table, so they report the package freeze above as a blocker rather than a
+false "ready to promote". `promote` will keep refusing every `hs-`/`hw-`
+record until whoever reviews it also re-freezes `research-package-manifest.json`
+(`hs-`) or `source-ledger-manifest.json` (`hw-`) to match the post-promotion
+bytes, in the same commit - the same deliberate step the CND pilot freeze
+already requires elsewhere, and not one this tool takes for you.
