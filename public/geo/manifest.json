@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "geo-fcb63902971f009a",
+  "release": "geo-bbc6dcb4c547a108",
   "generatedBy": "scripts/geo-release.mjs",
   "assets": [
     {
@@ -259,16 +259,16 @@
       "geometry": [
         "Point"
       ],
-      "featureCount": 129,
+      "featureCount": 130,
       "yearFrom": 150,
       "yearTo": 2026,
       "source": "Terra Chartarum (compiled) - Corpus Nominum Daciae 1.0 release-candidate research tier, KAN-364",
       "license": "CC BY 4.0",
       "attribution": "Terra Chartarum; each source carries its own rights statement",
-      "bytes": 165941,
-      "sha256": "0cbfd5790f48e7c345c3fddd068c3710f1444b94b7a90850d0f1c5649af7b962",
-      "version": "0cbfd5790f48",
-      "url": "/geo/dacia-attestations-research.geojson?v=0cbfd5790f48"
+      "bytes": 167366,
+      "sha256": "21ae4a5b500705c5a9441a5e90d4eb8d285d5071381dfa242c45b396a4416804",
+      "version": "21ae4a5b5007",
+      "url": "/geo/dacia-attestations-research.geojson?v=21ae4a5b5007"
     },
     {
       "id": "dacia-roman-sites",

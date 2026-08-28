@@ -17,13 +17,30 @@ Both files are hash-frozen in
 | `hs-charters`        | 1300-1526 | Charter             | `not_surveyed` | A calibration object exists; the corpus sample does not.                                               |
 | `hs-notarial`        |      1360 | Notarial/commercial | `not_surveyed` | The edition is bounded, but its acts have not been checked.                                            |
 | `hs-fiscal`          | 1546-1619 | Ottoman fiscal      | `not_asked`    | Fiscal scope can answer settlement questions, not the learned macro-regional question at family level. |
-| `hs-late-maps`       |      1570 | Late cartography    | `not_surveyed` | Exact atlas images are located but not transcribed or reviewed.                                        |
 
 Each row resolves through `witness_id` to
 [`hiatus-witness-families.csv`](../../data/dacia/reference/hiatus-witness-families.csv),
 which holds the repository, source URL, citation, coverage, survival limit, and
 rights posture. `source_family`, `period_from`, and `period_to` remain ordinary
 columns so the timeline can be filtered without parsing prose.
+
+## Why late cartography has a witness family but no state
+
+`hw-late-maps` is still in the frozen witness ledger, but it no longer carries a
+timeline state. The inspection recorded in
+[`hiatus-late-maps-inspection.md`](hiatus-late-maps-inspection.md) found the
+target **named** on both Ortelius 1570 plates, and this table has no class for a
+presence: all six values in `hiatus-absence-classes.csv` describe an absence or a
+workflow blocker, and `named_elsewhere` means absent _at_ the focal locator,
+which is the opposite of what the plates show.
+
+Rather than put a presence value in a column called `absence_class`, the return
+is recorded where a lexical event belongs - as `nmu-` rows in
+[`name-uses.csv`](../../data/dacia/name-uses.csv) against
+`src-ortelius-theatrum-1570-rumsey`, plus one place attestation. The absence
+timeline stays an absence timeline, and the essay reads the end of the hiatus off
+the name-use ledger rather than off a survey state. Removing the row is why
+`research-package-manifest.json` was re-frozen on 2026-08-28 at five states.
 
 ## Absence decisions
 

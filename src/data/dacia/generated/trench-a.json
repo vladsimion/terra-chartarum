@@ -92,7 +92,7 @@
       "silences": 6
     },
     {
-      "attestations": 12,
+      "attestations": 13,
       "cells": 13,
       "feature": "att-0001",
       "localCells": 1,

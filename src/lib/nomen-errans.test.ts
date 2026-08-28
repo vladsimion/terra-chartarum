@@ -172,7 +172,7 @@ describe('the referent-migration map and flow gate', () => {
     }
 
     expect(getNameRelations()).toHaveLength(8);
-    expect(getWithheldRelations()).toHaveLength(2);
+    expect(getWithheldRelations()).toHaveLength(5);
   });
 
   it('does not hardcode a second copy of the chronology into the component', async () => {

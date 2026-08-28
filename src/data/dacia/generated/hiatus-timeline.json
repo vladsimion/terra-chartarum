@@ -48,7 +48,6 @@
   "sourceFamilies": [
     "charter",
     "chronicle",
-    "late_cartography",
     "notarial_commercial",
     "ottoman_fiscal",
     "papal_register"
@@ -105,22 +104,6 @@
       "witnessId": "hw-fiscal",
       "witnessQuestion": "What settlement and administrative names occur in Ottoman fiscal surveys, and can this source type answer the macro-regional lexical question at all?",
       "witnessTitle": "Ottoman tax registers (defters) in the Hungarian National Archives"
-    },
-    {
-      "absenceClass": "not_surveyed",
-      "confidence": "low",
-      "datePrecision": "exact_year",
-      "locator": "Library of Congress G3200m.GCT00126, Hvngaria images 93-94 and Transsylvania images 95-96",
-      "note": "The exact plates are located but have not been transcribed or reviewed.",
-      "periodFrom": 1570,
-      "periodTo": 1570,
-      "reviewStatus": "candidate",
-      "scopeReviewed": false,
-      "sourceFamily": "late_cartography",
-      "stateId": "hs-late-maps",
-      "witnessId": "hw-late-maps",
-      "witnessQuestion": "When does Dacia return as a learned regional label, and how is that label related to contemporary Hungary and Transylvania?",
-      "witnessTitle": "Theatrum orbis terrarum"
     },
     {
       "absenceClass": "not_surveyed",

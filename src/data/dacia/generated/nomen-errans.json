@@ -448,6 +448,27 @@
       "id": "nmu-dacia-reception",
       "referentLabel": "Dacia Porolissensis made to support a Romanian historical-continuity claim",
       "reviewState": "normalized"
+    },
+    {
+      "fateClass": "restitutio",
+      "fateClassLabel": "Restitutio",
+      "id": "nmu-dacia-transalpina-lazius-1570",
+      "referentLabel": "Transalpina / Havasalfevlde, the territory south-east of Transylvania, glossed with the ancient name",
+      "reviewState": "normalized"
+    },
+    {
+      "fateClass": "restitutio",
+      "fateClassLabel": "Restitutio",
+      "id": "nmu-dacia-transilvania-lazius-1570",
+      "referentLabel": "Contemporary Transylvania, glossed with the ancient province name",
+      "reviewState": "normalized"
+    },
+    {
+      "fateClass": "restitutio",
+      "fateClassLabel": "Restitutio",
+      "id": "nmu-dacia-transilvania-sambucus-1570",
+      "referentLabel": "Contemporary Transylvania, equated with Pannodacia and Dacia Ripensis",
+      "reviewState": "normalized"
     }
   ],
   "withheldRelations": [
@@ -458,6 +479,30 @@
       "kindLabel": "Homonym only",
       "reviewState": "reviewed",
       "to": "nmu-dacia-reception"
+    },
+    {
+      "from": "nmu-dacia-province",
+      "id": "nue-dacia-province-lazius-1570",
+      "kind": "revival",
+      "kindLabel": "Revival",
+      "reviewState": "normalized",
+      "to": "nmu-dacia-transilvania-lazius-1570"
+    },
+    {
+      "from": "nmu-dacia-province",
+      "id": "nue-dacia-province-sambucus-1570",
+      "kind": "revival",
+      "kindLabel": "Revival",
+      "reviewState": "normalized",
+      "to": "nmu-dacia-transilvania-sambucus-1570"
+    },
+    {
+      "from": "nmu-dacia-province",
+      "id": "nue-dacia-province-transalpina-1570",
+      "kind": "revival",
+      "kindLabel": "Revival",
+      "reviewState": "normalized",
+      "to": "nmu-dacia-transalpina-lazius-1570"
     },
     {
       "from": "nmu-dacia-scandinavia",

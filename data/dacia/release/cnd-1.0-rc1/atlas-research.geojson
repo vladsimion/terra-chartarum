@@ -5424,6 +5424,48 @@
         "valid_to": 9999
       },
       "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          22.78,
+          45.51
+        ],
+        "type": "Point"
+      },
+      "id": "att-0130",
+      "properties": {
+        "attestation_class": "variant",
+        "attestation_class_label": "Variant",
+        "confidence": "medium",
+        "confidence_label": "Medium",
+        "geometry_provenance": "editorial_reconstruction",
+        "id": "att-0130",
+        "is_silence": false,
+        "language": "la",
+        "language_label": "Latin",
+        "locator": "Sheet 10000.093 (plate 42), map face beside Varhel; IIIF region 7300,3450,1900,950",
+        "locator_type": "sheet",
+        "name_normalized": "Ulpia Traiana Sarmizegetusa",
+        "name_original": "Vlpia Traiana Zarmisgetusa",
+        "place_id": "plc-ulpia-traiana-sarmizegetusa",
+        "place_name": "Colonia Ulpia Traiana Sarmizegetusa",
+        "place_type": "archaeological_site",
+        "region": "transylvania",
+        "review_state": "normalized",
+        "script": "latn",
+        "script_label": "Latin",
+        "source_date": "1570",
+        "source_family": "regional_print",
+        "source_id": "src-ortelius-theatrum-1570-rumsey",
+        "source_title": "Ortelius Theatrum (Rumsey copy)",
+        "source_year_from": 1570,
+        "source_year_to": 1570,
+        "trench": "ccd-a",
+        "valid_from": 1570,
+        "valid_to": 9999
+      },
+      "type": "Feature"
     }
   ],
   "type": "FeatureCollection"

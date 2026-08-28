@@ -176,7 +176,7 @@
       "format": "geojson",
       "crs": "EPSG:4326",
       "geometry": ["Point"],
-      "featureCount": 129,
+      "featureCount": 130,
       "yearFrom": 150,
       "yearTo": 2026,
       "source": "Terra Chartarum (compiled) - Corpus Nominum Daciae 1.0 release-candidate research tier, KAN-364",
