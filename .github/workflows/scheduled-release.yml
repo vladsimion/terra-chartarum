@@ -12,12 +12,20 @@
 # itself; Cloudflare does the build, and every ordinary CI gate has already run
 # on the commit being deployed.
 #
-# Requires one repository secret, CLOUDFLARE_DEPLOY_HOOK_URL - create a deploy
-# hook on the Pages project (Settings -> Builds & deployments -> Deploy hooks)
-# targeting `main`, then add the URL under Settings -> Secrets and variables ->
-# Actions. Until that secret exists this workflow reports what *would* have
-# published and exits cleanly, so a missing secret is visible rather than a
-# nightly red cross.
+# Requires one repository secret, CLOUDFLARE_DEPLOY_HOOK_URL. In the Cloudflare
+# dashboard: Workers & Pages -> terra-chartarum -> Settings -> Builds -> Add
+# deploy hook, with "Branch to build" set to `main`. Copy the generated URL and
+# add it in GitHub under Settings -> Secrets and variables -> Actions, or with
+# `gh secret set CLOUDFLARE_DEPLOY_HOOK_URL` (which prompts, so the value is
+# never echoed or stored in shell history).
+#
+# The hook URL is a credential: anyone holding it can trigger a production
+# build, so it belongs in the secret store and nowhere else - not in this file,
+# a commit message, or an issue.
+#
+# Until that secret exists this workflow reports what *would* have published and
+# exits cleanly, so a missing secret is a visible warning rather than a nightly
+# red cross.
 name: Scheduled release
 
 on:
