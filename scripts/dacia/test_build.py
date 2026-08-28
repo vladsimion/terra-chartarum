@@ -330,13 +330,19 @@ def test_the_flow_never_draws_an_unreviewed_relationship():
             assert relation["evidenceAttestationId"], relation["id"]
 
     # Both outcomes have to be present or the gate is not actually being tested.
-    # Eight edges join two visible nodes and are drawn; two are reviewed rows
-    # that land on a use still below review, and the endpoint rule withholds
-    # them. A reviewed edge is not by itself permission to draw a line.
+    # Eight edges join two visible nodes and are drawn. Five are withheld, for
+    # two different reasons, and both reasons need to stay represented here: two
+    # are reviewed rows that land on a use still below review, so the endpoint
+    # rule withholds them - a reviewed edge is not by itself permission to draw
+    # a line - and three are the KAN-349 Ortelius 1570 edges, withheld because
+    # the edge itself is still `normalized`.
     assert len(slice_["relations"]) == 8
     assert {relation["id"] for relation in slice_["withheldRelations"]} == {
         "nue-dacia-antiquarian-reception",
         "nue-dacia-scandinavia-church",
+        "nue-dacia-province-lazius-1570",
+        "nue-dacia-province-transalpina-1570",
+        "nue-dacia-province-sambucus-1570",
     }
     for relation in slice_["withheldRelations"]:
         assert not {relation["from"], relation["to"]} <= public, relation["id"]
