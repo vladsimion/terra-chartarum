@@ -1,5 +1,18 @@
 import { test, expect } from '@playwright/test';
 
+import { partitionEssays } from '../scripts/lib/essay-release.mjs';
+
+/**
+ * Whether an essay is in the build this suite is running against, decided by
+ * the same `releaseAt` frontmatter and the same comparison the site's gate
+ * uses. Imported rather than reimplemented: `essay-release.mjs` asks that the
+ * copies of this rule be kept in step, and the cheapest way to keep two copies
+ * in step is to have one.
+ */
+function isReleased(slug: string): boolean {
+  return partitionEssays().released.some((essay) => essay.slug === slug);
+}
+
 // Core user flows (KAN-54 / ATLAS-603). These run on every engine in the
 // Playwright config - Chromium, Firefox, WebKit - and on two mobile viewports
 // (Pixel 5, iPhone 13), so they double as the cross-browser / responsive QA
@@ -328,11 +341,21 @@ test.describe('flow: VMN standalone network', () => {
   });
 });
 
-// Held by the staged release gate (KAN-263): invisible-maps-trade carries
-// releaseAt '2099-01-01', so /essays/invisible-maps-trade/ is not built and
-// these assertions would hit a 404. Re-enable in the same commit that releases
-// the essay - `npm run essay:release invisible-maps-trade`.
-test.describe.skip('flow: Invisible Maps of Trade publication', () => {
+// Staged release gate (KAN-263). invisible-maps-trade is scheduled rather than
+// unscheduled: it carries releaseAt '2026-10-01', so /essays/invisible-maps-trade/
+// is not built before that date and these assertions would hit a 404.
+//
+// The skip is derived from the same frontmatter the build reads rather than
+// hand-toggled, so on the first build after the release date this suite arms
+// itself - no commit, nothing to remember. That is the point of a calendar.
+// `validate-indexing.mjs` owns the complementary half: that a held essay leaves
+// no route, sitemap entry, embed payload or inbound link anywhere in dist/.
+test.describe('flow: Invisible Maps of Trade publication', () => {
+  test.skip(
+    !isReleased('invisible-maps-trade'),
+    'held by the staged release gate until its releaseAt date',
+  );
+
   test('essay interactions and series index are connected', async ({ page }) => {
     await page.goto('/essays/invisible-maps-trade/');
 

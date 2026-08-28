@@ -64,10 +64,12 @@ same registries and release gate as the site. Read the
 [generated corpus status](generated/corpus-status.md) rather than copying totals
 into another document.
 
-There are additional essay files in the repository that carry
-`releaseAt: '2099-01-01'`. They are intentionally held from normal builds. Use
-the unreleased authoring mode described below to inspect them; do not infer that
-a file is public merely because it exists under `src/content/essays/`.
+There are additional essay files in the repository that are held from normal
+builds. Most carry a scheduled future `releaseAt` and publish on that date - see
+the [publication calendar](roadmap.md#publication-calendar). A few carry
+`releaseAt: '2099-01-01'`, which means unscheduled rather than merely future. Use
+the unreleased authoring mode described below to inspect either kind; do not infer
+that a file is public merely because it exists under `src/content/essays/`.
 
 ## How to use the site
 
@@ -971,16 +973,19 @@ The audit recommendations requested for this release are now implemented:
 
 ### Priority 0: finish and stabilise what already exists
 
-#### 1. Decide the release of _Invisible Maps of Trade_
+#### 1. Decide the release of _Invisible Maps of Trade_ - decided
 
-**Why now:** its editorial manifest is at `publish` with approved reviews, but
-the essay is held at `2099-01-01`. Releasing it would deepen The Road, make the
-Invisible Maps series genuinely plural in production, and expose the strongest
-reader-facing use of the VMN work.
+The hold was intentional. _Invisible Maps of Trade_ is part of a nine-essay
+publication queue that drips one essay a month, and it now carries a real
+target date of `2026-10-01` rather than the `2099-01-01` that meant
+"unscheduled". The full schedule is the
+[publication calendar](roadmap.md#publication-calendar).
 
-**Next action:** confirm whether the hold is intentional. If it is an embargo,
-record the reason and real target date. If not, run the complete release preflight,
-re-enable its skipped e2e coverage, and use `npm run essay:release`.
+Its e2e coverage is no longer hand-toggled: the flow in `e2e/flows.spec.ts`
+derives its skip from `partitionEssays()`, so it arms itself on the first build
+after the release date. `scripts/validate-indexing.mjs` continues to own the
+other half - that a held essay leaves no route, sitemap entry, embed payload or
+inbound link.
 
 ### Priority 1: improve reader entry and research utility
 
@@ -1022,15 +1027,17 @@ Fix only clear accessibility defects while preserving their archival identity.
 
 ### Content sequence
 
-Before starting a net-new Wave 3 essay, finish or explicitly defer the held
-Wave 2 material already present in the repository. Production currently has one
-primary essay in each room, so the next editorial goal should be a second strong
-argument in every room, not a higher raw total concentrated in one room.
+The held Wave 2 material is written and now scheduled, so the editorial goal -
+a second strong argument in every room rather than a higher raw total in one -
+is met by the calendar rather than by new drafting. Every room holds at least two
+essays on 1 January 2027.
 
 Recommended order:
 
-1. release-ready _Invisible Maps of Trade_, subject to the hold decision;
-2. complete the highest-readiness held essay in each room;
+1. let the [publication calendar](roadmap.md#publication-calendar) run; it is
+   ordered by room need, so the thin rooms fill first;
+2. finish the research programmes that owe a 15th-of-the-month slot -
+   TERRA INCOGNITA, Dacia Campaign II, the Crusades flagship, Ada Kaleh;
 3. only then begin Wave 3 in the recorded order, starting with _The Weight of
    Distance_, _The Last Blank Spaces_, and _Why North Is Up_;
 4. review room balance after every two releases.

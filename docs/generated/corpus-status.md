@@ -33,16 +33,16 @@ Geo release: `geo-bbc6dcb4c547a108`.
 
 | Essay                                              | Primary room | Release     |
 | -------------------------------------------------- | ------------ | ----------- |
+| Speculum Chartarum                                 | theatre      | 2026-09-01  |
+| Invisible Maps of Trade                            | road         | 2026-10-01  |
+| Projection and Perspective                         | map          | 2026-11-01  |
+| The Geography of Power                             | city         | 2026-12-01  |
+| Palimpsest Landscapes                              | archive      | 2027-01-01  |
+| The Cartography of Empire                          | border       | 2027-02-01  |
+| When Maps Create Countries                         | border       | 2027-03-01  |
+| Invisible Maps of Migration                        | road         | 2027-04-01  |
+| Classification Is Cartography                      | theatre      | 2027-05-01  |
 | The Parcel and the Bulldozer                       | city         | unscheduled |
-| Classification Is Cartography                      | theatre      | unscheduled |
-| Invisible Maps of Migration                        | road         | unscheduled |
-| Invisible Maps of Trade                            | road         | unscheduled |
 | Maps for a Crusade                                 | road         | unscheduled |
-| Palimpsest Landscapes                              | archive      | unscheduled |
-| Projection and Perspective                         | map          | unscheduled |
-| Speculum Chartarum                                 | theatre      | unscheduled |
 | Anatomy of a Native Essay                          | map          | unscheduled |
 | Terra Incognita · The Continent Before It Was Seen | theatre      | unscheduled |
-| The Cartography of Empire                          | border       | unscheduled |
-| The Geography of Power                             | city         | unscheduled |
-| When Maps Create Countries                         | border       | unscheduled |

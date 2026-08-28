@@ -22,7 +22,7 @@ room: theatre
 secondaryRooms: [map]
 publishedAt: '2025-01-01'
 updatedAt: '2026-07-15'
-releaseAt: '2099-01-01'
+releaseAt: '2026-09-01'
 metaScores:
   measure: 0.95
   witness: 0.9

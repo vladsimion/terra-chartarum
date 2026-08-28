@@ -27,6 +27,42 @@ The release-aware inventory is generated from the same content gate as the site.
 See the [current corpus status](generated/corpus-status.md) for live and held
 essays, per-room depth, registry totals, and the current geo release.
 
+## Publication calendar
+
+Held essays are **scheduled, not shelved**. Nine carry real `releaseAt` dates and
+publish one a month on the 1st; essays produced by a research programme release on
+the 15th when their gates close, at most one a month. `releaseAt` is the whole
+schedule - there is no second ordering to keep in step with it.
+
+| Date       | Essay                         | Room    | Stream |
+| ---------- | ----------------------------- | ------- | ------ |
+| 2026-09-01 | Speculum Chartarum            | Theatre | queue  |
+| 2026-10-01 | Invisible Maps of Trade       | Road    | queue  |
+| 2026-11-01 | Projection and Perspective    | Map     | queue  |
+| 2026-12-01 | The Geography of Power        | City    | queue  |
+| 2027-01-01 | Palimpsest Landscapes         | Archive | queue  |
+| 2027-02-01 | The Cartography of Empire     | Border  | queue  |
+| 2027-03-01 | When Maps Create Countries    | Border  | queue  |
+| 2027-04-01 | Invisible Maps of Migration   | Road    | queue  |
+| 2027-05-01 | Classification Is Cartography | Theatre | queue  |
+
+The queue is ordered by **room need** rather than by wave order, so the thin rooms
+fill first: every room holds at least two essays on **1 January 2027**. This does not
+touch `waveOrder` in [`data/editorial/wave-2/backlog.json`](../data/editorial/wave-2/backlog.json),
+which is an editorial identity mapping (`waveOrder` ↔ `TC-10.n` ↔ Jira ticket, pinned
+by position in `scripts/validate-editorial.mjs`) and not a schedule.
+
+Four essays stay at `2099-01-01` deliberately: `terra-incognita` and `maps-for-a-crusade`
+are programme output awaiting their gates and take the 15ths above; `borroczyn` is a stub
+whose trench (KAN-324) has not started; `starter-example` is the authoring template and
+never releases.
+
+A dated release does not publish itself - the gate is evaluated at build time and
+Cloudflare Pages builds on push. [`.github/workflows/scheduled-release.yml`](../.github/workflows/scheduled-release.yml)
+fires a Pages deploy hook on the 1st and the 15th so the calendar runs without a manual
+push. It needs the `CLOUDFLARE_DEPLOY_HOOK_URL` repository secret; until that exists it
+reports what would have published and exits cleanly.
+
 ## Wave 1 - anchor each under-served room (complete)
 
 Wave 1 gives every currently-thin room its first purpose-built anchor essay. These
