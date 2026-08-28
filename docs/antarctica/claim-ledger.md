@@ -7,7 +7,7 @@ Tables: `data/antarctica/claims.csv`, `terminology.csv`.
 
 ## The ledger
 
-Twenty-three claims, thirteen of them flagged high risk, none reviewed. Four are
+Twenty-three claims, thirteen of them flagged high risk, none reviewed. Six are
 `source_checked`; that state records that the cited locator was opened, not that
 a scholarly reviewer accepted the proposition.
 
@@ -77,3 +77,44 @@ drawing decision made by us and is not. The **reported sinking position** is a
 calculated result published in a named account; the **wreck position** is where
 the ship was found. Conflating those two is the exact error the audit observed in
 secondary reporting.
+
+## Running the review (KAN-432)
+
+The essay is held on this ledger. Its frontmatter states the gate directly: no
+claim has completed scholarly review, so publishing would present an inherited
+account as an observed one, which is the error the essay is about.
+
+Until now there was nothing to run against that gate. The five reviewable tables
+here - claims, sources, map objects, terminology and priority claims, 108 records
+in all - could only be promoted by hand-editing a CSV, which is the one form of
+review nobody can check afterwards. `scripts/antarctica/review.py` is the same
+tool `scripts/dacia/review.py` is, pointed at this programme:
+
+```bash
+python3 scripts/antarctica/review.py queue                    # what is waiting
+python3 scripts/antarctica/review.py queue -v --table claims  # with blockers
+python3 scripts/antarctica/review.py show ant-clm-cook-blank
+python3 scripts/antarctica/review.py promote ant-clm-cook-blank \
+    --reviewer "V. Simion" --set locator="Cook 1777, II. 231"
+python3 scripts/antarctica/review.py gaps                     # by what each blocks
+```
+
+Every promotion is written to a scratch copy of `data/antarctica`, validated with
+the ordinary gate, and kept only if the gate passes. A reviewer who has not
+supplied a locator, or who calls a source reviewed before it is verified, gets
+the refusal and no file changes. `queue` derives each record's blockers by
+trial-promoting it against the real validator, so the tool never carries a second
+copy of the rules.
+
+Two limits worth stating rather than discovering:
+
+- **These tables have no `reviewer` or `review_date` column.** `--reviewer` is
+  still required, so the name reaches the commit message and the shell history,
+  but the row itself cannot hold it. Dacia's tables can. Until those columns
+  exist here, a reviewed row records _that_ it was reviewed and not _by whom_,
+  and `promote` says so on every promotion rather than letting it pass unnoticed.
+- **The ladders differ from Dacia's.** These tables were built with a
+  source-audit vocabulary (`candidate` / `source_checked` / `reviewed` for the
+  audit tables, `unreviewed` / `source_checked` / `reviewed` for the ledgers).
+  Adding rungs to match the other programme would make every existing row's
+  state a lie, so the tool walks the ladder each table already declares.
