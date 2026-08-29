@@ -11,6 +11,7 @@ starts authoring facts.
 from __future__ import annotations
 
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -104,3 +105,71 @@ def test_the_public_tier_is_empty():
     manifest = json.loads(build.build_manifest(build.build_outputs(), build.project()))
     assert manifest["publicRecords"] == 0
     assert manifest["objectsClearedForReproduction"] == 0
+
+
+def caird_noons() -> list[dict]:
+    return [r for r in build.project() if r["id"].startswith("ant-obs-caird-noon-")]
+
+
+def separation_nm(first: list[float], second: list[float]) -> float:
+    """Great-circle separation in nautical miles, near enough for a sanity check."""
+    lon1, lat1 = math.radians(first[0]), math.radians(first[1])
+    lon2, lat2 = math.radians(second[0]), math.radians(second[1])
+    inner = (math.sin((lat2 - lat1) / 2) ** 2
+             + math.cos(lat1) * math.cos(lat2) * math.sin((lon2 - lon1) / 2) ** 2)
+    return math.degrees(2 * math.asin(math.sqrt(inner))) * 60
+
+
+def test_the_caird_track_is_the_log_rather_than_our_drawing():
+    """ANT-10 / KAN-429: the boat journey is Worsley's noon positions.
+
+    The line used to be three points with an invented middle, which is the
+    smoothing this act exists to argue against. Its vertices must now be exactly
+    the positions the log carries - the observed one on a day that has both,
+    because that is the position Worsley ran the next day from - so that the
+    track and the rows can never come to describe different passages.
+    """
+    records = {record["id"]: record for record in build.project()}
+    track = records["ant-trk-james-caird"]
+    assert track["geometryProvenance"] == "derived_from_log"
+    assert track["evidenceClass"] == "dead_reckoning"
+
+    accepted: dict[str, list[float]] = {}
+    for record in caird_noons():
+        date = record["observedDate"]
+        if date not in accepted or record["evidenceClass"] == "instrumental_fix":
+            accepted[date] = record["geometry"]["coordinates"]
+    departure = records["ant-obs-james-caird-departs"]["geometry"]["coordinates"]
+    assert track["geometry"]["coordinates"] == [departure] + [accepted[d] for d in sorted(accepted)]
+
+
+def test_the_boat_journey_keeps_reckoning_and_observation_apart():
+    """The 26 April pair is Act VIII's argument stated as two rows.
+
+    Worsley's reckoning that day and the sights he took the same day are about
+    eighty nautical miles apart. Merging them into one position - or filing the
+    day under one evidence class - would delete the only place in the dataset
+    where the size of a dead-reckoning error is visible rather than asserted.
+    """
+    noons = caird_noons()
+    assert {r["evidenceClass"] for r in noons} == {"dead_reckoning", "instrumental_fix"}
+    assert all(r["reviewState"] == "normalized" for r in noons)
+    assert all(r["sourceLocator"] not in ("", "pending") for r in noons)
+
+    pair = {r["evidenceClass"]: r["geometry"]["coordinates"]
+            for r in noons if r["observedDate"] == "1916-04-26"}
+    assert set(pair) == {"dead_reckoning", "instrumental_fix"}
+    assert 70 < separation_nm(pair["dead_reckoning"], pair["instrumental_fix"]) < 90
+
+
+def test_the_departure_position_is_inherited_from_a_chart():
+    """The passage begins on a position read off a 1:8,000,000 chartlet.
+
+    Filing it as a fix would credit Worsley with an observation he explicitly
+    declined to use, and would hide the fact that the boat journey's first
+    number is inherited cartography.
+    """
+    records = {record["id"]: record for record in build.project()}
+    departure = records["ant-obs-james-caird-departs"]
+    assert departure["evidenceClass"] == "inherited_cartography"
+    assert departure["sourceId"] == "ant-src-bergman-caird-navigation"

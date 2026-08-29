@@ -85,7 +85,7 @@ claim has completed scholarly review, so publishing would present an inherited
 account as an observed one, which is the error the essay is about.
 
 Until now there was nothing to run against that gate. The five reviewable tables
-here - claims, sources, map objects, terminology and priority claims, 108 records
+here - claims, sources, map objects, terminology and priority claims, 109 records
 in all - could only be promoted by hand-editing a CSV, which is the one form of
 review nobody can check afterwards. `scripts/antarctica/review.py` is the same
 tool `scripts/dacia/review.py` is, pointed at this programme:
@@ -118,7 +118,8 @@ enforces both directions:
 
 `promote` writes all three fields together, so the only way to reach `reviewed`
 is through a command that records who did it. No existing row was back-filled
-when the columns were added: every one of the 108 is below `reviewed`, and
+when the columns were added, and none has been since: every one of the 109 is
+below `reviewed`, and
 inventing a reviewer for them would be exactly the fabricated adjudication this
 workflow exists to prevent.
 

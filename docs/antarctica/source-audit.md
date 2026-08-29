@@ -7,7 +7,7 @@ Tables: `data/antarctica/sources.csv`, `map-objects.csv`, `source-gaps.csv`.
 
 ## What the audit holds
 
-Forty-one sources across eleven claim families, twenty candidate map objects,
+Forty-three sources across eleven claim families, twenty candidate map objects,
 and twenty-two recorded gaps: eight open, two in progress and twelve closed.
 
 The bibliography is grouped by argument rather than alphabetically, because the

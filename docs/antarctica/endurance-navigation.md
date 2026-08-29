@@ -28,8 +28,11 @@ Abandonment and sinking are twenty-five days apart and are two rows, not one.
 
 ## Positions and their methods
 
-Every published position resolves to a source and carries a review status, and
-every one of them is currently `raw` with a pending locator.
+Every published position resolves to a source and carries a review status. The
+drift-year positions are still `raw` with pending locators. The boat journey no
+longer is: its positions were read out of the log in August 2026 and are
+`normalized`, which means read against the source and not yet reviewed by a
+person.
 
 The evidence classes do the work. An `instrumental_fix` is a position from an
 observation and a timekeeper. `dead_reckoning` is a position the navigator
@@ -37,10 +40,68 @@ inferred at the time from course, speed and elapsed time, and it is historical
 evidence. `editorial_interpolation` is a line we drew between two records, and it
 is not evidence of anything except our drawing.
 
-The James Caird track is filed as interpolation in its entirety, because its
-middle point is ours. A smooth line between two endpoints is the opposite of what
-this act is about, and it is present only to prove the schema can carry a boat
-journey. ANT-10 replaces it with Worsley's fixes.
+## The James Caird, day by day
+
+The boat journey used to be three points with a middle point that was ours
+entirely, filed as interpolation and present only to prove the schema could carry
+a boat journey. It is now the log.
+
+Bergman, Huxtable, Morris and Stuart transcribed the whole of Worsley's
+navigational log for the passage and replicated every calculation in it (_Records
+of the Canterbury Museum_ 32: 23-66, 2018) - the companion, in the same volume,
+to the Weddell Sea paper that closed `ant-gap-worsley-workings`. Their Appendix B
+labels each day's noon position as reckoned or observed, which is what makes the
+distinction assignable row by row rather than in a caption.
+
+Nineteen positions are now in `observations.csv`, covering the fourteen days from
+25 April to 8 May 1916. Five are corrected by sights; the rest are reckoned. On
+the five days that have both, both rows are kept, because the difference between
+them is the evidence:
+
+| Date          | Reckoned         | Observed         | Apart     |
+| ------------- | ---------------- | ---------------- | --------- |
+| 26 April 1916 | 58 42 S, 52 17 W | 59 46 S, 50 48 W | 78.5 n.m. |
+| 29 April 1916 | 58 42 S, 48 40 W | 58 38 S, 50 00 W | 41.8 n.m. |
+| 3 May 1916    | 55 53 S, 44 53 W | 56 13 S, 45 38 W | 32.1 n.m. |
+| 4 May 1916    | 55 23 S, 44 10 W | 55 31 S, 44 43 W | 20.4 n.m. |
+| 7 May 1916    | 54 23 S, 39 40 W | 54 38 S, 39 36 W | 15.2 n.m. |
+
+The separations are ours, computed from the two positions the log gives; the
+paper draws no such comparison. Read down the column and the passage gets less
+uncertain as it goes, which is what a navigator correcting a reckoning with every
+sight he can take should look like.
+
+The 26 April pair is the act's argument in two rows. Worsley reckoned a run of
+N45E 110 miles and the sights put the boat some seventy-eight nautical miles from
+where the reckoning had it - far enough south and east that every position after
+it descends from the correction rather than from the reckoning. A test asserts
+the separation, so the day cannot quietly be merged into one position.
+
+The track is now `derived_from_log` rather than `editorial_interpolation`:
+fifteen vertices, the departure position and each day's accepted noon position,
+with the observed one taken on a day that has both because that is the position
+Worsley ran the next day from. Its evidence class is `dead_reckoning`, not
+`instrumental_fix`, because nine of the fourteen noons are reckoned and filing
+the whole line as observed would overclaim them. A test asserts the vertices are
+exactly those rows, so the line and the table cannot come to describe different
+passages.
+
+Two things the line still cannot say. A noon-to-noon track says nothing about the
+path between two noons. And it ends on 8 May, the last position the log works;
+the landing in King Haakon Sound two days later has no position in the log at
+all, and the last entry of the passage - a noon sight on 13 May from the cove -
+gives a latitude of 54 10 47 S and no longitude, so it is recorded in prose
+rather than as a point.
+
+The departure position is worth its own note. Worsley took his departure from
+Wild Camp using 61 04 S, 54 50 W for Cape Belsham, a position read off a
+1:8,000,000 chartlet in Nordenskjold and Andersson (1905), which took it from
+Fricker (1898) and in turn from Stieler's atlas of 1891. A time sight taken at
+the camp that morning gave a different longitude, and he did not adopt it,
+because the longitude of the cape was only approximately known. The boat journey
+therefore begins on inherited cartography, which is why the row is filed as
+`inherited_cartography` and not as a fix - the essay's subject turning up in its
+own dataset, at the first number of the passage.
 
 ## The sinking position
 
@@ -55,7 +116,10 @@ literature rather than only through an archive visit, which turns
 
 The article has not been read. Neither has its companion on chronometer error,
 which is the source any published uncertainty figure must come from. Until both
-are opened, this project publishes no error figure and no envelope.
+are opened, this project publishes no error figure and no envelope. The two
+Canterbury Museum papers - the drift year and the boat journey - are open access
+and have both been read; the two Journal of Navigation papers, which are the ones
+carrying the uncertainty, are behind a paywall and have not.
 
 ## 1915 and 2022 stay apart
 

@@ -106,7 +106,17 @@ describe('projected geometry', () => {
   it('marks the plan and the drift as our own linework', () => {
     expect(geometries.get('ant-trk-endurance-plan')!.isOurs).toBe(true);
     expect(geometries.get('ant-trk-endurance-drift')!.isOurs).toBe(true);
-    expect(geometries.get('ant-trk-james-caird')!.isOurs).toBe(true);
+  });
+
+  // The boat journey used to be three points with a middle we invented, and the
+  // figure was right to draw it as ours. It is now the noon positions Worsley
+  // entered in the log, so drawing it as our linework would understate it in
+  // exactly the direction this act cares about.
+  it('no longer marks the boat journey as our own linework', () => {
+    const caird = geometries.get('ant-trk-james-caird')!;
+    expect(caird.isOurs).toBe(false);
+    expect(caird.record.geometryProvenance).toBe('derived_from_log');
+    expect(caird.path.split('L').length).toBeGreaterThan(10);
   });
 
   it('does not mark a transcribed position as our own', () => {
@@ -157,5 +167,17 @@ describe('position methods are readable without hovering', () => {
   it('does not present a reckoned position as an observed one', () => {
     const beset = positions.find((p) => p.id === 'ant-obs-endurance-beset')!;
     expect(beset.method).toContain('Reckoned');
+  });
+
+  // 26 April 1916 is the day the log makes the argument for us: a reckoning and
+  // a sight, the same noon, about eighty nautical miles apart. A reader of the
+  // static table has to be able to see both, and to see which was which.
+  it('keeps both of the 26 April 1916 noon positions, and says which is which', () => {
+    const pair = positions.filter((p) => p.date === '1916-04-26');
+    expect(pair).toHaveLength(2);
+    expect(pair.map((p) => p.method).sort()).toEqual([
+      'Observed with an instrument',
+      'Reckoned from course, speed and time',
+    ]);
   });
 });

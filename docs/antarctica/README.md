@@ -25,12 +25,12 @@ geography apart: conjectured, reported, observed, reconciled and disproved.
 
 ## The state of it
 
-Nothing here is cleared for public evidence. Five map objects have verified
-catalogue identity, six source records and four claims are `source_checked`, and
-the Coronelli treatment has advanced to `normalized`. No object may be
-reproduced; no claim has been reviewed; thirty of thirty-two pilot records
-still carry pending locators; the public tier is empty and the build asserts that
-it is.
+Nothing here is cleared for public evidence. Seven map objects have verified
+catalogue identity, eight source records and six claims are `source_checked`, and
+the Coronelli treatment and the James Caird passage have advanced to
+`normalized`. No object may be reproduced; no claim has been reviewed;
+twenty-seven of sixty-one pilot records still carry pending locators; the public
+tier is empty and the build asserts that it is.
 
 That is the intended state of a research foundation, not a shortfall against it.
 The audit's job at this stage is to make the distance between _we know this

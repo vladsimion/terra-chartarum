@@ -76,12 +76,13 @@ drawn in the wrong hemisphere.
 
 ## The pilot slice
 
-Thirty-two records covering seven acts: a schematic Terra Australis envelope, the
+Sixty-one records covering seven acts: a schematic Terra Australis envelope, the
 Coronelli treatment record, Cook's farthest south and a sampled track, a disputed
-1820 sighting, the Wilkes ghost segment, the 1910 synthesis, and the Endurance
-plan, besetment, drift and reported sinking position.
+1820 sighting, the Wilkes ghost segment, the 1910 synthesis, the Endurance plan,
+besetment, drift and reported sinking position, and the nineteen noon positions
+of the James Caird passage read out of Worsley's log.
 
-Twenty-five are mappable. Seven carry no geometry on purpose. None is public.
+Forty-four are mappable. Seventeen carry no geometry on purpose. None is public.
 
 The Terra Australis record deserves a note. It is a latitude envelope, not a
 coastline, and its display name says so. No map in the register has been
