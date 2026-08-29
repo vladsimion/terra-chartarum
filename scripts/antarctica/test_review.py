@@ -139,6 +139,75 @@ def test_cannot_promote_past_the_top_rung(dataset):
         promote(claim["claim_id"], "--reviewer", "T")
 
 
+def test_promotion_records_who_reviewed_it_and_when(dataset):
+    """The point of the columns: a reviewed row can be questioned later."""
+    claim = next(
+        r for r in rows_of(dataset, "claims.csv")
+        if r["review_status"] == "source_checked" and r["locator"] != validate.PENDING
+    )
+
+    assert promote(
+        claim["claim_id"], "--to", "reviewed", "--reviewer", "V. Simion", "--date", "2026-09-01"
+    ) == 0
+
+    after = next(r for r in rows_of(dataset, "claims.csv") if r["claim_id"] == claim["claim_id"])
+    assert after["reviewer"] == "V. Simion"
+    assert after["review_date"] == "2026-09-01"
+
+
+def test_reviewed_row_without_a_reviewer_is_refused(dataset):
+    rows = rows_of(dataset, "claims.csv")
+    claim = next(r for r in rows if r["locator"] != validate.PENDING)
+    claim["review_status"] = "reviewed"
+    claim["reviewer"] = ""
+    claim["review_date"] = ""
+    write_rows(dataset, "claims.csv", rows)
+
+    errors, _counts, _gaps = validate.validate_inputs(include_release=False)
+    assert any("must name its reviewer" in e for e in errors)
+    assert any("must carry a review_date" in e for e in errors)
+
+
+def test_reviewer_on_an_unreviewed_row_is_refused(dataset):
+    """A name below the top rung is an adjudication that never happened."""
+    rows = rows_of(dataset, "claims.csv")
+    claim = next(r for r in rows if r["review_status"] != "reviewed")
+    claim["reviewer"] = "V. Simion"
+    write_rows(dataset, "claims.csv", rows)
+
+    errors, _counts, _gaps = validate.validate_inputs(include_release=False)
+    assert any("only a reviewed row may carry a reviewer" in e for e in errors)
+
+
+def test_review_date_must_be_iso(dataset):
+    rows = rows_of(dataset, "claims.csv")
+    claim = next(r for r in rows if r["locator"] != validate.PENDING)
+    claim["review_status"] = "reviewed"
+    claim["reviewer"] = "V. Simion"
+    claim["review_date"] = "1 September 2026"
+    write_rows(dataset, "claims.csv", rows)
+
+    errors, _counts, _gaps = validate.validate_inputs(include_release=False)
+    assert any("is not an ISO YYYY-MM-DD date" in e for e in errors)
+
+
+def test_every_reviewable_table_carries_the_attribution_columns(dataset):
+    """The rule is only enforced where the columns exist, so they all must."""
+    for filename, _id, _review, _ladder in review.OWNERS.values():
+        row = rows_of(dataset, filename)[0]
+        assert "reviewer" in row, f"{filename} has no reviewer column"
+        assert "review_date" in row, f"{filename} has no review_date column"
+
+
+def test_no_row_was_backfilled_with_a_reviewer(dataset):
+    """Adding the columns must not invent an adjudication that never happened."""
+    for filename, _id, review_column, _ladder in review.OWNERS.values():
+        for row in rows_of(dataset, filename):
+            if row[review_column] != "reviewed":
+                assert not row["reviewer"], f"{filename}: {row} carries an unearned reviewer"
+                assert not row["review_date"]
+
+
 def test_blockers_are_empty_when_a_record_is_ready(dataset):
     claim = next(
         r for r in rows_of(dataset, "claims.csv")

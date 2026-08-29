@@ -31,6 +31,7 @@ RELEASE = DATA / "release" / "ant-pilot-0.1"
 
 PENDING = "pending"
 SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+ISO_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 WKT = re.compile(r"^(POINT|LINESTRING|POLYGON) \(")
 
 # --- Frozen vocabularies (spec sections 4.2 to 4.4) -------------------------
@@ -142,6 +143,38 @@ def in_vocab(errors: list[str], label: str, field: str, value: str, vocab: set[s
         errors.append(f"{label}: {field} '{value}' is not in the frozen vocabulary")
 
 
+def check_attribution(errors: list[str], row: dict[str, str], label: str) -> None:
+    """A reviewed row has to say who reviewed it, and when (KAN-432).
+
+    Review is the gate the held essay rests on, and an adjudication nobody's
+    name is against cannot be questioned later - which is the whole value of
+    having a reviewer. The rule fires only at `reviewed`: rows below that rung
+    are the machine's, and stamping a name on them would be the fabrication
+    this is here to stop.
+
+    The converse is also an error. A name on an unreviewed row is either a
+    half-finished promotion or someone's note to themselves, and both read as
+    an adjudication that never happened.
+    """
+    reviewed = row.get("review_status") == "reviewed"
+    reviewer = row.get("reviewer", "")
+    review_date = row.get("review_date", "")
+
+    if reviewed:
+        if not reviewer:
+            errors.append(f"{label}: a reviewed row must name its reviewer")
+        if not review_date:
+            errors.append(f"{label}: a reviewed row must carry a review_date")
+    elif reviewer or review_date:
+        errors.append(
+            f"{label}: only a reviewed row may carry a reviewer or review_date"
+            f" (review_status is '{row.get('review_status')}')"
+        )
+
+    if review_date and not ISO_DATE.match(review_date):
+        errors.append(f"{label}: review_date '{review_date}' is not an ISO YYYY-MM-DD date")
+
+
 def check_refs(
     errors: list[str], label: str, field: str, value: str, known: set[str], *, multi: bool = False
 ) -> None:
@@ -165,6 +198,7 @@ def validate_sources(errors: list[str]) -> set[str]:
         in_vocab(errors, label, "rights_status", row["rights_status"], RIGHTS)
         in_vocab(errors, label, "verification_state", row["verification_state"], VERIFICATION)
         in_vocab(errors, label, "review_status", row["review_status"], AUDIT_REVIEW)
+        check_attribution(errors, row, label)
         clusters.add(row["claim_family"])
 
         if not row["repository_url"].startswith("https://"):
@@ -198,6 +232,7 @@ def validate_map_objects(errors: list[str], sources: set[str]) -> set[str]:
         in_vocab(errors, label, "rights_status", row["rights_status"], RIGHTS)
         in_vocab(errors, label, "verification_state", row["verification_state"], VERIFICATION)
         in_vocab(errors, label, "review_status", row["review_status"], AUDIT_REVIEW)
+        check_attribution(errors, row, label)
         in_vocab(errors, label, "reproduction_use", row["reproduction_use"], REPRODUCTION_USE)
         check_refs(errors, label, "source_id", row["source_id"], sources)
         if not row["repository_url"].startswith("https://"):
@@ -253,6 +288,7 @@ def validate_terminology(errors: list[str], sources: set[str]) -> None:
         check_refs(errors, label, "distinguishes_from", row["distinguishes_from"], ids, multi=True)
         in_vocab(errors, label, "review_status", row["review_status"],
                  {"unreviewed", "source_checked", "reviewed"})
+        check_attribution(errors, row, label)
     # The definitional core of the priority discussion. If any of these is
     # missing, Act V has no way to say which question it is answering.
     required = {"ant-trm-first-sighting", "ant-trm-first-mainland-sighting",
@@ -274,6 +310,7 @@ def validate_claims(errors: list[str], sources: set[str], objects: set[str]) -> 
         in_vocab(errors, label, "confidence", row["confidence"], CONFIDENCE)
         in_vocab(errors, label, "review_status", row["review_status"],
                  {"unreviewed", "source_checked", "reviewed"})
+        check_attribution(errors, row, label)
         if row["risk"] not in {"standard", "high"}:
             errors.append(f"{label}: risk '{row['risk']}' is not recognised")
         check_refs(errors, label, "primary_source_ids", row["primary_source_ids"], sources, multi=True)
@@ -559,6 +596,7 @@ def validate_priority(errors: list[str], expeditions: set[str], observations: se
         in_vocab(errors, label, "evidence_strength", row["evidence_strength"], CONFIDENCE)
         in_vocab(errors, label, "review_status", row["review_status"],
                  {"unreviewed", "source_checked", "reviewed"})
+        check_attribution(errors, row, label)
         contests[row["contest"]] = contests.get(row["contest"], 0) + 1
         # Every claim answers a definition, or it is a claim to nothing in
         # particular and the contest becomes a name-picking exercise.
