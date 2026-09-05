@@ -50,6 +50,16 @@
     },
     {
       "blocks": [
+        "jerusalem:research"
+      ],
+      "id": "vd-cru-islamic-witness-gap",
+      "kind": "verification",
+      "resolutionPath": "Audit one medieval Muslim-authored primary source (candidates and translations are named in the scoping note) on the same terms as Burchard and Sanudo - shelfmark or edition, a real locator, a covers register - rather than treating a modern secondary synthesis as a stand-in witness.",
+      "statement": "Every source behind the Holy Land register's textual_construct and network_node records is Latin Christian - Burchard of Mount Sion and Marino Sanudo Torsello. No source in source-audit.csv is authored from the perspective of the people who held Jerusalem and the Levant for most of 1099-1291, so the register that argues what the city meant cannot yet show what it meant to them.",
+      "status": "open"
+    },
+    {
+      "blocks": [
         "jerusalem:research",
         "jerusalem:data"
       ],
