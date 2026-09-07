@@ -6,8 +6,8 @@
 
 | Content type         | Count |
 | -------------------- | ----: |
-| Live essays          |     9 |
-| Held essays          |    13 |
+| Live essays          |    10 |
+| Held essays          |    12 |
 | Map records          |    59 |
 | Cartographers        |    19 |
 | Bibliography entries |    37 |
@@ -27,13 +27,12 @@ Geo release: `geo-bbc6dcb4c547a108`.
 | 4. The Border  |     2 | [Terra Sigillata · Lapidarium Dacicum](https://terra-chartarum.pages.dev/essays/dacia/) · [Nomen Errans](https://terra-chartarum.pages.dev/essays/nomen-errans/)                        |
 | 5. The Road    |     2 | [La Rotta e il Catasto](https://terra-chartarum.pages.dev/essays/venice-sicily/) · [The League That Left No Map](https://terra-chartarum.pages.dev/essays/the-league-that-left-no-map/) |
 | 6. The Archive |     1 | [Maps That Age](https://terra-chartarum.pages.dev/essays/maps-that-age/)                                                                                                                |
-| 7. The Theatre |     1 | [Invisible Maps of Religion](https://terra-chartarum.pages.dev/essays/invisible-maps-religion/)                                                                                         |
+| 7. The Theatre |     2 | [Speculum Chartarum](https://terra-chartarum.pages.dev/essays/speculum/) · [Invisible Maps of Religion](https://terra-chartarum.pages.dev/essays/invisible-maps-religion/)              |
 
 ## Held essays
 
 | Essay                                              | Primary room | Release     |
 | -------------------------------------------------- | ------------ | ----------- |
-| Speculum Chartarum                                 | theatre      | 2026-09-01  |
 | Invisible Maps of Trade                            | road         | 2026-10-01  |
 | Projection and Perspective                         | map          | 2026-11-01  |
 | The Geography of Power                             | city         | 2026-12-01  |
