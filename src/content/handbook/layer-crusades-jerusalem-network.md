@@ -61,8 +61,9 @@ Ibn al-Qalanisi's Damascus chronicle, read via Gibb's 1932 translation, is the
 one Muslim-authored source in the Holy Land register - added after an audit
 ([`docs/crusades/islamic-perspective-scoping.md`](https://github.com/vladsimion/terra-chartarum/blob/main/docs/crusades/islamic-perspective-scoping.md))
 found the other sources here were all Latin. Its record is not on this layer
-(it is a `contemporary_narrative`, not a port), and like the rest of this
-corpus it has not been read at the page.
+(it is a `contemporary_narrative`, not a port). Unlike the rest of this
+corpus, it has been read at the page: pp. 47-48 of Gibb's translation, the
+one non-`pending` locator anywhere in the Crusades dataset.
 
 ## Reconstruction and uncertainty
 

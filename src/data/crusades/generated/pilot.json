@@ -50,16 +50,6 @@
     },
     {
       "blocks": [
-        "jerusalem:research"
-      ],
-      "id": "vd-cru-islamic-witness-gap",
-      "kind": "verification",
-      "resolutionPath": "Read the passages in Gibb's 1932 translation of Ibn al-Qalanisi actually relevant to 1099 and move cru-jer-qalanisi-1099 off a pending locator, on the same discipline every other row in this corpus is held to. Baha' al-Din via Conder and Wilson 1897 remains worth a separate rights check, since it may support a production_role this row cannot.",
-      "statement": "The Holy Land register gained a seventh covers kind, contemporary_narrative, and one row against it: cru-jer-ibn-al-qalanisi / cru-jer-qalanisi-1099, citing Ibn al-Qalanisi's Damascus chronicle via Gibb's 1932 translation for the loss of Jerusalem in 1099. That closes the schema half of this debt - the other six registers still run on Latin sources alone, but the register that can hold a Muslim-authored witness now exists and is populated. What remains: the row's locator is pending and its verification_state is unverified, because the citation is Hillenbrand's bibliography entry (1999, p. 619), not a page of Gibb's translation itself. Nobody has read what Ibn al-Qalanisi actually says.",
-      "status": "open"
-    },
-    {
-      "blocks": [
         "jerusalem:research",
         "jerusalem:data"
       ],
@@ -844,25 +834,25 @@
     },
     {
       "catalogueObjectId": null,
-      "confidence": "medium",
+      "confidence": "high",
       "dateFrom": "1099",
       "datePrecision": "year",
       "dateTo": "1099",
       "evidenceClass": "chronicle_narrative",
       "geometryProvenance": "not_spatial",
       "id": "cru-jer-qalanisi-1099",
-      "notes": "The register's first record authored from inside the events it narrates rather than about them from outside: the other six registers are all claims about what Jerusalem means or where it is, made by Latin sources. Ibn al-Qalanisi's continuation of the Damascus chronicle is the nearest surviving Muslim witness to the loss of Jerusalem in 1099, cited here via Gibb's 1932 translation; no page of it has been read for this corpus, so this record establishes that such a witness exists and where to find it, nothing more.",
+      "notes": "The register's first record authored from inside the events it narrates rather than about them from outside: the other six registers are all claims about what Jerusalem means or where it is, made by Latin sources. Confirmed by reading pp. 47-48 of Gibb's translation directly: Ibn al-Qalanisi narrates the march on Jerusalem via al-Ramla, the siege, the storming and massacre of 22 Sha'ban AH 492 (14 July 1099), the burning of the synagogue, and the surrender of the Sanctuary of David, framed throughout as a Muslim loss rather than a Latin arrival. The first record in this entire corpus - across all three proofs - to move off a pending locator.",
       "placeIds": [
         "cru-plc-jerusalem"
       ],
       "placeNames": [
         "Jerusalem"
       ],
-      "reviewState": "raw",
+      "reviewState": "normalized",
       "roleKind": "contemporary_narrative",
       "sequence": 11,
       "sourceId": "cru-jer-ibn-al-qalanisi",
-      "sourceLocator": "pending",
+      "sourceLocator": "pp. 47-48",
       "title": "A Damascene chronicler's account of the city's loss",
       "vmnReference": null
     }

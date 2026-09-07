@@ -311,8 +311,17 @@ describe('the Holy Land register: a city that is not one kind of thing', () => {
     for (const id of catalogueObjects()) expect(known, id).toContain(id);
   });
 
-  it('leaves every record unread', () => {
+  it('leaves every record unread except the one that has been', () => {
+    // cru-jer-qalanisi-1099 is the corpus's one exception: pp. 47-48 of
+    // Gibb's translation of Ibn al-Qalanisi were actually read (see
+    // docs/crusades/islamic-perspective-scoping.md). Naming it here means a
+    // second row quietly promoted to normalized would still fail this test.
     for (const role of roles) {
+      if (role.id === 'cru-jer-qalanisi-1099') {
+        expect(role.reviewState, role.id).toBe('normalized');
+        expect(role.sourceLocator, role.id).toBe('pp. 47-48');
+        continue;
+      }
       expect(role.reviewState, role.id).toBe('raw');
       if (role.sourceId !== null) expect(role.sourceLocator, role.id).toBe('pending');
     }

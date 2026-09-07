@@ -87,8 +87,15 @@ Damascus chronicle, via Gibb's 1932 translation, for the city's loss in 1099.
 It was added after an audit
 ([`docs/crusades/islamic-perspective-scoping.md`](islamic-perspective-scoping.md))
 found that the other six registers - and the whole `source-audit.csv` - were
-Latin Christian only. No page of Gibb's translation has been read yet; the row
-establishes that the witness exists and where to find it, nothing more.
+Latin Christian only.
+
+pp. 47-48 of Gibb's translation have since been read directly, and the row
+carries a real locator: the first anywhere in this corpus, across all three
+proofs. `review_state: normalized` and `verification_state: verified` reflect
+that a passage has actually been read, not just cited via a secondary source;
+`production_role: research_only` is unchanged, because reading a passage for
+research is not a rights review, and Gibb's 1932 translation is presumed in
+copyright until roughly 2041.
 
 **Four of the eleven records are on a layer.** The validator refuses a position to
 any register in `UNPLACEABLE_ROLES`, and the reason is one sentence: the middle
@@ -132,9 +139,11 @@ a worse copy of something finished.
 
 ## What is not done
 
-Nothing here is reviewed. Every folio and page locator reads `pending`, no
-witness is cleared for publication, and no image is reproduced - which means the
-Road proof cannot show the manuscript half of its comparison, and the Holy Land
+Almost nothing here is reviewed. One page locator - `cru-jer-qalanisi-1099`,
+pp. 47-48 of Gibb's Ibn al-Qalanisi - has actually been read; every other
+folio and page locator in the corpus still reads `pending`. No witness is
+cleared for publication and no image is reproduced - which means the Road
+proof cannot show the manuscript half of its comparison, and the Holy Land
 register cannot show a single one of the world images it argues about.
 
 The essay is held at `releaseAt: '2099-01-01'` for the same reason as TERRA

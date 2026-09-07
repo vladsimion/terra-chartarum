@@ -108,6 +108,8 @@ of a campaign is legible, and dashed so nobody measures them.
 ## Review state
 
 `raw`, `normalized`, `reviewed`, `approved`, `published`. Everything here is
-`raw`. Not one folio has been transcribed and no witness is cleared for
-publication, which is what the source audit records and what the release
-manifest asserts.
+`raw` except `cru-jer-qalanisi-1099`, which is `normalized`: its folio has
+actually been read (pp. 47-48 of Gibb's translation of Ibn al-Qalanisi), the
+one exception to "not one folio has been transcribed" anywhere in this corpus.
+No witness is cleared for publication, which is what the source audit records
+and what the release manifest asserts.

@@ -19,17 +19,28 @@ as such below and is not overstated by this update.
 
 ## Provenance and rights
 
-The PDF lives outside this repository (this session's local filesystem only)
-and is not committed here, will not be committed here, and is not otherwise
-reproduced beyond the short citations quoted below under fair-use-scale
-quotation for research purposes. It is a 1999/2000 Edinburgh University Press
-monograph and is presumed in copyright; nothing about that changes because a
-copy became available to read. The discipline this corpus already applies to
-Choniates in `source-audit.csv` (`in_copyright`, `production_role:
-research_only`, cited but not reproduced at length) is the model for how
-Hillenbrand herself would be handled if she ever needed a row of her own -
-which, per the reasoning below, she does not: she cannot be a
+The Hillenbrand PDF lives outside this repository (this session's local
+filesystem only) and is not committed here, will not be committed here, and is
+not otherwise reproduced beyond the short citations quoted below under
+fair-use-scale quotation for research purposes. It is a 1999/2000 Edinburgh
+University Press monograph and is presumed in copyright; nothing about that
+changes because a copy became available to read. The discipline this corpus
+already applies to Choniates in `source-audit.csv` (`in_copyright`,
+`production_role: research_only`, cited but not reproduced at length) is the
+model for how Hillenbrand herself would be handled if she ever needed a row of
+her own - which, per the reasoning below, she does not: she cannot be a
 `source-audit.csv` row at all, only a finding aid for one.
+
+The same applies, more directly, to Gibb's 1932 translation of Ibn
+al-Qalanisi: the user supplied an 11-page excerpt (pp. 41-51 of the printed
+book, a photographic scan with no text layer - read here as page images, not
+extracted text) covering AH 490-494 (1096-1101). That excerpt also lives
+outside this repository, is not committed here, and pp. 47-48 are described
+and quoted only at citation scale below. Gibb died in 1971, so his translation
+is presumed in copyright until roughly 2041 regardless of the 1932 publication
+date; `rights_status: rights_review_required` and `production_role:
+research_only` on `cru-jer-ibn-al-qalanisi` reflect that this has not changed,
+only `verification_state` and `source_locator` have.
 
 ## The gap, precisely
 
@@ -64,7 +75,8 @@ the reason `verification_state` below is still `unverified` for all four:
   directly). English translation: H. A. R. Gibb, *The Damascus Chronicle of
   the Crusades*, London, 1932 (Hillenbrand 1999, p. 619 / PDF p. 675). The
   nearest thing to a contemporary Damascene witness to the First Crusade's
-  arrival and the following decades.
+  arrival and the following decades. **Since read directly** - see "What has
+  actually been read" below; the rest of this list is still bibliography only.
 - **Ibn al-Athir**, *al-Kamil fi'l-Ta'rikh*. Arabic critical edition: ed. C. J.
   Tornberg, 12 vols, Leiden and Uppsala, 1851-76 (Hillenbrand 1999, p. 617 /
   PDF p. 673). **No English translation appears in Hillenbrand's own
@@ -130,34 +142,46 @@ chronicle through the `fourth_crusade`-style narrative apparatus instead, or a
 fourth proof of its own - was not taken: the Holy Land act already had the
 place for this claim (Jerusalem, in 1099), just not the register.
 
-## What has actually been added
+## What has actually been read
 
-`cru-jer-ibn-al-qalanisi` in `source-audit.csv` (`source_kind:
-primary_narrative`, `covers: contemporary_narrative`, `rights_status:
-rights_review_required`, `production_role: research_only`) and
-`cru-jer-qalanisi-1099` in `jerusalem-roles.csv` (sequence 11, `date_from`/
-`date_to` 1099). Both carry `source_locator: pending` and `verification_state:
-unverified`: what is established is that Ibn al-Qalanisi's continuation of the
-Damascus chronicle, via Gibb's 1932 translation, is a real, identifiable,
-near-contemporary Muslim witness to the loss of Jerusalem in 1099, and where to
-find it. No page of Gibb's translation has been opened for this corpus - the
-locator is Hillenbrand's own citation of it (1999, p. 619), not a page of the
-source itself, and the two are not the same claim.
+pp. 47-48 of Gibb's translation, directly, from the supplied page images. They
+cover: the Franks' march on Jerusalem via al-Ramla; the siege and the tower
+brought up against the wall; the storming of the city on 22 Sha'ban AH 492
+(14 July 1099) after the townsfolk's proposal to negotiate a surrender broke
+down; the massacre that followed; the Jewish community's death in the
+synagogue, which the Franks burned over their heads; the surrender of the
+Sanctuary of David on guarantee of safety two days later; and, immediately
+after, al-Afdal's Fatimid relief force arriving too late, encamping at
+Ascalon, and being routed by the Franks in the field. Ibn al-Qalanisi narrates
+all of this as a loss - the fall of a city, the massacre of its people, the
+razing of a place of worship - not as an arrival, which is exactly the
+asymmetry the register exists to hold open against the six Latin-authored
+ones.
 
-This closes the schema half of `vd-cru-islamic-witness-gap`. It does not close
-the debt: the register that argues "what a witness says happened" now exists
-and is populated, but nobody has yet read what that witness actually says.
+`cru-jer-ibn-al-qalanisi` in `source-audit.csv` now carries `locator: pp.
+47-48`, `verification_state: verified`, `review_status: source_checked`.
+`cru-jer-qalanisi-1099` in `jerusalem-roles.csv` carries `source_locator: pp.
+47-48`, `review_state: normalized`, `confidence: high`. Both are the first
+non-`pending` locator anywhere in this corpus - across all three proofs,
+fifteen sources and forty-two other data rows. `production_role` on the source
+stays `research_only`: reading the passage for research and citing it at this
+scale is not a rights review, and Gibb's translation is presumed in copyright
+regardless (see "Provenance and rights" above).
+
+`vd-cru-islamic-witness-gap` is marked resolved in
+`data/crusades/reference/verification-debt.csv` on this basis.
 
 ## What is still open
 
-It does not add, edit, or resolve anything else in `source-audit.csv`,
-`jerusalem-roles.csv`, or `places.csv`, and it does not touch
-`vd-cru-jerusalem-locators` or `vd-cru-arabic-forms`, the two debts already
-blocking `jerusalem:research` alongside this one.
+This does not touch `vd-cru-jerusalem-locators` (Burchard and Sanudo, still
+`pending`) or `vd-cru-arabic-forms` (the place-name romanisations), the two
+debts still blocking `jerusalem:research` alongside the one this note closes.
+It also does not touch `production_role`, `rights_status`, or
+`resolution_status` on the Ibn al-Qalanisi row: a source can be read and
+verified for research without being cleared for reproduction, and this row is
+the former, not the latter.
 
-Closing `vd-cru-islamic-witness-gap` the rest of the way means: read the
-passages in Gibb's translation actually relevant to 1099 - not Hillenbrand's
-citation of it - and move `cru-jer-qalanisi-1099` off a pending locator, on the
-same discipline every other row in this corpus is held to, no more and no
-less. Baha' al-Din via Conder and Wilson remains worth a rights check
-separately, since it may support a `production_role` this row cannot.
+Baha' al-Din via Conder and Wilson (1897, plausibly public domain) remains
+worth a separate rights check, since it may eventually support a
+`production_role` this row cannot - but that is a new piece of work, not a
+continuation of this one.
