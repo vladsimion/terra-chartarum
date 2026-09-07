@@ -2,9 +2,11 @@
 // Rooms overview (TC-201 / KAN-96).
 //
 // The seven-room cosmography as a single grid: each room shows its glyph, its
-// one-line blurb, and item counts (essays + collection sheets + Atlas layers,
-// counting primary AND secondary membership). Counts are resolved by
-// lib/room-content.roomCounts so this page stays presentational.
+// one-line blurb, and item counts (essays, collection sheets, and Atlas
+// layers). The essay count is PRIMARY membership only, matching the essay
+// gallery's per-room grouping; sheets and layers count primary or secondary
+// membership. Counts are resolved by lib/room-content.roomCounts so this page
+// stays presentational.
 import PortalLayout from '../../layouts/PortalLayout.astro';
 import { ROOMS } from '../../data/rooms';
 import { roomCounts } from '../../lib/room-content';
