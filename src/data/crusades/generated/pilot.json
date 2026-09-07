@@ -163,7 +163,7 @@
       "evidence": "data/crusades/source-audit.csv",
       "gate": "research",
       "jiraKey": "KAN-438",
-      "note": "Five sources registered across the Holy Land registers: two world images, two texts and the manuscript carrying the maps. None is verified and every locator reads pending.",
+      "note": "Six sources registered across the Holy Land registers: two world images, two Latin texts, the manuscript carrying the maps, and Ibn al-Qalanisi's Damascus chronicle for the contemporary_narrative register. One (Ibn al-Qalanisi, pp. 47-48 of Gibb's translation) is verified with a real locator; the other five still read pending.",
       "order": 1,
       "proof": "jerusalem",
       "status": "partial"

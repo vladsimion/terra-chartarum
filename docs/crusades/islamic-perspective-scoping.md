@@ -65,10 +65,14 @@ shelfmark or edition, its own locator, its own `covers` register.
 Transcribed from Hillenbrand's own bibliography (Hillenbrand 1999,
 "Bibliography", pp. 617-620 of the printed book = pp. 673-676 of the supplied
 PDF scan - the two are a stable 56-page offset apart across this section,
-confirmed against the printed running folios). This is a locator into
-**Hillenbrand's citation of the source**, not into the source's own text - the
-distinction the rest of this corpus already holds Burchard and Sanudo to, and
-the reason `verification_state` below is still `unverified` for all four:
+confirmed against the printed running folios). Originally, this was a locator
+into **Hillenbrand's citation of the source**, not into the source's own text
+- the distinction the rest of this corpus already holds Burchard and Sanudo to
+- and `verification_state: unverified` for all four followed from that. Two of
+the four have since moved past bibliography-only, in different ways: Ibn
+al-Qalanisi has been read (below), Baha' al-Din has had its rights checked but
+not its content (further below). Ibn al-Athir and Usama ibn Munqidh remain
+exactly where this section originally left them.
 
 - **Ibn al-Qalanisi**, *Dhayl Ta'rikh Dimishq*. Arabic text: no edition of the
   Arabic itself is separately listed (Hillenbrand cites the translation
@@ -100,20 +104,18 @@ the reason `verification_state` below is still `unverified` for all four:
 - **Baha' al-Din ibn Shaddad**, *al-Nawadir al-Sultaniyya*. English
   translation: C. R. Conder and C. W. Wilson, *The Life of Saladin*, London,
   1897 (Hillenbrand 1999, p. 620 / PDF p. 676) - a Palestine Exploration Fund
-  translation, old enough to be out of copyright, unlike the modern standard
-  English translation (D. S. Richards, *The Rare and Excellent History of
-  Saladin*, Ashgate, 2001, still in copyright and *not* what Hillenbrand
-  cites). A biography of Saladin by a member of his circle, and the source
-  most directly relevant to 1187 if the register is ever extended to that
-  event.
+  translation, unlike the modern standard English translation (D. S. Richards,
+  *The Rare and Excellent History of Saladin*, Ashgate, 2001, still in
+  copyright and *not* what Hillenbrand cites). A biography of Saladin by a
+  member of his circle, and the source most directly relevant to 1187 if the
+  register is ever extended to that event. **Rights checked** - see "Baha'
+  al-Din: rights checked, content unread" below; still no page of it has been
+  read.
 
-The Conder and Wilson translation of Baha' al-Din is the one candidate here
-with a plausible public-domain path to a `production_role` above
-`research_only`, on the same reasoning that makes Luard's Matthew Paris edition
-the Road proof's fallback: an 1897 translation is old enough that the
-translation itself, not only the underlying medieval Arabic, is out of
-copyright in most jurisdictions - unconfirmed here, since no rights review has
-been done, but worth checking first for that reason.
+The Conder and Wilson translation of Baha' al-Din turned out to be the one
+candidate here with a clean public-domain path, on the same reasoning that
+makes Luard's Matthew Paris edition the Road proof's fallback - see below for
+the actual determination, which this list originally left as "worth checking."
 
 Hillenbrand's book, and Islamic-perspective Crusades historiography generally,
 is a finding aid for narrowing which passages in these sources to read next -
@@ -171,6 +173,42 @@ regardless (see "Provenance and rights" above).
 `vd-cru-islamic-witness-gap` is marked resolved in
 `data/crusades/reference/verification-debt.csv` on this basis.
 
+## Baha' al-Din: rights checked, content unread
+
+A separate, narrower question from the reading above: is Conder and Wilson's
+1897 translation actually likely to clear rights, or was "plausibly public
+domain" just a guess? Checked, not guessed, on two independent grounds:
+
+- **US copyright**: as of 2026, any work published in 1930 or earlier is
+  unconditionally in the public domain in the United States, regardless of the
+  author's or translator's date of death. This is a bright-line rule under
+  current US law and settles an 1897 publication on its own, with no further
+  argument needed.
+- **UK/EU copyright** (life of the author plus 70 years): Charles William
+  Wilson (1836-1905) and Claude Reignier Conder (1848-1910) were both already
+  established Royal Engineers officers and Palestine Exploration Fund figures
+  by 1897, not young men early in long careers, which makes it a near-certainty
+  both died well before 1956 - the date that would be needed for this
+  translation to still be in UK/EU copyright today. Their specific death years
+  are recorded here from general historical knowledge; this session could not
+  independently re-verify them against a citable source, since its network
+  access is restricted to GitHub and nothing else, archive.org included (the
+  same restriction recorded when this note first tried to reach it).
+
+This is a materially different position from Gibb 1932, where the life+70
+argument is the *only* one available and does not yet clear the work (Gibb
+died in 1971; expiry is roughly 2041) - the two translations cannot be treated
+alike, and this note does not treat them alike.
+
+`cru-jer-baha-al-din` has been added to `source-audit.csv` on this basis:
+`rights_status: public_domain_text`, `covers: contemporary_narrative`,
+`production_role: research_only` (locator is still `pending`, which alone
+keeps `production_role` at `research_only` regardless of rights - see the
+`PRODUCTION_ROLES` rule in `scripts/crusades/validate.py`). It backs no
+`jerusalem-roles.csv` record yet: nobody has read a page of Conder and
+Wilson's translation, only established what it would take to eventually
+publish from it.
+
 ## What is still open
 
 This does not touch `vd-cru-jerusalem-locators` (Burchard and Sanudo, still
@@ -181,7 +219,7 @@ It also does not touch `production_role`, `rights_status`, or
 verified for research without being cleared for reproduction, and this row is
 the former, not the latter.
 
-Baha' al-Din via Conder and Wilson (1897, plausibly public domain) remains
-worth a separate rights check, since it may eventually support a
-`production_role` this row cannot - but that is a new piece of work, not a
-continuation of this one.
+Reading Conder and Wilson's translation - presumably for 1187, if the register
+is extended to Saladin's recovery of the city - is a new piece of work,
+not a continuation of this one. So is anything involving Ibn al-Athir or
+Usama ibn Munqidh, neither of which has had so much as a rights check yet.

@@ -4,7 +4,7 @@ Three registers share one audit in
 [`data/crusades/source-audit.csv`](../../data/crusades/source-audit.csv):
 Matthew Paris's itinerary from London to Apulia, the Fourth Crusade's
 Venice-Zara-Constantinople sequence, and the Holy Land the first two are pointed
-at. Fifteen sources, gated by `npm run crusades:validate`, which also runs
+at. Sixteen sources, gated by `npm run crusades:validate`, which also runs
 inside `npm run build`.
 
 ## The gap this audit keeps open
@@ -64,16 +64,22 @@ sequence, and the prototype has to surface that rather than smooth it over.
 
 ## What the Holy Land register may cite (KAN-438)
 
-Six sources carry the third register: the Psalter world map and the Hereford
-Mappa Mundi for the sacred centre, Burchard of Mount Sion's description and
-Marino Sanudo Torsello's recovery treatise for the described and planned land,
-the British Library manuscript of that treatise for the maps attributed to
-Pietro Vesconte, and Ibn al-Qalanisi's Damascus chronicle - via Gibb's
-translation - for a seventh register, `contemporary_narrative`, added after an
-audit found the other five were all Latin
+Seven sources carry the third register: the Psalter world map and the
+Hereford Mappa Mundi for the sacred centre, Burchard of Mount Sion's
+description and Marino Sanudo Torsello's recovery treatise for the described
+and planned land, the British Library manuscript of that treatise for the
+maps attributed to Pietro Vesconte, and two Muslim-authored chronicles for a
+seventh register, `contemporary_narrative`, added after an audit found the
+other five were all Latin
 ([`docs/crusades/islamic-perspective-scoping.md`](islamic-perspective-scoping.md)).
-Each declares which register it may speak in, in the same `covers` field the
-Sea proof uses for its sequence, so a text cannot be silently recruited as
+Of the two, only Ibn al-Qalanisi's Damascus chronicle - via Gibb's translation
+- backs an actual `jerusalem-roles.csv` record so far; Baha' al-Din ibn
+Shaddad's life of Saladin - via Conder and Wilson's 1897 translation - is
+registered with a rights determination (`public_domain_text`, checked
+independently of Hillenbrand's citation) but no locator and no role record
+yet, exactly the state every other source here started from. Each source
+declares which register it may speak in, in the same `covers` field the Sea
+proof uses for its sequence, so a text cannot be silently recruited as
 evidence about a picture.
 
 One register is closed to the audit entirely. `cartographic_memory` records later
