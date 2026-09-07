@@ -85,6 +85,29 @@ Auction and aggregator listings are not publication sources, and the rule is
 data rather than an instruction: a `repository_url` on a dealer or aggregator
 host fails validation, so a later addition cannot forget it.
 
+## Review
+
+`scripts/crusades/review.py` promotes a source up the `candidate` ->
+`source_checked` -> `reviewed` ladder. It is the same tool
+`scripts/dacia/review.py` and `scripts/antarctica/review.py` are, pointed at
+this table: every promotion is written to a scratch copy of `data/crusades`,
+validated with the ordinary gate, and kept only if the gate passes.
+
+```
+review.py queue -v                            what is waiting, and what blocks it
+review.py show   cru-mp-luard-edition
+review.py promote cru-mp-luard-edition --reviewer "V. Simion" \
+    --set locator="Luard 1872, I. 1" --set verification_state=verified
+```
+
+`reviewer` and `review_date` are enforced in both directions: a row at
+`reviewed` must name its reviewer and carry an ISO `review_date`; a row below
+`reviewed` may carry neither. Attribution therefore only reaches the row on the
+promotion to `reviewed` itself - `--reviewer` is required on every promotion
+regardless, so someone is accountable for an intermediate one too, but the
+value has nowhere to live in the row until the top rung. No committed source
+has been reviewed or back-filled: all 14 are `candidate`.
+
 ## The place authority (KAN-385)
 
 Twenty-five core places in

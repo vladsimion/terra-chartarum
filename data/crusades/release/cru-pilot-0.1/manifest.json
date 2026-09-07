@@ -12,7 +12,7 @@
     "data/crusades/itinerary-stages.csv": "1930ad66f926ea7ecaa177b8506f348be350b05163418e28f22ea1e2927d9ac0",
     "data/crusades/jerusalem-roles.csv": "db921996494f79e019eeed8a114cfd4d5ce4813cb788f354b8f47b05429aa63e",
     "data/crusades/places.csv": "f9b2be0f3f5872f56c1c377e7b22e0b7b8a8094ec9f9e496936c4e62625d832c",
-    "data/crusades/source-audit.csv": "cc0ae8171c0d9e8bbb4340c6c491265c82212e055753dbf22c325247840e06de"
+    "data/crusades/source-audit.csv": "b6358613491c0fe9e3986892ccb963d37f911b29e258968d1057496603fc5590"
   },
   "kind": "pilot_research_release",
   "licence": "CC BY 4.0 for the compiled records; every witness carries its own rights status, and no witness in this release is cleared for publication.",
@@ -34,8 +34,8 @@
       "sha256": "f9b2be0f3f5872f56c1c377e7b22e0b7b8a8094ec9f9e496936c4e62625d832c"
     },
     "data/crusades/release/cru-pilot-0.1/source-audit.csv": {
-      "bytes": 8444,
-      "sha256": "cc0ae8171c0d9e8bbb4340c6c491265c82212e055753dbf22c325247840e06de"
+      "bytes": 8493,
+      "sha256": "b6358613491c0fe9e3986892ccb963d37f911b29e258968d1057496603fc5590"
     },
     "public/geo/crusades-fourth-crusade-events.geojson": {
       "bytes": 3052,

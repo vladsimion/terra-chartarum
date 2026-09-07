@@ -71,6 +71,43 @@ def test_a_verified_source_cannot_leave_its_locator_pending(dataset):
     refuses("cannot leave its locator pending")
 
 
+def test_a_reviewed_source_must_name_its_reviewer(dataset):
+    """Ported from the same rule in scripts/antarctica/validate.py (KAN-432): an
+    adjudication nobody's name is against cannot be questioned later."""
+    edit(dataset, lambda rows: find(rows, "cru-mp-luard-edition").update(
+        {"review_status": "reviewed", "review_date": "2026-09-07"}))
+    refuses("must name its reviewer")
+
+
+def test_a_reviewed_source_must_carry_a_review_date(dataset):
+    edit(dataset, lambda rows: find(rows, "cru-mp-luard-edition").update(
+        {"review_status": "reviewed", "reviewer": "V. Simion"}))
+    refuses("must carry a review_date")
+
+
+def test_a_reviewer_on_an_unreviewed_source_is_refused(dataset):
+    """The converse error: a name on a row nobody has actually reviewed."""
+    edit(dataset, lambda rows: find(rows, "cru-mp-luard-edition").update(
+        {"reviewer": "V. Simion"}))
+    refuses("only a reviewed row may carry a reviewer")
+
+
+def test_review_date_must_be_iso(dataset):
+    edit(dataset, lambda rows: find(rows, "cru-mp-luard-edition").update(
+        {"review_status": "reviewed", "reviewer": "V. Simion", "review_date": "7 Sept 2026"}))
+    refuses("is not an ISO YYYY-MM-DD date")
+
+
+def test_no_committed_source_was_backfilled_with_a_reviewer(dataset):
+    """No source in this audit has actually cleared review yet, so none may
+    carry a reviewer or review_date: that would be exactly the fabricated
+    adjudication the attribution rule exists to prevent."""
+    for row in validate.read(TABLE):
+        assert row["review_status"] != "reviewed", f"{row['source_id']} was reviewed unattended"
+        assert not row["reviewer"], f"{row['source_id']} carries an unearned reviewer"
+        assert not row["review_date"], f"{row['source_id']} carries an unearned review_date"
+
+
 def test_a_production_role_needs_rights_that_permit_reuse(dataset):
     edit(dataset, lambda rows: find(rows, "cru-fc-choniates").update(
         {"production_role": "production_primary"}))
