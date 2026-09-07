@@ -214,3 +214,16 @@ def test_blockers_are_empty_when_a_record_is_ready(dataset):
         if r["review_status"] == "source_checked" and r["locator"] != validate.PENDING
     )
     assert review._blockers(claim["claim_id"], claim["review_status"]) == []
+
+
+def test_blockers_for_an_intermediate_rung_are_not_the_trial_stamping_itself(dataset):
+    """`_blockers` used to stamp a trial reviewer/review_date on every trial
+    promotion, including one aimed at a rung below `reviewed`. validate.py's
+    converse attribution rule then refused the trial for carrying a reviewer
+    on a non-reviewed row, and that refusal was reported as the record's own
+    blocker - masking whatever actually blocks it and making every candidate
+    source look permanently stuck one rung short of ready.
+    """
+    source = next(r for r in rows_of(dataset, "sources.csv") if r["review_status"] == "candidate")
+    blockers = review._blockers(source["source_id"], source["review_status"])
+    assert not any("only a reviewed row may carry a reviewer" in b for b in blockers)
