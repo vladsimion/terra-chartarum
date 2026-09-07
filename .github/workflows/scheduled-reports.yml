@@ -23,6 +23,24 @@
 # ordering is a best effort, not a guarantee; a same-day mismatch is at worst
 # a single stale Cloudflare build that self-heals the moment this job's own
 # push lands and triggers the next one.
+#
+# The commit is checked out and pushed with REPORTS_REGEN_PAT rather than the
+# default GITHUB_TOKEN: GitHub Actions never triggers other workflows (this
+# repo's own `ci.yml` push trigger included) for a push authored by the
+# default token, to prevent recursive workflow chains. That's fine for the
+# Cloudflare deploy - it watches pushes at the platform level, not through
+# Actions - but it meant the bot's own commit never got a CI checkmark. A PAT
+# is a normal user token, so a push made with one triggers `ci.yml` like any
+# other push.
+#
+# One-time setup: create a fine-grained PAT scoped to just this repository
+# with "Contents: Read and write" access (a dedicated machine account is
+# preferable to a personal one, but not required for a low-risk automation
+# like this), then add it under Settings -> Secrets and variables -> Actions
+# -> New repository secret, named REPORTS_REGEN_PAT. Until that secret
+# exists, checkout falls back to the default GITHUB_TOKEN and this workflow
+# behaves exactly as it did before - it just won't trigger `ci.yml` on its
+# own commits.
 name: Scheduled report regeneration
 
 on:
@@ -44,6 +62,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          token: ${{ secrets.REPORTS_REGEN_PAT || secrets.GITHUB_TOKEN }}
 
       - name: Use the pinned Node version
         uses: actions/setup-node@v7
