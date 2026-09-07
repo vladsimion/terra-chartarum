@@ -5,11 +5,31 @@ conversation in this repository's history described building an extraction
 matrix from Carole Hillenbrand's *The Crusades: Islamic Perspectives*
 (Edinburgh University Press, 1999/2000), including chapter-and-section detail
 and a claim that the book's PDF was available to work from directly. Neither
-is true of this repository or this session: no such file exists here, and
-nothing below was read from it. Treat any page-level citation to that book
-from that earlier text as unverified until someone actually opens a copy.
+was true of this repository at the time: no such file existed here, and
+nothing in that matrix was read from it.
 
-What follows is the honest version of the same gap.
+**Update:** the user has since supplied a copy (a 704-page scan, read outside
+this repository - see "Provenance and rights" below) and the bibliography has
+now actually been read against it. The candidate-source list below is
+therefore no longer speculative bibliography; it is transcribed from
+Hillenbrand's own "Primary Sources" and "Primary Sources in Translation"
+lists, with locators. What is still not done - reading any of these sources
+themselves, choosing one, and auditing it into `source-audit.csv` - is marked
+as such below and is not overstated by this update.
+
+## Provenance and rights
+
+The PDF lives outside this repository (this session's local filesystem only)
+and is not committed here, will not be committed here, and is not otherwise
+reproduced beyond the short citations quoted below under fair-use-scale
+quotation for research purposes. It is a 1999/2000 Edinburgh University Press
+monograph and is presumed in copyright; nothing about that changes because a
+copy became available to read. The discipline this corpus already applies to
+Choniates in `source-audit.csv` (`in_copyright`, `production_role:
+research_only`, cited but not reproduced at length) is the model for how
+Hillenbrand herself would be handled if she ever needed a row of her own -
+which, per the reasoning below, she does not: she cannot be a
+`source-audit.csv` row at all, only a finding aid for one.
 
 ## The gap, precisely
 
@@ -31,43 +51,90 @@ shelfmark or edition, its own locator, its own `covers` register.
 
 ## Candidate primary sources
 
-These are not proposed as verified rows - none has a locator, none has been
-read for this corpus, and adding one to `source-audit.csv` today would mean
-inventing a `covers` register no schema value quite fits (`ROLE_KINDS` argues
-claims about Jerusalem's meaning or position; a chronicle's value here is
-closer to a seventh register - contemporary narrative - that does not exist
-yet and would need its own validator rule, not a bent one). They are named so
-the next pass over this gate does not start from nothing:
+Transcribed from Hillenbrand's own bibliography (Hillenbrand 1999,
+"Bibliography", pp. 617-620 of the printed book = pp. 673-676 of the supplied
+PDF scan - the two are a stable 56-page offset apart across this section,
+confirmed against the printed running folios). This is a locator into
+**Hillenbrand's citation of the source**, not into the source's own text - the
+distinction the rest of this corpus already holds Burchard and Sanudo to, and
+the reason `verification_state` below is still `unverified` for all four:
 
-- **Ibn al-Qalanisi**, *Dhayl Ta'rikh Dimashq* (continuation of the Damascus
-  chronicle) - the nearest thing to a contemporary Damascene witness to the
-  First Crusade's arrival and the following decades.
-- **Ibn al-Athir**, *al-Kamil fi'l-Ta'rikh* - a later (early 13th-century)
-  universal chronicle, widely used for the Zengid and Ayyubid period; being
-  later, it is a witness to how the period was remembered as much as to the
-  period itself, and any row drawn from it should say which.
-- **Usama ibn Munqidh**, *Kitab al-I'tibar* - a Syrian nobleman's memoir with
-  direct, often-quoted observations of Franks in the Levant; the source most
-  likely to speak to lived contact rather than to jihad or Jerusalem as ideas.
-- **Baha' al-Din ibn Shaddad**, *al-Nawadir al-Sultaniyya* - a biography of
-  Saladin by a member of his circle, and the source most directly relevant to
-  1187 if the register is ever extended to that event.
+- **Ibn al-Qalanisi**, *Dhayl Ta'rikh Dimishq*. Arabic text: no edition of the
+  Arabic itself is separately listed (Hillenbrand cites the translation
+  directly). English translation: H. A. R. Gibb, *The Damascus Chronicle of
+  the Crusades*, London, 1932 (Hillenbrand 1999, p. 619 / PDF p. 675). The
+  nearest thing to a contemporary Damascene witness to the First Crusade's
+  arrival and the following decades.
+- **Ibn al-Athir**, *al-Kamil fi'l-Ta'rikh*. Arabic critical edition: ed. C. J.
+  Tornberg, 12 vols, Leiden and Uppsala, 1851-76 (Hillenbrand 1999, p. 617 /
+  PDF p. 673). **No English translation appears in Hillenbrand's own
+  bibliography** - the modern standard one (D. S. Richards, *The Chronicle of
+  Ibn al-Athir for the Crusading Period*, 3 vols, Ashgate, 2006-2008) postdates
+  this book and was not and could not have been a source for it. A row drawn
+  from Ibn al-Athir today would need to say which edition it actually reads:
+  the 19th-century Arabic edition, or the 21st-century Richards translation -
+  they are not interchangeable, and Ibn al-Athir writing in the early 13th
+  century about the 1090s is itself a witness to later memory as much as to
+  the events.
+- **Usama ibn Munqidh**, *Kitab al-I'tibar*. Arabic critical editions: ed. P.
+  K. Hitti, Princeton, 1930; ed. Q. al-Samarra'i, Riyadh, 1987. English
+  translation: P. K. Hitti, *Memoirs of an Arab-Syrian Gentleman*, Beirut,
+  1964 (also French translations by Miquel 1983 and Derenbourg 1889;
+  Hillenbrand 1999, p. 619 / PDF p. 675). A memoir with direct, often-quoted
+  observations of Franks in the Levant - the source most likely to speak to
+  lived contact rather than to jihad or Jerusalem as ideas, so the weakest fit
+  for the Holy Land register specifically and the strongest fit for a future
+  Chapter 6-shaped ("Life in the Levant") gap instead.
+- **Baha' al-Din ibn Shaddad**, *al-Nawadir al-Sultaniyya*. English
+  translation: C. R. Conder and C. W. Wilson, *The Life of Saladin*, London,
+  1897 (Hillenbrand 1999, p. 620 / PDF p. 676) - a Palestine Exploration Fund
+  translation, old enough to be out of copyright, unlike the modern standard
+  English translation (D. S. Richards, *The Rare and Excellent History of
+  Saladin*, Ashgate, 2001, still in copyright and *not* what Hillenbrand
+  cites). A biography of Saladin by a member of his circle, and the source
+  most directly relevant to 1187 if the register is ever extended to that
+  event.
 
-Standard English translations exist for all four (Gibb for Ibn al-Qalanisi;
-Richards for Ibn al-Athir; Hitti/Cobb for Usama ibn Munqidh; Richards again
-for Baha' al-Din), which matters for the same reason the Rolls Series matters
-to the Matthew Paris register: an out-of-copyright or clearly-licensed edition
-is what lets a source carry a `production_role` above `research_only`.
-Copyright status of each specific translation has not been checked and is not
-asserted here.
+The Conder and Wilson translation of Baha' al-Din is the one candidate here
+with a plausible public-domain path to a `production_role` above
+`research_only`, on the same reasoning that makes Luard's Matthew Paris edition
+the Road proof's fallback: an 1897 translation is old enough that the
+translation itself, not only the underlying medieval Arabic, is out of
+copyright in most jurisdictions - unconfirmed here, since no rights review has
+been done, but worth checking first for that reason.
 
 Hillenbrand's book, and Islamic-perspective Crusades historiography generally,
-is a plausible finding aid for narrowing which passages in these sources to
-read first - that is what a modern secondary synthesis is for. It cannot
-itself become a row in `source-audit.csv`: the schema's `source_kind` values
+is a finding aid for narrowing which passages in these sources to read next -
+that is what a modern secondary synthesis is for. It cannot itself become a
+row in `source-audit.csv`: the schema's `source_kind` values
 (`manuscript_witness`, `critical_edition`, `primary_narrative`, `instrument`,
 `map_object`) are all primary-source kinds, and a 1999 monograph is none of
 them.
+
+## The schema question this still leaves open
+
+None of the four sources above has a `covers` register it can validly declare
+if added to `jerusalem-roles.csv` today. `ROLE_KINDS` (in
+`scripts/crusades/validate.py`) argues claims about what Jerusalem *means* or
+*is* - `sacred_centre`, `pilgrimage_destination`, `textual_construct`,
+`cartographic_construct`, `network_node`, `cartographic_memory` - and a
+chronicle's contribution is a different kind of claim: what happened, when,
+according to whom. That is closer to `source_kind: primary_narrative` (which
+already exists and is exactly what Villehardouin, Clari and Choniates are
+registered as, for the Fourth Crusade proof) than to anything in
+`ROLE_KINDS`.
+
+Two ways to close this, and this note does not pick one:
+
+1. Add a seventh Holy Land register - something like `contemporary_narrative`
+   - with its own validator rule, the way KAN-438 added the other six.
+2. Decide the Holy Land act's six registers are deliberately about meaning and
+   position and not about narrative, and that a Muslim-authored chronicle
+   belongs instead in the `fourth_crusade`-style narrative apparatus (or a
+   fourth proof of its own), not in `jerusalem-roles.csv`.
+
+Either is a real design decision about a system KAN-438 built on purpose, not
+something this note should settle by editing the validator in passing.
 
 ## What this note does and does not do
 
@@ -78,8 +145,14 @@ against the `jerusalem:research` gate, alongside the existing
 `vd-cru-jerusalem-locators` and `vd-cru-arabic-forms` debts that gate is
 already blocked on.
 
-Closing it means: pick one of the four sources above (or another with a
-comparable case), read the passages actually relevant to Jerusalem's
-Ayyubid-era meaning or the network argument, and add a `source-audit.csv` row
-with a real locator - the same discipline every other row in that table is
-held to, no more and no less.
+Closing it means, in order: (1) resolve the schema question above, (2) pick
+one of the four sources - Ibn al-Qalanisi via Gibb's translation is the
+strongest first candidate on fit (near-contemporary, single existing English
+translation already identified) if a `contemporary_narrative`-shaped register
+is added; Baha' al-Din via Conder and Wilson is the strongest candidate if
+rights matter more than fit, since it may support a `production_role` the
+other three cannot - (3) read the passages actually relevant to Jerusalem's
+meaning or the network argument in the *source itself*, not in Hillenbrand's
+citation of it, and (4) add a `source-audit.csv` row with a real locator - the
+same discipline every other row in that table is held to, no more and no
+less.

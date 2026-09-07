@@ -54,8 +54,8 @@
       ],
       "id": "vd-cru-islamic-witness-gap",
       "kind": "verification",
-      "resolutionPath": "Audit one medieval Muslim-authored primary source (candidates and translations are named in the scoping note) on the same terms as Burchard and Sanudo - shelfmark or edition, a real locator, a covers register - rather than treating a modern secondary synthesis as a stand-in witness.",
-      "statement": "Every source behind the Holy Land register's textual_construct and network_node records is Latin Christian - Burchard of Mount Sion and Marino Sanudo Torsello. No source in source-audit.csv is authored from the perspective of the people who held Jerusalem and the Levant for most of 1099-1291, so the register that argues what the city meant cannot yet show what it meant to them.",
+      "resolutionPath": "First resolve whether the Holy Land register gains a seventh, narrative-shaped covers kind or whether a Muslim-authored chronicle belongs in a different proof entirely (the scoping note lays out both options without picking one). Then read one candidate's own text - Ibn al-Qalanisi via Gibb 1932 fits the register best, Baha' al-Din via Conder and Wilson 1897 has the more likely path to a production_role - and audit it into source-audit.csv with a real locator, on the same terms as Burchard and Sanudo.",
+      "statement": "Every source behind the Holy Land register's textual_construct and network_node records is Latin Christian - Burchard of Mount Sion and Marino Sanudo Torsello. No source in source-audit.csv is authored from the perspective of the people who held Jerusalem and the Levant for most of 1099-1291, so the register that argues what the city meant cannot yet show what it meant to them. Four named candidates (Ibn al-Qalanisi/Gibb, Ibn al-Athir, Usama ibn Munqidh/Hitti, Baha' al-Din/Conder and Wilson) are now sourced from an actual read of Hillenbrand's bibliography rather than guessed, but none has a covers register ROLE_KINDS supports, none has been read in its own text, and none is in source-audit.csv.",
       "status": "open"
     },
     {
