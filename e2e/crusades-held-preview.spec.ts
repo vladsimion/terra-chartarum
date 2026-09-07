@@ -100,7 +100,7 @@ test.describe('the Sea proof keeps six claims apart', () => {
   });
 });
 
-test.describe('the Holy Land register keeps six kinds of claim apart', () => {
+test.describe('the Holy Land register keeps seven kinds of claim apart', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(ESSAY, { waitUntil: 'domcontentloaded' });
   });
@@ -108,7 +108,7 @@ test.describe('the Holy Land register keeps six kinds of claim apart', () => {
   test('offers every register and one panel at a time', async ({ page }) => {
     const island = page.locator('[data-registers]');
     await expect(island).toBeVisible();
-    await expect(island.locator('[data-register]')).toHaveCount(6);
+    await expect(island.locator('[data-register]')).toHaveCount(7);
     await expect(island.locator('[data-panel]:visible')).toHaveCount(1);
   });
 
@@ -125,9 +125,9 @@ test.describe('the Holy Land register keeps six kinds of claim apart', () => {
     await expect(island.locator('[data-panel]:visible')).toHaveCount(1);
   });
 
-  test('says of five registers that they have no position', async ({ page }) => {
+  test('says of six registers that they have no position', async ({ page }) => {
     const island = page.locator('[data-registers]');
-    await expect(island.locator('[data-placed="no"]')).toHaveCount(5);
+    await expect(island.locator('[data-placed="no"]')).toHaveCount(6);
     await expect(island.locator('[data-placed="yes"]')).toHaveCount(1);
   });
 

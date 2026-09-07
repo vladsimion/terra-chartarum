@@ -111,48 +111,53 @@ row in `source-audit.csv`: the schema's `source_kind` values
 `map_object`) are all primary-source kinds, and a 1999 monograph is none of
 them.
 
-## The schema question this still leaves open
+## The schema question, resolved
 
-None of the four sources above has a `covers` register it can validly declare
-if added to `jerusalem-roles.csv` today. `ROLE_KINDS` (in
-`scripts/crusades/validate.py`) argues claims about what Jerusalem *means* or
-*is* - `sacred_centre`, `pilgrimage_destination`, `textual_construct`,
-`cartographic_construct`, `network_node`, `cartographic_memory` - and a
-chronicle's contribution is a different kind of claim: what happened, when,
-according to whom. That is closer to `source_kind: primary_narrative` (which
-already exists and is exactly what Villehardouin, Clari and Choniates are
-registered as, for the Fourth Crusade proof) than to anything in
-`ROLE_KINDS`.
+None of the four sources above had a `covers` register it could validly
+declare in `jerusalem-roles.csv`: `ROLE_KINDS` argued claims about what
+Jerusalem *means* or *is* - `sacred_centre`, `pilgrimage_destination`,
+`textual_construct`, `cartographic_construct`, `network_node`,
+`cartographic_memory` - and a chronicle's contribution is a different kind of
+claim, what happened, when, according to whom.
 
-Two ways to close this, and this note does not pick one:
+This has been resolved by adding a seventh register, `contemporary_narrative`
+(KAN-438 cont'd), to `ROLE_KINDS` in `scripts/crusades/validate.py`, with its
+own evidence class (`chronicle_narrative`) and its own place in
+`UNPLACEABLE_ROLES` - a narrative account is a claim about what happened, not
+about where, so it stays `not_spatial` like the other five non-`network_node`
+registers. The alternative this note originally weighed - routing a Muslim
+chronicle through the `fourth_crusade`-style narrative apparatus instead, or a
+fourth proof of its own - was not taken: the Holy Land act already had the
+place for this claim (Jerusalem, in 1099), just not the register.
 
-1. Add a seventh Holy Land register - something like `contemporary_narrative`
-   - with its own validator rule, the way KAN-438 added the other six.
-2. Decide the Holy Land act's six registers are deliberately about meaning and
-   position and not about narrative, and that a Muslim-authored chronicle
-   belongs instead in the `fourth_crusade`-style narrative apparatus (or a
-   fourth proof of its own), not in `jerusalem-roles.csv`.
+## What has actually been added
 
-Either is a real design decision about a system KAN-438 built on purpose, not
-something this note should settle by editing the validator in passing.
+`cru-jer-ibn-al-qalanisi` in `source-audit.csv` (`source_kind:
+primary_narrative`, `covers: contemporary_narrative`, `rights_status:
+rights_review_required`, `production_role: research_only`) and
+`cru-jer-qalanisi-1099` in `jerusalem-roles.csv` (sequence 11, `date_from`/
+`date_to` 1099). Both carry `source_locator: pending` and `verification_state:
+unverified`: what is established is that Ibn al-Qalanisi's continuation of the
+Damascus chronicle, via Gibb's 1932 translation, is a real, identifiable,
+near-contemporary Muslim witness to the loss of Jerusalem in 1099, and where to
+find it. No page of Gibb's translation has been opened for this corpus - the
+locator is Hillenbrand's own citation of it (1999, p. 619), not a page of the
+source itself, and the two are not the same claim.
 
-## What this note does and does not do
+This closes the schema half of `vd-cru-islamic-witness-gap`. It does not close
+the debt: the register that argues "what a witness says happened" now exists
+and is populated, but nobody has yet read what that witness actually says.
 
-It does not add, edit, or resolve anything in `source-audit.csv`,
-`jerusalem-roles.csv`, or `places.csv`. It records a debt
-(`vd-cru-islamic-witness-gap` in `data/crusades/reference/verification-debt.csv`)
-against the `jerusalem:research` gate, alongside the existing
-`vd-cru-jerusalem-locators` and `vd-cru-arabic-forms` debts that gate is
-already blocked on.
+## What is still open
 
-Closing it means, in order: (1) resolve the schema question above, (2) pick
-one of the four sources - Ibn al-Qalanisi via Gibb's translation is the
-strongest first candidate on fit (near-contemporary, single existing English
-translation already identified) if a `contemporary_narrative`-shaped register
-is added; Baha' al-Din via Conder and Wilson is the strongest candidate if
-rights matter more than fit, since it may support a `production_role` the
-other three cannot - (3) read the passages actually relevant to Jerusalem's
-meaning or the network argument in the *source itself*, not in Hillenbrand's
-citation of it, and (4) add a `source-audit.csv` row with a real locator - the
-same discipline every other row in that table is held to, no more and no
-less.
+It does not add, edit, or resolve anything else in `source-audit.csv`,
+`jerusalem-roles.csv`, or `places.csv`, and it does not touch
+`vd-cru-jerusalem-locators` or `vd-cru-arabic-forms`, the two debts already
+blocking `jerusalem:research` alongside this one.
+
+Closing `vd-cru-islamic-witness-gap` the rest of the way means: read the
+passages in Gibb's translation actually relevant to 1099 - not Hillenbrand's
+citation of it - and move `cru-jer-qalanisi-1099` off a pending locator, on the
+same discipline every other row in this corpus is held to, no more and no
+less. Baha' al-Din via Conder and Wilson remains worth a rights check
+separately, since it may support a `production_role` this row cannot.

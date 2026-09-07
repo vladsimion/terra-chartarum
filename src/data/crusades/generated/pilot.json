@@ -54,8 +54,8 @@
       ],
       "id": "vd-cru-islamic-witness-gap",
       "kind": "verification",
-      "resolutionPath": "First resolve whether the Holy Land register gains a seventh, narrative-shaped covers kind or whether a Muslim-authored chronicle belongs in a different proof entirely (the scoping note lays out both options without picking one). Then read one candidate's own text - Ibn al-Qalanisi via Gibb 1932 fits the register best, Baha' al-Din via Conder and Wilson 1897 has the more likely path to a production_role - and audit it into source-audit.csv with a real locator, on the same terms as Burchard and Sanudo.",
-      "statement": "Every source behind the Holy Land register's textual_construct and network_node records is Latin Christian - Burchard of Mount Sion and Marino Sanudo Torsello. No source in source-audit.csv is authored from the perspective of the people who held Jerusalem and the Levant for most of 1099-1291, so the register that argues what the city meant cannot yet show what it meant to them. Four named candidates (Ibn al-Qalanisi/Gibb, Ibn al-Athir, Usama ibn Munqidh/Hitti, Baha' al-Din/Conder and Wilson) are now sourced from an actual read of Hillenbrand's bibliography rather than guessed, but none has a covers register ROLE_KINDS supports, none has been read in its own text, and none is in source-audit.csv.",
+      "resolutionPath": "Read the passages in Gibb's 1932 translation of Ibn al-Qalanisi actually relevant to 1099 and move cru-jer-qalanisi-1099 off a pending locator, on the same discipline every other row in this corpus is held to. Baha' al-Din via Conder and Wilson 1897 remains worth a separate rights check, since it may support a production_role this row cannot.",
+      "statement": "The Holy Land register gained a seventh covers kind, contemporary_narrative, and one row against it: cru-jer-ibn-al-qalanisi / cru-jer-qalanisi-1099, citing Ibn al-Qalanisi's Damascus chronicle via Gibb's 1932 translation for the loss of Jerusalem in 1099. That closes the schema half of this debt - the other six registers still run on Latin sources alone, but the register that can hold a Muslim-authored witness now exists and is populated. What remains: the row's locator is pending and its verification_state is unverified, because the citation is Hillenbrand's bibliography entry (1999, p. 619), not a page of Gibb's translation itself. Nobody has read what Ibn al-Qalanisi actually says.",
       "status": "open"
     },
     {
@@ -840,6 +840,30 @@
       "sourceId": null,
       "sourceLocator": null,
       "title": "Three continents as a clover leaf, meeting at Jerusalem",
+      "vmnReference": null
+    },
+    {
+      "catalogueObjectId": null,
+      "confidence": "medium",
+      "dateFrom": "1099",
+      "datePrecision": "year",
+      "dateTo": "1099",
+      "evidenceClass": "chronicle_narrative",
+      "geometryProvenance": "not_spatial",
+      "id": "cru-jer-qalanisi-1099",
+      "notes": "The register's first record authored from inside the events it narrates rather than about them from outside: the other six registers are all claims about what Jerusalem means or where it is, made by Latin sources. Ibn al-Qalanisi's continuation of the Damascus chronicle is the nearest surviving Muslim witness to the loss of Jerusalem in 1099, cited here via Gibb's 1932 translation; no page of it has been read for this corpus, so this record establishes that such a witness exists and where to find it, nothing more.",
+      "placeIds": [
+        "cru-plc-jerusalem"
+      ],
+      "placeNames": [
+        "Jerusalem"
+      ],
+      "reviewState": "raw",
+      "roleKind": "contemporary_narrative",
+      "sequence": 11,
+      "sourceId": "cru-jer-ibn-al-qalanisi",
+      "sourceLocator": "pending",
+      "title": "A Damascene chronicler's account of the city's loss",
       "vmnReference": null
     }
   ],

@@ -71,16 +71,26 @@ Constantinople is; it is not evidence for where the fleet stood.
 The two prototypes argue a road and a campaign. The third argues the city both of
 them are pointed at, and it exists because Jerusalem cannot be held as a row.
 
-| Register                 | What it asserts                        | Geometry         |
-| ------------------------ | -------------------------------------- | ---------------- |
-| `sacred_centre`          | The world is arranged around this city | none             |
-| `pilgrimage_destination` | What the journey was for               | none             |
-| `textual_construct`      | The land has an order, and this is it  | none             |
-| `cartographic_construct` | The land ruled into squares            | none             |
-| `network_node`           | Something passed through here          | modern reference |
-| `cartographic_memory`    | The centring outlived its subject      | none             |
+| Register                  | What it asserts                        | Geometry         |
+| ------------------------- | --------------------------------------- | ---------------- |
+| `contemporary_narrative`  | What a witness says happened, and when | none             |
+| `sacred_centre`           | The world is arranged around this city | none             |
+| `pilgrimage_destination`  | What the journey was for               | none             |
+| `textual_construct`       | The land has an order, and this is it  | none             |
+| `cartographic_construct`  | The land ruled into squares            | none             |
+| `network_node`            | Something passed through here          | modern reference |
+| `cartographic_memory`     | The centring outlived its subject      | none             |
 
-**Four of the ten records are on a layer.** The validator refuses a position to
+`contemporary_narrative` (KAN-438 cont'd) is also the register that finally
+holds a Muslim-authored source: `cru-jer-qalanisi-1099` cites Ibn al-Qalanisi's
+Damascus chronicle, via Gibb's 1932 translation, for the city's loss in 1099.
+It was added after an audit
+([`docs/crusades/islamic-perspective-scoping.md`](islamic-perspective-scoping.md))
+found that the other six registers - and the whole `source-audit.csv` - were
+Latin Christian only. No page of Gibb's translation has been read yet; the row
+establishes that the witness exists and where to find it, nothing more.
+
+**Four of the eleven records are on a layer.** The validator refuses a position to
 any register in `UNPLACEABLE_ROLES`, and the reason is one sentence: the middle
 of a mappa mundi is not at 31.78° N, it is in the middle, and a pin there would
 convert a claim about what the world is arranged around into a claim about where

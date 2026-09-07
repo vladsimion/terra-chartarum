@@ -129,6 +129,14 @@ PLACE_ROLES = {
 # of claim about the same city, and the difference is the act's subject: a world
 # image putting Jerusalem in the middle, a text ordering the land from Acre and a
 # port with a quay are not three versions of one statement.
+#
+# `contemporary_narrative` (KAN-438 cont'd) is the seventh: a near-contemporary
+# chronicle's account of a specific event at Jerusalem - that it fell, or was
+# recovered, on such a date, according to such a witness. This is a different
+# kind of claim again from the other six, which all argue what the city means or
+# where it is: a narrative argues what happened, and until this register existed
+# nothing in this act could hold a Muslim-authored chronicle at all, only Latin
+# world images and Latin descriptive/cartographic texts.
 ROLE_KINDS = {
     "sacred_centre",
     "pilgrimage_destination",
@@ -136,6 +144,7 @@ ROLE_KINDS = {
     "cartographic_construct",
     "network_node",
     "cartographic_memory",
+    "contemporary_narrative",
 }
 ROLE_EVIDENCE = {
     "world_image",
@@ -144,6 +153,7 @@ ROLE_EVIDENCE = {
     "cartographic_construction",
     "network_inference",
     "later_impression",
+    "chronicle_narrative",
 }
 # Registers that are claims about meaning rather than about position. Giving one
 # of these a coordinate answers the question the act asks.
@@ -153,6 +163,11 @@ UNPLACEABLE_ROLES = {
     "textual_construct",
     "cartographic_construct",
     "cartographic_memory",
+    # A chronicle's account of an event is not a claim about a position either:
+    # the event happened somewhere this corpus already places (Jerusalem), and
+    # a second coordinate on the narrative record itself would just duplicate
+    # the place row rather than assert anything.
+    "contemporary_narrative",
 }
 # The year the last mainland crusader port fell. A record of later cartographic
 # memory has to be later than the thing it remembers.
@@ -512,9 +527,10 @@ def validate_roles(errors: list[str], places: set[str], sources: set[str]) -> No
     The act this table carries is that Jerusalem is not one kind of thing. It is
     the middle of a world image, the end of a road that stops at Otranto, a land
     described in divisions taken from a port, a grid drawn for an expedition
-    nobody mounted, a set of quays with cargo on them, and - centuries later - an
-    emblem. Six registers, and the rules below exist to stop them collapsing
-    into a list of places with dates.
+    nobody mounted, a set of quays with cargo on them, a chronicle's account of
+    the day it fell or was recovered, and - centuries later - an emblem. Seven
+    registers, and the rules below exist to stop them collapsing into a list of
+    places with dates.
 
     Two of the rules do most of the work. A register that is a claim about
     meaning may not carry a position, because giving the sacred centre a
