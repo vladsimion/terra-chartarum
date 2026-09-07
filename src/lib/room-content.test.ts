@@ -170,9 +170,9 @@ describe('roomCounts', () => {
   const maps = [map('m1', 'border'), map('m2', 'city')];
   const layers = [layer('l1', 'city', ['border']), layer('l2', 'road')];
 
-  it('counts primary and secondary members across all three types', () => {
+  it('counts essays by PRIMARY membership only, maps/layers by primary or secondary', () => {
     expect(roomCounts({ room: 'border', essays, maps, layers })).toEqual({
-      essays: 2, // e1 primary, e2 secondary
+      essays: 1, // e1 primary; e2's secondary border tag does not count
       maps: 1, // m1 primary
       layers: 1, // l1 secondary
     });
