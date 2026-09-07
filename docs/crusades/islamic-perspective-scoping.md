@@ -42,6 +42,14 @@ date; `rights_status: rights_review_required` and `production_role:
 research_only` on `cru-jer-ibn-al-qalanisi` reflect that this has not changed,
 only `verification_state` and `source_locator` have.
 
+Conder and Wilson's 1897 translation of Baha' al-Din is a cleaner case: it is
+public domain (see "Baha' al-Din: rights checked" below), and the 23-page
+excerpt supplied (pp. 110-121, exported as a PDF from the volume's Google
+Books scan) is treated the same way regardless - kept outside this repository,
+described and quoted only at citation scale in "Baha' al-Din: read, and a
+fabrication caught" below. Being public domain changes what could eventually
+be reproduced from it, not what this note actually reproduces.
+
 ## The gap, precisely
 
 The Holy Land register in `data/crusades/jerusalem-roles.csv` argues six
@@ -107,15 +115,14 @@ exactly where this section originally left them.
   translation, unlike the modern standard English translation (D. S. Richards,
   *The Rare and Excellent History of Saladin*, Ashgate, 2001, still in
   copyright and *not* what Hillenbrand cites). A biography of Saladin by a
-  member of his circle, and the source most directly relevant to 1187 if the
-  register is ever extended to that event. **Rights checked** - see "Baha'
-  al-Din: rights checked, content unread" below; still no page of it has been
-  read.
+  member of his circle. **Since read directly, for 1187** - see "Baha'
+  al-Din: read, and a fabrication caught" below.
 
 The Conder and Wilson translation of Baha' al-Din turned out to be the one
 candidate here with a clean public-domain path, on the same reasoning that
-makes Luard's Matthew Paris edition the Road proof's fallback - see below for
-the actual determination, which this list originally left as "worth checking."
+makes Luard's Matthew Paris edition the Road proof's fallback - it was
+"worth checking" when this list was first written; it has since been checked
+and read.
 
 Hillenbrand's book, and Islamic-perspective Crusades historiography generally,
 is a finding aid for narrowing which passages in these sources to read next -
@@ -173,11 +180,11 @@ regardless (see "Provenance and rights" above).
 `vd-cru-islamic-witness-gap` is marked resolved in
 `data/crusades/reference/verification-debt.csv` on this basis.
 
-## Baha' al-Din: rights checked, content unread
+## Baha' al-Din: rights checked
 
-A separate, narrower question from the reading above: is Conder and Wilson's
-1897 translation actually likely to clear rights, or was "plausibly public
-domain" just a guess? Checked, not guessed, on two independent grounds:
+A narrower question than the reading below: is Conder and Wilson's 1897
+translation actually likely to clear rights, or was "plausibly public domain"
+just a guess? Checked, not guessed, on two independent grounds:
 
 - **US copyright**: as of 2026, any work published in 1930 or earlier is
   unconditionally in the public domain in the United States, regardless of the
@@ -198,16 +205,59 @@ domain" just a guess? Checked, not guessed, on two independent grounds:
 This is a materially different position from Gibb 1932, where the life+70
 argument is the *only* one available and does not yet clear the work (Gibb
 died in 1971; expiry is roughly 2041) - the two translations cannot be treated
-alike, and this note does not treat them alike.
+alike, and this note does not treat them alike. `rights_status:
+public_domain_text` on `cru-jer-baha-al-din` rests on this.
 
-`cru-jer-baha-al-din` has been added to `source-audit.csv` on this basis:
-`rights_status: public_domain_text`, `covers: contemporary_narrative`,
-`production_role: research_only` (locator is still `pending`, which alone
-keeps `production_role` at `research_only` regardless of rights - see the
-`PRODUCTION_ROLES` rule in `scripts/crusades/validate.py`). It backs no
-`jerusalem-roles.csv` record yet: nobody has read a page of Conder and
-Wilson's translation, only established what it would take to eventually
-publish from it.
+## Baha' al-Din: read, and a fabrication caught
+
+Before real pages of this translation were available, this conversation was
+offered a plain-text block claiming to be "the transcribed text for pp.
+110-121" of the 1897 edition. It was rejected without being used, on internal
+grounds alone: the prose register was wrong for a Victorian PEF translation
+(too smooth, too little of the period's dense footnoting), the content read
+as a compilation of the anecdotes that circulate in popular secondary
+accounts of Hattin and 1187 rather than a page-by-page translation, and there
+was no way to verify it against an actual copy. That reasoning turned out to
+be correct.
+
+Once the real pages arrived - a PDF exported from the Google Books scan at
+the volume's own permalink, pp. 110-121, with an embedded OCR text layer this
+project's extractor could not decode cleanly, so read as page images instead
+- pp. 118-120 (Part II, Chapter XXXVI, "Taking of the Holy City") were read
+directly and checked against the rejected text. Three concrete discrepancies
+confirmed it was fabricated rather than merely paraphrased:
+
+- The rejected text dated the surrender to "the 2nd of Rajab." The real text
+  gives 27 Rajab (2 October 1187) - the date that is calendrically consistent
+  with the same text's own 15 Rajab arrival date twelve days earlier. "2nd of
+  Rajab" would place the surrender *before* the siege began.
+- The rejected text gave the ransom as 10/5/2 Tyrian dinars for man/woman/
+  child. The real text gives 10/5/**1**.
+- The rejected text included a dramatic speech by Balian threatening to kill
+  5,000 Muslim prisoners and destroy the Dome of the Rock if terms were
+  refused. No such speech, or anything resembling a quoted negotiation, appears
+  in this chapter: Baha' al-Din's account of the surrender itself is two
+  sentences ("messengers had several times passed backwards and forwards...
+  a treaty was concluded").
+
+What the real chapter does contain: Saladin's arrival before Jerusalem on 15
+Rajab AH 583 (20 September 1187), the shift of his camp to the north wall, the
+mining that breached it near the Wadi Jehennum corner, the negotiated
+surrender on 27 Rajab (2 October 1187) - the anniversary of the Prophet's
+night journey, which the text reads as divine confirmation - the ransom
+terms, the removal of the cross from the Dome of the Rock, the restoration of
+Friday prayers, and Baha' al-Din's own framing of the whole event as a
+triumph for Islam. That is the deliberate counterpart to Ibn al-Qalanisi's
+1099: the same register now holds a loss and a recovery, in the words of two
+different Muslim authors, rather than one flattened into the other.
+
+`cru-jer-baha-al-din` in `source-audit.csv` now carries `locator: pp.
+118-120`, `verification_state: verified`, `review_status: source_checked`.
+`cru-jer-shaddad-1187` in `jerusalem-roles.csv` (sequence 12) carries the same
+locator, `review_state: normalized`, `confidence: high`. `production_role`
+stays `research_only`: a passage read for research is not the same as a
+reproduction resolved for publication, and nothing about the rights position
+above has changed.
 
 ## What is still open
 
@@ -215,11 +265,10 @@ This does not touch `vd-cru-jerusalem-locators` (Burchard and Sanudo, still
 `pending`) or `vd-cru-arabic-forms` (the place-name romanisations), the two
 debts still blocking `jerusalem:research` alongside the one this note closes.
 It also does not touch `production_role`, `rights_status`, or
-`resolution_status` on the Ibn al-Qalanisi row: a source can be read and
-verified for research without being cleared for reproduction, and this row is
-the former, not the latter.
+`resolution_status` on either Muslim-authored row: a source can be read and
+verified for research without being cleared for reproduction, and both rows
+are the former, not the latter.
 
-Reading Conder and Wilson's translation - presumably for 1187, if the register
-is extended to Saladin's recovery of the city - is a new piece of work,
-not a continuation of this one. So is anything involving Ibn al-Athir or
-Usama ibn Munqidh, neither of which has had so much as a rights check yet.
+Ibn al-Athir and Usama ibn Munqidh remain exactly where the "Candidate primary
+sources" section above left them: identified from Hillenbrand's bibliography,
+not rights-checked, not read.

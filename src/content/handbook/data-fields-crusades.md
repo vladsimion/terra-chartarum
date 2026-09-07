@@ -82,9 +82,11 @@ kind of claim a record is:
 | `network_node`            | Something passed through here          | yes   |
 | `cartographic_memory`     | The centring outlived its subject      | no    |
 
-`contemporary_narrative` is also the only register with a Muslim-authored
-source behind it (`cru-jer-ibn-al-qalanisi`, via Gibb's translation of Ibn
-al-Qalanisi) - the other six all run on Latin sources, which is the gap
+`contemporary_narrative` is also the only register with Muslim-authored
+sources behind it: `cru-jer-ibn-al-qalanisi` (via Gibb's translation, for the
+loss of Jerusalem in 1099) and `cru-jer-baha-al-din` (via Conder and Wilson's
+translation, for its recovery in 1187) - the other six registers run on Latin
+sources only, which is the gap
 `docs/crusades/islamic-perspective-scoping.md` records.
 
 Only the ports are drawn. The middle of a mappa mundi is not at 31.78° N; it is
@@ -108,8 +110,9 @@ of a campaign is legible, and dashed so nobody measures them.
 ## Review state
 
 `raw`, `normalized`, `reviewed`, `approved`, `published`. Everything here is
-`raw` except `cru-jer-qalanisi-1099`, which is `normalized`: its folio has
-actually been read (pp. 47-48 of Gibb's translation of Ibn al-Qalanisi), the
-one exception to "not one folio has been transcribed" anywhere in this corpus.
+`raw` except two records, both `normalized`: `cru-jer-qalanisi-1099` (pp.
+47-48 of Gibb's translation of Ibn al-Qalanisi) and `cru-jer-shaddad-1187`
+(pp. 118-120 of Conder and Wilson's translation of Baha' al-Din) - the only
+folios actually read anywhere in this corpus.
 No witness is cleared for publication, which is what the source audit records
 and what the release manifest asserts.

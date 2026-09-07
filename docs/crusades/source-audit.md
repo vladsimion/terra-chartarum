@@ -13,12 +13,21 @@ Knowing that a manuscript exists is not the same as having read the folio a
 prototype means to use, and the distance between those two is where an
 unverifiable claim gets in. So `locator` is required on every row and may be
 `pending`, and a row claiming `verification_state: verified` may not leave it
-pending. **One folio reference is no longer pending**: `cru-jer-ibn-al-qalanisi`
-carries `pp. 47-48` and `verification_state: verified`, after those pages of
-Gibb's translation of Ibn al-Qalanisi were actually read (see
-[`docs/crusades/islamic-perspective-scoping.md`](islamic-perspective-scoping.md)).
-Every other locator in the audit still reads `pending`: the exception proves
-the rule holds rather than quietly relaxing it.
+pending. That distance stopped being hypothetical once real reading started:
+a plain-text block claiming to be a transcription of Baha' al-Din's chapter on
+1187 was offered before the real pages were available, was rejected on
+internal grounds alone (wrong translator's-era register, content that read as
+a popular-history compilation rather than a page), and turned out on checking
+against the real pages to have the wrong surrender date, the wrong ransom
+terms, and a negotiation speech that doesn't exist in the book. The full
+account is in
+[`docs/crusades/islamic-perspective-scoping.md`](islamic-perspective-scoping.md).
+
+**Two folio references are no longer pending**: `cru-jer-ibn-al-qalanisi`
+(`pp. 47-48`) and `cru-jer-baha-al-din` (`pp. 118-120`), both
+`verification_state: verified`, after those pages were actually read. Every
+other locator in the audit still reads `pending`: the exceptions prove the
+rule holds rather than quietly relaxing it.
 
 A manuscript witness must carry its shelfmark or it is not identified, and the
 validator refuses `n/a` for that kind. `map_object` was added for the Holy Land
@@ -72,15 +81,16 @@ maps attributed to Pietro Vesconte, and two Muslim-authored chronicles for a
 seventh register, `contemporary_narrative`, added after an audit found the
 other five were all Latin
 ([`docs/crusades/islamic-perspective-scoping.md`](islamic-perspective-scoping.md)).
-Of the two, only Ibn al-Qalanisi's Damascus chronicle - via Gibb's translation
-- backs an actual `jerusalem-roles.csv` record so far; Baha' al-Din ibn
-Shaddad's life of Saladin - via Conder and Wilson's 1897 translation - is
-registered with a rights determination (`public_domain_text`, checked
-independently of Hillenbrand's citation) but no locator and no role record
-yet, exactly the state every other source here started from. Each source
-declares which register it may speak in, in the same `covers` field the Sea
-proof uses for its sequence, so a text cannot be silently recruited as
-evidence about a picture.
+Both now back an actual `jerusalem-roles.csv` record: Ibn al-Qalanisi's
+Damascus chronicle, via Gibb's translation, for the loss of Jerusalem in
+1099 (`cru-jer-qalanisi-1099`), and Baha' al-Din ibn Shaddad's life of
+Saladin, via Conder and Wilson's 1897 translation, for its recovery in 1187
+(`cru-jer-shaddad-1187`). Baha' al-Din's rights were determined
+independently of Hillenbrand's citation (`public_domain_text`, checked on US
+and UK grounds) before the content was read. Each source declares which
+register it may speak in, in the same `covers` field the Sea proof uses for
+its sequence, so a text cannot be silently recruited as evidence about a
+picture.
 
 One register is closed to the audit entirely. `cartographic_memory` records later
 maps that go on centring Jerusalem, and a source row for one of those would make

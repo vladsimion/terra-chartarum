@@ -1,7 +1,7 @@
 ---
 id: layer-crusades-jerusalem-network
 title: The Holy Land as a network, the ports
-summary: Four ports out of eleven Holy Land records. The other seven say what happened at Jerusalem or what it meant, and neither has a coordinate.
+summary: Four ports out of twelve Holy Land records. The other eight say what happened at Jerusalem or what it meant, and neither has a coordinate.
 docType: layer
 pattern: B
 programme: crusades
@@ -32,14 +32,15 @@ treatises proposed to cut; and Famagusta, where the eastern traffic went after 1
 
 ## How to read this layer
 
-This layer is four records out of eleven. The dataset behind it also holds a
-Damascene chronicler's account of the city's loss in 1099, Jerusalem at the
-centre of two world images, the destination an itinerary points at without
-drawing, a Holy Land described in divisions taken from Acre, that land ruled
-into squares for an expedition nobody mounted, and a printed clover leaf from
-1581 that centres Jerusalem anyway.
+This layer is four records out of twelve. The dataset behind it also holds a
+Damascene chronicler's account of the city's loss in 1099, Baha' al-Din's
+account of its recovery in 1187, Jerusalem at the centre of two world images,
+the destination an itinerary points at without drawing, a Holy Land described
+in divisions taken from Acre, that land ruled into squares for an expedition
+nobody mounted, and a printed clover leaf from 1581 that centres Jerusalem
+anyway.
 
-None of those seven is here, and their absence is the argument rather than a gap.
+None of those eight is here, and their absence is the argument rather than a gap.
 The middle of a mappa mundi is not at 31.78° N. Pinning it there would convert a
 claim about what the world is arranged around into a claim about where a city
 is, which is exactly the substitution the essay is about.
@@ -57,13 +58,17 @@ seventeenth-century printed editions that are out of copyright. Neither has been
 read at the page: every locator reads `pending`, and the two records resting on
 Sanudo carry low confidence for that reason.
 
-Ibn al-Qalanisi's Damascus chronicle, read via Gibb's 1932 translation, is the
-one Muslim-authored source in the Holy Land register - added after an audit
+Ibn al-Qalanisi's Damascus chronicle (via Gibb's 1932 translation, for 1099)
+and Baha' al-Din's biography of Saladin (via Conder and Wilson's 1897
+translation, for 1187) are the two Muslim-authored sources in the Holy Land
+register - added after an audit
 ([`docs/crusades/islamic-perspective-scoping.md`](https://github.com/vladsimion/terra-chartarum/blob/main/docs/crusades/islamic-perspective-scoping.md))
-found the other sources here were all Latin. Its record is not on this layer
-(it is a `contemporary_narrative`, not a port). Unlike the rest of this
-corpus, it has been read at the page: pp. 47-48 of Gibb's translation, the
-one non-`pending` locator anywhere in the Crusades dataset.
+found the other sources here were all Latin. Neither record is on this layer
+(both are `contemporary_narrative`, not ports). Unlike the rest of this
+corpus, both have been read at the page - pp. 47-48 and pp. 118-120
+respectively, the only two non-`pending` locators anywhere in the Crusades
+dataset. Reading the second one caught a fabricated "transcription" offered
+before the real pages arrived; the scoping note has the specifics.
 
 ## Reconstruction and uncertainty
 
