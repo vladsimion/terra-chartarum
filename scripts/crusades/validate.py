@@ -162,7 +162,11 @@ MEMORY_AFTER = 1291
 # no coordinates, so a row claiming one would be inventing a precision the
 # record does not have.
 COORDINATE_BASES = {"modern_reference"}
-REVIEW_STATES = {"raw", "normalized", "reviewed", "approved", "published"}
+# The promotion ladder places.csv, itinerary-stages.csv, fourth-crusade-states.csv
+# and jerusalem-roles.csv share with Dacia's record tables (KAN-335) - the same
+# column name and the same five rungs, so review.py can walk it the same way.
+REVIEW_STATE_LADDER = ["raw", "normalized", "reviewed", "approved", "published"]
+REVIEW_STATES = set(REVIEW_STATE_LADDER)
 
 
 def check_attribution(errors: list[str], row: dict[str, str], label: str) -> None:
@@ -193,6 +197,28 @@ def check_attribution(errors: list[str], row: dict[str, str], label: str) -> Non
 
     if review_date and not ISO_DATE.match(review_date):
         errors.append(f"{label}: review_date '{review_date}' is not an ISO YYYY-MM-DD date")
+
+
+def check_state_attribution(errors: list[str], row: dict[str, str], label: str) -> None:
+    """A record at `reviewed` or above has to say who reviewed it, and when.
+
+    Ported from the equivalent rank check in scripts/dacia/validate.py
+    (`_validate_review`, KAN-335): once a record has cleared `reviewed`, an
+    adjudication nobody's name is against cannot be questioned later. Unlike
+    `check_attribution` above - which owns source-audit.csv's separate
+    candidate/source_checked/reviewed ladder and also forbids a reviewer below
+    that ladder's own top rung - this ladder carries no converse rule, matching
+    Dacia: a name here is only ever required, never refused.
+    """
+    state = row.get("review_state", "")
+    if state not in REVIEW_STATE_LADDER:
+        return  # already flagged by the vocabulary check at the call site
+    if REVIEW_STATE_LADDER.index(state) >= REVIEW_STATE_LADDER.index("reviewed"):
+        if not row.get("reviewer"):
+            errors.append(f"{label}: review_state '{state}' requires a named reviewer")
+        review_date = row.get("review_date", "")
+        if not ISO_DATE.match(review_date or ""):
+            errors.append(f"{label}: review_state '{state}' requires an ISO review_date")
 
 
 def read(name: str) -> list[dict[str, str]]:
@@ -355,6 +381,7 @@ def validate_places(errors: list[str]) -> set[str]:
                 errors.append(f"{label}: {field} is required")
         if row["review_state"] not in REVIEW_STATES:
             errors.append(f"{label}: review_state '{row['review_state']}' is not recognised")
+        check_state_attribution(errors, row, label)
         if row["review_status"] not in REVIEW:
             errors.append(f"{label}: review_status '{row['review_status']}' is not recognised")
 
@@ -443,6 +470,7 @@ def validate_stages(errors: list[str], places: set[str]) -> None:
             errors.append(f"{label}: confidence '{row['confidence']}' is not recognised")
         if row["review_state"] not in REVIEW_STATES:
             errors.append(f"{label}: review_state '{row['review_state']}' is not recognised")
+        check_state_attribution(errors, row, label)
         for field in ("manuscript_label", "notes", "folio", "source_locator"):
             if not row[field]:
                 errors.append(f"{label}: {field} is required, pending if untranscribed")
@@ -503,6 +531,7 @@ def validate_states(errors: list[str], places: set[str], sources: set[str]) -> N
             errors.append(f"{label}: confidence '{row['confidence']}' is not recognised")
         if row["review_state"] not in REVIEW_STATES:
             errors.append(f"{label}: review_state '{row['review_state']}' is not recognised")
+        check_state_attribution(errors, row, label)
         if row["source_id"] not in sources:
             errors.append(f"{label}: source_id '{row['source_id']}' does not resolve")
         for place_id in pipe(row["place_ids"]):
@@ -583,6 +612,7 @@ def validate_roles(errors: list[str], places: set[str], sources: set[str]) -> No
             errors.append(f"{label}: confidence '{row['confidence']}' is not recognised")
         if row["review_state"] not in REVIEW_STATES:
             errors.append(f"{label}: review_state '{row['review_state']}' is not recognised")
+        check_state_attribution(errors, row, label)
         for field in ("display_name", "notes"):
             if not row[field]:
                 errors.append(f"{label}: {field} is required")

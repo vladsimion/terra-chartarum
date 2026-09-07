@@ -60,9 +60,10 @@ def test_unknown_identifier_is_refused():
         review._table_for("hsr-nope-something")
 
 
-def test_ladder_matches_the_validator_vocabulary():
+def test_ladders_match_the_validator_vocabularies():
     """The rungs are validate.py's to define; this tool only walks them."""
-    assert set(review.LADDER) == validate.REVIEW
+    assert set(review.AUDIT_LADDER) == validate.REVIEW
+    assert review.STATE_LADDER == validate.REVIEW_STATE_LADDER
 
 
 def test_candidate_can_be_promoted_to_source_checked(dataset):
@@ -150,3 +151,106 @@ def test_no_committed_source_was_backfilled_with_a_reviewer(dataset):
         assert row["review_status"] != "reviewed", f"{row['source_id']} was reviewed unattended"
         assert not row["reviewer"], f"{row['source_id']} carries an unearned reviewer"
         assert not row["review_date"]
+
+
+# --- The state ladder (places, itinerary-stages, fourth-crusade-states,
+# jerusalem-roles): raw/normalized/reviewed/approved/published, shared with
+# Dacia's record tables (KAN-335). `reviewed` sits in the *middle* of this
+# ladder, not at the end - `approved` and `published` follow it - which is
+# exactly what an earlier draft of review.py got wrong, by reusing the audit
+# ladder's `target == ladder[-1]` test for "does this promotion need a
+# reviewer".
+
+
+def test_a_jerusalem_source_and_role_sharing_an_id_stem_resolve_to_different_tables(dataset):
+    """cru-jer-hereford (a source) and cru-jer-hereford-centre (a role) share a
+    stem; prefix matching alone cannot tell the two tables apart."""
+    source_file, _, _, _ = review._table_for("cru-jer-hereford")
+    role_file, _, _, _ = review._table_for("cru-jer-hereford-centre")
+    assert source_file == validate.TABLE
+    assert role_file == validate.ROLES
+
+
+def test_a_place_can_be_promoted_from_normalized_straight_to_reviewed(dataset):
+    """Places carry no locator gate, so nothing but attribution stands between
+    `normalized` and `reviewed` - and reviewed is not the top of this ladder."""
+    place = next(r for r in rows_of(dataset, validate.PLACES) if r["review_state"] == "normalized")
+
+    assert promote(place["place_id"], "--reviewer", "V. Simion", "--date", "2026-09-07") == 0
+
+    after = next(r for r in rows_of(dataset, validate.PLACES) if r["place_id"] == place["place_id"])
+    assert after["review_state"] == "reviewed"
+    assert after["reviewer"] == "V. Simion"
+    assert after["review_date"] == "2026-09-07"
+
+
+def test_blockers_for_the_state_ladder_do_not_misfire_on_an_intermediate_rung(dataset):
+    """The bug: `_blockers` used `target == ladder[-1]` (published) to decide
+    when to stamp a trial reviewer, so a raw-to-normalized trial - which needs
+    no reviewer - never got one, and a normalized-to-reviewed trial - which
+    does - also never got one, silently reporting every place one rung short
+    of ready instead of showing the real blocker (or none)."""
+    place = next(r for r in rows_of(dataset, validate.PLACES) if r["review_state"] == "normalized")
+    blockers = review._blockers(place["place_id"], place["review_state"])
+    assert blockers == []
+
+
+def test_a_state_below_reviewed_carries_no_attribution_and_promotion_needs_none(dataset):
+    state = next(r for r in rows_of(dataset, validate.STATES) if r["review_state"] == "raw")
+
+    assert promote(state["state_id"], "--reviewer", "T") == 0
+
+    after = next(r for r in rows_of(dataset, validate.STATES) if r["state_id"] == state["state_id"])
+    assert after["review_state"] == "normalized"
+    assert after["reviewer"] == ""
+    assert after["review_date"] == ""
+
+
+def test_a_reviewed_state_can_still_be_promoted_further_with_fresh_attribution(dataset):
+    """Unlike the audit ladder, `reviewed` is not the top rung here: `approved`
+    and `published` both still require - and accept - a named reviewer."""
+    rows = rows_of(dataset, validate.STATES)
+    state = rows[0]
+    state["review_state"] = "reviewed"
+    state["reviewer"] = "V. Simion"
+    state["review_date"] = "2026-09-01"
+    write_rows(dataset, validate.STATES, rows)
+
+    assert promote(state["state_id"], "--reviewer", "V. Simion", "--date", "2026-09-07") == 0
+
+    after = next(r for r in rows_of(dataset, validate.STATES) if r["state_id"] == state["state_id"])
+    assert after["review_state"] == "approved"
+    assert after["reviewer"] == "V. Simion"
+    assert after["review_date"] == "2026-09-07"
+
+
+def test_promoting_past_reviewed_without_attribution_is_refused(dataset, capsys):
+    """A role already at `reviewed` still needs a *fresh* reviewer/review_date
+    to clear `approved` - `command_promote` writes attribution on every
+    promotion at or past `reviewed`, not only the first one to reach it."""
+    rows = rows_of(dataset, validate.ROLES)
+    role = rows[0]
+    role["review_state"] = "reviewed"
+    write_rows(dataset, validate.ROLES, rows)
+    before = rows_of(dataset, validate.ROLES)
+
+    assert promote(role["role_id"], "--to", "approved", "--reviewer", "") == 1
+    assert "requires a named reviewer" in capsys.readouterr().out
+    assert rows_of(dataset, validate.ROLES) == before
+
+
+def test_every_state_ladder_table_carries_the_attribution_columns(dataset):
+    for filename in (validate.PLACES, validate.STAGES, validate.STATES, validate.ROLES):
+        for row in rows_of(dataset, filename):
+            assert "reviewer" in row, f"{filename} has no reviewer column"
+            assert "review_date" in row, f"{filename} has no review_date column"
+
+
+def test_no_state_ladder_table_was_backfilled_with_a_reviewer(dataset):
+    for filename in (validate.PLACES, validate.STAGES, validate.STATES, validate.ROLES):
+        for row in rows_of(dataset, filename):
+            assert row["review_state"] in ("raw", "normalized"), (
+                f"{filename}: {row} was reviewed further than committed data should be"
+            )
+            assert not row["reviewer"], f"{filename}: {row} carries an unearned reviewer"
+            assert not row["review_date"]

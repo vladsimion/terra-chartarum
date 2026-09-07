@@ -8,30 +8,30 @@
     "source-audit": 14
   },
   "inputs": {
-    "data/crusades/fourth-crusade-states.csv": "30a9d12ea5b75e6d8320f471d92a6ba1ac00934e65fc4ec1980b9fd244df02b4",
-    "data/crusades/itinerary-stages.csv": "1930ad66f926ea7ecaa177b8506f348be350b05163418e28f22ea1e2927d9ac0",
-    "data/crusades/jerusalem-roles.csv": "db921996494f79e019eeed8a114cfd4d5ce4813cb788f354b8f47b05429aa63e",
-    "data/crusades/places.csv": "f9b2be0f3f5872f56c1c377e7b22e0b7b8a8094ec9f9e496936c4e62625d832c",
+    "data/crusades/fourth-crusade-states.csv": "fd6f079f29ea1497139089aa5f979fba1cd4d13e491fc275fec377f3f701a946",
+    "data/crusades/itinerary-stages.csv": "93d704a8096b04d9da7813d208957acba68f88f65ff66529d0b2793e80810844",
+    "data/crusades/jerusalem-roles.csv": "e819794fbab02a694456ac793c62048bd013f0b65f18b0c4104f55a31cb9fc46",
+    "data/crusades/places.csv": "ec220810b665ac1d0284b520c84b76209861459300c349b6f60a6ab012554f1e",
     "data/crusades/source-audit.csv": "b6358613491c0fe9e3986892ccb963d37f911b29e258968d1057496603fc5590"
   },
   "kind": "pilot_research_release",
   "licence": "CC BY 4.0 for the compiled records; every witness carries its own rights status, and no witness in this release is cleared for publication.",
   "outputs": {
     "data/crusades/release/cru-pilot-0.1/fourth-crusade-states.csv": {
-      "bytes": 3417,
-      "sha256": "30a9d12ea5b75e6d8320f471d92a6ba1ac00934e65fc4ec1980b9fd244df02b4"
+      "bytes": 3454,
+      "sha256": "fd6f079f29ea1497139089aa5f979fba1cd4d13e491fc275fec377f3f701a946"
     },
     "data/crusades/release/cru-pilot-0.1/itinerary-stages.csv": {
-      "bytes": 4300,
-      "sha256": "1930ad66f926ea7ecaa177b8506f348be350b05163418e28f22ea1e2927d9ac0"
+      "bytes": 4349,
+      "sha256": "93d704a8096b04d9da7813d208957acba68f88f65ff66529d0b2793e80810844"
     },
     "data/crusades/release/cru-pilot-0.1/jerusalem-roles.csv": {
-      "bytes": 4825,
-      "sha256": "db921996494f79e019eeed8a114cfd4d5ce4813cb788f354b8f47b05429aa63e"
+      "bytes": 4866,
+      "sha256": "e819794fbab02a694456ac793c62048bd013f0b65f18b0c4104f55a31cb9fc46"
     },
     "data/crusades/release/cru-pilot-0.1/places.csv": {
-      "bytes": 7962,
-      "sha256": "f9b2be0f3f5872f56c1c377e7b22e0b7b8a8094ec9f9e496936c4e62625d832c"
+      "bytes": 8033,
+      "sha256": "ec220810b665ac1d0284b520c84b76209861459300c349b6f60a6ab012554f1e"
     },
     "data/crusades/release/cru-pilot-0.1/source-audit.csv": {
       "bytes": 8493,
