@@ -205,8 +205,11 @@ def test_an_unknown_evidence_class_is_refused(dataset):
 # --- Promotion --------------------------------------------------------------
 
 def test_nothing_leaves_raw_on_a_pending_locator(dataset):
+    # The departure rather than the sinking: ant-obs-endurance-fix was given a
+    # real locator when the drift positions were sourced against Bergman and
+    # Stuart, and this case needs a row whose locator is genuinely still pending.
     edit(dataset, "observations.csv",
-         lambda rows: find(rows, "observation_id", "ant-obs-endurance-fix")
+         lambda rows: find(rows, "observation_id", "ant-obs-endurance-departs-sg")
          .update({"review_state": "normalized"}))
     refuses("needs a real source locator")
 
