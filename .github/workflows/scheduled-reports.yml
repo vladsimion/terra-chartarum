@@ -1,0 +1,91 @@
+# Scheduled publication-report regeneration.
+#
+# docs/generated/corpus-status.md and docs/generated/collection-completeness.md
+# are checked-in snapshots that `npm run build` verifies on every CI run and
+# Cloudflare Pages build (the `reports:check` step baked into the `build`
+# script - see package.json). Their content is a function of *today's date*
+# via the releaseAt staged-release gate (src/lib/release.ts): whenever an
+# essay's releaseAt passes, the live/held essay sets change and the snapshots
+# go stale even though no file was touched. Nothing regenerated them on their
+# own, so every build failed reports:check from the day an essay released
+# until a human noticed and ran `npm run reports:write` by hand (see the
+# corpus-status.md drift PR #184 surfaced).
+#
+# This workflow closes that gap: it regenerates the reports daily and, only
+# when their content actually changed, commits and pushes them straight to
+# `main`. That push itself triggers a fresh Cloudflare Pages build (Cloudflare
+# Pages builds only on a push to main - see scheduled-release.yml), so the
+# newly-live essay and its matching generated reports land together.
+#
+# Timed 30 minutes before scheduled-release.yml's 06:00 UTC run so that on the
+# 1st/15th, the reports are already fresh before that workflow's deploy-hook
+# fires - GitHub's scheduler can run either job a few minutes late, so this
+# ordering is a best effort, not a guarantee; a same-day mismatch is at worst
+# a single stale Cloudflare build that self-heals the moment this job's own
+# push lands and triggers the next one.
+#
+# The commit is checked out and pushed with REPORTS_REGEN_PAT rather than the
+# default GITHUB_TOKEN: GitHub Actions never triggers other workflows (this
+# repo's own `ci.yml` push trigger included) for a push authored by the
+# default token, to prevent recursive workflow chains. That's fine for the
+# Cloudflare deploy - it watches pushes at the platform level, not through
+# Actions - but it meant the bot's own commit never got a CI checkmark. A PAT
+# is a normal user token, so a push made with one triggers `ci.yml` like any
+# other push.
+#
+# One-time setup: create a fine-grained PAT scoped to just this repository
+# with "Contents: Read and write" access (a dedicated machine account is
+# preferable to a personal one, but not required for a low-risk automation
+# like this), then add it under Settings -> Secrets and variables -> Actions
+# -> New repository secret, named REPORTS_REGEN_PAT. Until that secret
+# exists, checkout falls back to the default GITHUB_TOKEN and this workflow
+# behaves exactly as it did before - it just won't trigger `ci.yml` on its
+# own commits.
+name: Scheduled report regeneration
+
+on:
+  schedule:
+    - cron: '30 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: scheduled-reports
+  cancel-in-progress: false
+
+jobs:
+  regenerate:
+    name: Regenerate and commit publication reports if stale
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          token: ${{ secrets.REPORTS_REGEN_PAT || secrets.GITHUB_TOKEN }}
+
+      - name: Use the pinned Node version
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Regenerate publication reports
+        run: npm run reports:write
+
+      - name: Commit and push if the reports changed
+        run: |
+          if git diff --quiet -- docs/generated/corpus-status.md docs/generated/collection-completeness.md; then
+            echo "Reports are current; nothing to commit."
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add docs/generated/corpus-status.md docs/generated/collection-completeness.md
+          git commit -m 'chore: refresh generated publication reports'
+          git pull --rebase origin main
+          git push origin HEAD:main
