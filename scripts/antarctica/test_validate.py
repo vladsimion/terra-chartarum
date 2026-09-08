@@ -93,8 +93,12 @@ def test_reproduction_requires_rights_that_permit_it(dataset):
 
 
 def test_unverified_object_may_not_be_reproduced(dataset):
+    # Mercator rather than Fine: Fine was verified against the Rumsey 1540 Wechel
+    # issue, and this case needs a row that is genuinely still unverified.
+    # ant-obj-mercator-1569 is the object ant-gap-fine-mercator-ortelius-states
+    # is now open for, so the two move together.
     edit(dataset, "map-objects.csv",
-         lambda rows: find(rows, "map_object_id", "ant-obj-fine-1531")
+         lambda rows: find(rows, "map_object_id", "ant-obj-mercator-1569")
          .update({"reproduction_use": "full_reproduction", "rights_status": "public_domain_work"}))
     refuses("may not be reproduced before it is verified")
 
