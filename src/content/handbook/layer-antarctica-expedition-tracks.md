@@ -7,7 +7,7 @@ pattern: B
 programme: antarctica
 layerId: antarctica-expedition-tracks
 lifecycle: in-review
-lastReviewed: '2026-08-24'
+lastReviewed: '2026-08-29'
 referencesDocIds:
   - data-fields-antarctica
 relatedLayerIds:
@@ -37,14 +37,16 @@ Georgia.
 Read the dash pattern before the shape. It says where the line came from, not
 what happened along it:
 
-| Line      | Where it came from                    |
-| --------- | ------------------------------------- |
-| Solid     | Coordinates transcribed from a source |
-| Long dash | A generalisation Terra Chartarum drew |
-| Fine dot  | An interpolation Terra Chartarum drew |
+| Line      | Where it came from                        |
+| --------- | ----------------------------------------- |
+| Solid     | Positions a source gives, joined in order |
+| Long dash | A generalisation Terra Chartarum drew     |
+| Fine dot  | An interpolation Terra Chartarum drew     |
 
 Most of what you see is dashed or dotted. That is the honest state of this
-dataset, and it will change as positions are compiled from the sources.
+dataset, and it will change as positions are compiled from the sources. One line
+is solid: the James Caird passage, whose vertices are the noon positions in
+Worsley's log.
 
 The planned crossing is the one line here that nothing ever travelled. It is
 filed as interpolation and drawn as such, so it cannot be read as a record of
@@ -57,16 +59,27 @@ anything except an intention.
 ## Sources and evidence
 
 Cook's track resolves to the journals; the Endurance lines resolve to Shackleton's
-published account and to the reanalysis of Worsley's logbook. Every locator is
-currently pending, and every line is at `raw`.
+published account and to the reanalysis of Worsley's logbook. Four of the five
+locators are still pending and those lines are at `raw`. The James Caird passage
+is not: its positions were read out of the published transcription of Worsley's
+navigational log (Bergman, Huxtable, Morris and Stuart, _Records of the
+Canterbury Museum_ 32: 23-66, 2018) and it is at `normalized` - read against the
+source, not yet reviewed by a person.
 
 ## Reconstruction and uncertainty
 
 The drift is currently two endpoints joined by a straight line, which the drift
-certainly was not, and the James Caird is three points for a sixteen-day passage
-of which the middle one is ours. Both exist to prove the model can hold a drift
-and a boat journey as different kinds of thing. Neither is a route anyone should
-measure.
+certainly was not. It exists to prove the model can hold a drift as a different
+kind of thing from a voyage, and it is not a route anyone should measure.
+
+The James Caird was the same kind of placeholder - three points of which the
+middle was ours - and is not any longer. It is now fifteen vertices: the
+departure position and the noon position the log gives for each day of the
+passage. Two limits stand even so. A noon-to-noon line says nothing about the
+path between two noons, and nine of the fourteen noons are reckoned rather than
+observed, which is why the line is filed as dead reckoning. The line stops at
+8 May 1916, the last position the log works; the landing two days later has no
+position in the log.
 
 ## Editorial decisions
 

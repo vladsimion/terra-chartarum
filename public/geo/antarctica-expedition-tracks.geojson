@@ -183,35 +183,83 @@
       "geometry": {
         "coordinates": [
           [
-            -54.87,
-            -61.1
+            -54.8333,
+            -61.0667
           ],
           [
-            -45.0,
-            -58.0
+            -54.8333,
+            -60.0
           ],
           [
-            -37.25,
-            -54.16
+            -50.8,
+            -59.7667
+          ],
+          [
+            -50.8,
+            -59.7667
+          ],
+          [
+            -50.0,
+            -59.8667
+          ],
+          [
+            -50.0,
+            -58.6333
+          ],
+          [
+            -48.6,
+            -57.5667
+          ],
+          [
+            -48.0167,
+            -57.1833
+          ],
+          [
+            -46.9667,
+            -56.7
+          ],
+          [
+            -45.6333,
+            -56.2167
+          ],
+          [
+            -44.7167,
+            -55.5167
+          ],
+          [
+            -42.6,
+            -54.5
+          ],
+          [
+            -40.7333,
+            -54.4333
+          ],
+          [
+            -39.6,
+            -54.6333
+          ],
+          [
+            -37.0333,
+            -54.3167
           ]
         ],
         "type": "LineString"
       },
       "properties": {
         "act": "act_viii",
-        "confidence": "low",
+        "confidence": "medium",
         "dateFrom": "1916-04-24",
-        "dateTo": "1916-05-10",
-        "evidenceClass": "editorial_interpolation",
+        "dateTo": "1916-05-08",
+        "evidenceClass": "dead_reckoning",
         "expeditionId": "ant-exp-ite",
-        "geometryProvenance": "editorial_interpolation",
+        "geometryProvenance": "derived_from_log",
         "id": "ant-trk-james-caird",
         "kind": "track",
-        "notes": "Three points for a sixteen-day passage. The middle point is ours entirely, which is why the whole track is filed as interpolation: Worsley's observed fixes are the record, and a smooth line between endpoints is the opposite of what this act is about. ANT-10 replaces it with the fixes.",
-        "reviewState": "raw",
-        "sourceId": "ant-src-worsley-boat-journey",
-        "sourceLocator": "pending",
-        "title": "James Caird, Elephant Island to South Georgia (endpoint sample)",
+        "notes": "Fifteen vertices: the departure position and the noon position the log carries for each day of the passage, in the log's own figures. It replaces the three-point sample whose middle point was ours entirely - the line is now Worsley's track and not our drawing of one, which is what derived_from_log rather than editorial_interpolation records. Where a day has both a reckoned and an observed position the observed one is the vertex, because that is the position the log carried into the next day's run; both survive as rows in observations.csv, and a test asserts the vertices are exactly those positions. Two cautions the line cannot carry itself. The class is dead_reckoning because most of these noons are reckoned - five of the fourteen are corrected by sights - and filing the whole track as a fix would overclaim the nine that are not. And a noon-to-noon line says nothing about the path between two noons; the passage ends at the 8 May position because that is the last one the log works, with the landing two days later carried by ant-obs-king-haakon-bay.",
+        "reviewState": "normalized",
+        "sourceId": "ant-src-bergman-caird-navigation",
+        "sourceLocator": "Appendix B (pp. 58-66), noon positions for Days 1 to 15",
+        "title": "James Caird, Elephant Island to South Georgia (noon positions from the log)",
         "trackKind": "boat_journey",
         "validFrom": 1916,
         "validTo": 1916,

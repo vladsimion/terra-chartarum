@@ -280,7 +280,7 @@
       "format": "geojson",
       "crs": "EPSG:4326",
       "geometry": ["Point"],
-      "featureCount": 19,
+      "featureCount": 38,
       "yearFrom": 1774,
       "yearTo": 1916,
       "source": "Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-425",

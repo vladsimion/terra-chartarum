@@ -7,7 +7,7 @@ pattern: B
 programme: antarctica
 layerId: antarctica-observations
 lifecycle: in-review
-lastReviewed: '2026-08-24'
+lastReviewed: '2026-08-29'
 referencesDocIds:
   - data-fields-antarctica
 relatedLayerIds:
@@ -54,9 +54,19 @@ in a spreadsheet.
 
 ## Sources and evidence
 
-Each position names the source it should be read from and every locator is
-pending. The positions themselves are recorded from the general literature, which
-is why none has left the raw state.
+Each position names the source it should be read from. Most are recorded from
+the general literature with the locator still pending, which is why they have not
+left the raw state.
+
+The James Caird passage is the exception, and it is the shape the rest should
+eventually take. Its nineteen noon positions were read out of the published
+transcription of Worsley's navigational log (Bergman, Huxtable, Morris and
+Stuart, _Records of the Canterbury Museum_ 32: 23-66, 2018), each carrying the
+class the log itself gives it: observed with an instrument, or reckoned from
+course, speed and time. On the five days that have both, both are kept as
+separate records, because the distance between them is the evidence - on
+26 April 1916 it is seventy-eight nautical miles. Those rows are at `normalized`:
+read against the source, not yet reviewed by a person.
 
 ## Reconstruction and uncertainty
 

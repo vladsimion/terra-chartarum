@@ -9,7 +9,7 @@ catalogue rather than as a new flat list.
 | ------------------------------ | ------------------------------------------------------ | ------------------------ |
 | `antarctica-conjectured-south` | The Terra Australis envelope                           | Territories & boundaries |
 | `antarctica-expedition-tracks` | Cook, the Endurance approach, plan, drift, James Caird | Networks & circulation   |
-| `antarctica-observations`      | Nineteen dated positions                               | Places & settlements     |
+| `antarctica-observations`      | Thirty-eight dated positions                           | Places & settlements     |
 | `antarctica-ghost-geographies` | Disproved features. Currently empty.                   | Territories & boundaries |
 
 They are split by the argument each carries, not by geometry type. The

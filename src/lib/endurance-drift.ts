@@ -274,6 +274,7 @@ export function driftPositions(): {
     instrumental_fix: 'Observed with an instrument',
     dead_reckoning: 'Reckoned from course, speed and time',
     editorial_interpolation: 'Drawn by Terra Chartarum, not recorded',
+    inherited_cartography: 'Taken from an earlier chart, not measured',
   };
   return getAntarcticRecords()
     .filter((record) => record.kind === 'observation' && record.act === 'act_viii')

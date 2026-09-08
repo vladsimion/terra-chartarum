@@ -49,6 +49,29 @@ further engineering will move one of them.
   threshold. Accessibility, best practices, SEO, byte weight, script size, LCP
   and layout shift remain hard-green.
 
+## Reading of 29 August 2026: the James Caird log
+
+Bergman, Huxtable, Morris and Stuart, _Navigation of the James Caird on the
+Shackleton Expedition_ (Records of the Canterbury Museum 32: 23-66, 2018), read
+in full and entered as `ant-src-bergman-caird-navigation`. It is the companion,
+in the same volume, to the Weddell Sea paper read in August that closed
+`ant-gap-worsley-workings`.
+
+What moved: the boat journey stopped being a three-point line with a middle point
+we invented. Nineteen noon positions, each carrying the log's own reckoned or
+observed label, are now in `observations.csv`; the track is `derived_from_log`
+with those positions as its vertices; the departure position is refiled as
+inherited cartography, because Worsley took it off a 1:8,000,000 chartlet rather
+than from a sight. Twenty-three pilot records are now `normalized` where two
+were.
+See [Endurance navigation](endurance-navigation.md).
+
+What did not move: any gate. Nothing was promoted to `reviewed`, no claim was
+promoted at all, the public tier is still empty and the build still asserts that
+it is. `sources-read` is closer and still blocked - twenty-seven records carry
+pending locators where twenty-nine did, against nineteen more records in the
+slice. One paper read is one paper read.
+
 ## What that means in practice
 
 The **engineering is done and demonstrable**. Data validates, the build is
@@ -57,11 +80,11 @@ every layer has a public Handbook record, nothing is on by default, and the
 accessibility and static-fallback work is in the components.
 
 The **scholarship is incomplete in the sense that matters for release**. The
-Coronelli treatment is now normalized from opened pages, six source records and
-four claims are `source_checked`, and five map objects have verified catalogue
-identity. But no claim in the ledger has been reviewed, thirty of the
-thirty-two pilot records still carry pending locators, and no map object may be
-reproduced.
+Coronelli treatment is normalized from opened pages, the James Caird passage is
+normalized from Worsley's log, eight source records and six claims are
+`source_checked`, and seven map objects have verified catalogue identity. But no
+claim in the ledger has been reviewed, twenty-seven of the sixty-one pilot
+records still carry pending locators, and no map object may be reproduced.
 
 That is not a criticism of the work; it is the state a research programme is in
 after its foundation is built and before anyone has been to a library. What
@@ -157,7 +180,9 @@ and the checks that would have caught these were all skipping it.
 ## What would change the verdict
 
 In order of leverage: read Bergman and Stuart on the Endurance position and its
-chronometer companion; write to RMG Images about the verified charts; read the
+chronometer companion - the two Journal of Navigation papers, still unread; the
+two open-access Canterbury Museum papers, on the drift and on the boat journey,
+now are; write to RMG Images about the verified charts; read the
 remaining Coronelli leaves and Milanesi, then inspect a globe's southern calotte;
 open the Wilkes atlas at the Library of Congress and find the disputed sheet;
 consult Headland's chronology and check every date in the observations table
