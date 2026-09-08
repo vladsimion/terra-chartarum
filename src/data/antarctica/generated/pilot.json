@@ -1865,14 +1865,210 @@
       "id": "ant-obs-elephant-island",
       "kind": "observation",
       "laterStatus": "confirmed",
-      "notes": "Approximate. Recorded from the general literature during compilation and not yet checked against an edition, so the row stays raw.",
+      "notes": "The landfall is now sourced and the coordinate is not. Bergman and Stuart record that the Expedition made landfall on Cape Valentine at the eastern tip of Elephant Island on 15 April 1916, which fixes the date and the place; they give no position for it. The latitude and longitude here remain the approximate figures previously carried from the general literature and are not Worsley's, which is why the row stays raw at low confidence. The passage that reaches this point is now in the register as ant-obs-elephant-passage-1916-04-07 to -04-13.",
       "observationKind": "position",
       "observedDate": "1916-04-15",
       "observer": "Frank Arthur Worsley",
       "reviewState": "raw",
-      "sourceId": "ant-src-worsley-boat-journey",
-      "sourceLocator": "pending",
+      "sourceId": "ant-src-bergman-stuart-weddell-navigation",
+      "sourceLocator": "Appendix A, p. 91",
       "title": "The boats reach Elephant Island",
+      "validFrom": 1916,
+      "validTo": 1916
+    },
+    {
+      "act": "act_viii",
+      "confidence": "medium",
+      "datePrecision": "day",
+      "evidenceClass": "instrumental_fix",
+      "expeditionId": "ant-exp-ite",
+      "geometry": {
+        "coordinates": [
+          -54.3667,
+          -62.1333
+        ],
+        "type": "Point"
+      },
+      "geometryProvenance": "transcribed_from_coordinates",
+      "id": "ant-obs-elephant-passage-1916-04-07",
+      "kind": "observation",
+      "laterStatus": "not_applicable",
+      "notes": "62d 8' S 54d 22' W, still on the floe: the boats were not launched until 9 April. Longitude rests on two time sights taken a few minutes apart that morning and reduced with the same latitude, which the paper reads as Worsley's own check that the sights were good - the last of them timed and reduced to a tenth of a second, overkill at this latitude but a sign he was preparing to rate the chronometers. From this position the log works Clarence Peak at 20 degrees and 59 miles, and Bridgeman Island at 267 degrees and 58 miles.",
+      "observationKind": "position",
+      "observedDate": "1916-04-07",
+      "observer": "Frank Arthur Worsley",
+      "reviewState": "normalized",
+      "sourceId": "ant-src-bergman-stuart-weddell-navigation",
+      "sourceLocator": "Appendix A, annotated log (pp. 93-95), noon position for 7 April 1916",
+      "title": "Patience Camp, noon position 7 April 1916 (observed)",
+      "validFrom": 1916,
+      "validTo": 1916
+    },
+    {
+      "act": "act_viii",
+      "confidence": "medium",
+      "datePrecision": "day",
+      "evidenceClass": "dead_reckoning",
+      "expeditionId": "ant-exp-ite",
+      "geometry": {
+        "coordinates": [
+          -53.8,
+          -62.1
+        ],
+        "type": "Point"
+      },
+      "geometryProvenance": "transcribed_from_coordinates",
+      "id": "ant-obs-elephant-passage-1916-04-08",
+      "kind": "observation",
+      "laterStatus": "not_applicable",
+      "notes": "62d 6' S 53d 48' W, reckoned by the log as N 82 E 16 miles from the previous noon. Time sights were taken this morning too, again in a pair minutes apart. Clarence Peak now works out at 4 degrees and 54 miles: the floe was drifting them almost directly toward it.",
+      "observationKind": "position",
+      "observedDate": "1916-04-08",
+      "observer": "Frank Arthur Worsley",
+      "reviewState": "normalized",
+      "sourceId": "ant-src-bergman-stuart-weddell-navigation",
+      "sourceLocator": "Appendix A, annotated log (pp. 93-95), noon position for 8 April 1916",
+      "title": "Patience Camp, noon position 8 April 1916 (reckoned)",
+      "validFrom": 1916,
+      "validTo": 1916
+    },
+    {
+      "act": "act_viii",
+      "confidence": "medium",
+      "datePrecision": "day",
+      "evidenceClass": "dead_reckoning",
+      "expeditionId": "ant-exp-ite",
+      "geometry": {
+        "coordinates": [
+          -53.9333,
+          -61.9333
+        ],
+        "type": "Point"
+      },
+      "geometryProvenance": "transcribed_from_coordinates",
+      "id": "ant-obs-elephant-passage-1916-04-09",
+      "kind": "observation",
+      "laterStatus": "not_applicable",
+      "notes": "61d 56' S 53d 56' W, reckoned N 21 W 11 miles from the previous noon, and the hinge of the passage: the boats were launched at 1:30 pm this day, so this noon is the last taken from the ice. The longitude is independently supported rather than merely carried - a bearing of Clarence Peak taken around noon, worked against the peak's charted position, yields the same 53d 56' W. That bearing was later used to rate the chronometers.",
+      "observationKind": "position",
+      "observedDate": "1916-04-09",
+      "observer": "Frank Arthur Worsley",
+      "reviewState": "normalized",
+      "sourceId": "ant-src-bergman-stuart-weddell-navigation",
+      "sourceLocator": "Appendix A, annotated log (pp. 93-95), noon position for 9 April 1916",
+      "title": "Noon position 9 April 1916 (reckoned), the day the boats launched",
+      "validFrom": 1916,
+      "validTo": 1916
+    },
+    {
+      "act": "act_viii",
+      "confidence": "medium",
+      "datePrecision": "day",
+      "evidenceClass": "dead_reckoning",
+      "expeditionId": "ant-exp-ite",
+      "geometry": {
+        "coordinates": [
+          -54.95,
+          -61.7667
+        ],
+        "type": "Point"
+      },
+      "geometryProvenance": "transcribed_from_coordinates",
+      "id": "ant-obs-elephant-passage-1916-04-10",
+      "kind": "observation",
+      "laterStatus": "not_applicable",
+      "notes": "61d 46' S 54d 57' W, reckoned N 71 W 30 miles, and the log shows the components: N 45 W 7 miles to 2 pm, N 60 W 10 miles, and 15 miles of estimated current. Nearly half the day's displacement is water the boats were assumed to be sitting in rather than distance they were sailed.",
+      "observationKind": "position",
+      "observedDate": "1916-04-10",
+      "observer": "Frank Arthur Worsley",
+      "reviewState": "normalized",
+      "sourceId": "ant-src-bergman-stuart-weddell-navigation",
+      "sourceLocator": "Appendix A, annotated log (pp. 93-95), noon position for 10 April 1916",
+      "title": "Noon position 10 April 1916 (reckoned)",
+      "validFrom": 1916,
+      "validTo": 1916
+    },
+    {
+      "act": "act_viii",
+      "confidence": "medium",
+      "datePrecision": "day",
+      "evidenceClass": "dead_reckoning",
+      "expeditionId": "ant-exp-ite",
+      "geometry": {
+        "coordinates": [
+          -56.0,
+          -61.7667
+        ],
+        "type": "Point"
+      },
+      "geometryProvenance": "transcribed_from_coordinates",
+      "id": "ant-obs-elephant-passage-1916-04-11",
+      "kind": "observation",
+      "laterStatus": "not_applicable",
+      "notes": "61d 46' S 56d 0' W, and the whole day's movement is reckoned as 30 miles due west of estimated current, with no sailed component entered at all. The latitude does not change. This is the position the next day's sights would overturn.",
+      "observationKind": "position",
+      "observedDate": "1916-04-11",
+      "observer": "Frank Arthur Worsley",
+      "reviewState": "normalized",
+      "sourceId": "ant-src-bergman-stuart-weddell-navigation",
+      "sourceLocator": "Appendix A, annotated log (pp. 93-95), noon position for 11 April 1916",
+      "title": "Noon position 11 April 1916 (reckoned)",
+      "validFrom": 1916,
+      "validTo": 1916
+    },
+    {
+      "act": "act_viii",
+      "confidence": "medium",
+      "datePrecision": "day",
+      "evidenceClass": "instrumental_fix",
+      "expeditionId": "ant-exp-ite",
+      "geometry": {
+        "coordinates": [
+          -53.1167,
+          -62.25
+        ],
+        "type": "Point"
+      },
+      "geometryProvenance": "transcribed_from_coordinates",
+      "id": "ant-obs-elephant-passage-1916-04-12",
+      "kind": "observation",
+      "laterStatus": "not_applicable",
+      "notes": "62d 15' S 53d 7' W from time sights, and the most consequential observation of the passage. Three reductions survive: a morning pair giving 53d 4' 15\" W and 52d 56' 45\" W, and an evening sight giving 53d 10' 0\" W. Against the previous noon's reckoned 61d 46' S 56d 0' W the boats were far east and well south of where the reckoning had put them. Worsley's own account, quoted by the paper from his 1998 memoir, is that he thought they had made thirty miles toward Elephant Island and the sights proved they were thirty miles further away and nineteen miles farther south. The two recorded latitudes differ by twenty-nine minutes rather than nineteen, so the memoir's figure is not the log's arithmetic and is recorded here as recollection, not measurement.",
+      "observationKind": "position",
+      "observedDate": "1916-04-12",
+      "observer": "Frank Arthur Worsley",
+      "reviewState": "normalized",
+      "sourceId": "ant-src-bergman-stuart-weddell-navigation",
+      "sourceLocator": "Appendix A, annotated log (pp. 93-95), noon position for 12 April 1916",
+      "title": "Noon position 12 April 1916 (observed), and the correction",
+      "validFrom": 1916,
+      "validTo": 1916
+    },
+    {
+      "act": "act_viii",
+      "confidence": "medium",
+      "datePrecision": "day",
+      "evidenceClass": "dead_reckoning",
+      "expeditionId": "ant-exp-ite",
+      "geometry": {
+        "coordinates": [
+          -54.6,
+          -61.7167
+        ],
+        "type": "Point"
+      },
+      "geometryProvenance": "transcribed_from_coordinates",
+      "id": "ant-obs-elephant-passage-1916-04-13",
+      "kind": "observation",
+      "laterStatus": "not_applicable",
+      "notes": "61d 43' S 54d 36' W, reckoned N 48 W 49 miles from 62d 15' S 53d 19' W, itself the noon position carried on by the run of S 40 W 5 miles the log records after noon. This is an 8 pm position and not a noon one, which is why it is dated but not comparable with the rest of the series. The log entry for this day is headed 13th Jan rather than 13th April; the paper reads the slip as an indication of the strain Worsley was under.",
+      "observationKind": "position",
+      "observedDate": "1916-04-13",
+      "observer": "Frank Arthur Worsley",
+      "reviewState": "normalized",
+      "sourceId": "ant-src-bergman-stuart-weddell-navigation",
+      "sourceLocator": "Appendix A, annotated log (pp. 93-95), 8 p.m. position for 13 April 1916",
+      "title": "8 p.m. position 13 April 1916 (reckoned)",
       "validFrom": 1916,
       "validTo": 1916
     },

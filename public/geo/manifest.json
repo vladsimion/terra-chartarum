@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "geo-d311ce04a4788cca",
+  "release": "geo-6119a6295e783783",
   "generatedBy": "scripts/geo-release.mjs",
   "assets": [
     {
@@ -411,16 +411,16 @@
       "geometry": [
         "Point"
       ],
-      "featureCount": 39,
+      "featureCount": 46,
       "yearFrom": 1774,
       "yearTo": 1916,
       "source": "Terra Chartarum (compiled) - Antarctic knowledge pilot ant-pilot-0.1, KAN-425",
       "license": "CC BY 4.0",
       "attribution": "Terra Chartarum; positions recorded from the general literature and not yet checked against an edition",
-      "bytes": 46876,
-      "sha256": "150ac6b1a98ea52312baee9d817c247ca47b3d540de1d4e251bdabff05e186fc",
-      "version": "150ac6b1a98e",
-      "url": "/geo/antarctica-observations.geojson?v=150ac6b1a98e"
+      "bytes": 57361,
+      "sha256": "98a4e7834260a93cfd8f8b071f77776a0c6ec908091d4e28ed4afee2e8defa75",
+      "version": "98a4e7834260",
+      "url": "/geo/antarctica-observations.geojson?v=98a4e7834260"
     },
     {
       "id": "antarctica-ghost-geographies",

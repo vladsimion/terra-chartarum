@@ -15,7 +15,7 @@
 | Rooms                |     7 |
 | GIS layers           |    27 |
 
-Geo release: `geo-d311ce04a4788cca`.
+Geo release: `geo-6119a6295e783783`.
 
 ## Live essays by primary room
 
