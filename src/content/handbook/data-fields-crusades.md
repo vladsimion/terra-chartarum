@@ -66,7 +66,7 @@ The intended destination was a clause in a contract; the partition's boundaries
 are disputed in the scholarship; and what was durably held is contested
 throughout and already modelled properly by the Venetian possessions layer.
 
-## The six registers of a city
+## The seven registers of a city
 
 Jerusalem is not one kind of object, and a table that held it as one row would
 have made the essay's argument impossible to state. `roleKind` carries which
@@ -74,12 +74,20 @@ kind of claim a record is:
 
 | `roleKind`               | What it asserts                        | Drawn |
 | ------------------------ | -------------------------------------- | ----- |
+| `contemporary_narrative` | What a witness says happened, and when | no    |
 | `sacred_centre`          | The world is arranged around this city | no    |
 | `pilgrimage_destination` | What the journey was for               | no    |
 | `textual_construct`      | The land has an order, and this is it  | no    |
 | `cartographic_construct` | The land ruled into squares            | no    |
 | `network_node`           | Something passed through here          | yes   |
 | `cartographic_memory`    | The centring outlived its subject      | no    |
+
+`contemporary_narrative` is also the only register with Muslim-authored
+sources behind it: `cru-jer-ibn-al-qalanisi` (via Gibb's translation, for the
+loss of Jerusalem in 1099) and `cru-jer-baha-al-din` (via Conder and Wilson's
+translation, for its recovery in 1187) - the other six registers run on Latin
+sources only, which is the gap
+`docs/crusades/islamic-perspective-scoping.md` records.
 
 Only the ports are drawn. The middle of a mappa mundi is not at 31.78° N; it is
 in the middle, and a pin there would convert a claim about what the world is
@@ -102,6 +110,9 @@ of a campaign is legible, and dashed so nobody measures them.
 ## Review state
 
 `raw`, `normalized`, `reviewed`, `approved`, `published`. Everything here is
-`raw`. Not one folio has been transcribed and no witness is cleared for
-publication, which is what the source audit records and what the release
-manifest asserts.
+`raw` except two records, both `normalized`: `cru-jer-qalanisi-1099` (pp.
+47-48 of Gibb's translation of Ibn al-Qalanisi) and `cru-jer-shaddad-1187`
+(pp. 118-120 of Conder and Wilson's translation of Baha' al-Din) - the only
+folios actually read anywhere in this corpus.
+No witness is cleared for publication, which is what the source audit records
+and what the release manifest asserts.

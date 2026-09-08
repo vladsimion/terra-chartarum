@@ -4,7 +4,7 @@ Three registers share one audit in
 [`data/crusades/source-audit.csv`](../../data/crusades/source-audit.csv):
 Matthew Paris's itinerary from London to Apulia, the Fourth Crusade's
 Venice-Zara-Constantinople sequence, and the Holy Land the first two are pointed
-at. Fourteen sources, gated by `npm run crusades:validate`, which also runs
+at. Sixteen sources, gated by `npm run crusades:validate`, which also runs
 inside `npm run build`.
 
 ## The gap this audit keeps open
@@ -13,8 +13,21 @@ Knowing that a manuscript exists is not the same as having read the folio a
 prototype means to use, and the distance between those two is where an
 unverifiable claim gets in. So `locator` is required on every row and may be
 `pending`, and a row claiming `verification_state: verified` may not leave it
-pending. Today **every folio reference is pending**: the audit identifies the
-witnesses and stops there.
+pending. That distance stopped being hypothetical once real reading started:
+a plain-text block claiming to be a transcription of Baha' al-Din's chapter on
+1187 was offered before the real pages were available, was rejected on
+internal grounds alone (wrong translator's-era register, content that read as
+a popular-history compilation rather than a page), and turned out on checking
+against the real pages to have the wrong surrender date, the wrong ransom
+terms, and a negotiation speech that doesn't exist in the book. The full
+account is in
+[`docs/crusades/islamic-perspective-scoping.md`](islamic-perspective-scoping.md).
+
+**Two folio references are no longer pending**: `cru-jer-ibn-al-qalanisi`
+(`pp. 47-48`) and `cru-jer-baha-al-din` (`pp. 118-120`), both
+`verification_state: verified`, after those pages were actually read. Every
+other locator in the audit still reads `pending`: the exceptions prove the
+rule holds rather than quietly relaxing it.
 
 A manuscript witness must carry its shelfmark or it is not identified, and the
 validator refuses `n/a` for that kind. `map_object` was added for the Holy Land
@@ -60,13 +73,24 @@ sequence, and the prototype has to surface that rather than smooth it over.
 
 ## What the Holy Land register may cite (KAN-438)
 
-Five sources carry the third register: the Psalter world map and the Hereford
-Mappa Mundi for the sacred centre, Burchard of Mount Sion's description and
-Marino Sanudo Torsello's recovery treatise for the described and planned land,
-and the British Library manuscript of that treatise for the maps attributed to
-Pietro Vesconte. Each declares which register it may speak in, in the same
-`covers` field the Sea proof uses for its sequence, so a text cannot be silently
-recruited as evidence about a picture.
+Seven sources carry the third register: the Psalter world map and the
+Hereford Mappa Mundi for the sacred centre, Burchard of Mount Sion's
+description and Marino Sanudo Torsello's recovery treatise for the described
+and planned land, the British Library manuscript of that treatise for the
+maps attributed to Pietro Vesconte, and two Muslim-authored chronicles for a
+seventh register, `contemporary_narrative`, added after an audit found the
+other five were all Latin
+([`docs/crusades/islamic-perspective-scoping.md`](islamic-perspective-scoping.md)).
+Both now back an actual `jerusalem-roles.csv` record: Ibn al-Qalanisi's
+Damascus chronicle, via Gibb's translation, for the loss of Jerusalem in
+1099 (`cru-jer-qalanisi-1099`), and Baha' al-Din ibn Shaddad's life of
+Saladin, via Conder and Wilson's 1897 translation, for its recovery in 1187
+(`cru-jer-shaddad-1187`). Baha' al-Din's rights were determined
+independently of Hillenbrand's citation (`public_domain_text`, checked on US
+and UK grounds) before the content was read. Each source declares which
+register it may speak in, in the same `covers` field the Sea proof uses for
+its sequence, so a text cannot be silently recruited as evidence about a
+picture.
 
 One register is closed to the audit entirely. `cartographic_memory` records later
 maps that go on centring Jerusalem, and a source row for one of those would make

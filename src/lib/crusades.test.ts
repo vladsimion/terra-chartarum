@@ -311,8 +311,23 @@ describe('the Holy Land register: a city that is not one kind of thing', () => {
     for (const id of catalogueObjects()) expect(known, id).toContain(id);
   });
 
-  it('leaves every record unread', () => {
+  it('leaves every record unread except the two that have been', () => {
+    // cru-jer-qalanisi-1099 (1099, a loss) and cru-jer-shaddad-1187 (1187, a
+    // recovery) are the corpus's exceptions: both were actually read from the
+    // supplied pages (see docs/crusades/islamic-perspective-scoping.md).
+    // Naming them here means a third row quietly promoted to normalized
+    // would still fail this test.
+    const readRecords: Record<string, string> = {
+      'cru-jer-qalanisi-1099': 'pp. 47-48',
+      'cru-jer-shaddad-1187': 'pp. 118-120',
+    };
     for (const role of roles) {
+      const locator = readRecords[role.id];
+      if (locator) {
+        expect(role.reviewState, role.id).toBe('normalized');
+        expect(role.sourceLocator, role.id).toBe(locator);
+        continue;
+      }
       expect(role.reviewState, role.id).toBe('raw');
       if (role.sourceId !== null) expect(role.sourceLocator, role.id).toBe('pending');
     }

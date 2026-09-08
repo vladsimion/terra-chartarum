@@ -73,6 +73,7 @@ them are pointed at, and it exists because Jerusalem cannot be held as a row.
 
 | Register                 | What it asserts                        | Geometry         |
 | ------------------------ | -------------------------------------- | ---------------- |
+| `contemporary_narrative` | What a witness says happened, and when | none             |
 | `sacred_centre`          | The world is arranged around this city | none             |
 | `pilgrimage_destination` | What the journey was for               | none             |
 | `textual_construct`      | The land has an order, and this is it  | none             |
@@ -80,7 +81,32 @@ them are pointed at, and it exists because Jerusalem cannot be held as a row.
 | `network_node`           | Something passed through here          | modern reference |
 | `cartographic_memory`    | The centring outlived its subject      | none             |
 
-**Four of the ten records are on a layer.** The validator refuses a position to
+`contemporary_narrative` (KAN-438 cont'd) is also the register that finally
+holds Muslim-authored sources: `cru-jer-qalanisi-1099` cites Ibn al-Qalanisi's
+Damascus chronicle, via Gibb's 1932 translation, for the city's loss in 1099;
+`cru-jer-shaddad-1187` cites Baha' al-Din ibn Shaddad's biography of Saladin,
+via Conder and Wilson's 1897 translation, for the city's recovery in 1187. The
+register was added after an audit
+([`docs/crusades/islamic-perspective-scoping.md`](islamic-perspective-scoping.md))
+found that the other six registers - and the whole `source-audit.csv` - were
+Latin Christian only.
+
+Both passages have since been read directly - pp. 47-48 of Gibb, pp. 118-120
+of Conder and Wilson - and both rows carry real locators: the only two
+anywhere in this corpus, across all three proofs. `review_state: normalized`
+and `verification_state: verified` on both reflect that the passages have
+actually been read, not just cited via a secondary source. `production_role:
+research_only` is unchanged on both: reading a passage for research is not a
+rights review. It matters for a different reason on each - Gibb's 1932
+translation is presumed in copyright until roughly 2041, while Conder and
+Wilson's 1897 translation is already public domain but still lacks a resolved
+reproduction. The Baha' al-Din reading also caught something: a plain-text
+"transcription" of this same chapter, offered before real pages were
+available, turned out to misdate the surrender, misstate the ransom terms, and
+invent a negotiation speech that isn't in the book. It was rejected before
+being used; the scoping note keeps the specifics.
+
+**Four of the twelve records are on a layer.** The validator refuses a position to
 any register in `UNPLACEABLE_ROLES`, and the reason is one sentence: the middle
 of a mappa mundi is not at 31.78° N, it is in the middle, and a pin there would
 convert a claim about what the world is arranged around into a claim about where
@@ -122,9 +148,12 @@ a worse copy of something finished.
 
 ## What is not done
 
-Nothing here is reviewed. Every folio and page locator reads `pending`, no
-witness is cleared for publication, and no image is reproduced - which means the
-Road proof cannot show the manuscript half of its comparison, and the Holy Land
+Almost nothing here is reviewed. Two page locators - `cru-jer-qalanisi-1099`
+(pp. 47-48 of Gibb's Ibn al-Qalanisi) and `cru-jer-shaddad-1187` (pp. 118-120
+of Conder and Wilson's Baha' al-Din) - have actually been read; every other
+folio and page locator in the corpus still reads `pending`. No witness is
+cleared for publication and no image is reproduced - which means the Road
+proof cannot show the manuscript half of its comparison, and the Holy Land
 register cannot show a single one of the world images it argues about.
 
 The essay is held at `releaseAt: '2099-01-01'` for the same reason as TERRA

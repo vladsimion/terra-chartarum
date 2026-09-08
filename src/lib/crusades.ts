@@ -262,6 +262,7 @@ export interface JerusalemRole {
 
 /** The registers, in the order the essay argues them. */
 export const JERUSALEM_REGISTERS = [
+  'contemporary_narrative',
   'sacred_centre',
   'pilgrimage_destination',
   'textual_construct',

@@ -1,19 +1,20 @@
 ---
 /**
- * Jerusalem in six registers (KAN-438).
+ * Jerusalem in seven registers (KAN-438).
  *
  * The two prototypes argue a road and a campaign. This one argues the city both
  * of them are pointed at, and the difficulty is that the city is not one kind of
- * object. It is the middle of a world image, the end of a road that stops in
- * Apulia, a land described in divisions taken from a working port, a grid ruled
- * for an expedition nobody mounted, four quays with cargo on them, and - three
+ * object. It is a chronicler's account of the day it fell or was recovered, the
+ * middle of a world image, the end of a road that stops in Apulia, a land
+ * described in divisions taken from a working port, a grid ruled for an
+ * expedition nobody mounted, four quays with cargo on them, and - three
  * centuries after the last of it fell - an emblem printed in Magdeburg.
  *
- * A map of "crusader Jerusalem" would show one dot in Judaea and lose all six.
+ * A map of "crusader Jerusalem" would show one dot in Judaea and lose all seven.
  * So the island puts the registers first and the records second: you choose a
  * kind of claim, and it tells you what that kind can assert and what it cannot.
- * Five of the six carry no position at all, which is why four of the ten records
- * reach a layer.
+ * Six of the seven carry no position at all, which is why four of the eleven
+ * records reach a layer.
  *
  * Nothing here shows an object. The register whose subject is pictures of
  * Jerusalem can show no picture of Jerusalem: no world image and no gridded
@@ -33,6 +34,7 @@ const placed = placedRoles();
 const unplaced = unplacedRoles();
 
 const REGISTER_LABELS: Record<JerusalemRegister, string> = {
+  contemporary_narrative: 'The chronicle',
   sacred_centre: 'The centre of the world',
   pilgrimage_destination: 'The end of the road',
   textual_construct: 'The land described',
@@ -48,6 +50,7 @@ const REGISTER_LABELS: Record<JerusalemRegister, string> = {
  * and a label alone lets a reader borrow its authority for the wrong claim.
  */
 const REGISTER_ASSERTS: Record<JerusalemRegister, string> = {
+  contemporary_narrative: 'This is what a witness says happened, and when.',
   sacred_centre: 'The world is arranged around this city.',
   pilgrimage_destination: 'This is what the journey was for.',
   textual_construct: 'The land has an order, and this is the order.',
@@ -57,6 +60,8 @@ const REGISTER_ASSERTS: Record<JerusalemRegister, string> = {
 };
 
 const REGISTER_CANNOT: Record<JerusalemRegister, string> = {
+  contemporary_narrative:
+    'That the witness was neutral, or the only one. A near-contemporary chronicle is a position in an argument too.',
   sacred_centre:
     'Where the city is. A centre in a world image is a position in an argument, not on the ground.',
   pilgrimage_destination:
@@ -87,9 +92,9 @@ function dateLabel(role: (typeof roles)[number]): string {
 <figure class="registers" data-registers>
   <div class="registers-grid">
     <div class="registers-side">
-      <h3 class="registers-heading">Six registers</h3>
+      <h3 class="registers-heading">Seven registers</h3>
       <p class="registers-sub">
-        The same city, in six kinds of claim. Choose one and the panel says what it can carry.
+        The same city, in seven kinds of claim. Choose one and the panel says what it can carry.
       </p>
       <ol class="register-list" aria-label="Registers in which Jerusalem appears">
         {
@@ -257,7 +262,7 @@ function dateLabel(role: (typeof roles)[number]): string {
         const on = button.dataset.register === id;
         button.classList.toggle('is-selected', on);
         button.setAttribute('aria-pressed', on ? 'true' : 'false');
-        // Roving tabindex: six registers are one tab stop, not six.
+        // Roving tabindex: seven registers are one tab stop, not seven.
         button.tabIndex = on ? 0 : -1;
         if (on && focus) button.focus();
       }
