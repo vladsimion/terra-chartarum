@@ -40,13 +40,19 @@ export async function GET(_context: APIContext) {
     rooms: byRoom,
     heldEssays: held
       .sort(
-        (a, b) => a.data.releaseAt.localeCompare(b.data.releaseAt) || a.slug.localeCompare(b.slug),
+        (a, b) =>
+          a.data.releaseAt.localeCompare(b.data.releaseAt) ||
+          (a.data.targetRelease ?? '9999-12-31').localeCompare(
+            b.data.targetRelease ?? '9999-12-31',
+          ) ||
+          a.slug.localeCompare(b.slug),
       )
       .map((essay) => ({
         slug: essay.slug,
         title: essay.data.title,
         room: essay.data.room,
         releaseAt: essay.data.releaseAt,
+        targetRelease: essay.data.targetRelease ?? null,
       })),
   };
 

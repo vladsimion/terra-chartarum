@@ -31,8 +31,17 @@ essays, per-room depth, registry totals, and the current geo release.
 
 Held essays are **scheduled, not shelved**. Nine carry real `releaseAt` dates and
 publish one a month on the 1st; essays produced by a research programme release on
-the 15th when their gates close, at most one a month. `releaseAt` is the whole
-schedule - there is no second ordering to keep in step with it.
+the 15th when their gates close, at most one a month.
+
+The two streams are recorded differently, and deliberately so. `releaseAt` is the
+only gate: an essay becomes visible when that date arrives, and nothing else is
+consulted. A programme essay cannot carry a real date, because its release waits on
+scholarly review and rights rather than on the calendar - and writing one would both
+publish it early and turn CI red, since `src/lib/antarctica-release.test.ts` asserts
+that a held essay's date agrees with its corpus gates. So the programme stream is
+carried by `targetRelease`, an **intention that can never publish anything**.
+`scripts/validate-editorial.mjs` refuses it on an essay that already has a real
+`releaseAt`, so the two can never give contradictory answers.
 
 | Date       | Essay                         | Room    | Stream |
 | ---------- | ----------------------------- | ------- | ------ |
@@ -46,6 +55,25 @@ schedule - there is no second ordering to keep in step with it.
 | 2027-04-01 | Invisible Maps of Migration   | Road    | queue  |
 | 2027-05-01 | Classification Is Cartography | Theatre | queue  |
 
+Programme stream, carried by `targetRelease` and released when the gates close:
+
+| Target     | Essay                           | Room    | Gate                                              |
+| ---------- | ------------------------------- | ------- | ------------------------------------------------- |
+| 2026-10-15 | Terra Incognita                 | Theatre | KAN-432 review; 0 of 108 records reviewed         |
+| 2026-11-15 | HIATVS · Argumentum ex Silentio | Border  | KAN-349/350; essay not yet written                |
+| 2026-12-15 | Ada Kaleh                       | Earth   | KAN-511/512 library spikes; essay not yet written |
+| 2027-01-15 | Maps for a Crusade              | Road    | KAN-384; 14 of 16 sources untranscribed           |
+
+Only the first and last are recorded in frontmatter, because only those two essays
+exist as MDX. The middle two are named here so the stream is legible as a whole;
+they acquire a `targetRelease` when their file does.
+
+**This stream slipped one slot on 2026-09-08.** Terra Incognita was intended for
+15 September and could not be made honest by then: none of its 108 records had
+completed review, no image was cleared, and eight source gaps were still open. The
+slip is recorded rather than absorbed - the schedule is a claim about what is
+finished, and a date that passes in silence makes that claim false.
+
 The queue is ordered by **room need** rather than by wave order, so the thin rooms
 fill first: every room holds at least two essays on **1 January 2027**. This does not
 touch `waveOrder` in [`data/editorial/wave-2/backlog.json`](../data/editorial/wave-2/backlog.json),
@@ -53,9 +81,10 @@ which is an editorial identity mapping (`waveOrder` ↔ `TC-10.n` ↔ Jira ticke
 by position in `scripts/validate-editorial.mjs`) and not a schedule.
 
 Four essays stay at `2099-01-01` deliberately: `terra-incognita` and `maps-for-a-crusade`
-are programme output awaiting their gates and take the 15ths above; `borroczyn` is a stub
-whose trench (KAN-324) has not started; `starter-example` is the authoring template and
-never releases.
+are programme output awaiting their gates and carry the `targetRelease` dates above;
+`borroczyn` is a stub whose trench (KAN-324) has not started; `starter-example` is the
+authoring template and never releases. The last two carry no target, which is the
+correct reading of both - neither is waiting on a date.
 
 A dated release does not publish itself - the gate is evaluated at build time and
 Cloudflare Pages builds on push. [`.github/workflows/scheduled-release.yml`](../.github/workflows/scheduled-release.yml)

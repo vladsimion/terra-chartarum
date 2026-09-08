@@ -487,6 +487,39 @@ function validateReleasePolicy() {
   return errors;
 }
 
+/**
+ * The programme release stream (KAN-509).
+ *
+ * `targetRelease` records the date a gated essay is *intended* to publish on,
+ * so the second stream is visible to the build rather than living in a plan.
+ * It is not the gate - `releaseAt` alone decides visibility - and this check
+ * exists to keep it that way. An essay carrying a real `releaseAt` is already
+ * scheduled; a target there would be a second, contradictory answer to the
+ * same question, and the next reader could not tell which one governs.
+ */
+function validateProgrammeStream() {
+  const errors = [];
+  const dir = resolve(ROOT, 'src/content/essays');
+  if (!existsSync(dir)) return errors;
+  for (const name of readdirSync(dir).filter((f) => f.endsWith('.mdx'))) {
+    const front = readFileSync(resolve(dir, name), 'utf8').split(/^---$/m)[1] ?? '';
+    const releaseAt = front.match(/^releaseAt:\s*'?([\d-]+)'?\s*$/m)?.[1];
+    const target = front.match(/^targetRelease:\s*'?([\d-]+)'?\s*$/m)?.[1];
+    if (target === undefined) continue;
+    check(
+      /^\d{4}-\d{2}-\d{2}$/.test(target),
+      `programme-stream: ${name} has a malformed targetRelease '${target}'`,
+      errors,
+    );
+    check(
+      releaseAt === '2099-01-01',
+      `programme-stream: ${name} carries targetRelease '${target}' while already scheduled for ${releaseAt}; releaseAt is the schedule`,
+      errors,
+    );
+  }
+  return errors;
+}
+
 if (!existsSync(DATA_ROOT)) {
   console.log('Editorial QA: no packages registered.');
   process.exit(0);
@@ -502,6 +535,7 @@ const errors = [
   ...validateReleasePolicy(),
   ...validateWaveTwoBacklog(),
   ...validateWaveThreeBacklog(),
+  ...validateProgrammeStream(),
 ];
 if (errors.length) {
   console.error(`Editorial QA failed (${errors.length}):`);
