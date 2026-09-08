@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { isReleased, today, UNSCHEDULED } from './release';
+import { UNSCHEDULED, isReleased, today, validateTargetRelease } from './release';
 
 // Staged essay release (KAN-263). The gate decides what the build contains, so
 // its boundaries are worth pinning: an essay must appear ON its release date,
@@ -46,5 +46,36 @@ describe('isReleased', () => {
   it('rejects a malformed date rather than guessing', () => {
     expect(() => isReleased('2026-8-30', at('2026-09-01'))).toThrow(/YYYY-MM-DD/);
     expect(() => isReleased('soon', at('2026-09-01'))).toThrow(/YYYY-MM-DD/);
+  });
+});
+
+describe('validateTargetRelease', () => {
+  it('accepts an intended date on an unscheduled essay', () => {
+    expect(validateTargetRelease(UNSCHEDULED, '2026-10-15')).toBeNull();
+  });
+
+  it('accepts an essay that declares no intention at all', () => {
+    expect(validateTargetRelease(UNSCHEDULED, undefined)).toBeNull();
+    expect(validateTargetRelease('2026-10-01', undefined)).toBeNull();
+  });
+
+  // The whole point of the field: it records a plan, and a plan must never be
+  // able to publish. An essay with a real releaseAt is already scheduled, so a
+  // second date there is a contradiction rather than an intention.
+  it('refuses an intention on an essay that already has a real date', () => {
+    expect(validateTargetRelease('2026-10-01', '2026-10-15')).toMatch(/only meaningful/);
+  });
+
+  it('rejects a malformed intention rather than guessing', () => {
+    expect(validateTargetRelease(UNSCHEDULED, '15-10-2026')).toMatch(/YYYY-MM-DD/);
+  });
+
+  // Guards the property the field exists to preserve: releaseAt is the only
+  // gate, so no target date can make a held essay visible.
+  it('cannot release anything, whatever it says', () => {
+    for (const target of ['2020-01-01', '2026-10-15', '2099-01-01']) {
+      expect(validateTargetRelease(UNSCHEDULED, target)).toBeNull();
+      expect(isReleased(UNSCHEDULED, at('2030-01-01'))).toBe(false);
+    }
   });
 });

@@ -66,6 +66,19 @@ const essays = defineCollection({
     // record) and from `status` above, which is a render mode, not a workflow
     // state.
     releaseAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    // The intended publication date of an essay whose release is gated on
+    // scholarly work rather than on a date (KAN-509). Deliberately NOT a gate:
+    // `releaseAt` alone decides visibility, so writing an intention here can
+    // never publish anything. It exists so the programme stream - the essays
+    // that release on the 15th when their gates close - is visible to the
+    // build and the corpus report instead of living only in a plan. Only
+    // meaningful while `releaseAt` is unscheduled; `validateTargetRelease`
+    // in ../lib/release.ts refuses it on a dated essay, where the date is
+    // already the schedule and a second one would contradict it.
+    targetRelease: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .optional(),
     // Harmonized meta-lens scores, normalized 0-1 (additive, optional).
     metaScores: z.record(z.enum(CANONICAL_DIMENSIONS), z.number().min(0).max(1)).optional(),
   }),
