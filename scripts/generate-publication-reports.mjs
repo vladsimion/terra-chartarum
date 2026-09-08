@@ -24,10 +24,10 @@ function corpusMarkdown(report) {
     ? report.heldEssays
         .map(
           (essay) =>
-            `| ${essay.title} | ${essay.room} | ${essay.releaseAt === '2099-01-01' ? 'unscheduled' : essay.releaseAt} |`,
+            `| ${essay.title} | ${essay.room} | ${essay.releaseAt === '2099-01-01' ? 'unscheduled' : essay.releaseAt} | ${essay.targetRelease ?? '-'} |`,
         )
         .join('\n')
-    : '| - | - | - |';
+    : '| - | - | - | - |';
 
   return `# Generated corpus status
 
@@ -56,8 +56,8 @@ ${rows}
 
 ## Held essays
 
-| Essay | Primary room | Release |
-| --- | --- | --- |
+| Essay | Primary room | Release | Target |
+| --- | --- | --- | --- |
 ${held}
 `;
 }

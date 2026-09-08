@@ -43,6 +43,29 @@ export function isReleased(releaseAt: string, now: Date = new Date()): boolean {
  * runs server-side only (Astro frontmatter), but the guard keeps it inert if
  * this module ever reaches a client bundle - where it must fail closed.
  */
+/**
+ * A held essay may declare the date it is *intended* to publish on, so the
+ * programme stream is recorded where the build can see it. The intention must
+ * never be mistaken for the gate, which is why it is refused on an essay that
+ * already carries a real `releaseAt`: there the date is the schedule, and a
+ * second one would be a contradiction rather than a plan.
+ *
+ * Returns the problem as a sentence, or `null` when the pair is coherent.
+ */
+export function validateTargetRelease(
+  releaseAt: string,
+  targetRelease: string | undefined,
+): string | null {
+  if (targetRelease === undefined) return null;
+  if (!ISO_DATE.test(targetRelease)) {
+    return `targetRelease must be YYYY-MM-DD, received '${targetRelease}'`;
+  }
+  if (releaseAt !== UNSCHEDULED) {
+    return `targetRelease is only meaningful while an essay is unscheduled; this one releases on ${releaseAt}`;
+  }
+  return null;
+}
+
 export function showUnreleased(): boolean {
   return typeof process !== 'undefined' && process.env?.SHOW_UNRELEASED === '1';
 }
