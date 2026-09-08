@@ -17,7 +17,7 @@
     "ghost-geographies": 15,
     "map-objects": 20,
     "names": 2,
-    "observations": 37,
+    "observations": 38,
     "priority-claims": 6,
     "source-gaps": 22,
     "sources": 43,
@@ -49,9 +49,9 @@
     "data/antarctica/ghost-geographies.csv": "b2b97599506053bba39954976f67b21c179bbe4a2951757371ae075fca343a62",
     "data/antarctica/map-objects.csv": "6a8c59622264cbf92d6293f5745973ee32be6491b895f28eace032778f574c7a",
     "data/antarctica/names.csv": "aae02783537cb68bdda5e4f6e8d098613100f4de57c55013240a89897331c122",
-    "data/antarctica/observations.csv": "64302bcab0b0c12a2b20d4b28da79a200c9f8036b51b735f27afce594f8cbb09",
+    "data/antarctica/observations.csv": "2aa80ab48a5e608ce716b127872c30af253dc1b2b1be0ca6fff6155aa6e48bd9",
     "data/antarctica/priority-claims.csv": "21cf1ede0376a4639e4d3bb31889d3f0fb43b222c1c430d142d63ca4e3b02021",
-    "data/antarctica/source-gaps.csv": "db61f7f3b79995a8d199602e2295e40466283c12998c663a33d223979e440362",
+    "data/antarctica/source-gaps.csv": "aee5e3f2554c13657400956640223b944ea75cf82bd9f227d2b7ab7bad6a9e70",
     "data/antarctica/sources.csv": "808175fd0c095bb771372adefa40afbec7da6f5b81436574c5b937a8af500276",
     "data/antarctica/terminology.csv": "6b40ef0b779ce98fdddaa59dff5714e445260863847ad735c6d71c9689c185b0",
     "data/antarctica/tracks.csv": "0872a93703e8fcc944869af0fe2947f6f9cf65857e231861e7b3a1ae75f9958f"
@@ -61,10 +61,10 @@
     "antarctica-conjectured-south": 1,
     "antarctica-expedition-tracks": 5,
     "antarctica-ghost-geographies": 0,
-    "antarctica-observations": 38
+    "antarctica-observations": 39
   },
   "licence": "CC BY 4.0 for the compiled records; every source and map object carries its own rights status, and no object in this release is cleared for reproduction.",
-  "mappableRecords": 44,
+  "mappableRecords": 45,
   "objectsClearedForReproduction": 0,
   "openSourceGaps": 2,
   "outputs": {
@@ -121,16 +121,16 @@
       "sha256": "aae02783537cb68bdda5e4f6e8d098613100f4de57c55013240a89897331c122"
     },
     "data/antarctica/release/ant-pilot-0.1/observations.csv": {
-      "bytes": 18867,
-      "sha256": "64302bcab0b0c12a2b20d4b28da79a200c9f8036b51b735f27afce594f8cbb09"
+      "bytes": 21155,
+      "sha256": "2aa80ab48a5e608ce716b127872c30af253dc1b2b1be0ca6fff6155aa6e48bd9"
     },
     "data/antarctica/release/ant-pilot-0.1/priority-claims.csv": {
       "bytes": 3322,
       "sha256": "21cf1ede0376a4639e4d3bb31889d3f0fb43b222c1c430d142d63ca4e3b02021"
     },
     "data/antarctica/release/ant-pilot-0.1/source-gaps.csv": {
-      "bytes": 22499,
-      "sha256": "db61f7f3b79995a8d199602e2295e40466283c12998c663a33d223979e440362"
+      "bytes": 23697,
+      "sha256": "aee5e3f2554c13657400956640223b944ea75cf82bd9f227d2b7ab7bad6a9e70"
     },
     "data/antarctica/release/ant-pilot-0.1/sources.csv": {
       "bytes": 36594,
@@ -157,19 +157,19 @@
       "sha256": "a55b431e78049bb7fdc7330ffdf2c9f8e87712545ebba199445408d48694225a"
     },
     "public/geo/antarctica-observations.geojson": {
-      "bytes": 43942,
-      "sha256": "a0a95df2d051a730e8709ee0c49590692ac70bc25c548428084d5200403585ab"
+      "bytes": 46876,
+      "sha256": "150ac6b1a98ea52312baee9d817c247ca47b3d540de1d4e251bdabff05e186fc"
     },
     "src/data/antarctica/generated/pilot.json": {
-      "bytes": 114299,
-      "sha256": "15a6ad9bc165df44a9f9af7889e57402257af725e53a2d3fcb977562332fee28"
+      "bytes": 117140,
+      "sha256": "6ff7bc202da27d1c5a709331e797f10daeb0010f7b9498cb440f863cbaf26fc1"
     }
   },
   "pilotByReviewState": {
-    "normalized": 23,
-    "raw": 38
+    "normalized": 26,
+    "raw": 36
   },
-  "pilotRecords": 61,
+  "pilotRecords": 62,
   "priorityContests": [
     "continental_extent_1840",
     "first_mainland_or_ice_1820"
