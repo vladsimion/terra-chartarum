@@ -8,34 +8,34 @@
     "source-audit": 16
   },
   "inputs": {
-    "data/crusades/fourth-crusade-states.csv": "30a9d12ea5b75e6d8320f471d92a6ba1ac00934e65fc4ec1980b9fd244df02b4",
-    "data/crusades/itinerary-stages.csv": "1930ad66f926ea7ecaa177b8506f348be350b05163418e28f22ea1e2927d9ac0",
-    "data/crusades/jerusalem-roles.csv": "a8c5de67a32d14160089fc16f63579636f2f4f8a665c1da3f1d1b392cef27338",
-    "data/crusades/places.csv": "f9b2be0f3f5872f56c1c377e7b22e0b7b8a8094ec9f9e496936c4e62625d832c",
-    "data/crusades/source-audit.csv": "2e6c34bde31052f3141a03e60ffbb44eb983ced6b85068790c5afed1badb75a0"
+    "data/crusades/fourth-crusade-states.csv": "fd6f079f29ea1497139089aa5f979fba1cd4d13e491fc275fec377f3f701a946",
+    "data/crusades/itinerary-stages.csv": "93d704a8096b04d9da7813d208957acba68f88f65ff66529d0b2793e80810844",
+    "data/crusades/jerusalem-roles.csv": "507ed18ae415d3ab1b76a6c286e9ddf5db8b7a3f7b64b02d2342c97ddf4fdb35",
+    "data/crusades/places.csv": "ec220810b665ac1d0284b520c84b76209861459300c349b6f60a6ab012554f1e",
+    "data/crusades/source-audit.csv": "b08bbc040aca4181ba0186b8cbef8a7291c1460322e6ab062a0c824b4a68b065"
   },
   "kind": "pilot_research_release",
   "licence": "CC BY 4.0 for the compiled records; every witness carries its own rights status, and no witness in this release is cleared for publication.",
   "outputs": {
     "data/crusades/release/cru-pilot-0.1/fourth-crusade-states.csv": {
-      "bytes": 3417,
-      "sha256": "30a9d12ea5b75e6d8320f471d92a6ba1ac00934e65fc4ec1980b9fd244df02b4"
+      "bytes": 3454,
+      "sha256": "fd6f079f29ea1497139089aa5f979fba1cd4d13e491fc275fec377f3f701a946"
     },
     "data/crusades/release/cru-pilot-0.1/itinerary-stages.csv": {
-      "bytes": 4300,
-      "sha256": "1930ad66f926ea7ecaa177b8506f348be350b05163418e28f22ea1e2927d9ac0"
+      "bytes": 4349,
+      "sha256": "93d704a8096b04d9da7813d208957acba68f88f65ff66529d0b2793e80810844"
     },
     "data/crusades/release/cru-pilot-0.1/jerusalem-roles.csv": {
-      "bytes": 6752,
-      "sha256": "a8c5de67a32d14160089fc16f63579636f2f4f8a665c1da3f1d1b392cef27338"
+      "bytes": 6798,
+      "sha256": "507ed18ae415d3ab1b76a6c286e9ddf5db8b7a3f7b64b02d2342c97ddf4fdb35"
     },
     "data/crusades/release/cru-pilot-0.1/places.csv": {
-      "bytes": 7962,
-      "sha256": "f9b2be0f3f5872f56c1c377e7b22e0b7b8a8094ec9f9e496936c4e62625d832c"
+      "bytes": 8033,
+      "sha256": "ec220810b665ac1d0284b520c84b76209861459300c349b6f60a6ab012554f1e"
     },
     "data/crusades/release/cru-pilot-0.1/source-audit.csv": {
-      "bytes": 10977,
-      "sha256": "2e6c34bde31052f3141a03e60ffbb44eb983ced6b85068790c5afed1badb75a0"
+      "bytes": 11030,
+      "sha256": "b08bbc040aca4181ba0186b8cbef8a7291c1460322e6ab062a0c824b4a68b065"
     },
     "public/geo/crusades-fourth-crusade-events.geojson": {
       "bytes": 3052,

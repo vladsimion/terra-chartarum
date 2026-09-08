@@ -172,7 +172,7 @@ export async function getRelatedByRoom(
   });
 }
 
-/** Item tallies for a room, counting primary AND secondary membership. */
+/** Item tallies for a room. */
 export interface RoomCounts {
   essays: number;
   maps: number;
@@ -187,13 +187,19 @@ export interface RoomCountsInput {
 }
 
 /**
- * Tally the essays, collection sheets, and Atlas layers that belong to `room`
- * (primary or secondary). Powers the counts on the rooms overview grid (KAN-96).
+ * Tally the essays, collection sheets, and Atlas layers that belong to `room`.
+ * Powers the counts on the rooms overview grid (KAN-96).
+ *
+ * `essays` counts PRIMARY membership only, matching the essay gallery's
+ * per-room grouping (essay-index.groupEssaysByRoom) and this room's own
+ * "Essays in this room" list - so the same figure reads the same everywhere
+ * an essay count appears. `maps` and `layers` have no equivalent secondary
+ * gallery split, so they keep counting primary or secondary membership.
  */
 export function roomCounts(input: RoomCountsInput): RoomCounts {
   const { room, essays, maps, layers } = input;
   return {
-    essays: essays.filter((e) => inRoom(e.data, room)).length,
+    essays: essays.filter((e) => e.data.room === room).length,
     maps: maps.filter((m) => inRoom(m, room)).length,
     layers: layers.filter((l) => inRoom(l, room)).length,
   };

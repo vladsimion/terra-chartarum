@@ -109,6 +109,40 @@ Auction and aggregator listings are not publication sources, and the rule is
 data rather than an instruction: a `repository_url` on a dealer or aggregator
 host fails validation, so a later addition cannot forget it.
 
+## Review
+
+`scripts/crusades/review.py` promotes a record up its review ladder. It is the
+same tool `scripts/dacia/review.py` and `scripts/antarctica/review.py` are,
+pointed at this programme: every promotion is written to a scratch copy of
+`data/crusades`, validated with the ordinary gate, and kept only if the gate
+passes.
+
+```
+review.py queue -v                            what is waiting, and what blocks it
+review.py queue -v --table places
+review.py show   cru-mp-luard-edition
+review.py promote cru-mp-luard-edition --reviewer "V. Simion" \
+    --set locator="Luard 1872, I. 1" --set verification_state=verified
+```
+
+Two ladders, five tables. `source-audit.csv` carries its own
+`candidate`/`source_checked`/`reviewed` vocabulary, with a converse rule: a
+`reviewed` row must name its reviewer and carry an ISO `review_date`, and a
+row below `reviewed` may carry neither. `places.csv`, `itinerary-stages.csv`,
+`fourth-crusade-states.csv` and `jerusalem-roles.csv` carry the five-rung
+`raw`/`normalized`/`reviewed`/`approved`/`published` ladder Dacia's record
+tables use (KAN-335): attribution is required from `reviewed` onward, with no
+converse rule, and `reviewed` is not the top of that ladder the way it is on
+the audit one - `approved` and `published` still follow it.
+
+`--reviewer` is required on every promotion regardless of which ladder or
+which rung, so someone is accountable even for a promotion whose target rung
+has nowhere to hold the name yet. `_table_for` resolves a record to its table
+by membership rather than by id prefix, because a Holy Land source
+(`cru-jer-hereford`) and a Holy Land role about the same object
+(`cru-jer-hereford-centre`) share an id stem. No committed record in any of
+the five tables has been reviewed or back-filled.
+
 ## The place authority (KAN-385)
 
 Twenty-five core places in
@@ -154,4 +188,5 @@ spans them and its note says so.
 Every row is `normalized`, not reviewed. The same promotion discipline applies
 here as in the Dacia corpus - machine-compiled research stops short of review -
 and KAN-385's criterion asks for _reviewed_ core places, so that part of the
-ticket is outstanding rather than met.
+ticket is outstanding rather than met. `review.py` (above) can now promote a
+place there; nobody has yet.
