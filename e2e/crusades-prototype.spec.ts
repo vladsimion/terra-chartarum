@@ -54,10 +54,10 @@ test.describe('the Atlas half keeps the two distinctions', () => {
     expect(body).toContain('publish a claim as a map');
   });
 
-  test('the Holy Land record says why six of seven registers are absent', async ({ page }) => {
+  test('the Holy Land record says why eight of its twelve records are absent', async ({ page }) => {
     await page.goto('/atlas/layers/crusades-jerusalem-network/');
     const body = (await page.locator('#main-content').innerText()).toLowerCase();
-    expect(body).toContain('four records out of eleven');
+    expect(body).toContain('four records out of twelve');
     expect(body).toContain('not at 31.78');
   });
 

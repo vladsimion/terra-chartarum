@@ -21,6 +21,8 @@ citation:
 technicalLinks:
   - label: The three registers
     href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/crusades/two-proofs.md'
+  - label: Islamic-perspective source scoping
+    href: 'https://github.com/vladsimion/terra-chartarum/blob/main/docs/crusades/islamic-perspective-scoping.md'
 ---
 
 ## What you are looking at
@@ -61,9 +63,8 @@ Sanudo carry low confidence for that reason.
 Ibn al-Qalanisi's Damascus chronicle (via Gibb's 1932 translation, for 1099)
 and Baha' al-Din's biography of Saladin (via Conder and Wilson's 1897
 translation, for 1187) are the two Muslim-authored sources in the Holy Land
-register - added after an audit
-([`docs/crusades/islamic-perspective-scoping.md`](https://github.com/vladsimion/terra-chartarum/blob/main/docs/crusades/islamic-perspective-scoping.md))
-found the other sources here were all Latin. Neither record is on this layer
+register - added after an audit of the register's language coverage,
+which found the other sources here were all Latin. Neither record is on this layer
 (both are `contemporary_narrative`, not ports). Unlike the rest of this
 corpus, both have been read at the page - pp. 47-48 and pp. 118-120
 respectively, the only two non-`pending` locators anywhere in the Crusades

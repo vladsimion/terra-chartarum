@@ -71,15 +71,15 @@ Constantinople is; it is not evidence for where the fleet stood.
 The two prototypes argue a road and a campaign. The third argues the city both of
 them are pointed at, and it exists because Jerusalem cannot be held as a row.
 
-| Register                  | What it asserts                        | Geometry         |
-| ------------------------- | --------------------------------------- | ---------------- |
-| `contemporary_narrative`  | What a witness says happened, and when | none             |
-| `sacred_centre`           | The world is arranged around this city | none             |
-| `pilgrimage_destination`  | What the journey was for               | none             |
-| `textual_construct`       | The land has an order, and this is it  | none             |
-| `cartographic_construct`  | The land ruled into squares            | none             |
-| `network_node`            | Something passed through here          | modern reference |
-| `cartographic_memory`     | The centring outlived its subject      | none             |
+| Register                 | What it asserts                        | Geometry         |
+| ------------------------ | -------------------------------------- | ---------------- |
+| `contemporary_narrative` | What a witness says happened, and when | none             |
+| `sacred_centre`          | The world is arranged around this city | none             |
+| `pilgrimage_destination` | What the journey was for               | none             |
+| `textual_construct`      | The land has an order, and this is it  | none             |
+| `cartographic_construct` | The land ruled into squares            | none             |
+| `network_node`           | Something passed through here          | modern reference |
+| `cartographic_memory`    | The centring outlived its subject      | none             |
 
 `contemporary_narrative` (KAN-438 cont'd) is also the register that finally
 holds Muslim-authored sources: `cru-jer-qalanisi-1099` cites Ibn al-Qalanisi's

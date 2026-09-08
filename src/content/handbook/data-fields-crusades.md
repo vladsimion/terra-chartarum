@@ -72,15 +72,15 @@ Jerusalem is not one kind of object, and a table that held it as one row would
 have made the essay's argument impossible to state. `roleKind` carries which
 kind of claim a record is:
 
-| `roleKind`                | What it asserts                        | Drawn |
-| -------------------------- | -------------------------------------- | ----- |
-| `contemporary_narrative`  | What a witness says happened, and when | no    |
-| `sacred_centre`           | The world is arranged around this city | no    |
-| `pilgrimage_destination`  | What the journey was for               | no    |
-| `textual_construct`       | The land has an order, and this is it  | no    |
-| `cartographic_construct`  | The land ruled into squares            | no    |
-| `network_node`            | Something passed through here          | yes   |
-| `cartographic_memory`     | The centring outlived its subject      | no    |
+| `roleKind`               | What it asserts                        | Drawn |
+| ------------------------ | -------------------------------------- | ----- |
+| `contemporary_narrative` | What a witness says happened, and when | no    |
+| `sacred_centre`          | The world is arranged around this city | no    |
+| `pilgrimage_destination` | What the journey was for               | no    |
+| `textual_construct`      | The land has an order, and this is it  | no    |
+| `cartographic_construct` | The land ruled into squares            | no    |
+| `network_node`           | Something passed through here          | yes   |
+| `cartographic_memory`    | The centring outlived its subject      | no    |
 
 `contemporary_narrative` is also the only register with Muslim-authored
 sources behind it: `cru-jer-ibn-al-qalanisi` (via Gibb's translation, for the

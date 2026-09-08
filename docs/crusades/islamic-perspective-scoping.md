@@ -2,7 +2,7 @@
 
 This note exists to correct something before it becomes a data row. A prior
 conversation in this repository's history described building an extraction
-matrix from Carole Hillenbrand's *The Crusades: Islamic Perspectives*
+matrix from Carole Hillenbrand's _The Crusades: Islamic Perspectives_
 (Edinburgh University Press, 1999/2000), including chapter-and-section detail
 and a claim that the book's PDF was available to work from directly. Neither
 was true of this repository at the time: no such file existed here, and
@@ -56,8 +56,8 @@ The Holy Land register in `data/crusades/jerusalem-roles.csv` argues six
 things Jerusalem was: a sacred centre, a pilgrimage destination, a described
 land, a cartographic construction, a network node, and a later memory. The
 sources behind the `textual_construct` and `network_node` records - Burchard
-of Mount Sion's *Descriptio Terrae Sanctae* and Marino Sanudo Torsello's
-*Liber secretorum fidelium crucis* - are both Latin Christian. `cru-jer-psalter`
+of Mount Sion's _Descriptio Terrae Sanctae_ and Marino Sanudo Torsello's
+_Liber secretorum fidelium crucis_ - are both Latin Christian. `cru-jer-psalter`
 and `cru-jer-hereford` are Latin world images. Nothing in
 `data/crusades/source-audit.csv` is authored from the perspective of the
 people who held Jerusalem and the Levant for most of 1099-1291.
@@ -75,46 +75,47 @@ Transcribed from Hillenbrand's own bibliography (Hillenbrand 1999,
 PDF scan - the two are a stable 56-page offset apart across this section,
 confirmed against the printed running folios). Originally, this was a locator
 into **Hillenbrand's citation of the source**, not into the source's own text
+
 - the distinction the rest of this corpus already holds Burchard and Sanudo to
 - and `verification_state: unverified` for all four followed from that. Two of
-the four have since moved past bibliography-only, in different ways: Ibn
-al-Qalanisi has been read (below), Baha' al-Din has had its rights checked but
-not its content (further below). Ibn al-Athir and Usama ibn Munqidh remain
-exactly where this section originally left them.
+  the four have since moved past bibliography-only, in different ways: Ibn
+  al-Qalanisi has been read (below), Baha' al-Din has had its rights checked but
+  not its content (further below). Ibn al-Athir and Usama ibn Munqidh remain
+  exactly where this section originally left them.
 
-- **Ibn al-Qalanisi**, *Dhayl Ta'rikh Dimishq*. Arabic text: no edition of the
+- **Ibn al-Qalanisi**, _Dhayl Ta'rikh Dimishq_. Arabic text: no edition of the
   Arabic itself is separately listed (Hillenbrand cites the translation
-  directly). English translation: H. A. R. Gibb, *The Damascus Chronicle of
-  the Crusades*, London, 1932 (Hillenbrand 1999, p. 619 / PDF p. 675). The
+  directly). English translation: H. A. R. Gibb, _The Damascus Chronicle of
+  the Crusades_, London, 1932 (Hillenbrand 1999, p. 619 / PDF p. 675). The
   nearest thing to a contemporary Damascene witness to the First Crusade's
   arrival and the following decades. **Since read directly** - see "What has
   actually been read" below; the rest of this list is still bibliography only.
-- **Ibn al-Athir**, *al-Kamil fi'l-Ta'rikh*. Arabic critical edition: ed. C. J.
+- **Ibn al-Athir**, _al-Kamil fi'l-Ta'rikh_. Arabic critical edition: ed. C. J.
   Tornberg, 12 vols, Leiden and Uppsala, 1851-76 (Hillenbrand 1999, p. 617 /
   PDF p. 673). **No English translation appears in Hillenbrand's own
-  bibliography** - the modern standard one (D. S. Richards, *The Chronicle of
-  Ibn al-Athir for the Crusading Period*, 3 vols, Ashgate, 2006-2008) postdates
+  bibliography** - the modern standard one (D. S. Richards, _The Chronicle of
+  Ibn al-Athir for the Crusading Period_, 3 vols, Ashgate, 2006-2008) postdates
   this book and was not and could not have been a source for it. A row drawn
   from Ibn al-Athir today would need to say which edition it actually reads:
   the 19th-century Arabic edition, or the 21st-century Richards translation -
   they are not interchangeable, and Ibn al-Athir writing in the early 13th
   century about the 1090s is itself a witness to later memory as much as to
   the events.
-- **Usama ibn Munqidh**, *Kitab al-I'tibar*. Arabic critical editions: ed. P.
+- **Usama ibn Munqidh**, _Kitab al-I'tibar_. Arabic critical editions: ed. P.
   K. Hitti, Princeton, 1930; ed. Q. al-Samarra'i, Riyadh, 1987. English
-  translation: P. K. Hitti, *Memoirs of an Arab-Syrian Gentleman*, Beirut,
+  translation: P. K. Hitti, _Memoirs of an Arab-Syrian Gentleman_, Beirut,
   1964 (also French translations by Miquel 1983 and Derenbourg 1889;
   Hillenbrand 1999, p. 619 / PDF p. 675). A memoir with direct, often-quoted
   observations of Franks in the Levant - the source most likely to speak to
   lived contact rather than to jihad or Jerusalem as ideas, so the weakest fit
   for the Holy Land register specifically and the strongest fit for a future
   Chapter 6-shaped ("Life in the Levant") gap instead.
-- **Baha' al-Din ibn Shaddad**, *al-Nawadir al-Sultaniyya*. English
-  translation: C. R. Conder and C. W. Wilson, *The Life of Saladin*, London,
+- **Baha' al-Din ibn Shaddad**, _al-Nawadir al-Sultaniyya_. English
+  translation: C. R. Conder and C. W. Wilson, _The Life of Saladin_, London,
   1897 (Hillenbrand 1999, p. 620 / PDF p. 676) - a Palestine Exploration Fund
   translation, unlike the modern standard English translation (D. S. Richards,
-  *The Rare and Excellent History of Saladin*, Ashgate, 2001, still in
-  copyright and *not* what Hillenbrand cites). A biography of Saladin by a
+  _The Rare and Excellent History of Saladin_, Ashgate, 2001, still in
+  copyright and _not_ what Hillenbrand cites). A biography of Saladin by a
   member of his circle. **Since read directly, for 1187** - see "Baha'
   al-Din: read, and a fabrication caught" below.
 
@@ -136,7 +137,7 @@ them.
 
 None of the four sources above had a `covers` register it could validly
 declare in `jerusalem-roles.csv`: `ROLE_KINDS` argued claims about what
-Jerusalem *means* or *is* - `sacred_centre`, `pilgrimage_destination`,
+Jerusalem _means_ or _is_ - `sacred_centre`, `pilgrimage_destination`,
 `textual_construct`, `cartographic_construct`, `network_node`,
 `cartographic_memory` - and a chronicle's contribution is a different kind of
 claim, what happened, when, according to whom.
@@ -203,7 +204,7 @@ just a guess? Checked, not guessed, on two independent grounds:
   same restriction recorded when this note first tried to reach it).
 
 This is a materially different position from Gibb 1932, where the life+70
-argument is the *only* one available and does not yet clear the work (Gibb
+argument is the _only_ one available and does not yet clear the work (Gibb
 died in 1971; expiry is roughly 2041) - the two translations cannot be treated
 alike, and this note does not treat them alike. `rights_status:
 public_domain_text` on `cru-jer-baha-al-din` rests on this.
@@ -223,14 +224,15 @@ be correct.
 Once the real pages arrived - a PDF exported from the Google Books scan at
 the volume's own permalink, pp. 110-121, with an embedded OCR text layer this
 project's extractor could not decode cleanly, so read as page images instead
+
 - pp. 118-120 (Part II, Chapter XXXVI, "Taking of the Holy City") were read
-directly and checked against the rejected text. Three concrete discrepancies
-confirmed it was fabricated rather than merely paraphrased:
+  directly and checked against the rejected text. Three concrete discrepancies
+  confirmed it was fabricated rather than merely paraphrased:
 
 - The rejected text dated the surrender to "the 2nd of Rajab." The real text
   gives 27 Rajab (2 October 1187) - the date that is calendrically consistent
   with the same text's own 15 Rajab arrival date twelve days earlier. "2nd of
-  Rajab" would place the surrender *before* the siege began.
+  Rajab" would place the surrender _before_ the siege began.
 - The rejected text gave the ransom as 10/5/2 Tyrian dinars for man/woman/
   child. The real text gives 10/5/**1**.
 - The rejected text included a dramatic speech by Balian threatening to kill
