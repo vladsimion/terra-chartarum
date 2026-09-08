@@ -160,7 +160,9 @@ describe('position methods are readable without hovering', () => {
 
   it('says how each position was arrived at, in plain words', () => {
     for (const position of positions) {
-      expect(position.method).toMatch(/Observed with an instrument|Reckoned from|Drawn by/);
+      expect(position.method).toMatch(
+        /Observed with an instrument|Reckoned from|Drawn by|Taken from/,
+      );
     }
   });
 
