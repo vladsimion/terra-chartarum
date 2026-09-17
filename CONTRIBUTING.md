@@ -70,6 +70,14 @@ npm run create-essay -- --slug my-essay --title "My Essay Title"
 4. `npm run dev` and open `/essays/my-essay/`. It appears in the gallery, atlas
    timeline, and facets automatically - there is no registration step.
 
+Keep an inline link inside its sentence. MDX reads a JSX element that _opens a
+line_ as a block of its own, so a link left at the start of a line renders as a
+separate paragraph and breaks the sentence in two. Deleting the blank line before
+it is not enough - Prettier puts it back - so join the opening tag to the word
+ahead of it (`read <EssayLink slug="venice-sicily">Venice and Sicily</EssayLink>;
+what this essay takes`). `npm run essays:validate` enforces this as part of the
+build.
+
 For **legacy** essays (self-contained HTML), see `SPECS.md §1`: the document goes
 under `public/embed/<slug>/` and the essay record sets `status: legacy` with an
 `embedPath`. Do not add redirects that touch `/embed/` - those paths are iframed
