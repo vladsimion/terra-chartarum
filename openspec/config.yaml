@@ -1,0 +1,54 @@
+schema: spec-driven
+
+# Project context (optional)
+# This is shown to AI when creating artifacts.
+# Add your tech stack, conventions, style guides, domain knowledge, etc.
+# Example:
+#   context: |
+#     Tech stack: TypeScript, React, Node.js
+#     We use conventional commits
+#     Domain: e-commerce platform
+context: |
+  Terra Chartarum: an Astro-based historical-cartography site. Programme data
+  lives under data/<programme>/ (e.g. data/antarctica/), with versioned,
+  frozen snapshots under data/<programme>/release/<tag>/; corpus loading and
+  validation is centralized in src/lib/corpus.ts. Essays go through a
+  paragraph/sentence-splitting validation pipeline before publish.
+
+  Work is tracked in Jira project KAN ("Chart & Compass", team-managed): there
+  is no Story type (Task substitutes), epics link via the `parent` field (not
+  an Epic Link), descriptions are ADF, and planning identifiers like
+  "[ANT-3]" are preserved in issue summaries. Labels group work by programme
+  (programme-<name>), campaign/phase, and priority (p0, etc.).
+
+  Documentation lives in Confluence (vladsimion.atlassian.net). New programme
+  dossiers go under "Projects - Active Research & Implementation Programmes"
+  and must satisfy the fourteen-point Programme Dossier Contract (metadata,
+  thesis, scope/non-goals, outputs, sources/rights, evidence architecture,
+  editorial architecture, interaction/technical, phases, actual Jira
+  hierarchy, DoD, canonical propagation, current checkpoint, delivery
+  authority) - link to a canonical owner rather than duplicating stable
+  contracts. The Build Log records only work that has actually shipped
+  (green CI), not in-flight work.
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours
+
+# Per-operation guidance (optional)
+# Add advisory guidance for how apply and archive work should be conducted.
+# This is separate from artifact rules above.
+# Example:
+#   operations:
+#     apply:
+#       guidance:
+#         - Keep test summaries concise
+#     archive:
+#       guidance:
+#         - Summarize the archive outcome before finishing
