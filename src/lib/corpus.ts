@@ -921,7 +921,7 @@ const RAW: unknown[] = [
     relatedEssaySlugs: ['venice-sicily', 'cities-remember'],
     images: [
       {
-        src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Jacopo_de%27_Barbari_-_View_of_Venice_-_Minneapolis_Institute_of_Art.jpg/1280px-Jacopo_de%27_Barbari_-_View_of_Venice_-_Minneapolis_Institute_of_Art.jpg',
+        src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Jacopo%20de%27%20Barbari%20-%20View%20of%20Venice%20-%20Minneapolis%20Institute%20of%20Art.jpg?width=1600',
         alt: 'Jacopo de’ Barbari bird’s-eye View of Venice',
         credit: 'Minneapolis Institute of Art',
         license: 'Public Domain Mark',
@@ -1079,9 +1079,9 @@ const RAW: unknown[] = [
     relatedMapIds: ['city-agas-london', 'city-nolli-1748'],
     images: [
       {
-        src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Turgot%20map%20of%20Paris%20-%20Normale%20meridionale.jpg?width=1600',
-        alt: 'Sectional plate from the oblique Turgot plan of Paris',
-        credit: 'Public-domain institutional reproduction via Wikimedia Commons',
+        src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Turgot%20map%20of%20Paris%20-%20Norman%20B.%20Leventhal%20Map%20Center.jpg?width=1600',
+        alt: 'The twenty sectional plates of the oblique Turgot plan of Paris assembled as one view',
+        credit: 'Norman B. Leventhal Map Center via Wikimedia Commons',
         license: 'Public domain',
       },
     ],
