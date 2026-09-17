@@ -57,6 +57,7 @@ or Endurance drift (KAN-428, a different act).
 ## Capabilities
 
 ### New Capabilities
+
 - `antarctica/coronelli-act-iii`: the evidence-completeness requirements for
   the Coronelli Act III research package - which polar-section leaves, atlas
   volumes, globe regions, and secondary sources must be read and classified
@@ -64,6 +65,7 @@ or Endurance drift (KAN-428, a different act).
   rights/lineage metadata each newly examined object must carry.
 
 ### Modified Capabilities
+
 _(none - no existing specs predate this change; `openspec list --specs`
 returns none)_
 

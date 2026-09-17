@@ -15,6 +15,7 @@ that those tables don't yet need to represent, because nothing has been
 ## Goals / Non-Goals
 
 **Goals:**
+
 - Make "not yet audited" and "audited, nothing found" distinguishable in the
   data, so the twelve-volume/`Libro dei Globi` audit and the globe
   examination leave a record even when they turn up nothing.
@@ -26,6 +27,7 @@ that those tables don't yet need to represent, because nothing has been
   `release-readiness.md` references.
 
 **Non-Goals:**
+
 - This change does not itself flip any release-readiness gate
   (`sources-read`, `public-tier`, `layers-published` stay review-gated until
   a human reads and reviews the resulting claims - that is a separate, later
