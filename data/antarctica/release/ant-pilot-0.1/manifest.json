@@ -37,7 +37,7 @@
   "highRiskClaims": 13,
   "inputs": {
     "data/antarctica/chart-contributions.csv": "b6b1a8c915a01e44a0e8d6b75af2dfbc0e53dfa4de27bd409f1a98cf6c5f560c",
-    "data/antarctica/claims.csv": "9cd4a2131d47346499cff4817a4c5da50f537478532c897b16ee513e89a2d47c",
+    "data/antarctica/claims.csv": "1192bebc8998985b1b34a1bdfe398f67c4057181590ec99d2b3cf790c5f0b326",
     "data/antarctica/coastline-chronology.csv": "e271cae60095ac3352c65136dd340684b95ef34406a94baae53c352dbf1c4fca",
     "data/antarctica/coronelli-annotations.csv": "9a736fe51a15716900fc6fbb399349d07b2fa68ea1f8a9f321c7add9d300b7db",
     "data/antarctica/coronelli-lineage.csv": "0e05ddab08c3140c8fb0f9d1a28a8c771999b83d00a0b621feb2748861c3242d",
@@ -73,8 +73,8 @@
       "sha256": "b6b1a8c915a01e44a0e8d6b75af2dfbc0e53dfa4de27bd409f1a98cf6c5f560c"
     },
     "data/antarctica/release/ant-pilot-0.1/claims.csv": {
-      "bytes": 18356,
-      "sha256": "9cd4a2131d47346499cff4817a4c5da50f537478532c897b16ee513e89a2d47c"
+      "bytes": 18358,
+      "sha256": "1192bebc8998985b1b34a1bdfe398f67c4057181590ec99d2b3cf790c5f0b326"
     },
     "data/antarctica/release/ant-pilot-0.1/coastline-chronology.csv": {
       "bytes": 2627,
