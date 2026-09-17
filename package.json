@@ -81,6 +81,7 @@
     "@astrojs/check": "^0.9.9",
     "@axe-core/playwright": "^4.12.1",
     "@eslint/js": "^9.39.5",
+    "@fission-ai/openspec": "^1.13.1",
     "@lhci/cli": "^0.14.0",
     "@playwright/test": "^1.61.1",
     "@types/openseadragon": "^5.0.2",
