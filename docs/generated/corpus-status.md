@@ -6,8 +6,8 @@
 
 | Content type         | Count |
 | -------------------- | ----: |
-| Live essays          |    11 |
-| Held essays          |    11 |
+| Live essays          |    12 |
+| Held essays          |    10 |
 | Map records          |    59 |
 | Cartographers        |    19 |
 | Bibliography entries |    37 |
@@ -22,7 +22,7 @@ Geo release: `geo-6119a6295e783783`.
 | Room           | Count | Essays                                                                                                                                                                                                                                                                              |
 | -------------- | ----: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1. The Earth   |     1 | [The Shape of a Civilization](https://terra-chartarum.pages.dev/essays/the-shape-of-a-civilization/)                                                                                                                                                                                |
-| 2. The Map     |     1 | [The Cartographic Sacrifice](https://terra-chartarum.pages.dev/essays/cartography/)                                                                                                                                                                                                 |
+| 2. The Map     |     2 | [The Cartographic Sacrifice](https://terra-chartarum.pages.dev/essays/cartography/) · [Projection and Perspective](https://terra-chartarum.pages.dev/essays/projection-and-perspective/)                                                                                            |
 | 3. The City    |     1 | [Cities Remember](https://terra-chartarum.pages.dev/essays/cities-remember/)                                                                                                                                                                                                        |
 | 4. The Border  |     2 | [Terra Sigillata · Lapidarium Dacicum](https://terra-chartarum.pages.dev/essays/dacia/) · [Nomen Errans](https://terra-chartarum.pages.dev/essays/nomen-errans/)                                                                                                                    |
 | 5. The Road    |     3 | [La Rotta e il Catasto](https://terra-chartarum.pages.dev/essays/venice-sicily/) · [Invisible Maps of Trade](https://terra-chartarum.pages.dev/essays/invisible-maps-trade/) · [The League That Left No Map](https://terra-chartarum.pages.dev/essays/the-league-that-left-no-map/) |
@@ -33,7 +33,6 @@ Geo release: `geo-6119a6295e783783`.
 
 | Essay                                              | Primary room | Release     | Target     |
 | -------------------------------------------------- | ------------ | ----------- | ---------- |
-| Projection and Perspective                         | map          | 2026-11-01  | -          |
 | The Geography of Power                             | city         | 2026-12-01  | -          |
 | Palimpsest Landscapes                              | archive      | 2027-01-01  | -          |
 | The Cartography of Empire                          | border       | 2027-02-01  | -          |
