@@ -37,18 +37,30 @@ test.describe('the Atlas promotes no single programme', () => {
   });
 });
 
-test.describe('the held essay does not leak through the Atlas', () => {
-  test('no VMN surface names Invisible Maps of Trade while it is held', async ({
+/*
+ * This block used to assert the opposite: that no surface named Invisible Maps of
+ * Trade "while it is held". The embargo lapsed. The essay carries
+ * `releaseAt: '2026-10-01'` in its frontmatter, so from 1 October 2026 the site's
+ * own release gate (src/lib/release.ts) began building and listing it, and the
+ * assertions started failing on every pull request - correctly, in the sense that
+ * the site had changed and the test had not. Nothing on main runs this suite on a
+ * schedule, so it went unnoticed for seven weeks.
+ *
+ * Turned around rather than deleted. The surfaces worth watching are the same two;
+ * what changed is which way they should answer. An embargo that has expired is
+ * still worth a test, because silently dropping an essay from the catalogue after
+ * release would be as much a defect as leaking it before.
+ */
+test.describe('the released essay is present across the Atlas surfaces', () => {
+  test('VMN surfaces name Invisible Maps of Trade now that it is released', async ({
     page,
     request,
   }) => {
     await page.goto('/atlas/');
-    await expect(page.locator('#main-content')).not.toContainText('Invisible Maps of Trade');
+    await expect(page.locator('#main-content')).toContainText('Invisible Maps of Trade');
 
-    // Naming a held essay in the registry is safe only because the catalogue
-    // filters it. This is the check that keeps that true.
     const index = await (await request.get('/search-index.json')).json();
     const haystack = JSON.stringify(index).toLowerCase();
-    expect(haystack).not.toContain('invisible-maps-trade');
+    expect(haystack).toContain('invisible-maps-trade');
   });
 });
