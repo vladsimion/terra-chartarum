@@ -1,0 +1,9 @@
+# This project is the frozen archive of Terra Chartarum. The current edition is the
+# successor at terra-chartarum.org. Every path here is kept out of search so the two
+# editions do not compete for the same readers.
+#
+# The canonical copy of this file is `archive/_headers` in the successor repository
+# (vladsimion/terra-chartarum-next); `npm run archive:check` there verifies it against
+# the deployed pages. Merge with any rule added later rather than replacing it.
+/*
+  X-Robots-Tag: noindex
