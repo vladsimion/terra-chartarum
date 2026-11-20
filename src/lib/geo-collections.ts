@@ -47,6 +47,15 @@ export const GeoCollectionSchema = z
     room: z.enum(ROOM_SLUGS).optional(),
     secondaryRooms: z.array(z.enum(ROOM_SLUGS)).max(2).default([]),
     essaySlugs: z.array(z.string()).default([]),
+    /**
+     * The essay this collection is the presentation of, where it is one. Set it
+     * only when the collection carries that essay's framing - its title, its
+     * argument - rather than merely drawing on it: the collection is then held
+     * back until the essay passes the staged-release gate, because a collection
+     * named for an unpublished essay publishes the essay's existence and its
+     * thesis. `essaySlugs` is the looser relation and gates nothing.
+     */
+    essay: z.string().optional(),
     tags: z.array(z.string()).default([]),
     featured: z.boolean().default(false),
     sortWeight: z.number().default(0),
@@ -206,6 +215,7 @@ const RAW: unknown[] = [
   {
     id: 'maps-for-a-crusade',
     title: 'Maps for a Crusade',
+    essay: 'maps-for-a-crusade',
     summary:
       'A drawn road that is not a map, a sea campaign whose intention, diversion, claim and possession were four different things, and the city all of it was pointed at.',
     description:

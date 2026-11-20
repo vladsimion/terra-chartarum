@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { partitionEssays } from '../scripts/lib/essay-release.mjs';
+
 /**
  * VMN ownership model (ATLAS-1223 / KAN-434).
  *
@@ -62,5 +64,60 @@ test.describe('the released essay is present across the Atlas surfaces', () => {
     const index = await (await request.get('/search-index.json')).json();
     const haystack = JSON.stringify(index).toLowerCase();
     expect(haystack).toContain('invisible-maps-trade');
+  });
+});
+
+/*
+ * The complementary half, and the half that went missing. The block above was
+ * turned around when `invisible-maps-trade` released on 1 October 2026 (#202),
+ * which was right for that essay - but it left the rule it had been defending
+ * untested: a held essay must not leak through the Atlas.
+ *
+ * Restored here without a name in it. The held set is read from the same
+ * frontmatter the build gates on, so the suite arms and disarms itself and
+ * cannot expire the way the assertion above did. That also gave it teeth: ten
+ * essays are held today rather than the one that used to be named, and checking
+ * all ten found the Crusades collection shipping under a held essay's title.
+ */
+test.describe('no held essay leaks through the Atlas', () => {
+  const held = partitionEssays().held;
+
+  test.skip(held.length === 0, 'the release gate is holding nothing in this build');
+
+  test('the Atlas page names none of them', async ({ page }) => {
+    await page.goto('/atlas/');
+    const main = page.locator('#main-content');
+    for (const essay of held) {
+      await expect(main, `${essay.slug}, held until ${essay.releaseAt}`).not.toContainText(
+        essay.title,
+      );
+    }
+  });
+
+  test('the search index carries none of them', async ({ request }) => {
+    const index: { type: string; id: string; url: string; title: string }[] = await (
+      await request.get('/search-index.json')
+    ).json();
+    expect(index.length).toBeGreaterThan(0);
+
+    for (const essay of held) {
+      const where = `${essay.slug}, held until ${essay.releaseAt}`;
+      // Matched on the fields a leak would actually travel in, rather than a
+      // substring of the whole document: a collection or layer may legitimately
+      // share a slug with a held essay without naming it (`terra-incognita`
+      // does), and a blanket search cannot tell those apart.
+      expect(
+        index.filter((entry) => entry.url === `/essays/${essay.slug}/`),
+        where,
+      ).toEqual([]);
+      expect(
+        index.filter((entry) => entry.type === 'essay' && entry.id === essay.slug),
+        where,
+      ).toEqual([]);
+      expect(
+        index.filter((entry) => entry.title === essay.title),
+        where,
+      ).toEqual([]);
+    }
   });
 });

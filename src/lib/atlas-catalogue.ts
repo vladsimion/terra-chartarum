@@ -207,6 +207,12 @@ export function projectCatalogue(input: CatalogueInput): AtlasCatalogue {
   const browsable = new Set(layers.map((row) => row.id));
 
   const collections: CatalogueCollection[] = sourceCollections
+    // A collection that presents an essay waits for it. Trimming `essaySlugs`
+    // only empties a list inside the payload; the collection itself would still
+    // render, under the held essay's own title and framing. Gated here, on the
+    // registry entry, because the projected row deliberately does not carry
+    // `essay`: by the time one ships, its essay is public anyway.
+    .filter((collection) => collection.essay === undefined || released.has(collection.essay))
     .map((collection) => {
       const extent = collectionExtent(collection);
       const layerIds = collection.layerIds.filter((id) => browsable.has(id));

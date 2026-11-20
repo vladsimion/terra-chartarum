@@ -205,3 +205,40 @@ describe('temporal relevance', () => {
     expect(ids).not.toContain('roman-empire-117');
   });
 });
+
+describe('a collection does not ship before the essay it presents', () => {
+  // The Crusades collection carries its essay's title and, in its description,
+  // the essay's argument. Filtering `essaySlugs` is not enough: that empties a
+  // list inside the payload while the collection itself, named for the held
+  // essay, still renders in the Collections lens. `essay` says which essay a
+  // collection is the presentation of, and that one is gated.
+  it('withholds the collection while its essay is held', () => {
+    const catalogue = build({ releasedEssaySlugs: ESSAYS });
+    expect(catalogue.collections.some((c) => c.id === 'maps-for-a-crusade')).toBe(false);
+    expect(catalogue.groups.collections.some((g) => g.id === 'maps-for-a-crusade')).toBe(false);
+  });
+
+  it('ships it once that essay is released', () => {
+    const catalogue = build({ releasedEssaySlugs: [...ESSAYS, 'maps-for-a-crusade'] });
+    const crusade = catalogue.collections.find((c) => c.id === 'maps-for-a-crusade');
+    expect(crusade?.title).toBe('Maps for a Crusade');
+  });
+
+  it('leaves the layers reachable through the other lenses meanwhile', () => {
+    // The gate withholds an editorial framing, not the evidence: each member
+    // layer keeps its theme, its room and its own page.
+    const catalogue = build({ releasedEssaySlugs: ESSAYS });
+    const themed = catalogue.groups.themes.flatMap((g) => g.layerIds);
+    expect(themed).toContain('crusades-itinerary');
+    expect(catalogue.layers.some((row) => row.id === 'crusades-itinerary')).toBe(true);
+  });
+
+  it('does not gate a collection that merely mentions essays', () => {
+    // `terra-incognita` shares a slug with a held essay but is not its
+    // presentation: its title is the cartographic term and its text describes
+    // the layers' review state. It ships.
+    const catalogue = build({ releasedEssaySlugs: ESSAYS });
+    expect(catalogue.collections.some((c) => c.id === 'terra-incognita')).toBe(true);
+    expect(catalogue.collections.some((c) => c.id === 'corpus-chartarum-daciae')).toBe(true);
+  });
+});
