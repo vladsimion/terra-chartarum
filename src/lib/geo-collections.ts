@@ -321,6 +321,20 @@ export const GEO_COLLECTIONS: GeoCollection[] = (() => {
   return parsed.sort((a, b) => a.sortWeight - b.sortWeight || a.id.localeCompare(b.id));
 })();
 
+/**
+ * Whether a collection is still waiting for the essay it presents. One rule,
+ * because more than one surface names a collection: the Atlas catalogue
+ * projection withholds it, and a layer's own page must not offer it either -
+ * a link to a collection the Atlas does not carry goes nowhere, and it carries
+ * the held essay's title as its text.
+ */
+export function awaitsItsEssay(
+  collection: GeoCollection,
+  releasedEssaySlugs: ReadonlySet<string>,
+): boolean {
+  return collection.essay !== undefined && !releasedEssaySlugs.has(collection.essay);
+}
+
 export function getGeoCollections(): GeoCollection[] {
   return GEO_COLLECTIONS;
 }

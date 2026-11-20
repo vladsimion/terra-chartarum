@@ -90,6 +90,39 @@ if (existsSync(DIST)) {
     );
   }
 
+  /*
+   * And it must not be offered under its own title. The checks above follow the
+   * route: they catch an `/essays/<slug>/` href and a built page. They do not
+   * catch a page that prints the title without linking to the essay, which is
+   * how the Crusades collection came to ship in the Atlas under a held essay's
+   * name (#203) - the catalogue named it, so nothing here saw a route to find.
+   *
+   * Scoped to links and buttons, because that is the difference that matters: a
+   * link or a control is an offer, and offering a reader a held essay is the
+   * defect. Prose and headings are statements, and a page is allowed to state
+   * that an essay is planned - `programmes/corpus-chartarum-daciae/` names a
+   * planned trench after one, which is the author's published roadmap rather
+   * than a leak. Widening this to all rendered text would make that call here,
+   * silently, which is not this script's to make.
+   */
+  const CONTROL = /<(a|button)\b[^>]*>([\s\S]*?)<\/\1>/g;
+  const controlText = (html) =>
+    [...html.matchAll(CONTROL)].map(([, , body]) => body.replace(/<[^>]*>/g, ' '));
+  const controls = builtHtml.map(({ path, html }) => ({
+    relative: path.slice(DIST.length + 1),
+    texts: controlText(html),
+  }));
+  for (const essay of held) {
+    const offering = controls
+      .filter(({ texts }) => texts.some((text) => text.includes(essay.title)))
+      .map(({ relative }) => relative);
+    check(
+      offering.length === 0,
+      `held essay '${essay.slug}' is offered as '${essay.title}' by a link or button in ` +
+        `${offering.slice(0, 3).join(', ')}${offering.length > 3 ? ` (+${offering.length - 3} more)` : ''}`,
+    );
+  }
+
   const citiesHtmlPath = resolve(DIST, 'essays/cities-remember/index.html');
   check(existsSync(citiesHtmlPath), 'Cities Remember HTML was not generated');
   if (existsSync(citiesHtmlPath)) {
