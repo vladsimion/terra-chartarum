@@ -17,7 +17,8 @@ import TechnicalLinks from '../../../components/handbook/TechnicalLinks.astro';
 import { loadHandbook } from '../../../lib/handbook-content';
 import { renderHandbookMarkdown } from '../../../lib/handbook-render';
 import { GEO_LAYERS } from '../../../lib/geo';
-import { collectionsForLayer } from '../../../lib/geo-collections';
+import { awaitsItsEssay, collectionsForLayer } from '../../../lib/geo-collections';
+import { getEssays } from '../../../lib/registry';
 import { GEO_RELEASE, geoReleaseAsset, versionedGeoUrl } from '../../../lib/geo-release';
 import type { CiteInput } from '../../../lib/cite';
 import { HANDBOOK_ROOT, handbookRoute } from '../../../lib/handbook';
@@ -34,7 +35,13 @@ const { entry } = Astro.props;
 const doc = entry.doc;
 const layer = GEO_LAYERS.find((candidate) => candidate.id === doc.layerId)!;
 const { html, headings } = await renderHandbookMarkdown(entry.body);
-const collections = collectionsForLayer(layer.id);
+// A collection presenting a held essay is withheld from the Atlas, so naming it
+// here would offer the essay's title and link into a collection that is not
+// there. Same rule, one home: `awaitsItsEssay`.
+const releasedEssaySlugs = new Set((await getEssays()).map((essay) => essay.slug));
+const collections = collectionsForLayer(layer.id).filter(
+  (collection) => !awaitsItsEssay(collection, releasedEssaySlugs),
+);
 
 // The dataset offer (KAN-416). A layer whose asset is not in the release
 // manifest still documents fine; it simply has nothing to hand over.
