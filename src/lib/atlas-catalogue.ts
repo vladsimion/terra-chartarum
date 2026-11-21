@@ -15,7 +15,12 @@
  * catalogue instead of with the screen.
  */
 import { GEO_LAYERS, type GeoLayer, type GeoLayerCategory, type GeoLayerRole } from './geo';
-import { GEO_COLLECTIONS, collectionExtent, type GeoCollection } from './geo-collections';
+import {
+  GEO_COLLECTIONS,
+  awaitsItsEssay,
+  collectionExtent,
+  type GeoCollection,
+} from './geo-collections';
 import { ROOMS } from '../data/rooms';
 
 /** The three ways the browser can cut the same catalogue. */
@@ -212,7 +217,7 @@ export function projectCatalogue(input: CatalogueInput): AtlasCatalogue {
     // render, under the held essay's own title and framing. Gated here, on the
     // registry entry, because the projected row deliberately does not carry
     // `essay`: by the time one ships, its essay is public anyway.
-    .filter((collection) => collection.essay === undefined || released.has(collection.essay))
+    .filter((collection) => !awaitsItsEssay(collection, released))
     .map((collection) => {
       const extent = collectionExtent(collection);
       const layerIds = collection.layerIds.filter((id) => browsable.has(id));
