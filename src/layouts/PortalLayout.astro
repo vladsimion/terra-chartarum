@@ -140,6 +140,20 @@ const schemaJson = schemaBlocks.length
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
+    {/* Archive patch (terra-chartarum-next spec 008, FR-004): this edition is frozen. */}
+    <aside
+      id="archive-banner"
+      role="note"
+      aria-label="Archived edition"
+      style="margin:0;padding:.75rem 1rem;background:#fff4d6;color:#3a2a00;border-bottom:2px solid #8a6200;font:1rem/1.4 system-ui,sans-serif"
+    >
+      This is the archived edition of Terra Chartarum, kept as it was and no longer updated.
+      <a
+        href="https://terra-chartarum.org/"
+        style="color:#3a2a00;font-weight:600;text-decoration:underline"
+        >Go to the current edition at terra-chartarum.org</a
+      >.
+    </aside>
     {!bare && <Header />}
     <main id="main-content" tabindex="-1" class="flex-1">
       <slot />
