@@ -140,7 +140,27 @@ const schemaJson = schemaBlocks.length
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
-    {/* Archive patch (terra-chartarum-next spec 008, FR-004): this edition is frozen. */}
+    {
+      /*
+      The archived-edition notice (terra-chartarum-next spec 008, FR-004). This project is the
+      frozen archive of Terra Chartarum; the current edition is the successor at
+      terra-chartarum.org (its ADR 0001 and ADR 0005). The markup below is the canonical patch
+      held in that repository at `archive/banner.html` and is copied here verbatim rather than
+      written by hand: `npm run archive:check` there verifies the banner, the noindex header and
+      this link against the deployed pages.
+
+      It sits after the skip link so "Skip to content" stays the first tab stop, and it is not
+      gated on `bare`, because the notice belongs on every page: index.astro, essays/[slug] and
+      atlas/layers/[layer] all pass bare and are exactly the pages a reader arrives at from an
+      old link.
+
+      The link carries its own `text-decoration:underline`. global.css sets
+      `a { text-decoration: none }` and scopes underlines to `p a` and `.linklist li a`, noting
+      those are "the contexts axe flags as text blocks"; this notice is in neither and its link
+      is the same colour as the text beside it, so without the inline rule `link-in-text-block`
+      would fail on every page the suite visits.
+    */
+    }
     <aside
       id="archive-banner"
       role="note"
